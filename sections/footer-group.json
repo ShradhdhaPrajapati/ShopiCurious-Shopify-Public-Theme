@@ -1,15 +1,54 @@
 {
   "type": "footer",
-  "name": "Footer",
-  "limit": 1,
+  "name": "Footer group",
   "sections": {
     "footer": {
       "type": "footer",
       "settings": {
-        "show_newsletter": true,
-        "show_payment_icons": true,
-        "show_social_icons": true
-      }
+        "copyright_text": "Lumière Fine Fashion, All Rights Reserved.",
+        "show_payment_icons": true
+      },
+      "blocks": {
+        "brand_info": {
+          "type": "brand_info",
+          "settings": {
+            "bio": "Timeless fashion, thoughtfully designed to celebrate life, love and you.",
+            "show_socials": true
+          }
+        },
+        "menu_shop": {
+          "type": "link_list",
+          "settings": {
+            "heading": "SHOP"
+          }
+        },
+        "menu_customer_care": {
+          "type": "link_list",
+          "settings": {
+            "heading": "CUSTOMER CARE"
+          }
+        },
+        "menu_about_us": {
+          "type": "link_list",
+          "settings": {
+            "heading": "ABOUT US"
+          }
+        },
+        "newsletter": {
+          "type": "newsletter",
+          "settings": {
+            "heading": "STAY IN THE LOOP",
+            "subtext": "Subscribe for exclusive offers and style updates."
+          }
+        }
+      },
+      "block_order": [
+        "brand_info",
+        "menu_shop",
+        "menu_customer_care",
+        "menu_about_us",
+        "newsletter"
+      ]
     }
   },
   "order": [

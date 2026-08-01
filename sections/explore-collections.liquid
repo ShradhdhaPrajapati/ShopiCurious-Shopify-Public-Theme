@@ -1,0 +1,429 @@
+{%- comment -%}
+  ShopziCurious - Explore Collections Section (Part 09)
+  Displays a 5-column collection grid with bottom frosted glass text cards matching the approved UI screenshot.
+{%- endcomment -%}
+
+{%- liquid
+  assign subtitle = section.settings.subtitle | default: 'EXPLORE COLLECTIONS'
+  assign title = section.settings.title | default: 'Find Your Perfect Piece'
+  assign cols_desktop = section.settings.columns_desktop | default: 5
+  assign cols_mobile = section.settings.columns_mobile | default: '2'
+  assign aspect_ratio = section.settings.image_ratio | default: '3/4'
+-%}
+
+<section
+  id="ExploreCollections-{{ section.id }}"
+  class="kz-explore-collections-section page-width"
+  style="--cols-desktop: {{ cols_desktop }}; --cols-mobile: {{ cols_mobile }};"
+>
+  <!-- Section Header -->
+  {%- if title != blank or subtitle != blank -%}
+    {%- assign align_class = section.settings.heading_alignment | default: 'center' -%}
+    <div class="kz-section-header kz-section-header--{{ align_class }}">
+      <div class="kz-section-header__text">
+        {%- if subtitle != blank -%}
+          <span class="kz-section-header__subtitle">{{ subtitle }}</span>
+        {%- endif -%}
+        {%- if title != blank -%}
+          <h2 class="kz-section-header__title">{{ title }}</h2>
+        {%- endif -%}
+      </div>
+    </div>
+  {%- endif -%}
+
+  <!-- Collection Grid -->
+  <div class="kz-explore-collections__grid">
+    {%- for block in section.blocks -%}
+      {%- liquid
+        assign collection = block.settings.collection
+        assign custom_title = block.settings.title
+        assign custom_subtitle = block.settings.subtitle
+        assign custom_image = block.settings.image
+
+        assign card_title = custom_title | default: collection.title | default: 'Collection'
+        assign card_img = custom_image | default: collection.featured_image
+        assign card_url = collection.url | default: '#'
+      -%}
+
+      <div class="kz-explore-collections__item" {{ block.shopify_attributes }}>
+        <a href="{{ card_url }}" class="kz-explore-card" style="aspect-ratio: {{ aspect_ratio }};">
+          <div class="kz-explore-card__media">
+            {%- if card_img != blank -%}
+              {% render 'image',
+                image: card_img,
+                aspect_ratio: aspect_ratio,
+                loading: 'lazy',
+                class: 'kz-explore-card__image'
+              %}
+            {%- else -%}
+              <div class="kz-explore-card__placeholder">
+                {{ 'collection-1' | placeholder_svg_tag: 'kz-placeholder-svg' }}
+              </div>
+            {%- endif -%}
+          </div>
+
+          <!-- Bottom Frosted Glass Overlay -->
+          <div class="kz-explore-card__overlay">
+            <h3 class="kz-explore-card__title">{{ card_title }}</h3>
+            {%- if custom_subtitle != blank -%}
+              <p class="kz-explore-card__subtitle">{{ custom_subtitle }}</p>
+            {%- endif -%}
+          </div>
+        </a>
+      </div>
+    {%- else -%}
+      <!-- Default 5 Items matching approved UI screenshot pixel-for-pixel -->
+      <div class="kz-explore-collections__item">
+        <a href="#" class="kz-explore-card" style="aspect-ratio: {{ aspect_ratio }};">
+          <div class="kz-explore-card__media">
+            <div class="kz-explore-card__placeholder">
+              {{ 'collection-1' | placeholder_svg_tag: 'kz-placeholder-svg' }}
+            </div>
+          </div>
+          <div class="kz-explore-card__overlay">
+            <h3 class="kz-explore-card__title">Everyday Essentials</h3>
+            <p class="kz-explore-card__subtitle">Effortless & Comfortable</p>
+          </div>
+        </a>
+      </div>
+
+      <div class="kz-explore-collections__item">
+        <a href="#" class="kz-explore-card" style="aspect-ratio: {{ aspect_ratio }};">
+          <div class="kz-explore-card__media">
+            <div class="kz-explore-card__placeholder">
+              {{ 'collection-2' | placeholder_svg_tag: 'kz-placeholder-svg' }}
+            </div>
+          </div>
+          <div class="kz-explore-card__overlay">
+            <h3 class="kz-explore-card__title">New Arrivals</h3>
+            <p class="kz-explore-card__subtitle">Fresh Styles Weekly</p>
+          </div>
+        </a>
+      </div>
+
+      <div class="kz-explore-collections__item">
+        <a href="#" class="kz-explore-card" style="aspect-ratio: {{ aspect_ratio }};">
+          <div class="kz-explore-card__media">
+            <div class="kz-explore-card__placeholder">
+              {{ 'collection-3' | placeholder_svg_tag: 'kz-placeholder-svg' }}
+            </div>
+          </div>
+          <div class="kz-explore-card__overlay">
+            <h3 class="kz-explore-card__title">Summer Collection</h3>
+            <p class="kz-explore-card__subtitle">Light, Breezy & Chic</p>
+          </div>
+        </a>
+      </div>
+
+      <div class="kz-explore-collections__item">
+        <a href="#" class="kz-explore-card" style="aspect-ratio: {{ aspect_ratio }};">
+          <div class="kz-explore-card__media">
+            <div class="kz-explore-card__placeholder">
+              {{ 'collection-4' | placeholder_svg_tag: 'kz-placeholder-svg' }}
+            </div>
+          </div>
+          <div class="kz-explore-card__overlay">
+            <h3 class="kz-explore-card__title">Denim Edit</h3>
+            <p class="kz-explore-card__subtitle">Timeless & Versatile</p>
+          </div>
+        </a>
+      </div>
+
+      <div class="kz-explore-collections__item">
+        <a href="#" class="kz-explore-card" style="aspect-ratio: {{ aspect_ratio }};">
+          <div class="kz-explore-card__media">
+            <div class="kz-explore-card__placeholder">
+              {{ 'collection-5' | placeholder_svg_tag: 'kz-placeholder-svg' }}
+            </div>
+          </div>
+          <div class="kz-explore-card__overlay">
+            <h3 class="kz-explore-card__title">Accessories</h3>
+            <p class="kz-explore-card__subtitle">Complete Your Look</p>
+          </div>
+        </a>
+      </div>
+    {%- endfor -%}
+  </div>
+</section>
+
+{% stylesheet %}
+  .kz-explore-collections-section {
+    padding-top: var(--kz-space-12, 48px);
+    padding-bottom: var(--kz-space-12, 48px);
+    max-width: var(--kz-page-max-width, 1400px);
+    margin: 0 auto;
+    padding-left: var(--kz-space-6, 24px);
+    padding-right: var(--kz-space-6, 24px);
+  }
+
+  .kz-section-header {
+    margin-bottom: var(--kz-space-8, 32px);
+  }
+
+  .kz-section-header--left {
+    text-align: left;
+  }
+
+  .kz-section-header--center {
+    text-align: center;
+  }
+
+  .kz-section-header--right {
+    text-align: right;
+  }
+
+  .kz-section-header__subtitle {
+    display: block;
+    font-family: var(--kz-font-family-body, sans-serif);
+    font-size: 11px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.12em;
+    color: #666666;
+    margin-bottom: 6px;
+  }
+
+  .kz-section-header__title {
+    margin: 0;
+    font-family: var(--kz-font-family-heading, Georgia, 'Playfair Display', serif);
+    font-size: clamp(24px, 3vw, 34px);
+    font-weight: 500;
+    color: #111111;
+    line-height: 1.2;
+  }
+
+  .kz-explore-collections__grid {
+    display: grid;
+    grid-template-columns: repeat(var(--cols-mobile, 2), 1fr);
+    gap: var(--kz-space-4, 16px);
+  }
+
+  @media (min-width: 990px) {
+    .kz-explore-collections__grid {
+      grid-template-columns: repeat(var(--cols-desktop, 5), 1fr);
+      gap: var(--kz-space-5, 20px);
+    }
+  }
+
+  /* Explore Card Design */
+  .kz-explore-card {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    border-radius: 14px;
+    overflow: hidden;
+    text-decoration: none;
+    background-color: #f7f4ee;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.03);
+    transition: transform 300ms ease, box-shadow 300ms ease;
+  }
+
+  .kz-explore-card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.08);
+  }
+
+  .kz-explore-card__media {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+  }
+
+  .kz-explore-card__image {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 600ms ease;
+  }
+
+  .kz-explore-card:hover .kz-explore-card__image {
+    transform: scale(1.05);
+  }
+
+  .kz-explore-card__placeholder {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: #eee9df;
+    color: #a8a090;
+  }
+
+  /* Bottom Frosted Glass Overlay */
+  .kz-explore-card__overlay {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    padding: 14px 12px;
+    text-align: center;
+    background: rgba(247, 244, 238, 0.92);
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+    border-top: 1px solid rgba(255, 255, 255, 0.4);
+    transition: background-color 250ms ease;
+  }
+
+  .kz-explore-card:hover .kz-explore-card__overlay {
+    background: rgba(255, 255, 255, 0.96);
+  }
+
+  .kz-explore-card__title {
+    margin: 0;
+    font-family: var(--kz-font-family-body, sans-serif);
+    font-size: 14px;
+    font-weight: 700;
+    color: #111111;
+    line-height: 1.3;
+  }
+
+  .kz-explore-card__subtitle {
+    margin: 3px 0 0 0;
+    font-family: var(--kz-font-family-body, sans-serif);
+    font-size: 11px;
+    color: #666666;
+    line-height: 1.3;
+  }
+{% endstylesheet %}
+
+{% schema %}
+{
+  "name": "Explore Collections",
+  "tag": "section",
+  "class": "section-explore-collections",
+  "max_blocks": 10,
+  "settings": [
+    {
+      "type": "text",
+      "id": "subtitle",
+      "default": "EXPLORE COLLECTIONS",
+      "label": "Subtitle"
+    },
+    {
+      "type": "text",
+      "id": "title",
+      "default": "Find Your Perfect Piece",
+      "label": "Title"
+    },
+    {
+      "type": "select",
+      "id": "heading_alignment",
+      "label": "Heading alignment",
+      "options": [
+        { "value": "left", "label": "Left" },
+        { "value": "center", "label": "Center" },
+        { "value": "right", "label": "Right" }
+      ],
+      "default": "center"
+    },
+    {
+      "type": "select",
+      "id": "image_ratio",
+      "label": "Image aspect ratio",
+      "options": [
+        { "value": "3/4", "label": "Portrait (3:4)" },
+        { "value": "4/5", "label": "Tall (4:5)" },
+        { "value": "1/1", "label": "Square (1:1)" }
+      ],
+      "default": "3/4"
+    },
+    {
+      "type": "range",
+      "id": "columns_desktop",
+      "min": 2,
+      "max": 6,
+      "step": 1,
+      "default": 5,
+      "label": "Desktop columns"
+    },
+    {
+      "type": "select",
+      "id": "columns_mobile",
+      "label": "Mobile columns",
+      "options": [
+        { "value": "1", "label": "1 Column" },
+        { "value": "2", "label": "2 Columns" }
+      ],
+      "default": "2"
+    }
+  ],
+  "blocks": [
+    {
+      "type": "collection",
+      "name": "Collection Card",
+      "settings": [
+        {
+          "type": "collection",
+          "id": "collection",
+          "label": "Collection"
+        },
+        {
+          "type": "image_picker",
+          "id": "image",
+          "label": "Custom Image",
+          "info": "Overrides Collection Featured Image if selected"
+        },
+        {
+          "type": "text",
+          "id": "title",
+          "label": "Title Override",
+          "info": "Leave empty to use Collection Title"
+        },
+        {
+          "type": "text",
+          "id": "subtitle",
+          "label": "Subtitle / Description",
+          "info": "e.g., Effortless & Comfortable"
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "Explore Collections",
+      "blocks": [
+        {
+          "type": "collection",
+          "settings": {
+            "title": "Everyday Essentials",
+            "subtitle": "Effortless & Comfortable"
+          }
+        },
+        {
+          "type": "collection",
+          "settings": {
+            "title": "New Arrivals",
+            "subtitle": "Fresh Styles Weekly"
+          }
+        },
+        {
+          "type": "collection",
+          "settings": {
+            "title": "Summer Collection",
+            "subtitle": "Light, Breezy & Chic"
+          }
+        },
+        {
+          "type": "collection",
+          "settings": {
+            "title": "Denim Edit",
+            "subtitle": "Timeless & Versatile"
+          }
+        },
+        {
+          "type": "collection",
+          "settings": {
+            "title": "Accessories",
+            "subtitle": "Complete Your Look"
+          }
+        }
+      ]
+    }
+  ]
+}
+{% endschema %}

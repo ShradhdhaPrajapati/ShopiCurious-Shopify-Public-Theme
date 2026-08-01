@@ -135,6 +135,10 @@
     "collection_template": {
       "empty": "No products found",
       "use_fewer_filters": "Try clearing some filters or search for another term."
+    },
+    "newsletter": {
+      "label": "Enter your email",
+      "success": "Thanks for subscribing!"
     }
   },
   "products": {

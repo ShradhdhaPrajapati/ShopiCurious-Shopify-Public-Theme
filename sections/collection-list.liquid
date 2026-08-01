@@ -15,7 +15,8 @@
   style="--cols-desktop: {{ cols_desktop }}; --cols-mobile: {{ cols_mobile }};"
 >
   {%- if section.settings.title != blank or section.settings.subtitle != blank -%}
-    <div class="kz-section-header">
+    {%- assign align_class = section.settings.heading_alignment | default: 'left' -%}
+    <div class="kz-section-header kz-section-header--{{ align_class }}">
       <div class="kz-section-header__text">
         {%- if section.settings.subtitle != blank -%}
           <span class="kz-section-header__subtitle">{{ section.settings.subtitle }}</span>
@@ -78,6 +79,18 @@
     margin-bottom: var(--kz-space-8, 32px);
   }
 
+  .kz-section-header--center {
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+  }
+
+  .kz-section-header--right {
+    flex-direction: column;
+    align-items: flex-end;
+    text-align: right;
+  }
+
   .kz-section-header__subtitle {
     display: block;
     font-family: var(--kz-font-family-body, sans-serif);
@@ -129,6 +142,17 @@
       "type": "text",
       "id": "title",
       "label": "Title"
+    },
+    {
+      "type": "select",
+      "id": "heading_alignment",
+      "label": "Heading alignment",
+      "options": [
+        { "value": "left", "label": "Left" },
+        { "value": "center", "label": "Center" },
+        { "value": "right", "label": "Right" }
+      ],
+      "default": "left"
     },
     {
       "type": "select",

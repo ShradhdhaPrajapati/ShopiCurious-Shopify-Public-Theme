@@ -140,10 +140,68 @@
       <line x1="15.41" y1="6.51" x2="8.59" y2="10.49"/>
     </svg>
 
-  {%- when 'spinner', 'loading' -%}
-    <svg class="kz-icon kz-icon--spinner kz-animate-spin {{ custom_class }}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true" focusable="false">
-      <circle cx="12" cy="12" r="10" stroke-opacity="0.25"/>
-      <path d="M12 2a10 10 0 0 1 10 10" stroke-linecap="round"/>
+  {%- when 'fabric', 'lotus' -%}
+    <svg class="kz-icon kz-icon--fabric {{ custom_class }}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false">
+      <path d="M12 2C8 6 3 9 3 14a9 9 0 0 0 18 0c0-5-5-8-9-12z"/>
+      <path d="M12 22V12"/>
+      <path d="M12 12c-3 1-5 3.5-5 6"/>
+      <path d="M12 12c3 1 5 3.5 5 6"/>
+    </svg>
+
+  {%- when 'diamond', 'ethical' -%}
+    <svg class="kz-icon kz-icon--diamond {{ custom_class }}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false">
+      <path d="M6 3h12l4 6-10 12L2 9z"/>
+      <path d="M11 3v18"/>
+      <path d="M2 9h20"/>
+    </svg>
+
+  {%- when 'shield-check', 'badge-check' -%}
+    <svg class="kz-icon kz-icon--shield-check {{ custom_class }}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false">
+      <rect x="5" y="4" width="14" height="16" rx="3"/>
+      <polyline points="9 12 11 14 15 10"/>
+    </svg>
+
+  {%- when 'user-heart', 'trusted-user' -%}
+    <svg class="kz-icon kz-icon--user-heart {{ custom_class }}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false">
+      <path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/>
+      <circle cx="9" cy="7" r="4"/>
+      <path d="M19 14c-1.5 0-2.5-1-2.5-2.2C16.5 10.6 17.7 9.5 19 8.5c1.3 1 2.5 2.1 2.5 3.3C21.5 13 20.5 14 19 14z"/>
+    </svg>
+
+  {%- when 'instagram' -%}
+    <svg class="kz-icon kz-icon--instagram {{ custom_class }}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false">
+      <rect x="2" y="2" width="20" height="20" rx="5" ry="5"/>
+      <path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"/>
+      <line x1="17.5" y1="6.5" x2="17.51" y2="6.5"/>
+    </svg>
+
+  {%- when 'truck', 'shipping' -%}
+    <svg class="kz-icon kz-icon--truck {{ custom_class }}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false">
+      <rect x="1" y="3" width="15" height="13" rx="1"/>
+      <polygon points="16 8 20 8 23 11 23 16 16 16 16 8"/>
+      <circle cx="5.5" cy="18.5" r="2.5"/>
+      <circle cx="18.5" cy="18.5" r="2.5"/>
+    </svg>
+
+  {%- when 'returns', 'refresh' -%}
+    <svg class="kz-icon kz-icon--returns {{ custom_class }}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false">
+      <polyline points="23 4 23 10 17 10"/>
+      <polyline points="1 20 1 14 7 14"/>
+      <path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"/>
+    </svg>
+
+  {%- when 'lock', 'secure' -%}
+    <svg class="kz-icon kz-icon--lock {{ custom_class }}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false">
+      <rect x="3" y="11" width="18" height="11" rx="2" ry="2"/>
+      <path d="M7 11V7a5 5 0 0 1 10 0v4"/>
+    </svg>
+
+  {%- when 'package', 'gift' -%}
+    <svg class="kz-icon kz-icon--package {{ custom_class }}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false">
+      <polyline points="16.5 9.4 7.5 4.21"/>
+      <path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/>
+      <polyline points="3.27 6.96 12 12.01 20.73 6.96"/>
+      <line x1="12" y1="22.08" x2="12" y2="12"/>
     </svg>
 
 {%- endcase -%}

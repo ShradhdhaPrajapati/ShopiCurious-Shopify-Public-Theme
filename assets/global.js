@@ -135,6 +135,22 @@
       }
     });
 
+    // Bind Skip to Content Smooth Scroll & Focus
+    document.addEventListener('click', (e) => {
+      const skipLink = e.target.closest('.kz-skip-to-content, .kz-skip-link');
+      if (skipLink) {
+        const targetId = skipLink.getAttribute('href');
+        if (targetId && targetId.startsWith('#')) {
+          const mainContent = document.querySelector(targetId);
+          if (mainContent) {
+            e.preventDefault();
+            mainContent.scrollIntoView({ behavior: 'smooth' });
+            mainContent.focus({ preventScroll: true });
+          }
+        }
+      }
+    });
+
     // Update Cart Badge on CART_UPDATED
     ShopziCurious.pubsub.subscribe(ShopziCurious.events.CART_UPDATED, (cartData) => {
       if (cartData && typeof cartData.item_count !== 'undefined') {

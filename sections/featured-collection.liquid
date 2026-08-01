@@ -16,7 +16,8 @@
   style="--cols-desktop: {{ cols_desktop }}; --cols-mobile: {{ cols_mobile }};"
 >
   <!-- Section Header -->
-  <div class="kz-section-header">
+  {%- assign align_class = section.settings.heading_alignment | default: 'left' -%}
+  <div class="kz-section-header kz-section-header--{{ align_class }}">
     <div class="kz-section-header__text">
       {%- if section.settings.subtitle != blank -%}
         <span class="kz-section-header__subtitle">{{ section.settings.subtitle }}</span>
@@ -85,6 +86,20 @@
     align-items: flex-end;
     justify-content: space-between;
     margin-bottom: var(--kz-space-8, 32px);
+  }
+
+  .kz-section-header--center {
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    gap: 12px;
+  }
+
+  .kz-section-header--right {
+    flex-direction: row-reverse;
+    align-items: flex-end;
+    text-align: right;
+    gap: 12px;
   }
 
   .kz-section-header__subtitle {
@@ -156,6 +171,17 @@
       "id": "title",
       "default": "Handpicked Just For You",
       "label": "Title"
+    },
+    {
+      "type": "select",
+      "id": "heading_alignment",
+      "label": "Heading alignment",
+      "options": [
+        { "value": "left", "label": "Left" },
+        { "value": "center", "label": "Center" },
+        { "value": "right", "label": "Right" }
+      ],
+      "default": "left"
     },
     {
       "type": "collection",

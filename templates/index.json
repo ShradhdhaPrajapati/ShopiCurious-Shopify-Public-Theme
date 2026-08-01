@@ -3,19 +3,70 @@
     "hero_banner": {
       "type": "hero-banner",
       "settings": {
-        "section_height": "large",
-        "overlay_opacity": 30,
-        "subheading": "Autumn / Winter Collection",
-        "heading": "Timeless Elegance & Modern Aesthetics",
-        "text": "<p>Discover curated luxury fashion pieces designed to elevate your everyday capsule wardrobe.</p>",
-        "content_alignment": "center",
-        "button_label_1": "Shop New Arrivals",
-        "button_label_2": "Explore Lookbook"
+        "layout_style": "card",
+        "card_border_radius": 16,
+        "section_height": "medium",
+        "overlay_opacity": 25,
+        "subheading": "New Collection",
+        "heading": "Timeless Style, Designed for You",
+        "content_alignment": "left",
+        "button_label_1": "SHOP NOW",
+        "show_container_mobile": false,
+        "content_alignment_mobile": "left"
       }
     },
     "feature_icons_bar": {
       "type": "feature-icons-bar",
-      "settings": {}
+      "settings": {},
+      "blocks": {
+        "shipping": {
+          "type": "feature",
+          "settings": {
+            "icon": "truck",
+            "title": "Free Shipping",
+            "text": "On orders over $100"
+          }
+        },
+        "returns": {
+          "type": "feature",
+          "settings": {
+            "icon": "returns",
+            "title": "Easy Returns",
+            "text": "30-day return policy"
+          }
+        },
+        "payments": {
+          "type": "feature",
+          "settings": {
+            "icon": "lock",
+            "title": "Secure Payments",
+            "text": "100% Protected"
+          }
+        },
+        "quality": {
+          "type": "feature",
+          "settings": {
+            "icon": "diamond",
+            "title": "Premium Quality",
+            "text": "Crafted with care"
+          }
+        },
+        "packaging": {
+          "type": "feature",
+          "settings": {
+            "icon": "package",
+            "title": "Elegant Packaging",
+            "text": "Perfect for Gifting"
+          }
+        }
+      },
+      "block_order": [
+        "shipping",
+        "returns",
+        "payments",
+        "quality",
+        "packaging"
+      ]
     },
     "category_cards": {
       "type": "category-cards",
@@ -81,6 +132,193 @@
         "button_label": "DISCOVER OUR STORY",
         "content_position": "right"
       }
+    },
+    "brand_features": {
+      "type": "brand-features",
+      "blocks": {
+        "feature_1": {
+          "type": "feature",
+          "settings": {
+            "icon": "fabric",
+            "title": "Premium Fabrics",
+            "subtitle": "Soft, Durable & Sustainable"
+          }
+        },
+        "feature_2": {
+          "type": "feature",
+          "settings": {
+            "icon": "diamond",
+            "title": "Ethically Made",
+            "subtitle": "Fair Labor Practices"
+          }
+        },
+        "feature_3": {
+          "type": "feature",
+          "settings": {
+            "icon": "shield-check",
+            "title": "Made to Last",
+            "subtitle": "Timeless Designs"
+          }
+        },
+        "feature_4": {
+          "type": "feature",
+          "settings": {
+            "icon": "user-heart",
+            "title": "Trusted by 10,000+",
+            "subtitle": "Happy Customers"
+          }
+        }
+      },
+      "block_order": [
+        "feature_1",
+        "feature_2",
+        "feature_3",
+        "feature_4"
+      ]
+    },
+    "explore_collections": {
+      "type": "explore-collections",
+      "settings": {
+        "subtitle": "EXPLORE COLLECTIONS",
+        "title": "Find Your Perfect Piece",
+        "image_ratio": "3/4",
+        "columns_desktop": 5,
+        "columns_mobile": "2"
+      },
+      "blocks": {
+        "coll_1": {
+          "type": "collection",
+          "settings": {
+            "title": "Everyday Essentials",
+            "subtitle": "Effortless & Comfortable"
+          }
+        },
+        "coll_2": {
+          "type": "collection",
+          "settings": {
+            "title": "New Arrivals",
+            "subtitle": "Fresh Styles Weekly"
+          }
+        },
+        "coll_3": {
+          "type": "collection",
+          "settings": {
+            "title": "Summer Collection",
+            "subtitle": "Light, Breezy & Chic"
+          }
+        },
+        "coll_4": {
+          "type": "collection",
+          "settings": {
+            "title": "Denim Edit",
+            "subtitle": "Timeless & Versatile"
+          }
+        },
+        "coll_5": {
+          "type": "collection",
+          "settings": {
+            "title": "Accessories",
+            "subtitle": "Complete Your Look"
+          }
+        }
+      },
+      "block_order": [
+        "coll_1",
+        "coll_2",
+        "coll_3",
+        "coll_4",
+        "coll_5"
+      ]
+    },
+    "newsletter": {
+      "type": "newsletter",
+      "settings": {
+        "subtitle": "JOIN THE LUMIÈRE CLUB",
+        "title": "Be the First to Know",
+        "description": "Get early access to new collections, exclusive offers, and insider updates.",
+        "button_label": "SUBSCRIBE",
+        "badge_1": "Exclusive Offers",
+        "badge_2": "New Arrivals",
+        "badge_3": "Style Inspiration"
+      }
+    },
+    "instagram_gallery": {
+      "type": "instagram-gallery",
+      "settings": {
+        "subtitle": "FOLLOW US ON INSTAGRAM",
+        "title": "@shopzicurious",
+        "heading_alignment": "center",
+        "image_ratio": "1/1",
+        "columns_desktop": 5,
+        "columns_mobile": "2"
+      },
+      "blocks": {
+        "insta_1": {
+          "type": "instagram_post"
+        },
+        "insta_2": {
+          "type": "instagram_post"
+        },
+        "insta_3": {
+          "type": "instagram_post"
+        },
+        "insta_4": {
+          "type": "instagram_post"
+        },
+        "insta_5": {
+          "type": "instagram_post"
+        }
+      },
+      "block_order": [
+        "insta_1",
+        "insta_2",
+        "insta_3",
+        "insta_4",
+        "insta_5"
+      ]
+    },
+    "bottom_usp_bar": {
+      "type": "bottom-usp-bar",
+      "blocks": {
+        "usp_1": {
+          "type": "usp_item",
+          "settings": {
+            "icon": "truck",
+            "title": "Free Shipping",
+            "subtitle": "On orders over $100"
+          }
+        },
+        "usp_2": {
+          "type": "usp_item",
+          "settings": {
+            "icon": "returns",
+            "title": "Easy Returns",
+            "subtitle": "30-day return policy"
+          }
+        },
+        "usp_3": {
+          "type": "usp_item",
+          "settings": {
+            "icon": "heart",
+            "title": "Lifetime Warranty",
+            "subtitle": "On all products"
+          }
+        },
+        "usp_4": {
+          "type": "usp_item",
+          "settings": {
+            "icon": "lock",
+            "title": "Secure Checkout",
+            "subtitle": "100% safe & secure"
+          }
+        }
+      },
+      "block_order": [
+        "usp_1",
+        "usp_2",
+        "usp_3",
+        "usp_4"
+      ]
     }
   },
   "order": [
@@ -88,6 +326,11 @@
     "feature_icons_bar",
     "category_cards",
     "featured_collection",
-    "promo_banner"
+    "promo_banner",
+    "brand_features",
+    "explore_collections",
+    "newsletter",
+    "instagram_gallery",
+    "bottom_usp_bar"
   ]
 }

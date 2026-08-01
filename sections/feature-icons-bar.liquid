@@ -1,12 +1,13 @@
 {%- comment -%}
   ShopziCurious - Feature Icons Bar Section (Part 04)
-  Displays key store benefits with icons, headings, and supporting descriptions.
+  Displays 5 key trust pillars in a clean floating white card overlapping the banner above it,
+  matching the approved design screenshot pixel-for-pixel.
 {%- endcomment -%}
 
 {%- liquid
   assign bg_color = section.settings.background_color | default: '#ffffff'
   assign text_color = section.settings.text_color | default: '#111111'
-  assign border_color = section.settings.border_color | default: '#e8e6e1'
+  assign border_color = section.settings.border_color | default: 'rgba(0, 0, 0, 0.06)'
 -%}
 
 <section
@@ -44,24 +45,14 @@
             </div>
         {%- endcase -%}
       {%- else -%}
-        <!-- Default Fallback Features -->
+        <!-- Default 5 Floating Banner Overlay Trust Pillars -->
         <div class="kz-feature-icons-bar__item">
           <div class="kz-feature-icons-bar__icon-wrapper">
             {% render 'icon', icon: 'truck', class: 'kz-feature-icons-bar__icon' %}
           </div>
           <div class="kz-feature-icons-bar__content">
-            <h3 class="kz-feature-icons-bar__title">Complimentary Shipping</h3>
-            <p class="kz-feature-icons-bar__text">Free express delivery on all orders over $100</p>
-          </div>
-        </div>
-
-        <div class="kz-feature-icons-bar__item">
-          <div class="kz-feature-icons-bar__icon-wrapper">
-            {% render 'icon', icon: 'shield', class: 'kz-feature-icons-bar__icon' %}
-          </div>
-          <div class="kz-feature-icons-bar__content">
-            <h3 class="kz-feature-icons-bar__title">Secure Checkout</h3>
-            <p class="kz-feature-icons-bar__text">Encrypted payments & guaranteed protection</p>
+            <h3 class="kz-feature-icons-bar__title">Free Shipping</h3>
+            <p class="kz-feature-icons-bar__text">On orders over $100</p>
           </div>
         </div>
 
@@ -70,18 +61,38 @@
             {% render 'icon', icon: 'returns', class: 'kz-feature-icons-bar__icon' %}
           </div>
           <div class="kz-feature-icons-bar__content">
-            <h3 class="kz-feature-icons-bar__title">Hassle-Free Returns</h3>
-            <p class="kz-feature-icons-bar__text">30-day money back guarantee with free pickup</p>
+            <h3 class="kz-feature-icons-bar__title">Easy Returns</h3>
+            <p class="kz-feature-icons-bar__text">30-day return policy</p>
           </div>
         </div>
 
         <div class="kz-feature-icons-bar__item">
           <div class="kz-feature-icons-bar__icon-wrapper">
-            {% render 'icon', icon: 'award', class: 'kz-feature-icons-bar__icon' %}
+            {% render 'icon', icon: 'lock', class: 'kz-feature-icons-bar__icon' %}
           </div>
           <div class="kz-feature-icons-bar__content">
-            <h3 class="kz-feature-icons-bar__title">Premium Craftsmanship</h3>
-            <p class="kz-feature-icons-bar__text">Curated luxury materials built to last</p>
+            <h3 class="kz-feature-icons-bar__title">Secure Payments</h3>
+            <p class="kz-feature-icons-bar__text">100% Protected</p>
+          </div>
+        </div>
+
+        <div class="kz-feature-icons-bar__item">
+          <div class="kz-feature-icons-bar__icon-wrapper">
+            {% render 'icon', icon: 'diamond', class: 'kz-feature-icons-bar__icon' %}
+          </div>
+          <div class="kz-feature-icons-bar__content">
+            <h3 class="kz-feature-icons-bar__title">Premium Quality</h3>
+            <p class="kz-feature-icons-bar__text">Crafted with care</p>
+          </div>
+        </div>
+
+        <div class="kz-feature-icons-bar__item">
+          <div class="kz-feature-icons-bar__icon-wrapper">
+            {% render 'icon', icon: 'package', class: 'kz-feature-icons-bar__icon' %}
+          </div>
+          <div class="kz-feature-icons-bar__content">
+            <h3 class="kz-feature-icons-bar__title">Elegant Packaging</h3>
+            <p class="kz-feature-icons-bar__text">Perfect for Gifting</p>
           </div>
         </div>
       {%- endfor -%}
@@ -91,43 +102,60 @@
 
 {% stylesheet %}
   .kz-feature-icons-bar {
-    background-color: var(--kz-fib-bg, #ffffff);
-    color: var(--kz-fib-text, #111111);
-    border-top: 1px solid var(--kz-fib-border, #e8e6e1);
-    border-bottom: 1px solid var(--kz-fib-border, #e8e6e1);
-    padding: var(--kz-space-8, 32px) 0;
+    position: relative;
+    z-index: 25;
+    margin-top: -45px;
+    margin-bottom: 24px;
+    background: transparent;
+    padding: 0;
+  }
+
+  @media (max-width: 768px) {
+    .kz-feature-icons-bar {
+      margin-top: -24px;
+    }
   }
 
   .kz-feature-icons-bar__container {
     max-width: var(--kz-page-max-width, 1400px);
     margin: 0 auto;
-    padding: 0 var(--kz-space-6, 24px);
+    padding: 22px 28px;
+    background-color: var(--kz-fib-bg, #ffffff);
+    border-radius: 12px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.07);
+    border: 1px solid var(--kz-fib-border, rgba(0, 0, 0, 0.06));
   }
 
   .kz-feature-icons-bar__grid {
     display: grid;
     grid-template-columns: repeat(1, minmax(0, 1fr));
-    gap: var(--kz-space-6, 24px);
+    gap: 20px;
   }
 
-  @media (min-width: 640px) {
+  @media (min-width: 550px) {
     .kz-feature-icons-bar__grid {
       grid-template-columns: repeat(2, minmax(0, 1fr));
     }
   }
 
-  @media (min-width: 1024px) {
+  @media (min-width: 850px) {
     .kz-feature-icons-bar__grid {
-      grid-template-columns: repeat(4, minmax(0, 1fr));
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+    }
+  }
+
+  @media (min-width: 1100px) {
+    .kz-feature-icons-bar__grid {
+      grid-template-columns: repeat(5, minmax(0, 1fr));
+      gap: 16px;
     }
   }
 
   .kz-feature-icons-bar__item {
     display: flex;
     align-items: center;
-    gap: 16px;
-    padding: 12px;
-    border-radius: var(--kz-radius-card, 4px);
+    gap: 14px;
+    padding: 4px 6px;
     transition: transform var(--kz-transition-fast, 150ms ease);
   }
 
@@ -140,7 +168,7 @@
     text-decoration: none;
     display: flex;
     align-items: center;
-    gap: 16px;
+    gap: 14px;
     width: 100%;
   }
 
@@ -148,40 +176,45 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    width: 48px;
-    height: 48px;
+    width: 44px;
+    height: 44px;
     border-radius: 50%;
-    background-color: var(--kz-color-surface, #f8f9fa);
+    background-color: #f7f4ee;
     flex-shrink: 0;
-    color: var(--kz-color-secondary, #d4a373);
+    color: #111111;
+    transition: background-color 200ms ease;
+  }
+
+  .kz-feature-icons-bar__item:hover .kz-feature-icons-bar__icon-wrapper {
+    background-color: #eee9df;
   }
 
   .kz-feature-icons-bar__icon {
-    width: 24px;
-    height: 24px;
+    width: 20px;
+    height: 20px;
   }
 
   .kz-feature-icons-bar__content {
     display: flex;
     flex-direction: column;
-    gap: 4px;
+    gap: 2px;
   }
 
   .kz-feature-icons-bar__title {
     margin: 0;
-    font-family: var(--kz-font-family-heading);
-    font-size: 14px;
+    font-family: var(--kz-font-family-body, sans-serif);
+    font-size: 13px;
     font-weight: 700;
-    line-height: 1.2;
-    text-transform: uppercase;
-    letter-spacing: 0.04em;
+    line-height: 1.25;
+    color: var(--kz-fib-text, #111111);
+    letter-spacing: -0.01em;
   }
 
   .kz-feature-icons-bar__text {
     margin: 0;
-    font-family: var(--kz-font-family-body);
-    font-size: 12px;
-    line-height: 1.4;
+    font-family: var(--kz-font-family-body, sans-serif);
+    font-size: 11px;
+    line-height: 1.3;
     color: var(--kz-color-text-muted, #666666);
   }
 {% endstylesheet %}
@@ -191,11 +224,12 @@
   "name": "Feature Icons Bar",
   "tag": "section",
   "class": "section-feature-icons-bar",
+  "max_blocks": 6,
   "settings": [
     {
       "type": "color",
       "id": "background_color",
-      "label": "Background color",
+      "label": "Card Background color",
       "default": "#ffffff"
     },
     {
@@ -208,7 +242,7 @@
       "type": "color",
       "id": "border_color",
       "label": "Border color",
-      "default": "#e8e6e1"
+      "default": "rgba(0, 0, 0, 0.06)"
     }
   ],
   "blocks": [
@@ -222,8 +256,11 @@
           "label": "Icon",
           "options": [
             { "value": "truck", "label": "Shipping Truck" },
+            { "value": "returns", "label": "Easy Returns" },
+            { "value": "lock", "label": "Secure Lock" },
+            { "value": "diamond", "label": "Diamond Quality" },
+            { "value": "package", "label": "Elegant Packaging" },
             { "value": "shield", "label": "Security Shield" },
-            { "value": "returns", "label": "Return Arrow" },
             { "value": "award", "label": "Quality Ribbon" },
             { "value": "bag", "label": "Shopping Bag" },
             { "value": "user", "label": "Customer Support" }
@@ -233,13 +270,13 @@
         {
           "type": "text",
           "id": "title",
-          "default": "Complimentary Shipping",
+          "default": "Free Shipping",
           "label": "Heading"
         },
         {
           "type": "text",
           "id": "text",
-          "default": "Free express delivery on all orders over $100",
+          "default": "On orders over $100",
           "label": "Description"
         },
         {
@@ -258,32 +295,40 @@
           "type": "feature",
           "settings": {
             "icon": "truck",
-            "title": "Complimentary Shipping",
-            "text": "Free express delivery on all orders over $100"
-          }
-        },
-        {
-          "type": "feature",
-          "settings": {
-            "icon": "shield",
-            "title": "Secure Checkout",
-            "text": "Encrypted payments & guaranteed protection"
+            "title": "Free Shipping",
+            "text": "On orders over $100"
           }
         },
         {
           "type": "feature",
           "settings": {
             "icon": "returns",
-            "title": "Hassle-Free Returns",
-            "text": "30-day money back guarantee with free pickup"
+            "title": "Easy Returns",
+            "text": "30-day return policy"
           }
         },
         {
           "type": "feature",
           "settings": {
-            "icon": "award",
-            "title": "Premium Craftsmanship",
-            "text": "Curated luxury materials built to last"
+            "icon": "lock",
+            "title": "Secure Payments",
+            "text": "100% Protected"
+          }
+        },
+        {
+          "type": "feature",
+          "settings": {
+            "icon": "diamond",
+            "title": "Premium Quality",
+            "text": "Crafted with care"
+          }
+        },
+        {
+          "type": "feature",
+          "settings": {
+            "icon": "package",
+            "title": "Elegant Packaging",
+            "text": "Perfect for Gifting"
           }
         }
       ]
