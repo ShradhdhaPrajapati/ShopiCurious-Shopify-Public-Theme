@@ -1,0 +1,78 @@
+{
+  "sections": {
+    "main": {
+      "type": "main-product",
+      "blocks": {
+        "vendor": {
+          "type": "vendor",
+          "settings": {}
+        },
+        "title": {
+          "type": "title",
+          "settings": {}
+        },
+        "price": {
+          "type": "price",
+          "settings": {}
+        },
+        "variant_picker": {
+          "type": "variant_picker",
+          "settings": {}
+        },
+        "quantity_selector": {
+          "type": "quantity_selector",
+          "settings": {}
+        },
+        "buy_buttons": {
+          "type": "buy_buttons",
+          "settings": {
+            "show_dynamic_checkout": true
+          }
+        },
+        "description": {
+          "type": "description",
+          "settings": {}
+        },
+        "accordion_shipping": {
+          "type": "accordion",
+          "settings": {
+            "heading": "Shipping & Returns",
+            "content": "<p>Complimentary express shipping on all domestic orders over $150. Easy 30-day returns.</p>",
+            "open": false
+          }
+        },
+        "share": {
+          "type": "share",
+          "settings": {}
+        }
+      },
+      "block_order": [
+        "vendor",
+        "title",
+        "price",
+        "variant_picker",
+        "quantity_selector",
+        "buy_buttons",
+        "description",
+        "accordion_shipping",
+        "share"
+      ],
+      "settings": {}
+    },
+    "related-products": {
+      "type": "featured-collection",
+      "settings": {
+        "subtitle": "You May Also Like",
+        "title": "Complete The Look",
+        "products_to_show": 4,
+        "columns_desktop": 4,
+        "columns_mobile": "2",
+        "show_view_all": false
+      }
+    }
+  },
+  "order": [
+    "main",
+    "related-products"
+  ]
+}

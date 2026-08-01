@@ -1,0 +1,142 @@
+{% doc %}
+  Renders a standardized price component supporting regular price, compare-at price,
+  unit pricing, sale badges, and price ranges.
+
+  @param {product} [product] - Product object to display price for
+  @param {variant} [variant] - Specific variant object to display price for
+  @param {boolean} [use_variant] - Forces price display of the specific variant if true
+  @param {boolean} [show_badges] - Renders percentage sale badge if true (Default: true)
+  @param {string} [price_class] - Additional CSS classes
+
+  @example
+  {% render 'price', product: product, show_badges: true %}
+  {% render 'price', variant: product.selected_or_first_available_variant, use_variant: true %}
+{% enddoc %}
+
+{%- liquid
+  if use_variant and variant
+    assign target = variant
+  else
+    assign target = product.selected_or_first_available_variant | default: product
+  endif
+
+  assign compare_at_price = target.compare_at_price
+  assign price = target.price | default: 1999
+  assign available = target.available | default: true
+
+  if compare_at_price > price
+    assign on_sale = true
+  else
+    assign on_sale = false
+  endif
+
+  assign money_price = price | money
+  if settings.currency_code_enabled
+    assign money_price = price | money_with_currency
+  endif
+
+  if target == product and product.price_varies
+    assign money_price = 'products.product.price.from_price_html' | t: price: money_price | default: 'From ' | append: money_price
+  endif
+-%}
+
+<div class="kz-price {% if on_sale %}kz-price--on-sale{% endif %} {% if available == false %}kz-price--sold-out{% endif %} {{ price_class }}">
+  <div class="kz-price__container">
+    {%- if on_sale -%}
+      <span class="kz-price__sale">
+        <span class="visually-hidden">{{ 'products.product.price.sale_price' | t | default: 'Sale price' }}</span>
+        <span class="kz-price__item kz-price__item--sale">{{ money_price }}</span>
+      </span>
+
+      <span class="kz-price__regular">
+        <span class="visually-hidden">{{ 'products.product.price.regular_price' | t | default: 'Regular price' }}</span>
+        <s class="kz-price__item kz-price__item--regular">
+          {%- if settings.currency_code_enabled -%}
+            {{ compare_at_price | money_with_currency }}
+          {%- else -%}
+            {{ compare_at_price | money }}
+          {%- endif -%}
+        </s>
+      </span>
+
+      {%- if show_badges != false -%}
+        {%- assign savings = compare_at_price | minus: price | times: 100.0 | divided_by: compare_at_price | round -%}
+        <span class="kz-price__badge">
+          -{{ savings }}%
+        </span>
+      {%- endif -%}
+    {%- else -%}
+      <span class="kz-price__regular">
+        <span class="visually-hidden">{{ 'products.product.price.regular_price' | t | default: 'Regular price' }}</span>
+        <span class="kz-price__item kz-price__item--regular">{{ money_price }}</span>
+      </span>
+    {%- endif -%}
+
+    {%- if target.unit_price_measurement -%}
+      <div class="kz-price__unit">
+        <span class="visually-hidden">{{ 'products.product.price.unit_price' | t | default: 'Unit price' }}</span>
+        <span>
+          {{ target.unit_price | money }}
+          <span aria-hidden="true">/</span>
+          {%- if target.unit_price_measurement.reference_value != 1 -%}
+            {{- target.unit_price_measurement.reference_value -}}
+          {%- endif -%}
+          {{ target.unit_price_measurement.reference_unit }}
+        </span>
+      </div>
+    {%- endif -%}
+  </div>
+</div>
+
+{% stylesheet %}
+  .kz-price {
+    display: inline-flex;
+    align-items: center;
+    font-family: var(--kz-font-family-body);
+    font-size: var(--kz-font-size-base, 16px);
+    font-weight: var(--kz-font-weight-semibold, 600);
+    color: var(--kz-color-text-primary, #1a1a1a);
+    line-height: 1.2;
+  }
+
+  .kz-price__container {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: var(--kz-space-2, 8px);
+  }
+
+  .kz-price__item--sale {
+    color: var(--kz-color-accent, #e76f51);
+    font-weight: 700;
+  }
+
+  .kz-price__item--regular {
+    color: var(--kz-color-text-muted, #757575);
+  }
+
+  s.kz-price__item--regular {
+    text-decoration: line-through;
+    font-size: 0.9em;
+    font-weight: 400;
+  }
+
+  .kz-price__badge {
+    display: inline-block;
+    padding: 2px 6px;
+    font-size: 11px;
+    font-weight: 700;
+    color: #ffffff;
+    background-color: var(--kz-color-accent, #e76f51);
+    border-radius: var(--kz-radius-xs, 2px);
+    text-transform: uppercase;
+  }
+
+  .kz-price__unit {
+    width: 100%;
+    font-size: 0.75em;
+    font-weight: 400;
+    color: var(--kz-color-text-muted, #757575);
+    margin-top: 2px;
+  }
+{% endstylesheet %}

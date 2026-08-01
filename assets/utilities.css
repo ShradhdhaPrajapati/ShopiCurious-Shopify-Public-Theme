@@ -1,0 +1,106 @@
+/**
+ * Kaizen Theme - Atomic Utilities Subsystem (utilities.css)
+ * Purpose: Low-level utility classes for margin, padding, aspect-ratio, display,
+ * position, object-fit, overflow, and pointer interactions.
+ */
+
+/* ==========================================================================
+   1. DISPLAY UTILITIES
+   ========================================================================== */
+.kz-d-block { display: block !important; }
+.kz-d-inline-block { display: inline-block !important; }
+.kz-d-inline { display: inline !important; }
+.kz-d-none { display: none !important; }
+
+@media screen and (max-width: 767px) {
+  .kz-hide-mobile { display: none !important; }
+}
+
+@media screen and (min-width: 768px) {
+  .kz-hide-desktop { display: none !important; }
+}
+
+/* ==========================================================================
+   2. SPACING HELPERS (Margin & Padding Scale)
+   ========================================================================== */
+.kz-m-auto { margin: auto !important; }
+.kz-mx-auto { margin-left: auto !important; margin-right: auto !important; }
+.kz-my-auto { margin-top: auto !important; margin-bottom: auto !important; }
+
+/* Margin Top */
+.kz-mt-0 { margin-top: 0 !important; }
+.kz-mt-2 { margin-top: var(--kz-space-2) !important; }
+.kz-mt-4 { margin-top: var(--kz-space-4) !important; }
+.kz-mt-6 { margin-top: var(--kz-space-6) !important; }
+.kz-mt-8 { margin-top: var(--kz-space-8) !important; }
+.kz-mt-12 { margin-top: var(--kz-space-12) !important; }
+
+/* Margin Bottom */
+.kz-mb-0 { margin-bottom: 0 !important; }
+.kz-mb-2 { margin-bottom: var(--kz-space-2) !important; }
+.kz-mb-4 { margin-bottom: var(--kz-space-4) !important; }
+.kz-mb-6 { margin-bottom: var(--kz-space-6) !important; }
+.kz-mb-8 { margin-bottom: var(--kz-space-8) !important; }
+.kz-mb-12 { margin-bottom: var(--kz-space-12) !important; }
+
+/* Padding Helpers */
+.kz-p-0 { padding: 0 !important; }
+.kz-p-4 { padding: var(--kz-space-4) !important; }
+.kz-p-6 { padding: var(--kz-space-6) !important; }
+.kz-p-8 { padding: var(--kz-space-8) !important; }
+
+/* ==========================================================================
+   3. ASPECT RATIO & MEDIA UTILITIES
+   ========================================================================== */
+.kz-aspect-square {
+  aspect-ratio: 1 / 1;
+}
+
+.kz-aspect-portrait {
+  aspect-ratio: 3 / 4;
+}
+
+.kz-aspect-landscape {
+  aspect-ratio: 4 / 3;
+}
+
+.kz-aspect-video {
+  aspect-ratio: 16 / 9;
+}
+
+.kz-object-cover {
+  object-fit: cover;
+  width: 100%;
+  height: 100%;
+}
+
+.kz-object-contain {
+  object-fit: contain;
+  width: 100%;
+  height: 100%;
+}
+
+/* ==========================================================================
+   4. POSITIONING & OVERFLOW
+   ========================================================================== */
+.kz-relative { position: relative !important; }
+.kz-absolute { position: absolute !important; }
+.kz-fixed { position: fixed !important; }
+.kz-sticky { position: sticky !important; top: 0; }
+
+.kz-inset-0 {
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+}
+
+.kz-overflow-hidden { overflow: hidden !important; }
+.kz-overflow-auto { overflow: auto !important; }
+
+/* ==========================================================================
+   5. POINTER & CURSOR
+   ========================================================================== */
+.kz-cursor-pointer { cursor: pointer !important; }
+.kz-pointer-events-none { pointer-events: none !important; }
+.kz-user-select-none { user-select: none !important; }

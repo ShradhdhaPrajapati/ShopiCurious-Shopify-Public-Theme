@@ -1,0 +1,307 @@
+{%- comment -%}
+  ShopziCurious - Promotional Banner Section (Part 07)
+  Features a dual-image split banner with editorial typography and CTA matching the approved UI screenshot.
+{%- endcomment -%}
+
+{%- liquid
+  assign subtitle = section.settings.subtitle | default: 'CRAFTED TO PERFECTION'
+  assign title = section.settings.title | default: 'Modern Fashion, Created to Last'
+  assign description = section.settings.description | default: "Each piece is a work of art, designed to celebrate life's most precious moments."
+  assign button_label = section.settings.button_label | default: 'DISCOVER OUR STORY'
+  assign button_link = section.settings.button_link | default: '/pages/about'
+  assign img_1 = section.settings.image_1
+  assign img_2 = section.settings.image_2
+  assign content_pos = section.settings.content_position | default: 'right'
+-%}
+
+<section id="PromoBanner-{{ section.id }}" class="kz-promo-banner-section page-width">
+  <div class="kz-promo-banner kz-promo-banner--content-{{ content_pos }}">
+    <!-- Images Container (Dual Split) -->
+    <div class="kz-promo-banner__media">
+      <div class="kz-promo-banner__media-item kz-promo-banner__media-item--narrow">
+        {%- if img_1 != blank -%}
+          {% render 'image',
+            image: img_1,
+            aspect_ratio: '3/4',
+            loading: 'lazy',
+            class: 'kz-promo-banner__image'
+          %}
+        {%- else -%}
+          <div class="kz-promo-banner__placeholder kz-promo-banner__placeholder--1">
+            {{ 'lifestyle-1' | placeholder_svg_tag: 'kz-placeholder-svg' }}
+          </div>
+        {%- endif -%}
+      </div>
+
+      <div class="kz-promo-banner__media-item kz-promo-banner__media-item--wide">
+        {%- if img_2 != blank -%}
+          {% render 'image',
+            image: img_2,
+            aspect_ratio: '4/3',
+            loading: 'lazy',
+            class: 'kz-promo-banner__image'
+          %}
+        {%- else -%}
+          <div class="kz-promo-banner__placeholder kz-promo-banner__placeholder--2">
+            {{ 'collection-1' | placeholder_svg_tag: 'kz-placeholder-svg' }}
+          </div>
+        {%- endif -%}
+      </div>
+    </div>
+
+    <!-- Content Box -->
+    <div class="kz-promo-banner__content">
+      <div class="kz-promo-banner__content-inner">
+        {%- if subtitle != blank -%}
+          <span class="kz-promo-banner__subtitle">{{ subtitle }}</span>
+        {%- endif -%}
+
+        {%- if title != blank -%}
+          <h2 class="kz-promo-banner__title">{{ title }}</h2>
+        {%- endif -%}
+
+        {%- if description != blank -%}
+          <p class="kz-promo-banner__description">{{ description }}</p>
+        {%- endif -%}
+
+        {%- if button_label != blank -%}
+          <a href="{{ button_link }}" class="kz-promo-banner__btn">
+            <span>{{ button_label }}</span>
+          </a>
+        {%- endif -%}
+      </div>
+    </div>
+  </div>
+</section>
+
+{% stylesheet %}
+  .kz-promo-banner-section {
+    padding-top: var(--kz-space-12, 48px);
+    padding-bottom: var(--kz-space-12, 48px);
+    max-width: var(--kz-page-max-width, 1400px);
+    margin: 0 auto;
+    padding-left: var(--kz-space-6, 24px);
+    padding-right: var(--kz-space-6, 24px);
+  }
+
+  .kz-promo-banner {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    border-radius: 16px;
+    background-color: #f7f4ee;
+    overflow: hidden;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.03);
+  }
+
+  @media (min-width: 990px) {
+    .kz-promo-banner {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      align-items: stretch;
+      min-height: 420px;
+    }
+
+    .kz-promo-banner--content-left .kz-promo-banner__media {
+      order: 2;
+    }
+
+    .kz-promo-banner--content-left .kz-promo-banner__content {
+      order: 1;
+    }
+  }
+
+  /* Dual Media Area */
+  .kz-promo-banner__media {
+    display: flex;
+    width: 100%;
+    height: 100%;
+    min-height: 320px;
+    overflow: hidden;
+    background-color: #ede8df;
+  }
+
+  .kz-promo-banner__media-item {
+    position: relative;
+    height: 100%;
+    overflow: hidden;
+  }
+
+  .kz-promo-banner__media-item--narrow {
+    flex: 0 0 35%;
+  }
+
+  .kz-promo-banner__media-item--wide {
+    flex: 1 1 65%;
+  }
+
+  .kz-promo-banner__image {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+    transition: transform 700ms ease;
+  }
+
+  .kz-promo-banner:hover .kz-promo-banner__image {
+    transform: scale(1.03);
+  }
+
+  .kz-promo-banner__placeholder {
+    width: 100%;
+    height: 100%;
+    min-height: 320px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: #e8e3d8;
+    color: #a8a090;
+  }
+
+  .kz-promo-banner__placeholder--2 {
+    background-color: #dfd9cb;
+  }
+
+  .kz-placeholder-svg {
+    width: 60%;
+    height: 60%;
+    opacity: 0.4;
+  }
+
+  /* Content Area */
+  .kz-promo-banner__content {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    padding: 40px 32px;
+    background-color: #f7f4ee;
+  }
+
+  @media (min-width: 990px) {
+    .kz-promo-banner__content {
+      padding: 56px 64px;
+    }
+  }
+
+  .kz-promo-banner__content-inner {
+    max-width: 460px;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .kz-promo-banner__subtitle {
+    display: block;
+    font-family: var(--kz-font-family-body, sans-serif);
+    font-size: 11px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.14em;
+    color: #666666;
+    margin-bottom: 12px;
+  }
+
+  .kz-promo-banner__title {
+    margin: 0 0 14px 0;
+    font-family: var(--kz-font-family-heading, Georgia, 'Playfair Display', serif);
+    font-size: clamp(26px, 2.5vw, 36px);
+    font-weight: 500;
+    color: #111111;
+    line-height: 1.25;
+  }
+
+  .kz-promo-banner__description {
+    margin: 0 0 28px 0;
+    font-family: var(--kz-font-family-body, sans-serif);
+    font-size: 13px;
+    color: #555555;
+    line-height: 1.6;
+  }
+
+  .kz-promo-banner__btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    background-color: #242424;
+    color: #ffffff;
+    font-family: var(--kz-font-family-body, sans-serif);
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    padding: 14px 28px;
+    border-radius: 6px;
+    text-decoration: none;
+    transition: background-color 200ms ease, transform 200ms ease, box-shadow 200ms ease;
+  }
+
+  .kz-promo-banner__btn:hover {
+    background-color: #000000;
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  }
+{% endstylesheet %}
+
+{% schema %}
+{
+  "name": "Promotional banner",
+  "tag": "section",
+  "class": "section-promo-banner",
+  "settings": [
+    {
+      "type": "image_picker",
+      "id": "image_1",
+      "label": "Left Narrow Image"
+    },
+    {
+      "type": "image_picker",
+      "id": "image_2",
+      "label": "Right Wide Image"
+    },
+    {
+      "type": "text",
+      "id": "subtitle",
+      "default": "CRAFTED TO PERFECTION",
+      "label": "Subtitle"
+    },
+    {
+      "type": "text",
+      "id": "title",
+      "default": "Modern Fashion, Created to Last",
+      "label": "Title"
+    },
+    {
+      "type": "textarea",
+      "id": "description",
+      "default": "Each piece is a work of art, designed to celebrate life's most precious moments.",
+      "label": "Description"
+    },
+    {
+      "type": "text",
+      "id": "button_label",
+      "default": "DISCOVER OUR STORY",
+      "label": "Button label"
+    },
+    {
+      "type": "url",
+      "id": "button_link",
+      "label": "Button link"
+    },
+    {
+      "type": "select",
+      "id": "content_position",
+      "label": "Content position",
+      "options": [
+        { "value": "left", "label": "Left" },
+        { "value": "right", "label": "Right" }
+      ],
+      "default": "right"
+    }
+  ],
+  "presets": [
+    {
+      "name": "Promotional banner"
+    }
+  ]
+}
+{% endschema %}

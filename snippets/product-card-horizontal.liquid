@@ -1,0 +1,150 @@
+{% doc %}
+  Renders a compact horizontal row product card layout used inside cart drawer upsells, search results, and mini recommendations.
+
+  @param {product} card_product - Product Liquid object to display
+  @param {boolean} [show_quick_add] - Displays quick add to cart button if true (Default: true)
+  @param {string} [class] - Additional CSS class names
+
+  @example
+  {% render 'product-card-horizontal', card_product: product, show_quick_add: true %}
+{% enddoc %}
+
+{%- liquid
+  assign product = card_product
+  assign show_add = show_quick_add | default: true
+  assign custom_class = class | default: ''
+  assign featured_img = product.featured_media.preview_image
+-%}
+
+{%- if product != blank -%}
+  <div class="kz-card-horizontal {{ custom_class }}" data-product-handle="{{ product.handle }}">
+    <a href="{{ product.url }}" class="kz-card-horizontal__media-link" aria-label="{{ product.title | escape }}">
+      {%- if featured_img != blank -%}
+        {% render 'image',
+          image: featured_img,
+          aspect_ratio: '1/1',
+          loading: 'lazy',
+          class: 'kz-card-horizontal__image'
+        %}
+      {%- else -%}
+        <div class="kz-card-horizontal__placeholder">
+          {{ 'product-1' | placeholder_svg_tag: 'kz-image-placeholder' }}
+        </div>
+      {%- endif -%}
+    </a>
+
+    <div class="kz-card-horizontal__content">
+      <div class="kz-card-horizontal__details">
+        {%- if product.vendor != blank -%}
+          <span class="kz-card-horizontal__vendor">{{ product.vendor }}</span>
+        {%- endif -%}
+
+        <h4 class="kz-card-horizontal__title">
+          <a href="{{ product.url }}" class="kz-card-horizontal__title-link">
+            {{ product.title }}
+          </a>
+        </h4>
+
+        <div class="kz-card-horizontal__price-wrapper">
+          {% render 'price', product: product, show_badges: false %}
+        </div>
+      </div>
+
+      {%- if show_add and product.available -%}
+        <div class="kz-card-horizontal__actions">
+          {%- if product.has_only_default_variant -%}
+            <button
+              type="button"
+              class="kz-button kz-button--outline kz-button--sm kz-quick-add-btn"
+              data-variant-id="{{ product.selected_or_first_available_variant.id }}"
+              aria-label="{{ 'products.product.add_to_cart' | t | default: 'Add to Cart' }}"
+            >
+              {% render 'icon', icon: 'plus', class: 'kz-button__icon' %}
+              <span>{{ 'products.product.add_to_cart' | t | default: 'Add' }}</span>
+            </button>
+          {%- else -%}
+            <a
+              href="{{ product.url }}"
+              class="kz-button kz-button--text kz-button--sm"
+            >
+              <span>{{ 'products.product.choose_options' | t | default: 'View' }}</span>
+            </a>
+          {%- endif -%}
+        </div>
+      {%- endif -%}
+    </div>
+  </div>
+{%- endif -%}
+
+{% stylesheet %}
+  .kz-card-horizontal {
+    display: flex;
+    align-items: center;
+    gap: var(--kz-space-3, 12px);
+    padding: var(--kz-space-2, 8px);
+    border-radius: var(--kz-radius-card, 4px);
+    background-color: var(--kz-color-background, #ffffff);
+    border: 1px solid var(--kz-color-border-subtle, #f0f0f0);
+    transition: border-color var(--kz-transition-fast, 150ms ease);
+  }
+
+  .kz-card-horizontal:hover {
+    border-color: var(--kz-color-border, #e5e5e5);
+  }
+
+  .kz-card-horizontal__media-link {
+    width: 72px;
+    height: 72px;
+    flex-shrink: 0;
+    border-radius: var(--kz-radius-sm, 4px);
+    overflow: hidden;
+    background-color: var(--kz-color-surface, #f8f9fa);
+  }
+
+  .kz-card-horizontal__content {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    width: 100%;
+    gap: var(--kz-space-2, 8px);
+  }
+
+  .kz-card-horizontal__details {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    min-width: 0;
+  }
+
+  .kz-card-horizontal__vendor {
+    font-family: var(--kz-font-family-body);
+    font-size: 10px;
+    text-transform: uppercase;
+    letter-spacing: var(--kz-letter-spacing-wide, 0.05em);
+    color: var(--kz-color-text-muted, #757575);
+  }
+
+  .kz-card-horizontal__title {
+    margin: 0;
+    font-family: var(--kz-font-family-heading);
+    font-size: var(--kz-font-size-xs, 13px);
+    font-weight: 600;
+    line-height: 1.2;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  .kz-card-horizontal__title-link {
+    color: var(--kz-color-text-primary, #1a1a1a);
+    text-decoration: none;
+  }
+
+  .kz-card-horizontal__price-wrapper {
+    font-size: 12px;
+  }
+
+  .kz-card-horizontal__actions {
+    flex-shrink: 0;
+  }
+{% endstylesheet %}

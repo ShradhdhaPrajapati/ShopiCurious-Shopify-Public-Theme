@@ -1,0 +1,167 @@
+{% doc %}
+  Renders accessible SEO breadcrumb navigation links with JSON-LD BreadcrumbList structured data.
+
+  @param {string} [class] - Optional additional CSS classes for the breadcrumb nav container
+
+  @example
+  {% render 'breadcrumbs' %}
+{% enddoc %}
+
+{%- liquid
+  assign t_home = 'general.breadcrumbs.home' | t | default: 'Home'
+  assign t_search = 'general.breadcrumbs.search' | t | default: 'Search'
+  assign custom_class = class | default: ''
+-%}
+
+{%- unless template == 'index' or template == 'cart' or template == '404' -%}
+  <nav class="kz-breadcrumbs {{ custom_class }}" aria-label="{{ 'general.breadcrumbs.label' | t | default: 'Breadcrumb' }}">
+    <ol class="kz-breadcrumbs__list" itemscope itemtype="https://schema.org/BreadcrumbList">
+      <li class="kz-breadcrumbs__item" itemprop="itemListElement" itemscope itemtype="https://schema.org/ListItem">
+        <a href="{{ routes.root_url }}" class="kz-breadcrumbs__link" itemprop="item">
+          <span itemprop="name">{{ t_home }}</span>
+        </a>
+        <meta itemprop="position" content="1">
+        <span class="kz-breadcrumbs__separator" aria-hidden="true">/</span>
+      </li>
+
+      {%- case request.page_type -%}
+        {%- when 'product' -%}
+          {%- if collection.url -%}
+            <li class="kz-breadcrumbs__item" itemprop="itemListElement" itemscope itemtype="https://schema.org/ListItem">
+              <a href="{{ collection.url }}" class="kz-breadcrumbs__link" itemprop="item">
+                <span itemprop="name">{{ collection.title }}</span>
+              </a>
+              <meta itemprop="position" content="2">
+              <span class="kz-breadcrumbs__separator" aria-hidden="true">/</span>
+            </li>
+            <li class="kz-breadcrumbs__item" itemprop="itemListElement" itemscope itemtype="https://schema.org/ListItem">
+              <span class="kz-breadcrumbs__current" itemprop="name" aria-current="page">{{ product.title }}</span>
+              <meta itemprop="position" content="3">
+            </li>
+          {%- else -%}
+            <li class="kz-breadcrumbs__item" itemprop="itemListElement" itemscope itemtype="https://schema.org/ListItem">
+              <span class="kz-breadcrumbs__current" itemprop="name" aria-current="page">{{ product.title }}</span>
+              <meta itemprop="position" content="2">
+            </li>
+          {%- endif -%}
+
+        {%- when 'collection' and collection.handle -%}
+          {%- if current_tags -%}
+            <li class="kz-breadcrumbs__item" itemprop="itemListElement" itemscope itemtype="https://schema.org/ListItem">
+              <a href="{{ collection.url }}" class="kz-breadcrumbs__link" itemprop="item">
+                <span itemprop="name">{{ collection.title }}</span>
+              </a>
+              <meta itemprop="position" content="2">
+              <span class="kz-breadcrumbs__separator" aria-hidden="true">/</span>
+            </li>
+            <li class="kz-breadcrumbs__item" itemprop="itemListElement" itemscope itemtype="https://schema.org/ListItem">
+              <span class="kz-breadcrumbs__current" itemprop="name" aria-current="page">{{ current_tags | join: " + " }}</span>
+              <meta itemprop="position" content="3">
+            </li>
+          {%- else -%}
+            <li class="kz-breadcrumbs__item" itemprop="itemListElement" itemscope itemtype="https://schema.org/ListItem">
+              <span class="kz-breadcrumbs__current" itemprop="name" aria-current="page">{{ collection.title }}</span>
+              <meta itemprop="position" content="2">
+            </li>
+          {%- endif -%}
+
+        {%- when 'blog' -%}
+          {%- if current_tags -%}
+            <li class="kz-breadcrumbs__item" itemprop="itemListElement" itemscope itemtype="https://schema.org/ListItem">
+              <a href="{{ blog.url }}" class="kz-breadcrumbs__link" itemprop="item">
+                <span itemprop="name">{{ blog.title }}</span>
+              </a>
+              <meta itemprop="position" content="2">
+              <span class="kz-breadcrumbs__separator" aria-hidden="true">/</span>
+            </li>
+            <li class="kz-breadcrumbs__item" itemprop="itemListElement" itemscope itemtype="https://schema.org/ListItem">
+              <span class="kz-breadcrumbs__current" itemprop="name" aria-current="page">{{ current_tags | join: " + " }}</span>
+              <meta itemprop="position" content="3">
+            </li>
+          {%- else -%}
+            <li class="kz-breadcrumbs__item" itemprop="itemListElement" itemscope itemtype="https://schema.org/ListItem">
+              <span class="kz-breadcrumbs__current" itemprop="name" aria-current="page">{{ blog.title }}</span>
+              <meta itemprop="position" content="2">
+            </li>
+          {%- endif -%}
+
+        {%- when 'article' -%}
+          <li class="kz-breadcrumbs__item" itemprop="itemListElement" itemscope itemtype="https://schema.org/ListItem">
+            <a href="{{ blog.url }}" class="kz-breadcrumbs__link" itemprop="item">
+              <span itemprop="name">{{ blog.title }}</span>
+            </a>
+            <meta itemprop="position" content="2">
+            <span class="kz-breadcrumbs__separator" aria-hidden="true">/</span>
+          </li>
+          <li class="kz-breadcrumbs__item" itemprop="itemListElement" itemscope itemtype="https://schema.org/ListItem">
+            <span class="kz-breadcrumbs__current" itemprop="name" aria-current="page">{{ article.title }}</span>
+            <meta itemprop="position" content="3">
+          </li>
+
+        {%- when 'page' -%}
+          <li class="kz-breadcrumbs__item" itemprop="itemListElement" itemscope itemtype="https://schema.org/ListItem">
+            <span class="kz-breadcrumbs__current" itemprop="name" aria-current="page">{{ page.title }}</span>
+            <meta itemprop="position" content="2">
+          </li>
+
+        {%- when 'search' -%}
+          <li class="kz-breadcrumbs__item" itemprop="itemListElement" itemscope itemtype="https://schema.org/ListItem">
+            <span class="kz-breadcrumbs__current" itemprop="name" aria-current="page">{{ t_search }}</span>
+            <meta itemprop="position" content="2">
+          </li>
+
+        {%- else -%}
+          <li class="kz-breadcrumbs__item" itemprop="itemListElement" itemscope itemtype="https://schema.org/ListItem">
+            <span class="kz-breadcrumbs__current" itemprop="name" aria-current="page">{{ page_title }}</span>
+            <meta itemprop="position" content="2">
+          </li>
+      {%- endcase -%}
+    </ol>
+  </nav>
+{%- endunless -%}
+
+{% stylesheet %}
+  .kz-breadcrumbs {
+    padding: var(--kz-space-3, 12px) 0;
+    font-family: var(--kz-font-family-body);
+    font-size: var(--kz-font-size-xs, 12px);
+    color: var(--kz-color-text-muted, #757575);
+  }
+
+  .kz-breadcrumbs__list {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    gap: 6px;
+  }
+
+  .kz-breadcrumbs__item {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+  }
+
+  .kz-breadcrumbs__link {
+    color: var(--kz-color-text-muted, #757575);
+    text-decoration: none;
+    transition: color var(--kz-transition-fast, 150ms ease);
+  }
+
+  .kz-breadcrumbs__link:hover {
+    color: var(--kz-color-primary, #111111);
+    text-decoration: underline;
+  }
+
+  .kz-breadcrumbs__separator {
+    color: var(--kz-color-border-strong, #cccccc);
+    font-size: 11px;
+  }
+
+  .kz-breadcrumbs__current {
+    color: var(--kz-color-text-primary, #2b2b2b);
+    font-weight: 600;
+  }
+{% endstylesheet %}

@@ -1,0 +1,127 @@
+{% doc %}
+  Renders an accessible collapsible accordion drawer using native HTML5 <details> and <summary> tags.
+
+  @param {string} heading - Title header string displayed on the summary toggle
+  @param {string} content - Rich HTML or text body content inside the accordion drawer
+  @param {string} [icon] - Optional icon name rendered next to the heading
+  @param {boolean} [open] - Expands accordion by default if true
+  @param {string} [id] - Unique DOM element ID attribute
+  @param {string} [class] - Additional CSS class names
+
+  @example
+  {% render 'accordion', heading: 'Materials & Care', content: product.metafields.custom.care_instructions %}
+  {% render 'accordion', heading: 'Shipping & Returns', content: section.settings.shipping_policy, open: true %}
+{% enddoc %}
+
+{%- liquid
+  assign title = heading | default: 'Accordion Title'
+  assign body_content = content
+  assign heading_icon = icon
+  assign is_open = open | default: false
+  assign elem_id = id
+  assign custom_class = class | default: ''
+
+  assign full_class = 'kz-accordion ' | append: custom_class
+-%}
+
+<details
+  {% if elem_id != blank %}id="{{ elem_id }}"{% endif %}
+  class="{{ full_class }}"
+  {% if is_open %}open{% endif %}
+>
+  <summary class="kz-accordion__summary">
+    <div class="kz-accordion__header">
+      {%- if heading_icon != blank -%}
+        {% render 'icon', icon: heading_icon, class: 'kz-accordion__icon' %}
+      {%- endif -%}
+      <span class="kz-accordion__title">{{ title }}</span>
+    </div>
+
+    <span class="kz-accordion__toggle-icon" aria-hidden="true">
+      {% render 'icon', icon: 'chevron-down', class: 'kz-accordion__chevron' %}
+    </span>
+  </summary>
+
+  <div class="kz-accordion__content">
+    <div class="kz-accordion__inner">
+      {{ body_content }}
+    </div>
+  </div>
+</details>
+
+{% stylesheet %}
+  .kz-accordion {
+    border-bottom: 1px solid var(--kz-color-border, #e5e5e5);
+    margin-bottom: 0;
+    transition: all var(--kz-transition-fast, 150ms ease);
+  }
+
+  .kz-accordion__summary {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: var(--kz-space-4, 16px) 0;
+    font-family: var(--kz-font-family-body);
+    font-size: var(--kz-font-size-base, 15px);
+    font-weight: 600;
+    color: var(--kz-color-text-primary, #1a1a1a);
+    cursor: pointer;
+    list-style: none;
+    user-select: none;
+  }
+
+  .kz-accordion__summary::-webkit-details-marker {
+    display: none;
+  }
+
+  .kz-accordion__header {
+    display: flex;
+    align-items: center;
+    gap: var(--kz-space-3, 12px);
+  }
+
+  .kz-accordion__title {
+    line-height: 1.3;
+  }
+
+  .kz-accordion__icon {
+    width: 18px;
+    height: 18px;
+    color: var(--kz-color-secondary, #d4a373);
+  }
+
+  .kz-accordion__toggle-icon {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 24px;
+    height: 24px;
+    transition: transform var(--kz-transition-base, 250ms ease);
+  }
+
+  .kz-accordion__chevron {
+    width: 16px;
+    height: 16px;
+    color: var(--kz-color-text-muted, #757575);
+  }
+
+  .kz-accordion[open] .kz-accordion__toggle-icon {
+    transform: rotate(180deg);
+  }
+
+  .kz-accordion__content {
+    padding-bottom: var(--kz-space-4, 16px);
+    font-family: var(--kz-font-family-body);
+    font-size: var(--kz-font-size-sm, 14px);
+    line-height: 1.6;
+    color: var(--kz-color-text-secondary, #666666);
+  }
+
+  .kz-accordion__inner > *:first-child {
+    margin-top: 0;
+  }
+
+  .kz-accordion__inner > *:last-child {
+    margin-bottom: 0;
+  }
+{% endstylesheet %}

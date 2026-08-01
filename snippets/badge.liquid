@@ -1,0 +1,90 @@
+{% doc %}
+  Renders a visual status badge tag (New Arrival, Best Seller, Limited Edition, Sale, Sold Out).
+
+  @param {string} label - Text label string displayed inside the badge
+  @param {string} [type] - Badge variant type ('sale', 'new', 'bestseller', 'limited', 'sold-out', 'neutral', 'outline', Default: 'neutral')
+  @param {string} [size] - Size variant ('sm', 'md', Default: 'md')
+  @param {string} [class] - Additional CSS class names
+
+  @example
+  {% render 'badge', label: 'New Arrival', type: 'new' %}
+  {% render 'badge', label: 'Save 25%', type: 'sale' %}
+{% enddoc %}
+
+{%- liquid
+  assign badge_label = label | default: ''
+  assign badge_type = type | default: 'neutral'
+  assign badge_size = size | default: 'md'
+  assign badge_class = class | default: ''
+
+  assign full_class = 'kz-badge kz-badge--' | append: badge_type | append: ' kz-badge--' | append: badge_size
+  if badge_class != blank
+    assign full_class = full_class | append: ' ' | append: badge_class
+  endif
+-%}
+
+{%- if badge_label != blank -%}
+  <span class="{{ full_class }}">
+    {{ badge_label }}
+  </span>
+{%- endif -%}
+
+{% stylesheet %}
+  .kz-badge {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0.25rem 0.6rem;
+    font-family: var(--kz-font-family-body);
+    font-size: var(--kz-font-size-xs, 11px);
+    font-weight: 700;
+    line-height: 1;
+    letter-spacing: var(--kz-letter-spacing-uppercase, 0.1em);
+    text-transform: uppercase;
+    border-radius: var(--kz-radius-xs, 2px);
+    white-space: nowrap;
+    user-select: none;
+  }
+
+  .kz-badge--sm {
+    padding: 0.15rem 0.45rem;
+    font-size: 10px;
+  }
+
+  /* Badge Color Variants */
+  .kz-badge--neutral {
+    background-color: var(--kz-color-primary, #111111);
+    color: var(--kz-color-text-inverse, #ffffff);
+  }
+
+  .kz-badge--new {
+    background-color: var(--kz-color-secondary, #d4a373);
+    color: var(--kz-color-primary, #111111);
+  }
+
+  .kz-badge--sale {
+    background-color: var(--kz-color-accent, #e76f51);
+    color: #ffffff;
+  }
+
+  .kz-badge--bestseller {
+    background-color: #2a9d8f;
+    color: #ffffff;
+  }
+
+  .kz-badge--limited {
+    background-color: #e9c46a;
+    color: #111111;
+  }
+
+  .kz-badge--sold-out {
+    background-color: var(--kz-color-text-muted, #757575);
+    color: #ffffff;
+  }
+
+  .kz-badge--outline {
+    background-color: transparent;
+    border: 1px solid var(--kz-color-border-strong, #cccccc);
+    color: var(--kz-color-text-primary, #2b2b2b);
+  }
+{% endstylesheet %}

@@ -1,0 +1,73 @@
+{% doc %}
+  Injects dynamic CSS Custom Properties (Variables) and Google/Shopify fonts
+  configured by the merchant in Theme Settings.
+
+  @example
+  {% render 'css-variables' %}
+{% enddoc %}
+
+{% style %}
+  {% # Load Primary (Body) Font Variations %}
+  {{ settings.type_primary_font | font_face: font_display: 'swap' }}
+  {{ settings.type_primary_font | font_modify: 'weight', 'bold' | font_face: font_display: 'swap' }}
+  {{ settings.type_primary_font | font_modify: 'weight', 'bold' | font_modify: 'style', 'italic' | font_face: font_display: 'swap' }}
+  {{ settings.type_primary_font | font_modify: 'style', 'italic' | font_face: font_display: 'swap' }}
+
+  {% # Load Heading Font Variations %}
+  {% unless settings.type_heading_font.family == settings.type_primary_font.family %}
+    {{ settings.type_heading_font | font_face: font_display: 'swap' }}
+    {{ settings.type_heading_font | font_modify: 'weight', 'bold' | font_face: font_display: 'swap' }}
+  {% endunless %}
+
+  {% # Load Navigation Font Variations %}
+  {% unless settings.type_nav_font.family == settings.type_primary_font.family or settings.type_nav_font.family == settings.type_heading_font.family %}
+    {{ settings.type_nav_font | font_face: font_display: 'swap' }}
+  {% endunless %}
+
+  :root {
+    /* Font Families */
+    --font-primary--family: {{ settings.type_primary_font.family }}, {{ settings.type_primary_font.fallback_families }};
+    --font-primary--style: {{ settings.type_primary_font.style }};
+    --font-primary--weight: {{ settings.type_primary_font.weight }};
+
+    --font-heading--family: {{ settings.type_heading_font.family }}, {{ settings.type_heading_font.fallback_families }};
+    --font-heading--style: {{ settings.type_heading_font.style }};
+    --font-heading--weight: {{ settings.type_heading_font.weight }};
+
+    --font-nav--family: {{ settings.type_nav_font.family }}, {{ settings.type_nav_font.fallback_families }};
+
+    --kz-font-size-base: {{ settings.base_font_size | default: 16 }}px;
+    --kz-heading-scale: {{ settings.heading_scale | default: 100 | divided_by: 100.0 }};
+
+    /* Dynamic Fashion Color Palette */
+    --kz-color-primary: {{ settings.color_primary | default: '#111111' }};
+    --kz-color-secondary: {{ settings.color_secondary | default: '#D4A373' }};
+    --kz-color-accent: {{ settings.color_accent | default: '#E76F51' }};
+    --kz-color-background: {{ settings.color_background | default: '#FFFFFF' }};
+    --kz-color-surface: {{ settings.color_surface | default: '#F8F9FA' }};
+    --kz-color-border: {{ settings.color_border | default: '#E5E5E5' }};
+
+    --kz-color-heading: {{ settings.color_heading | default: '#111111' }};
+    --kz-color-text-primary: {{ settings.color_text_primary | default: '#2B2B2B' }};
+    --kz-color-text-muted: {{ settings.color_text_muted | default: '#757575' }};
+
+    --kz-color-success: {{ settings.color_success | default: '#2A9D8F' }};
+    --kz-color-warning: {{ settings.color_warning | default: '#E9C46A' }};
+    --kz-color-error: {{ settings.color_error | default: '#E63946' }};
+    --kz-color-overlay: {{ settings.color_overlay | default: '#000000' }};
+
+    /* Layout & Container Tokens */
+    --page-width: {{ settings.max_page_width | default: '1280px' }};
+    --page-margin: {{ settings.min_page_margin | default: 20 }}px;
+    --kz-section-spacing-desktop: {{ settings.section_spacing_desktop | default: 80 }}px;
+    --kz-grid-gap: {{ settings.grid_gap | default: 24 }}px;
+
+    /* Border Radii */
+    --style-border-radius-inputs: {{ settings.input_corner_radius | default: 2 }}px;
+    --kz-radius-button: {{ settings.button_corner_radius | default: 2 }}px;
+    --kz-radius-card: {{ settings.card_corner_radius | default: 4 }}px;
+
+    /* Component Heights & Dimensions */
+    --kz-button-height: {{ settings.button_height | default: '48px' }};
+  }
+{% endstyle %}

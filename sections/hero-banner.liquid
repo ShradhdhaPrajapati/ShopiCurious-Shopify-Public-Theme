@@ -1,0 +1,671 @@
+{%- liquid
+  assign height_class = 'kz-hero-banner--' | append: section.settings.section_height
+  assign has_blocks = false
+  if section.blocks.size > 0
+    assign has_blocks = true
+  endif
+-%}
+
+<hero-slider
+  id="HeroBanner-{{ section.id }}"
+  class="kz-hero-banner {{ height_class }}"
+  data-auto-rotate="{{ section.settings.auto_rotate }}"
+  data-speed="{{ section.settings.change_slides_every }}"
+>
+  <div class="kz-hero-banner__slides" data-slides-container>
+    {%- if has_blocks -%}
+      {%- for block in section.blocks -%}
+        {%- case block.type -%}
+          {%- when 'slide' -%}
+            {%- liquid
+              assign hero_img = block.settings.image
+              assign hero_img_mobile = block.settings.image_mobile | default: hero_img
+              assign align_class = 'kz-hero-banner__content--align-' | append: block.settings.content_alignment
+              assign overlay_op = block.settings.overlay_opacity | default: section.settings.overlay_opacity
+            -%}
+            <div
+              class="kz-hero-banner__slide {% if forloop.first %}is-active{% endif %}"
+              data-slide-index="{{ forloop.index0 }}"
+              style="--kz-overlay-opacity: {{ overlay_op | divided_by: 100.0 }};"
+              {{ block.shopify_attributes }}
+            >
+              <div class="kz-hero-banner__media">
+                {%- if hero_img != blank -%}
+                  <picture>
+                    {%- if hero_img_mobile != blank -%}
+                      <source media="(max-width: 749px)" srcset="{{ hero_img_mobile | image_url: width: 800 }}">
+                    {%- endif -%}
+                    {{ hero_img | image_url: width: 2400 | image_tag:
+                      class: 'kz-hero-banner__image',
+                      loading: 'eager',
+                      fetchpriority: 'high',
+                      alt: block.settings.heading
+                    }}
+                  </picture>
+                {%- else -%}
+                  <div class="kz-hero-banner__placeholder">
+                    {{ 'lifestyle-1' | placeholder_svg_tag: 'kz-image-placeholder' }}
+                  </div>
+                {%- endif -%}
+                <div class="kz-hero-banner__overlay"></div>
+              </div>
+
+              <div class="kz-hero-banner__container page-width">
+                <div class="kz-hero-banner__content {{ align_class }} kz-animate-fade-up">
+                  {%- if block.settings.subheading != blank -%}
+                    <span class="kz-hero-banner__subheading">{{ block.settings.subheading }}</span>
+                  {%- endif -%}
+
+                  {%- if block.settings.heading != blank -%}
+                    <h1 class="kz-hero-banner__heading">{{ block.settings.heading }}</h1>
+                  {%- endif -%}
+
+                  {%- if block.settings.text != blank -%}
+                    <div class="kz-hero-banner__text">{{ block.settings.text }}</div>
+                  {%- endif -%}
+
+                  {%- if block.settings.button_label_1 != blank or block.settings.button_label_2 != blank -%}
+                    <div class="kz-hero-banner__buttons">
+                      {%- if block.settings.button_label_1 != blank -%}
+                        {% render 'button',
+                          label: block.settings.button_label_1,
+                          url: block.settings.button_link_1,
+                          variant: 'primary',
+                          size: 'lg'
+                        %}
+                      {%- endif -%}
+
+                      {%- if block.settings.button_label_2 != blank -%}
+                        {% render 'button',
+                          label: block.settings.button_label_2,
+                          url: block.settings.button_link_2,
+                          variant: 'outline',
+                          size: 'lg'
+                        %}
+                      {%- endif -%}
+                    </div>
+                  {%- endif -%}
+                </div>
+              </div>
+            </div>
+        {%- endcase -%}
+      {%- endfor -%}
+    {%- else -%}
+      {%- liquid
+        assign hero_img = section.settings.image
+        assign hero_img_mobile = section.settings.image_mobile | default: hero_img
+        assign align_class = 'kz-hero-banner__content--align-' | append: section.settings.content_alignment
+      -%}
+      <div
+        class="kz-hero-banner__slide is-active"
+        data-slide-index="0"
+        style="--kz-overlay-opacity: {{ section.settings.overlay_opacity | divided_by: 100.0 }};"
+      >
+        <div class="kz-hero-banner__media">
+          {%- if hero_img != blank -%}
+            <picture>
+              {%- if hero_img_mobile != blank -%}
+                <source media="(max-width: 749px)" srcset="{{ hero_img_mobile | image_url: width: 800 }}">
+              {%- endif -%}
+              {{ hero_img | image_url: width: 2400 | image_tag:
+                class: 'kz-hero-banner__image',
+                loading: 'eager',
+                fetchpriority: 'high',
+                alt: section.settings.heading
+              }}
+            </picture>
+          {%- else -%}
+            <div class="kz-hero-banner__placeholder">
+              {{ 'lifestyle-1' | placeholder_svg_tag: 'kz-image-placeholder' }}
+            </div>
+          {%- endif -%}
+          <div class="kz-hero-banner__overlay"></div>
+        </div>
+
+        <div class="kz-hero-banner__container page-width">
+          <div class="kz-hero-banner__content {{ align_class }} kz-animate-fade-up">
+            {%- if section.settings.subheading != blank -%}
+              <span class="kz-hero-banner__subheading">{{ section.settings.subheading }}</span>
+            {%- endif -%}
+
+            {%- if section.settings.heading != blank -%}
+              <h1 class="kz-hero-banner__heading">{{ section.settings.heading }}</h1>
+            {%- endif -%}
+
+            {%- if section.settings.text != blank -%}
+              <div class="kz-hero-banner__text">{{ section.settings.text }}</div>
+            {%- endif -%}
+
+            {%- if section.settings.button_label_1 != blank or section.settings.button_label_2 != blank -%}
+              <div class="kz-hero-banner__buttons">
+                {%- if section.settings.button_label_1 != blank -%}
+                  {% render 'button',
+                    label: section.settings.button_label_1,
+                    url: section.settings.button_link_1,
+                    variant: 'primary',
+                    size: 'lg'
+                  %}
+                {%- endif -%}
+
+                {%- if section.settings.button_label_2 != blank -%}
+                  {% render 'button',
+                    label: section.settings.button_label_2,
+                    url: section.settings.button_link_2,
+                    variant: 'outline',
+                    size: 'lg'
+                  %}
+                {%- endif -%}
+              </div>
+            {%- endif -%}
+          </div>
+        </div>
+      </div>
+    {%- endif -%}
+  </div>
+
+  {%- if section.blocks.size > 1 -%}
+    <div class="kz-hero-banner__controls">
+      <button
+        type="button"
+        class="kz-hero-banner__nav-btn kz-hero-banner__nav-btn--prev"
+        data-nav-prev
+        aria-label="{{ 'general.pagination.previous' | t | default: 'Previous slide' }}"
+      >
+        {% render 'icon', icon: 'chevron-left', class: 'kz-hero-banner__nav-icon' %}
+      </button>
+
+      <div class="kz-hero-banner__dots" data-dots-container>
+        {%- for block in section.blocks -%}
+          <button
+            type="button"
+            class="kz-hero-banner__dot {% if forloop.first %}is-active{% endif %}"
+            data-dot-index="{{ forloop.index0 }}"
+            aria-label="Go to slide {{ forloop.index }}"
+          ></button>
+        {%- endfor -%}
+      </div>
+
+      <button
+        type="button"
+        class="kz-hero-banner__nav-btn kz-hero-banner__nav-btn--next"
+        data-nav-next
+        aria-label="{{ 'general.pagination.next' | t | default: 'Next slide' }}"
+      >
+        {% render 'icon', icon: 'chevron-right', class: 'kz-hero-banner__nav-icon' %}
+      </button>
+    </div>
+  {%- endif -%}
+</hero-slider>
+
+{% stylesheet %}
+  .kz-hero-banner {
+    position: relative;
+    width: 100%;
+    overflow: hidden;
+    display: block;
+    background-color: var(--kz-color-surface-dark, #111111);
+  }
+
+  .kz-hero-banner--small { min-height: 450px; }
+  .kz-hero-banner--medium { min-height: 600px; }
+  .kz-hero-banner--large { min-height: 750px; }
+  .kz-hero-banner--full { min-height: 90vh; }
+
+  .kz-hero-banner__slides {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    min-height: inherit;
+  }
+
+  .kz-hero-banner__slide {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    min-height: inherit;
+    display: flex;
+    align-items: center;
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity 600ms ease, visibility 600ms ease;
+    z-index: 1;
+  }
+
+  .kz-hero-banner__slide.is-active {
+    opacity: 1;
+    visibility: visible;
+    z-index: 2;
+    position: relative;
+  }
+
+  .kz-hero-banner__media {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 1;
+  }
+
+  .kz-hero-banner__image {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: center;
+  }
+
+  .kz-hero-banner__placeholder {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: #2b2b2b;
+  }
+
+  .kz-hero-banner__overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, var(--kz-overlay-opacity, 0.3));
+    z-index: 2;
+  }
+
+  .kz-hero-banner__container {
+    position: relative;
+    z-index: 3;
+    width: 100%;
+    height: 100%;
+    max-width: var(--kz-page-max-width, 1400px);
+    margin: 0 auto;
+    padding: var(--kz-space-12, 48px) var(--kz-space-6, 24px);
+    display: flex;
+  }
+
+  .kz-hero-banner__content {
+    display: flex;
+    flex-direction: column;
+    max-width: 640px;
+    color: #ffffff;
+  }
+
+  .kz-hero-banner__content--align-left { text-align: left; align-items: flex-start; }
+  .kz-hero-banner__content--align-center { text-align: center; align-items: center; margin: 0 auto; }
+  .kz-hero-banner__content--align-right { text-align: right; align-items: flex-end; margin-left: auto; }
+
+  .kz-hero-banner__subheading {
+    font-family: var(--kz-font-family-body);
+    font-size: var(--kz-font-size-sm, 14px);
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: var(--kz-letter-spacing-uppercase, 0.15em);
+    color: var(--kz-color-secondary, #d4a373);
+    margin-bottom: var(--kz-space-3, 12px);
+  }
+
+  .kz-hero-banner__heading {
+    margin: 0 0 var(--kz-space-4, 16px) 0;
+    font-family: var(--kz-font-family-heading);
+    font-size: clamp(32px, 5vw, 64px);
+    font-weight: 700;
+    line-height: 1.1;
+    color: #ffffff;
+  }
+
+  .kz-hero-banner__text {
+    font-family: var(--kz-font-family-body);
+    font-size: var(--kz-font-size-base, 16px);
+    line-height: 1.6;
+    color: rgba(255, 255, 255, 0.9);
+    margin-bottom: var(--kz-space-6, 24px);
+  }
+
+  .kz-hero-banner__buttons {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--kz-space-4, 16px);
+  }
+
+  .kz-hero-banner .kz-button--outline {
+    border-color: #ffffff;
+    color: #ffffff;
+  }
+
+  .kz-hero-banner .kz-button--outline:hover {
+    background-color: #ffffff;
+    color: #111111;
+  }
+
+  /* Controls (Dots & Arrows) */
+  .kz-hero-banner__controls {
+    position: absolute;
+    bottom: 24px;
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 10;
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    background-color: rgba(0, 0, 0, 0.4);
+    backdrop-filter: blur(4px);
+    padding: 8px 16px;
+    border-radius: 9999px;
+  }
+
+  .kz-hero-banner__nav-btn {
+    background: transparent;
+    border: none;
+    color: #ffffff;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 4px;
+    opacity: 0.8;
+    transition: opacity 150ms ease;
+  }
+
+  .kz-hero-banner__nav-btn:hover { opacity: 1; }
+
+  .kz-hero-banner__nav-icon {
+    width: 18px;
+    height: 18px;
+  }
+
+  .kz-hero-banner__dots {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .kz-hero-banner__dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background-color: rgba(255, 255, 255, 0.4);
+    border: none;
+    cursor: pointer;
+    padding: 0;
+    transition: all 250ms ease;
+  }
+
+  .kz-hero-banner__dot.is-active {
+    width: 24px;
+    border-radius: 9999px;
+    background-color: #ffffff;
+  }
+{% endstylesheet %}
+
+{% javascript %}
+  if (!customElements.get('hero-slider')) {
+    customElements.define(
+      'hero-slider',
+      class HeroSlider extends HTMLElement {
+        constructor() {
+          super();
+          this.slides = this.querySelectorAll('.kz-hero-banner__slide');
+          this.dots = this.querySelectorAll('.kz-hero-banner__dot');
+          this.prevBtn = this.querySelector('[data-nav-prev]');
+          this.nextBtn = this.querySelector('[data-nav-next]');
+          this.autoRotate = this.dataset.autoRotate === 'true';
+          this.speed = (parseInt(this.dataset.speed, 10) || 5) * 1000;
+          this.currentIndex = 0;
+          this.timer = null;
+
+          if (this.slides.length <= 1) return;
+
+          if (this.prevBtn) this.prevBtn.addEventListener('click', () => this.prev());
+          if (this.nextBtn) this.nextBtn.addEventListener('click', () => this.next());
+
+          this.dots.forEach((dot) => {
+            dot.addEventListener('click', () => {
+              const index = parseInt(dot.dataset.dotIndex, 10);
+              this.goToSlide(index);
+            });
+          });
+
+          if (this.autoRotate) {
+            this.startAutoRotate();
+            this.addEventListener('mouseenter', () => this.stopAutoRotate());
+            this.addEventListener('mouseleave', () => this.startAutoRotate());
+          }
+        }
+
+        goToSlide(index) {
+          this.slides[this.currentIndex].classList.remove('is-active');
+          if (this.dots[this.currentIndex]) {
+            this.dots[this.currentIndex].classList.remove('is-active');
+          }
+
+          this.currentIndex = index;
+
+          this.slides[this.currentIndex].classList.add('is-active');
+          if (this.dots[this.currentIndex]) {
+            this.dots[this.currentIndex].classList.add('is-active');
+          }
+        }
+
+        next() {
+          const nextIndex = (this.currentIndex + 1) % this.slides.length;
+          this.goToSlide(nextIndex);
+        }
+
+        prev() {
+          const prevIndex = (this.currentIndex - 1 + this.slides.length) % this.slides.length;
+          this.goToSlide(prevIndex);
+        }
+
+        startAutoRotate() {
+          if (this.timer) clearInterval(this.timer);
+          this.timer = setInterval(() => this.next(), this.speed);
+        }
+
+        stopAutoRotate() {
+          if (this.timer) clearInterval(this.timer);
+        }
+      }
+    );
+  }
+{% endjavascript %}
+
+{% schema %}
+{
+  "name": "Hero Slider",
+  "tag": "section",
+  "class": "section-hero-banner",
+  "settings": [
+    {
+      "type": "image_picker",
+      "id": "image",
+      "label": "Fallback hero image"
+    },
+    {
+      "type": "image_picker",
+      "id": "image_mobile",
+      "label": "Fallback mobile image"
+    },
+    {
+      "type": "select",
+      "id": "section_height",
+      "label": "Section height",
+      "options": [
+        { "value": "small", "label": "Small (450px)" },
+        { "value": "medium", "label": "Medium (600px)" },
+        { "value": "large", "label": "Large (750px)" },
+        { "value": "full", "label": "Full Screen (90vh)" }
+      ],
+      "default": "medium"
+    },
+    {
+      "type": "range",
+      "id": "overlay_opacity",
+      "min": 0,
+      "max": 90,
+      "step": 5,
+      "unit": "%",
+      "label": "Overlay opacity",
+      "default": 30
+    },
+    {
+      "type": "checkbox",
+      "id": "auto_rotate",
+      "label": "Auto-rotate slides",
+      "default": true
+    },
+    {
+      "type": "range",
+      "id": "change_slides_every",
+      "min": 3,
+      "max": 10,
+      "step": 1,
+      "unit": "s",
+      "label": "Change slides every",
+      "default": 5
+    },
+    {
+      "type": "text",
+      "id": "subheading",
+      "default": "Autumn / Winter Collection",
+      "label": "Default subheading"
+    },
+    {
+      "type": "text",
+      "id": "heading",
+      "default": "Timeless Elegance & Modern Aesthetics",
+      "label": "Default heading"
+    },
+    {
+      "type": "richtext",
+      "id": "text",
+      "default": "<p>Discover curated luxury fashion pieces designed to elevate your everyday capsule wardrobe.</p>",
+      "label": "Default body text"
+    },
+    {
+      "type": "select",
+      "id": "content_alignment",
+      "label": "Content alignment",
+      "options": [
+        { "value": "left", "label": "Left" },
+        { "value": "center", "label": "Center" },
+        { "value": "right", "label": "Right" }
+      ],
+      "default": "center"
+    },
+    {
+      "type": "text",
+      "id": "button_label_1",
+      "default": "Shop New Arrivals",
+      "label": "Default primary button label"
+    },
+    {
+      "type": "url",
+      "id": "button_link_1",
+      "label": "Default primary button link"
+    },
+    {
+      "type": "text",
+      "id": "button_label_2",
+      "default": "Explore Lookbook",
+      "label": "Default secondary button label"
+    },
+    {
+      "type": "url",
+      "id": "button_link_2",
+      "label": "Default secondary button link"
+    }
+  ],
+  "blocks": [
+    {
+      "type": "slide",
+      "name": "Hero Slide",
+      "settings": [
+        {
+          "type": "image_picker",
+          "id": "image",
+          "label": "Slide image"
+        },
+        {
+          "type": "image_picker",
+          "id": "image_mobile",
+          "label": "Mobile slide image"
+        },
+        {
+          "type": "range",
+          "id": "overlay_opacity",
+          "min": 0,
+          "max": 90,
+          "step": 5,
+          "unit": "%",
+          "label": "Slide overlay opacity",
+          "default": 30
+        },
+        {
+          "type": "text",
+          "id": "subheading",
+          "default": "New Arrivals",
+          "label": "Subheading"
+        },
+        {
+          "type": "text",
+          "id": "heading",
+          "default": "Elevate Your Style",
+          "label": "Heading"
+        },
+        {
+          "type": "richtext",
+          "id": "text",
+          "default": "<p>Explore our latest seasonal arrivals crafted with premium fabrics.</p>",
+          "label": "Body text"
+        },
+        {
+          "type": "select",
+          "id": "content_alignment",
+          "label": "Content alignment",
+          "options": [
+            { "value": "left", "label": "Left" },
+            { "value": "center", "label": "Center" },
+            { "value": "right", "label": "Right" }
+          ],
+          "default": "center"
+        },
+        {
+          "type": "text",
+          "id": "button_label_1",
+          "default": "Shop Collection",
+          "label": "Primary button label"
+        },
+        {
+          "type": "url",
+          "id": "button_link_1",
+          "label": "Primary button link"
+        },
+        {
+          "type": "text",
+          "id": "button_label_2",
+          "default": "View Details",
+          "label": "Secondary button label"
+        },
+        {
+          "type": "url",
+          "id": "button_link_2",
+          "label": "Secondary button link"
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "Hero Slider",
+      "blocks": [
+        {
+          "type": "slide"
+        }
+      ]
+    }
+  ]
+}
+{% endschema %}

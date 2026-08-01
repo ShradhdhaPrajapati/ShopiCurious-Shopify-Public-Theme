@@ -1,0 +1,194 @@
+{% doc %}
+  Renders the Quick View modal dialog wrapper component with focus trapping, ESC keyboard handling, and AJAX content loading.
+
+  @example
+  {% render 'quick-view-modal' %}
+{% enddoc %}
+
+<quick-view-modal id="QuickViewModal" class="kz-modal kz-quick-view-modal" aria-hidden="true" role="dialog" aria-modal="true" aria-labelledby="QuickViewTitle">
+  <div class="kz-modal__overlay" data-modal-close></div>
+
+  <div class="kz-modal__container">
+    <button
+      type="button"
+      class="kz-modal__close-btn"
+      data-modal-close
+      aria-label="{{ 'accessibility.close' | t | default: 'Close modal' }}"
+    >
+      {% render 'icon', icon: 'close', class: 'kz-modal__close-icon' %}
+    </button>
+
+    <div class="kz-modal__content" id="QuickViewContent">
+      <div class="kz-modal__spinner-container">
+        {% render 'icon', icon: 'spinner', class: 'kz-modal__spinner' %}
+      </div>
+    </div>
+  </div>
+</quick-view-modal>
+
+{% stylesheet %}
+  .kz-modal {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    z-index: var(--kz-z-modal, 600);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    opacity: 0;
+    visibility: hidden;
+    pointer-events: none;
+    transition: all var(--kz-transition-base, 250ms ease);
+  }
+
+  .kz-modal.is-open {
+    opacity: 1;
+    visibility: visible;
+    pointer-events: auto;
+  }
+
+  .kz-modal__overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: var(--kz-color-overlay, rgba(0, 0, 0, 0.5));
+    backdrop-filter: blur(var(--kz-backdrop-blur, 4px));
+  }
+
+  .kz-modal__container {
+    position: relative;
+    width: 90%;
+    max-width: 900px;
+    max-height: 85vh;
+    background-color: var(--kz-color-background, #ffffff);
+    border-radius: var(--kz-radius-card, 4px);
+    box-shadow: var(--kz-shadow-xl);
+    overflow-y: auto;
+    z-index: 2;
+    transform: scale(0.95);
+    transition: transform var(--kz-transition-base, 250ms ease);
+  }
+
+  .kz-modal.is-open .kz-modal__container {
+    transform: scale(1);
+  }
+
+  .kz-modal__close-btn {
+    position: absolute;
+    top: 16px;
+    right: 16px;
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    background-color: var(--kz-color-surface, #f8f9fa);
+    border: none;
+    color: var(--kz-color-text-primary, #111111);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    z-index: 10;
+    transition: background-color var(--kz-transition-fast, 150ms ease);
+  }
+
+  .kz-modal__close-btn:hover {
+    background-color: var(--kz-color-secondary, #d4a373);
+  }
+
+  .kz-modal__close-icon {
+    width: 18px;
+    height: 18px;
+  }
+
+  .kz-modal__content {
+    padding: var(--kz-space-6, 24px);
+    min-height: 300px;
+  }
+
+  .kz-modal__spinner-container {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 250px;
+  }
+
+  .kz-modal__spinner {
+    width: 36px;
+    height: 36px;
+    color: var(--kz-color-primary, #111111);
+  }
+{% endstylesheet %}
+
+{% javascript %}
+  if (!customElements.get('quick-view-modal')) {
+    customElements.define(
+      'quick-view-modal',
+      class QuickViewModal extends HTMLElement {
+        constructor() {
+          super();
+          this.container = this.querySelector('.kz-modal__container');
+          this.content = this.querySelector('#QuickViewContent');
+
+          this.querySelectorAll('[data-modal-close]').forEach((btn) =>
+            btn.addEventListener('click', this.close.bind(this))
+          );
+
+          document.addEventListener('click', (e) => {
+            const trigger = e.target.closest('.kz-quick-view-btn');
+            if (trigger) {
+              e.preventDefault();
+              const handle = trigger.getAttribute('data-product-handle');
+              if (handle) this.open(handle);
+            }
+          });
+
+          document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape' && this.classList.contains('is-open')) {
+              this.close();
+            }
+          });
+        }
+
+        async open(productHandle) {
+          this.classList.add('is-open');
+          this.setAttribute('aria-hidden', 'false');
+          if (window.ShopziCurious && window.ShopziCurious.trapFocus) {
+            window.ShopziCurious.trapFocus(this.container);
+          }
+
+          // Show loader
+          this.content.innerHTML = `
+            <div class="kz-modal__spinner-container">
+              <svg class="kz-icon kz-icon--spinner kz-animate-spin kz-modal__spinner" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <circle cx="12" cy="12" r="10" stroke-opacity="0.25"/>
+                <path d="M12 2a10 10 0 0 1 10 10" stroke-linecap="round"/>
+              </svg>
+            </div>
+          `;
+
+          try {
+            const response = await fetch(`/products/${productHandle}?view=quick-view`);
+            if (!response.ok) throw new Error(`HTTP ${response.status}`);
+            const htmlText = await response.text();
+            this.content.innerHTML = htmlText;
+          } catch (error) {
+            console.error('[ShopziCurious QuickView Error]', error);
+            this.content.innerHTML = `<p class="kz-text-error">Failed to load product details.</p>`;
+          }
+        }
+
+        close() {
+          this.classList.remove('is-open');
+          this.setAttribute('aria-hidden', 'true');
+          if (window.ShopziCurious && window.ShopziCurious.removeTrapFocus) {
+            window.ShopziCurious.removeTrapFocus(this.container);
+          }
+        }
+      }
+    );
+  }
+{% endjavascript %}

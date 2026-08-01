@@ -1,0 +1,143 @@
+/**
+ * Kaizen Theme - Layout & Container Architecture (layout.css)
+ * Purpose: Responsive container wrappers, CSS Grid framework, Flexbox utilities,
+ * section spacing tokens, and structural wrappers.
+ */
+
+/* ==========================================================================
+   1. CONTAINER SYSTEM
+   ========================================================================== */
+.kz-container {
+  width: 100%;
+  max-width: var(--kz-container-max-width);
+  margin-left: auto;
+  margin-right: auto;
+  padding-left: var(--kz-container-padding);
+  padding-right: var(--kz-container-padding);
+}
+
+.kz-container--narrow {
+  max-width: var(--kz-container-narrow-width);
+}
+
+.kz-container--full {
+  max-width: 100%;
+  padding-left: var(--kz-container-padding);
+  padding-right: var(--kz-container-padding);
+}
+
+.kz-container--no-padding {
+  padding-left: 0;
+  padding-right: 0;
+}
+
+/* ==========================================================================
+   2. SECTION SPACING SYSTEM
+   ========================================================================== */
+.kz-section {
+  position: relative;
+  width: 100%;
+}
+
+.kz-section-padding {
+  padding-top: var(--kz-section-spacing-mobile);
+  padding-bottom: var(--kz-section-spacing-mobile);
+}
+
+@media screen and (min-width: 768px) {
+  .kz-section-padding {
+    padding-top: var(--kz-section-spacing-desktop);
+    padding-bottom: var(--kz-section-spacing-desktop);
+  }
+}
+
+/* ==========================================================================
+   3. FLEXBOX SYSTEM
+   ========================================================================== */
+.kz-flex {
+  display: flex;
+}
+
+.kz-flex-col {
+  display: flex;
+  flex-direction: column;
+}
+
+.kz-flex-wrap {
+  flex-wrap: wrap;
+}
+
+.kz-items-start {
+  align-items: flex-start;
+}
+
+.kz-items-center {
+  align-items: center;
+}
+
+.kz-items-end {
+  align-items: flex-end;
+}
+
+.kz-items-stretch {
+  align-items: stretch;
+}
+
+.kz-justify-start {
+  justify-content: flex-start;
+}
+
+.kz-justify-center {
+  justify-content: center;
+}
+
+.kz-justify-end {
+  justify-content: flex-end;
+}
+
+.kz-justify-between {
+  justify-content: space-between;
+}
+
+.kz-justify-around {
+  justify-content: space-around;
+}
+
+.kz-gap-1 { gap: var(--kz-space-1); }
+.kz-gap-2 { gap: var(--kz-space-2); }
+.kz-gap-3 { gap: var(--kz-space-3); }
+.kz-gap-4 { gap: var(--kz-space-4); }
+.kz-gap-6 { gap: var(--kz-space-6); }
+.kz-gap-8 { gap: var(--kz-space-8); }
+.kz-gap-10 { gap: var(--kz-space-10); }
+
+/* ==========================================================================
+   4. CSS GRID SYSTEM (Mobile-First Modular Layouts)
+   ========================================================================== */
+.kz-grid {
+  display: grid;
+  grid-template-columns: repeat(1, 1fr);
+  gap: var(--kz-space-6);
+}
+
+/* Responsive Column Variants */
+@media screen and (min-width: 576px) {
+  .kz-grid--col-2-sm { grid-template-columns: repeat(2, 1fr); }
+}
+
+@media screen and (min-width: 768px) {
+  .kz-grid--col-2 { grid-template-columns: repeat(2, 1fr); }
+  .kz-grid--col-3 { grid-template-columns: repeat(3, 1fr); }
+  .kz-grid--col-4 { grid-template-columns: repeat(2, 1fr); } /* 2 cols on tablet */
+}
+
+@media screen and (min-width: 992px) {
+  .kz-grid--col-4 { grid-template-columns: repeat(4, 1fr); }
+  .kz-grid--col-5 { grid-template-columns: repeat(5, 1fr); }
+  .kz-grid--col-6 { grid-template-columns: repeat(6, 1fr); }
+}
+
+/* Custom Grid Gap Overrides */
+.kz-grid--gap-sm { gap: var(--kz-space-3); }
+.kz-grid--gap-md { gap: var(--kz-space-6); }
+.kz-grid--gap-lg { gap: var(--kz-space-10); }

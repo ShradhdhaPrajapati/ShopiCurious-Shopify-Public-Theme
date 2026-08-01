@@ -1,0 +1,142 @@
+{% doc %}
+  Renders a visual product option swatch (Color or Size/Text pill) for product cards and PDP variant selectors.
+
+  @param {string} value - The option value string (e.g., 'Black', 'Medium', '100ml')
+  @param {string} name - Form input name attribute
+  @param {string} [type] - Swatch type ('color', 'size', 'text', Default: 'text')
+  @param {boolean} [checked] - Whether input is selected/checked
+  @param {boolean} [disabled] - Whether option is unavailable/disabled
+  @param {string} [id] - Unique DOM input ID
+
+  @example
+  {% render 'swatch', value: 'Black', type: 'color', name: 'Color', checked: true %}
+{% enddoc %}
+
+{%- liquid
+  assign swatch_val = value | escape
+  assign swatch_type = type | default: 'text'
+  assign input_name = name
+  assign is_checked = checked | default: false
+  assign is_disabled = disabled | default: false
+  assign input_id = id | default: 'swatch-' | append: input_name | handleize | append: '-' | append: value | handleize
+
+  assign color_handle = value | handleize
+  assign color_bg_style = ''
+
+  if swatch_type == 'color'
+    # Check for color mapping
+    assign color_bg_style = 'background-color: ' | append: color_handle | append: ';'
+
+    # Check for custom image swatch asset in files
+    assign swatch_image_name = 'swatch-' | append: color_handle | append: '.png'
+    assign swatch_img_url = swatch_image_name | file_img_url: '50x50'
+    if swatch_img_url contains 'v='
+      assign color_bg_style = 'background-image: url(' | append: swatch_img_url | append: '); background-size: cover;'
+    endif
+  endif
+-%}
+
+<div class="kz-swatch kz-swatch--{{ swatch_type }} {% if is_disabled %}is-disabled{% endif %}">
+  <input
+    type="radio"
+    id="{{ input_id }}"
+    name="{{ input_name }}"
+    value="{{ swatch_val }}"
+    class="kz-swatch__input visually-hidden"
+    {% if is_checked %}checked{% endif %}
+    {% if is_disabled %}disabled{% endif %}
+  >
+  <label
+    for="{{ input_id }}"
+    class="kz-swatch__label"
+    title="{{ swatch_val }}"
+    {% if swatch_type == 'color' %}style="{{ color_bg_style }}"{% endif %}
+  >
+    {%- if swatch_type != 'color' -%}
+      <span class="kz-swatch__text">{{ swatch_val }}</span>
+    {%- else -%}
+      <span class="visually-hidden">{{ swatch_val }}</span>
+    {%- endif -%}
+  </label>
+</div>
+
+{% stylesheet %}
+  .kz-swatch {
+    display: inline-block;
+    position: relative;
+  }
+
+  /* Swatch Input Label Base */
+  .kz-swatch__label {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    user-select: none;
+    transition: all var(--kz-transition-fast, 150ms ease);
+  }
+
+  /* Color Swatch Style */
+  .kz-swatch--color .kz-swatch__label {
+    width: 28px;
+    height: 28px;
+    border-radius: 50%;
+    border: 1px solid var(--kz-color-border, #e5e5e5);
+    outline: 2px solid transparent;
+    outline-offset: 2px;
+  }
+
+  .kz-swatch--color .kz-swatch__input:checked + .kz-swatch__label {
+    outline-color: var(--kz-color-primary, #111111);
+    transform: scale(1.1);
+  }
+
+  .kz-swatch--color:hover .kz-swatch__label {
+    transform: scale(1.1);
+  }
+
+  /* Size / Text Swatch Style */
+  .kz-swatch--size .kz-swatch__label,
+  .kz-swatch--text .kz-swatch__label {
+    min-width: 40px;
+    height: 36px;
+    padding: 0 12px;
+    font-family: var(--kz-font-family-body);
+    font-size: var(--kz-font-size-xs, 12px);
+    font-weight: 600;
+    color: var(--kz-color-text-primary, #2b2b2b);
+    background-color: var(--kz-color-surface, #f8f9fa);
+    border: 1px solid var(--kz-color-border, #e5e5e5);
+    border-radius: var(--kz-radius-button, 2px);
+  }
+
+  .kz-swatch--size .kz-swatch__input:checked + .kz-swatch__label,
+  .kz-swatch--text .kz-swatch__input:checked + .kz-swatch__label {
+    background-color: var(--kz-color-primary, #111111);
+    color: var(--kz-color-text-inverse, #ffffff);
+    border-color: var(--kz-color-primary, #111111);
+  }
+
+  .kz-swatch--size:hover .kz-swatch__label,
+  .kz-swatch--text:hover .kz-swatch__label {
+    border-color: var(--kz-color-primary, #111111);
+  }
+
+  /* Disabled State */
+  .kz-swatch.is-disabled .kz-swatch__label {
+    opacity: 0.4;
+    cursor: not-allowed;
+    text-decoration: line-through;
+  }
+
+  .kz-swatch.is-disabled.kz-swatch--color .kz-swatch__label::after {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: -2px;
+    right: -2px;
+    height: 1px;
+    background-color: #e63946;
+    transform: rotate(-45deg);
+  }
+{% endstylesheet %}

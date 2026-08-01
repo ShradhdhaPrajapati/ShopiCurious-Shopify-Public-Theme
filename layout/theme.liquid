@@ -1,0 +1,88 @@
+<!doctype html>
+<html class="no-js" lang="{{ request.locale.iso_code }}" dir="{% if request.locale.iso_code == 'ar' or request.locale.iso_code == 'he' or request.locale.iso_code == 'fa' or request.locale.iso_code == 'ur' %}rtl{% else %}ltr{% endif %}">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, height=device-height, minimum-scale=1.0">
+    <meta name="theme-color" content="{{ settings.color_primary | default: '#0f0f0f' }}">
+    <link rel="canonical" href="{{ canonical_url }}">
+    
+    {%- if settings.favicon != blank -%}
+      <link rel="icon" type="image/png" href="{{ settings.favicon | image_url: width: 32, height: 32 }}">
+    {%- endif -%}
+
+    {%- unless settings.type_header_font.system? and settings.type_body_font.system? -%}
+      <link rel="preconnect" href="https://fonts.shopifycdn.com" crossorigin>
+    {%- endunless -%}
+
+    <title>
+      {{ page_title }}
+      {%- if current_tags %} &ndash; {{ 'general.meta.tagged' | t: tags: current_tags | default: 'tagged' }}{% endif -%}
+      {%- if current_page != 1 %} &ndash; {{ 'general.meta.page' | t: page: current_page | default: 'Page' }}{% endif -%}
+      {%- unless page_title contains shop.name %} &ndash; {{ shop.name }}{% endunless -%}
+    </title>
+
+    {%- if page_description -%}
+      <meta name="description" content="{{ page_description | escape }}">
+    {%- endif -%}
+
+    {%- render 'meta-tags' -%}
+    {%- render 'css-variables' -%}
+
+    {{ 'variables.css' | asset_url | stylesheet_tag }}
+    {{ 'base.css' | asset_url | stylesheet_tag }}
+    {{ 'theme.css' | asset_url | stylesheet_tag }}
+    {{ 'typography.css' | asset_url | stylesheet_tag }}
+    {{ 'layout.css' | asset_url | stylesheet_tag }}
+    {{ 'buttons.css' | asset_url | stylesheet_tag }}
+    {{ 'cards.css' | asset_url | stylesheet_tag }}
+    {{ 'forms.css' | asset_url | stylesheet_tag }}
+    {{ 'components.css' | asset_url | stylesheet_tag }}
+    {{ 'animations.css' | asset_url | stylesheet_tag }}
+    {{ 'responsive.css' | asset_url | stylesheet_tag }}
+
+    {{ content_for_header }}
+
+    <script>
+      document.documentElement.className = document.documentElement.className.replace('no-js', 'js');
+      window.ShopziCurious = window.ShopziCurious || {};
+      window.ShopziCurious.routes = {
+        cart_add_url: '{{ routes.cart_add_url }}',
+        cart_change_url: '{{ routes.cart_change_url }}',
+        cart_update_url: '{{ routes.cart_update_url }}',
+        cart_url: '{{ routes.cart_url }}',
+        predictive_search_url: '{{ routes.predictive_search_url }}'
+      };
+      window.ShopziCurious.moneyFormat = {{ shop.money_format | json }};
+      window.ShopziCurious.strings = {
+        addToCart: {{ 'products.product.add_to_cart' | t | default: 'Add to Bag' | json }},
+        soldOut: {{ 'products.product.sold_out' | t | default: 'Sold Out' | json }},
+        unavailable: {{ 'products.product.unavailable' | t | default: 'Unavailable' | json }}
+      };
+    </script>
+
+    <script src="{{ 'global.js' | asset_url }}" defer="defer"></script>
+    <script src="{{ 'helpers.js' | asset_url }}" defer="defer"></script>
+    <script src="{{ 'animations.js' | asset_url }}" defer="defer"></script>
+  </head>
+
+  <body class="kz-body template-{{ template.name | handle }} template-{{ template | replace: '.', '-' | handle }}">
+    <a class="kz-skip-to-content kz-visually-hidden" href="#MainContent">
+      {{ 'general.accessibility.skip_to_content' | t | default: 'Skip to content' }}
+    </a>
+
+    {% sections 'header-group' %}
+
+    <main id="MainContent" class="kz-main-content focus-none" tabindex="-1">
+      {{ content_for_layout }}
+    </main>
+
+    {% sections 'footer-group' %}
+
+    <!-- Global Cart Drawer & Quick View Modals -->
+    {% render 'cart-drawer' %}
+    {% render 'quick-view-modal' %}
+
+    <div id="ShopziCuriousToastContainer" class="kz-toast-container" aria-live="polite"></div>
+  </body>
+</html>

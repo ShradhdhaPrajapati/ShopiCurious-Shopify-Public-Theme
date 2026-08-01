@@ -1,0 +1,194 @@
+{%- comment -%}
+  ShopziCurious - Category Cards Section (Part 05)
+  Matches the approved UI: 4 Category Cards in a grid with glassmorphism overlay buttons.
+{%- endcomment -%}
+
+{%- liquid
+  assign cols_desktop = section.settings.columns_desktop | default: 4
+  assign cols_mobile = section.settings.columns_mobile | default: '2'
+  assign aspect_ratio = section.settings.image_ratio | default: '4/5'
+-%}
+
+<section
+  id="CategoryCards-{{ section.id }}"
+  class="kz-category-cards page-width"
+  style="--cols-desktop: {{ cols_desktop }}; --cols-mobile: {{ cols_mobile }};"
+>
+  {%- if section.settings.title != blank -%}
+    <div class="kz-section-header kz-section-header--center">
+      <h2 class="kz-section-header__title">{{ section.settings.title }}</h2>
+    </div>
+  {%- endif -%}
+
+  <div class="kz-category-cards__grid">
+    {%- for block in section.blocks -%}
+      {%- case block.type -%}
+        {%- when 'category' -%}
+          <div class="kz-category-cards__item" {{ block.shopify_attributes }}>
+            {% render 'card-collection',
+              card_collection: block.settings.collection,
+              title: block.settings.title,
+              image: block.settings.image,
+              button_text: block.settings.button_text,
+              media_aspect_ratio: aspect_ratio
+            %}
+          </div>
+      {%- endcase -%}
+    {%- else -%}
+      <!-- Default 4 Category Cards matching the approved UI -->
+      <div class="kz-category-cards__item">
+        {% render 'card-collection', card_collection: nil, title: 'WOMEN', button_text: 'SHOP NOW', media_aspect_ratio: aspect_ratio %}
+      </div>
+      <div class="kz-category-cards__item">
+        {% render 'card-collection', card_collection: nil, title: 'MEN', button_text: 'SHOP NOW', media_aspect_ratio: aspect_ratio %}
+      </div>
+      <div class="kz-category-cards__item">
+        {% render 'card-collection', card_collection: nil, title: 'ACCESSORIES', button_text: 'SHOP NOW', media_aspect_ratio: aspect_ratio %}
+      </div>
+      <div class="kz-category-cards__item">
+        {% render 'card-collection', card_collection: nil, title: 'SHOES', button_text: 'SHOP NOW', media_aspect_ratio: aspect_ratio %}
+      </div>
+    {%- endfor -%}
+  </div>
+</section>
+
+{% stylesheet %}
+  .kz-category-cards {
+    padding-top: var(--kz-space-12, 48px);
+    padding-bottom: var(--kz-space-12, 48px);
+    max-width: var(--kz-page-max-width, 1400px);
+    margin: 0 auto;
+    padding-left: var(--kz-space-6, 24px);
+    padding-right: var(--kz-space-6, 24px);
+  }
+
+  .kz-section-header--center {
+    text-align: center;
+    justify-content: center;
+    margin-bottom: var(--kz-space-8, 32px);
+  }
+
+  .kz-category-cards__grid {
+    display: grid;
+    grid-template-columns: repeat(var(--cols-mobile, 2), 1fr);
+    gap: var(--kz-space-5, 20px);
+  }
+
+  @media (min-width: 750px) {
+    .kz-category-cards__grid {
+      grid-template-columns: repeat(var(--cols-desktop, 4), 1fr);
+      gap: var(--kz-space-6, 24px);
+    }
+  }
+{% endstylesheet %}
+
+{% schema %}
+{
+  "name": "Category Cards",
+  "tag": "section",
+  "class": "section-category-cards",
+  "max_blocks": 12,
+  "settings": [
+    {
+      "type": "text",
+      "id": "title",
+      "label": "Title (Optional)"
+    },
+    {
+      "type": "select",
+      "id": "image_ratio",
+      "label": "Image aspect ratio",
+      "options": [
+        { "value": "1/1", "label": "Square (1:1)" },
+        { "value": "3/4", "label": "Portrait (3:4)" },
+        { "value": "4/5", "label": "Tall (4:5)" }
+      ],
+      "default": "4/5"
+    },
+    {
+      "type": "range",
+      "id": "columns_desktop",
+      "min": 2,
+      "max": 6,
+      "step": 1,
+      "default": 4,
+      "label": "Desktop columns"
+    },
+    {
+      "type": "select",
+      "id": "columns_mobile",
+      "label": "Mobile columns",
+      "options": [
+        { "value": "1", "label": "1 Column" },
+        { "value": "2", "label": "2 Columns" }
+      ],
+      "default": "2"
+    }
+  ],
+  "blocks": [
+    {
+      "type": "category",
+      "name": "Category Card",
+      "settings": [
+        {
+          "type": "collection",
+          "id": "collection",
+          "label": "Select Collection"
+        },
+        {
+          "type": "image_picker",
+          "id": "image",
+          "label": "Custom Category Image"
+        },
+        {
+          "type": "text",
+          "id": "title",
+          "label": "Category Title Override",
+          "info": "Leave empty to use Collection Title"
+        },
+        {
+          "type": "text",
+          "id": "button_text",
+          "default": "SHOP NOW",
+          "label": "Button Label"
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "Category Cards",
+      "blocks": [
+        {
+          "type": "category",
+          "settings": {
+            "title": "WOMEN",
+            "button_text": "SHOP NOW"
+          }
+        },
+        {
+          "type": "category",
+          "settings": {
+            "title": "MEN",
+            "button_text": "SHOP NOW"
+          }
+        },
+        {
+          "type": "category",
+          "settings": {
+            "title": "ACCESSORIES",
+            "button_text": "SHOP NOW"
+          }
+        },
+        {
+          "type": "category",
+          "settings": {
+            "title": "SHOES",
+            "button_text": "SHOP NOW"
+          }
+        }
+      ]
+    }
+  ]
+}
+{% endschema %}

@@ -1,0 +1,18 @@
+{
+  "type": "footer",
+  "name": "Footer",
+  "limit": 1,
+  "sections": {
+    "footer": {
+      "type": "footer",
+      "settings": {
+        "show_newsletter": true,
+        "show_payment_icons": true,
+        "show_social_icons": true
+      }
+    }
+  },
+  "order": [
+    "footer"
+  ]
+}

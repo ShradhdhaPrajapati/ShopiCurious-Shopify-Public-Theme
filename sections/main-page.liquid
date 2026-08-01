@@ -1,0 +1,71 @@
+<section id="MainPage-{{ section.id }}" class="kz-main-page page-width kz-main-page--{{ section.settings.page_width }}">
+  {% render 'breadcrumbs' %}
+
+  <div class="kz-main-page__header">
+    <h1 class="kz-main-page__title">{{ page.title }}</h1>
+  </div>
+
+  <div class="kz-main-page__content rte">
+    {{ page.content }}
+  </div>
+</section>
+
+{% stylesheet %}
+  .kz-main-page {
+    padding-top: var(--kz-space-4, 16px);
+    padding-bottom: var(--kz-space-12, 48px);
+    margin: 0 auto;
+  }
+
+  .kz-main-page--narrow {
+    max-width: 800px;
+  }
+
+  .kz-main-page--normal {
+    max-width: 1000px;
+  }
+
+  .kz-main-page--wide {
+    max-width: var(--kz-page-max-width, 1400px);
+  }
+
+  .kz-main-page__header {
+    margin-bottom: var(--kz-space-8, 32px);
+    text-align: center;
+  }
+
+  .kz-main-page__title {
+    margin: 0;
+    font-family: var(--kz-font-family-heading);
+    font-size: clamp(28px, 4vw, 42px);
+    font-weight: 700;
+  }
+
+  .kz-main-page__content {
+    font-family: var(--kz-font-family-body);
+    font-size: var(--kz-font-size-base, 16px);
+    line-height: 1.7;
+    color: var(--kz-color-text-primary, #2b2b2b);
+  }
+{% endstylesheet %}
+
+{% schema %}
+{
+  "name": "Page content",
+  "tag": "section",
+  "class": "section-main-page",
+  "settings": [
+    {
+      "type": "select",
+      "id": "page_width",
+      "label": "Page content width",
+      "options": [
+        { "value": "narrow", "label": "Narrow (800px)" },
+        { "value": "normal", "label": "Normal (1000px)" },
+        { "value": "wide", "label": "Wide (1400px)" }
+      ],
+      "default": "normal"
+    }
+  ]
+}
+{% endschema %}

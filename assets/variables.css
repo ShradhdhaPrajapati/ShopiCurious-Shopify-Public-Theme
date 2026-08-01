@@ -1,0 +1,177 @@
+/**
+ * ShopziCurious Theme - Design Tokens (variables.css)
+ * Namespace: --kz-*
+ * Purpose: Central design system custom properties for theme colors, typography, spacing,
+ * border radius, shadows, grid layout, z-indices, and motion tokens.
+ */
+
+:root {
+  /* ==========================================================================
+     1. COLOR SYSTEM (Tailored Luxury & Modern Harmonious Palette)
+     ========================================================================== */
+  --kz-color-primary: #121212;
+  --kz-color-primary-light: #2c2c2c;
+  --kz-color-primary-dark: #000000;
+  --kz-color-primary-rgb: 18, 18, 18;
+
+  --kz-color-secondary: #c5a059;
+  --kz-color-secondary-light: #d6b87b;
+  --kz-color-secondary-dark: #a8823b;
+  --kz-color-secondary-rgb: 197, 160, 89;
+
+  --kz-color-accent: #e76f51;
+  --kz-color-accent-light: #f4a261;
+  --kz-color-accent-dark: #d64a27;
+
+  /* Neutral & Background Tones */
+  --kz-color-background: #ffffff;
+  --kz-color-surface: #faf9f6;
+  --kz-color-surface-subtle: #f4f3ef;
+  --kz-color-surface-elevated: #ffffff;
+
+  /* Text Colors */
+  --kz-color-text-primary: #1a1a1a;
+  --kz-color-text-secondary: #666666;
+  --kz-color-text-muted: #8c8c8c;
+  --kz-color-text-inverse: #ffffff;
+
+  /* Border & Divider Colors */
+  --kz-color-border: #e5e5e5;
+  --kz-color-border-subtle: #f0f0f0;
+  --kz-color-border-strong: #cccccc;
+
+  /* Status Colors */
+  --kz-color-success: #2a9d8f;
+  --kz-color-success-bg: #e6f4f1;
+  --kz-color-warning: #e9c46a;
+  --kz-color-warning-bg: #fdf8eb;
+  --kz-color-error: #e63946;
+  --kz-color-error-bg: #fde8ea;
+  --kz-color-info: #3a86ff;
+  --kz-color-info-bg: #eaf2ff;
+
+  /* Overlay & Glassmorphism */
+  --kz-color-overlay: rgba(0, 0, 0, 0.5);
+  --kz-color-overlay-light: rgba(0, 0, 0, 0.2);
+  --kz-backdrop-blur: 12px;
+
+  /* ==========================================================================
+     2. TYPOGRAPHY SYSTEM
+     ========================================================================== */
+  --kz-font-family-body: var(--font-primary--family, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif);
+  --kz-font-family-heading: var(--font-heading--family, var(--kz-font-family-body));
+
+  --kz-font-weight-light: 300;
+  --kz-font-weight-regular: 400;
+  --kz-font-weight-medium: 500;
+  --kz-font-weight-semibold: 600;
+  --kz-font-weight-bold: 700;
+
+  --kz-line-height-tight: 1.15;
+  --kz-line-height-heading: 1.25;
+  --kz-line-height-body: 1.6;
+  --kz-line-height-relaxed: 1.8;
+
+  --kz-letter-spacing-tight: -0.02em;
+  --kz-letter-spacing-normal: 0em;
+  --kz-letter-spacing-wide: 0.05em;
+  --kz-letter-spacing-uppercase: 0.12em;
+
+  /* Fluid Typography Scale (using clamp for fluid response) */
+  --kz-font-size-xs: clamp(0.7rem, 0.65rem + 0.25vw, 0.75rem);   /* 11px - 12px */
+  --kz-font-size-sm: clamp(0.8rem, 0.75rem + 0.25vw, 0.875rem); /* 13px - 14px */
+  --kz-font-size-base: clamp(0.938rem, 0.9rem + 0.2vw, 1rem);   /* 15px - 16px */
+  --kz-font-size-lg: clamp(1.05rem, 1rem + 0.3vw, 1.125rem);   /* 17px - 18px */
+  --kz-font-size-xl: clamp(1.2rem, 1.1rem + 0.5vw, 1.35rem);    /* 19px - 21px */
+  --kz-font-size-h6: clamp(1.1rem, 1rem + 0.4vw, 1.25rem);
+  --kz-font-size-h5: clamp(1.25rem, 1.1rem + 0.7vw, 1.5rem);
+  --kz-font-size-h4: clamp(1.5rem, 1.3rem + 1vw, 1.875rem);
+  --kz-font-size-h3: clamp(1.75rem, 1.4rem + 1.4vw, 2.25rem);
+  --kz-font-size-h2: clamp(2.1rem, 1.6rem + 2vw, 2.85rem);
+  --kz-font-size-h1: clamp(2.5rem, 1.8rem + 3vw, 3.75rem);
+  --kz-font-size-display: clamp(3rem, 2rem + 4vw, 5rem);
+
+  /* ==========================================================================
+     3. SPACING & LAYOUT SYSTEM
+     ========================================================================== */
+  --kz-space-0: 0px;
+  --kz-space-1: 0.25rem;  /* 4px */
+  --kz-space-2: 0.5rem;   /* 8px */
+  --kz-space-3: 0.75rem;  /* 12px */
+  --kz-space-4: 1rem;     /* 16px */
+  --kz-space-5: 1.25rem;  /* 20px */
+  --kz-space-6: 1.5rem;   /* 24px */
+  --kz-space-8: 2rem;     /* 32px */
+  --kz-space-10: 2.5rem;  /* 40px */
+  --kz-space-12: 3rem;    /* 48px */
+  --kz-space-16: 4rem;    /* 64px */
+  --kz-space-20: 5rem;    /* 80px */
+  --kz-space-24: 6rem;    /* 96px */
+  --kz-space-32: 8rem;    /* 128px */
+
+  --kz-container-max-width: var(--page-width, 1280px);
+  --kz-container-narrow-width: 960px;
+  --kz-container-padding: var(--page-margin, 20px);
+
+  --kz-section-spacing-desktop: 80px;
+  --kz-section-spacing-mobile: 48px;
+
+  /* ==========================================================================
+     4. BORDER RADIUS SYSTEM
+     ========================================================================== */
+  --kz-radius-none: 0px;
+  --kz-radius-xs: 2px;
+  --kz-radius-sm: 4px;
+  --kz-radius-md: 8px;
+  --kz-radius-lg: 16px;
+  --kz-radius-xl: 24px;
+  --kz-radius-pill: 9999px;
+  --kz-radius-circle: 50%;
+  --kz-radius-input: var(--style-border-radius-inputs, 4px);
+  --kz-radius-button: var(--style-border-radius-inputs, 4px);
+  --kz-radius-card: 8px;
+
+  /* ==========================================================================
+     5. ELEVATION & SHADOW SYSTEM
+     ========================================================================== */
+  --kz-shadow-none: none;
+  --kz-shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.05), 0 1px 2px rgba(0, 0, 0, 0.03);
+  --kz-shadow-md: 0 4px 12px rgba(0, 0, 0, 0.08), 0 2px 4px rgba(0, 0, 0, 0.04);
+  --kz-shadow-lg: 0 12px 24px rgba(0, 0, 0, 0.12), 0 4px 8px rgba(0, 0, 0, 0.04);
+  --kz-shadow-xl: 0 20px 40px rgba(0, 0, 0, 0.16), 0 8px 16px rgba(0, 0, 0, 0.06);
+  --kz-shadow-inner: inset 0 2px 4px rgba(0, 0, 0, 0.06);
+  --kz-shadow-focus: 0 0 0 3px rgba(18, 18, 18, 0.2);
+
+  /* ==========================================================================
+     6. Z-INDEX LAYERS
+     ========================================================================== */
+  --kz-z-below: -1;
+  --kz-z-base: 1;
+  --kz-z-dropdown: 100;
+  --kz-z-sticky: 200;
+  --kz-z-fixed: 300;
+  --kz-z-overlay: 400;
+  --kz-z-drawer: 500;
+  --kz-z-modal: 600;
+  --kz-z-popover: 700;
+  --kz-z-toast: 800;
+  --kz-z-tooltip: 900;
+
+  /* ==========================================================================
+     7. ANIMATION & MOTION TOKENS
+     ========================================================================== */
+  --kz-transition-fast: 150ms cubic-bezier(0.4, 0, 0.2, 1);
+  --kz-transition-base: 250ms cubic-bezier(0.4, 0, 0.2, 1);
+  --kz-transition-slow: 400ms cubic-bezier(0.4, 0, 0.2, 1);
+  --kz-transition-bounce: 500ms cubic-bezier(0.34, 1.56, 0.64, 1);
+
+  /* ==========================================================================
+     8. BREAKPOINTS (Reference Custom Properties for JS / Math recalculations)
+     ========================================================================== */
+  --kz-breakpoint-xs: 480px;
+  --kz-breakpoint-sm: 576px;
+  --kz-breakpoint-md: 768px;
+  --kz-breakpoint-lg: 992px;
+  --kz-breakpoint-xl: 1200px;
+  --kz-breakpoint-2xl: 1440px;
+}

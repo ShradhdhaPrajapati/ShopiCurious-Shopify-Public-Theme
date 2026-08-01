@@ -1,0 +1,163 @@
+{% doc %}
+  Renders an interactive quantity input component with increment/decrement buttons.
+
+  @param {string} [id] - DOM ID attribute for the input element
+  @param {string} [name] - Input name attribute (Default: 'quantity')
+  @param {number} [value] - Initial quantity value (Default: 1)
+  @param {number} [min] - Minimum quantity limit (Default: 1)
+  @param {number} [max] - Maximum quantity limit
+  @param {number} [step] - Quantity step increment (Default: 1)
+  @param {number} [line] - Cart line item index (for cart drawer / cart page)
+  @param {string} [class] - Additional CSS class names
+  @param {string} [section_id] - Section ID context
+
+  @example
+  {% render 'quantity-input', value: 1, min: 1, max: 10 %}
+  {% render 'quantity-input', line: item.index, value: item.quantity %}
+{% enddoc %}
+
+{%- liquid
+  assign sec_id = section_id | default: '1'
+  assign qty_id = id | default: 'Quantity-' | append: sec_id
+  assign qty_name = name | default: 'quantity'
+  assign qty_val = value | default: 1
+  assign qty_min = min | default: 1
+  assign qty_max = max
+  assign qty_step = step | default: 1
+  assign cart_line = line
+  assign custom_class = class | default: ''
+-%}
+
+<quantity-input class="kz-quantity-input {{ custom_class }}" {% if cart_line != blank %}data-line="{{ cart_line }}"{% endif %}>
+  <button
+    type="button"
+    name="decrement"
+    class="kz-quantity-input__button kz-quantity-input__button--minus"
+    aria-label="{{ 'products.product.quantity.decrease' | t: product: '' | default: 'Decrease quantity' }}"
+    {% if qty_val <= qty_min %}disabled{% endif %}
+  >
+    {% render 'icon', icon: 'minus', class: 'kz-quantity-input__icon' %}
+  </button>
+
+  <input
+    type="number"
+    id="{{ qty_id }}"
+    name="{{ qty_name }}"
+    class="kz-quantity-input__field"
+    value="{{ qty_val }}"
+    min="{{ qty_min }}"
+    {% if qty_max != blank %}max="{{ qty_max }}"{% endif %}
+    step="{{ qty_step }}"
+    aria-label="{{ 'products.product.quantity.input_label' | t: product: '' | default: 'Quantity' }}"
+  >
+
+  <button
+    type="button"
+    name="increment"
+    class="kz-quantity-input__button kz-quantity-input__button--plus"
+    aria-label="{{ 'products.product.quantity.increase' | t: product: '' | default: 'Increase quantity' }}"
+    {% if qty_max != blank and qty_val >= qty_max %}disabled{% endif %}
+  >
+    {% render 'icon', icon: 'plus', class: 'kz-quantity-input__icon' %}
+  </button>
+</quantity-input>
+
+{% stylesheet %}
+  .kz-quantity-input {
+    display: inline-flex;
+    align-items: center;
+    border: 1px solid var(--kz-color-border, #e5e5e5);
+    border-radius: var(--kz-radius-button, 2px);
+    background-color: var(--kz-color-surface, #f8f9fa);
+    height: var(--kz-button-height, 48px);
+    overflow: hidden;
+  }
+
+  .kz-quantity-input__button {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 40px;
+    height: 100%;
+    padding: 0;
+    background: transparent;
+    border: none;
+    color: var(--kz-color-text-primary, #2b2b2b);
+    cursor: pointer;
+    transition: background-color var(--kz-transition-fast, 150ms ease);
+  }
+
+  .kz-quantity-input__button:hover:not([disabled]) {
+    background-color: var(--kz-color-border-subtle, #f0f0f0);
+    color: var(--kz-color-primary, #111111);
+  }
+
+  .kz-quantity-input__button:disabled {
+    opacity: 0.3;
+    cursor: not-allowed;
+  }
+
+  .kz-quantity-input__field {
+    width: 48px;
+    height: 100%;
+    padding: 0;
+    font-family: var(--kz-font-family-body);
+    font-size: var(--kz-font-size-sm, 14px);
+    font-weight: 600;
+    text-align: center;
+    color: var(--kz-color-text-primary, #2b2b2b);
+    background: transparent;
+    border: none;
+    -moz-appearance: textfield;
+  }
+
+  .kz-quantity-input__field::-webkit-outer-spin-button,
+  .kz-quantity-input__field::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+  }
+
+  .kz-quantity-input__icon {
+    width: 14px;
+    height: 14px;
+  }
+{% endstylesheet %}
+
+{% javascript %}
+  if (!customElements.get('quantity-input')) {
+    customElements.define(
+      'quantity-input',
+      class QuantityInput extends HTMLElement {
+        constructor() {
+          super();
+          this.input = this.querySelector('input');
+          this.changeEvent = new Event('change', { bubbles: true });
+
+          this.querySelectorAll('button').forEach((button) =>
+            button.addEventListener('click', this.onButtonClick.bind(this))
+          );
+        }
+
+        onButtonClick(event) {
+          event.preventDefault();
+          const previousValue = parseInt(this.input.value, 10) || 1;
+          const step = parseInt(this.input.getAttribute('step'), 10) || 1;
+          const min = parseInt(this.input.getAttribute('min'), 10) || 1;
+          const max = this.input.getAttribute('max') ? parseInt(this.input.getAttribute('max'), 10) : null;
+
+          if (event.currentTarget.name === 'increment') {
+            if (max === null || previousValue < max) {
+              this.input.value = previousValue + step;
+            }
+          } else {
+            if (previousValue > min) {
+              this.input.value = previousValue - step;
+            }
+          }
+
+          this.input.dispatchEvent(this.changeEvent);
+        }
+      }
+    );
+  }
+{% endjavascript %}

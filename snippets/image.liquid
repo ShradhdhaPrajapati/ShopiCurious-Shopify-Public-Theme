@@ -1,0 +1,141 @@
+{% doc %}
+  Renders a responsive image wrapper with aspect-ratio framing, native lazy loading,
+  and CLS prevention.
+
+  @param {image} image - The Shopify image object to render
+  @param {string} [url] - Optional link destination URL
+  @param {string} [class] - Optional extra wrapper CSS class names
+  @param {string} [aspect_ratio] - Custom aspect ratio override (e.g. '3/4', '1/1', '16/9')
+  @param {string} [loading] - Image loading attribute ('lazy' or 'eager', Default: 'lazy')
+  @param {string} [fetchpriority] - Image fetch priority ('auto', 'high', 'low', Default: 'auto')
+  @param {string} [alt] - Custom alt text override
+  @param {number} [width] - Image width limit
+  @param {number} [height] - Image height limit
+  @param {string} [crop] - Image cropping option ('center', 'top', etc.)
+
+  @example
+  {% render 'image', image: product.featured_image, aspect_ratio: '3/4', loading: 'lazy' %}
+{% enddoc %}
+
+{%- liquid
+  assign img = image
+  assign img_url_val = url
+  assign wrapper_class = class | default: ''
+  assign loading_attr = loading | default: 'lazy'
+  assign fetchpriority_attr = fetchpriority | default: 'auto'
+  assign alt_text = alt | default: img.alt | default: shop.name | escape
+  assign img_width = width | default: 2000
+  assign img_height = height
+  assign img_crop = crop
+
+  assign ratio_style = ''
+  if aspect_ratio != blank and aspect_ratio != 'natural'
+    assign ratio_style = 'aspect-ratio: ' | append: aspect_ratio | append: ';'
+  elsif img != blank and img.aspect_ratio > 0
+    assign ratio_style = 'aspect-ratio: ' | append: img.aspect_ratio | append: ';'
+  endif
+-%}
+
+{%- if img != blank -%}
+  {%- if img_url_val != blank -%}
+    <a href="{{ img_url_val }}" class="kz-image-wrapper {{ wrapper_class }}" style="{{ ratio_style }}">
+  {%- else -%}
+    <div class="kz-image-wrapper {{ wrapper_class }}" style="{{ ratio_style }}">
+  {%- endif -%}
+
+  {%- if img_height != blank and img_crop != blank -%}
+    {{
+      img
+      | image_url: width: img_width, height: img_height, crop: img_crop
+      | image_tag:
+        loading: loading_attr,
+        fetchpriority: fetchpriority_attr,
+        sizes: '(min-width: 1200px) 1200px, (min-width: 768px) 50vw, 100vw',
+        widths: '165, 360, 535, 750, 940, 1100, 1500, 1800, 2000',
+        alt: alt_text,
+        class: 'kz-image'
+    }}
+  {%- elsif img_height != blank -%}
+    {{
+      img
+      | image_url: width: img_width, height: img_height
+      | image_tag:
+        loading: loading_attr,
+        fetchpriority: fetchpriority_attr,
+        sizes: '(min-width: 1200px) 1200px, (min-width: 768px) 50vw, 100vw',
+        widths: '165, 360, 535, 750, 940, 1100, 1500, 1800, 2000',
+        alt: alt_text,
+        class: 'kz-image'
+    }}
+  {%- elsif img_crop != blank -%}
+    {{
+      img
+      | image_url: width: img_width, crop: img_crop
+      | image_tag:
+        loading: loading_attr,
+        fetchpriority: fetchpriority_attr,
+        sizes: '(min-width: 1200px) 1200px, (min-width: 768px) 50vw, 100vw',
+        widths: '165, 360, 535, 750, 940, 1100, 1500, 1800, 2000',
+        alt: alt_text,
+        class: 'kz-image'
+    }}
+  {%- else -%}
+    {{
+      img
+      | image_url: width: img_width
+      | image_tag:
+        loading: loading_attr,
+        fetchpriority: fetchpriority_attr,
+        sizes: '(min-width: 1200px) 1200px, (min-width: 768px) 50vw, 100vw',
+        widths: '165, 360, 535, 750, 940, 1100, 1500, 1800, 2000',
+        alt: alt_text,
+        class: 'kz-image'
+    }}
+  {%- endif -%}
+
+  {%- if img_url_val != blank -%}
+    </a>
+  {%- else -%}
+    </div>
+  {%- endif -%}
+{%- else -%}
+  <div class="kz-image-wrapper kz-image-wrapper--placeholder {{ wrapper_class }}" style="{{ ratio_style }}">
+    {{ 'image' | placeholder_svg_tag: 'kz-image-placeholder' }}
+  </div>
+{%- endif -%}
+
+{% stylesheet %}
+  .kz-image-wrapper {
+    display: block;
+    position: relative;
+    overflow: hidden;
+    width: 100%;
+    background-color: var(--kz-color-surface, #f8f9fa);
+  }
+
+  .kz-image-wrapper img.kz-image {
+    display: block;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: center;
+    transition: transform var(--kz-transition-base, 250ms ease);
+  }
+
+  .kz-image-wrapper--placeholder {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 200px;
+    background-color: var(--kz-color-surface-subtle, #f4f3ef);
+  }
+
+  .kz-image-placeholder {
+    width: 50%;
+    height: 50%;
+    max-width: 120px;
+    max-height: 120px;
+    fill: var(--kz-color-text-muted, #757575);
+    opacity: 0.5;
+  }
+{% endstylesheet %}

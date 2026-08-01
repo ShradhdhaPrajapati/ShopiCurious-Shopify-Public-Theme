@@ -1,0 +1,93 @@
+{
+  "sections": {
+    "hero_banner": {
+      "type": "hero-banner",
+      "settings": {
+        "section_height": "large",
+        "overlay_opacity": 30,
+        "subheading": "Autumn / Winter Collection",
+        "heading": "Timeless Elegance & Modern Aesthetics",
+        "text": "<p>Discover curated luxury fashion pieces designed to elevate your everyday capsule wardrobe.</p>",
+        "content_alignment": "center",
+        "button_label_1": "Shop New Arrivals",
+        "button_label_2": "Explore Lookbook"
+      }
+    },
+    "feature_icons_bar": {
+      "type": "feature-icons-bar",
+      "settings": {}
+    },
+    "category_cards": {
+      "type": "category-cards",
+      "settings": {
+        "image_ratio": "4/5",
+        "columns_desktop": 4,
+        "columns_mobile": "2"
+      },
+      "blocks": {
+        "women": {
+          "type": "category",
+          "settings": {
+            "title": "WOMEN",
+            "button_text": "SHOP NOW"
+          }
+        },
+        "men": {
+          "type": "category",
+          "settings": {
+            "title": "MEN",
+            "button_text": "SHOP NOW"
+          }
+        },
+        "accessories": {
+          "type": "category",
+          "settings": {
+            "title": "ACCESSORIES",
+            "button_text": "SHOP NOW"
+          }
+        },
+        "shoes": {
+          "type": "category",
+          "settings": {
+            "title": "SHOES",
+            "button_text": "SHOP NOW"
+          }
+        }
+      },
+      "block_order": [
+        "women",
+        "men",
+        "accessories",
+        "shoes"
+      ]
+    },
+    "featured_collection": {
+      "type": "featured-collection",
+      "settings": {
+        "subtitle": "NEW ARRIVALS",
+        "title": "Handpicked Just For You",
+        "products_to_show": 5,
+        "columns_desktop": 5,
+        "columns_mobile": "2",
+        "show_view_all": true
+      }
+    },
+    "promo_banner": {
+      "type": "promo-banner",
+      "settings": {
+        "subtitle": "CRAFTED TO PERFECTION",
+        "title": "Modern Fashion, Created to Last",
+        "description": "Each piece is a work of art, designed to celebrate life's most precious moments.",
+        "button_label": "DISCOVER OUR STORY",
+        "content_position": "right"
+      }
+    }
+  },
+  "order": [
+    "hero_banner",
+    "feature_icons_bar",
+    "category_cards",
+    "featured_collection",
+    "promo_banner"
+  ]
+}

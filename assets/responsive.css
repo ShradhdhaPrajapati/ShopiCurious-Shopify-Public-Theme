@@ -1,0 +1,64 @@
+/**
+ * Kaizen Theme - Breakpoint & Responsive System (responsive.css)
+ * Purpose: Centralized media query overrides, mobile-first responsive adjustments,
+ * touch-target optimizations, and responsive visibility classes.
+ */
+
+/* ==========================================================================
+   1. SMALL BREAKPOINT (< 576px - Mobile Portrait)
+   ========================================================================== */
+@media screen and (max-width: 575px) {
+  /* Enforce touch target size minimum (44px x 44px) for WCAG compliance */
+  button,
+  a.kz-btn,
+  .kz-checkbox,
+  .kz-radio,
+  .kz-input {
+    min-height: 44px;
+  }
+
+  .kz-container {
+    padding-left: var(--kz-space-4);
+    padding-right: var(--kz-space-4);
+  }
+
+  .kz-h1 {
+    font-size: clamp(2rem, 1.6rem + 2vw, 2.5rem);
+  }
+}
+
+/* ==========================================================================
+   2. MEDIUM BREAKPOINT (576px to 767px - Mobile Landscape / Small Tablet)
+   ========================================================================== */
+@media screen and (min-width: 576px) and (max-width: 767px) {
+  .kz-grid--col-2-sm {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+/* ==========================================================================
+   3. LARGE BREAKPOINT (768px to 991px - Tablet Portrait)
+   ========================================================================== */
+@media screen and (min-width: 768px) and (max-width: 991px) {
+  .kz-section-padding {
+    padding-top: calc(var(--kz-section-spacing-desktop) * 0.75);
+    padding-bottom: calc(var(--kz-section-spacing-desktop) * 0.75);
+  }
+}
+
+/* ==========================================================================
+   4. EXTRA LARGE BREAKPOINT (992px to 1199px - Desktop Standard)
+   ========================================================================== */
+@media screen and (min-width: 992px) {
+  .kz-desktop-order-1 { order: 1; }
+  .kz-desktop-order-2 { order: 2; }
+}
+
+/* ==========================================================================
+   5. ULTRA WIDE BREAKPOINT (>= 1440px - Large Displays)
+   ========================================================================== */
+@media screen and (min-width: 1440px) {
+  .kz-container {
+    max-width: var(--kz-container-max-width);
+  }
+}

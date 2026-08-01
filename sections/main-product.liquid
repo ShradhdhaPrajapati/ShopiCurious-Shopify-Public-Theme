@@ -1,0 +1,408 @@
+{%- liquid
+  assign current_variant = product.selected_or_first_available_variant
+  assign featured_media = current_variant.featured_media | default: product.featured_media
+-%}
+
+<section id="MainProduct-{{ section.id }}" class="kz-main-product page-width">
+  <div class="kz-main-product__grid">
+    <!-- Media Gallery Column -->
+    <div class="kz-main-product__media-col">
+      <div class="kz-main-product__gallery">
+        <div class="kz-main-product__main-media" data-main-media>
+          {%- if featured_media != blank -%}
+            {% render 'image',
+              image: featured_media.preview_image,
+              aspect_ratio: '3/4',
+              loading: 'eager',
+              class: 'kz-main-product__featured-img'
+            %}
+          {%- else -%}
+            {{ 'product-1' | placeholder_svg_tag: 'kz-image-placeholder' }}
+          {%- endif -%}
+        </div>
+
+        {%- if product.media.size > 1 -%}
+          <ul class="kz-main-product__thumbnails" role="list">
+            {%- for media in product.media -%}
+              <li class="kz-main-product__thumbnail-item">
+                <button
+                  type="button"
+                  class="kz-main-product__thumbnail-btn {% if media == featured_media %}is-active{% endif %}"
+                  data-media-id="{{ media.id }}"
+                >
+                  {% render 'image',
+                    image: media.preview_image,
+                    aspect_ratio: '1/1',
+                    loading: 'lazy',
+                    class: 'kz-main-product__thumbnail-img'
+                  %}
+                </button>
+              </li>
+            {%- endfor -%}
+          </ul>
+        {%- endif -%}
+      </div>
+    </div>
+
+    <!-- Product Info Details Column -->
+    <div class="kz-main-product__info-col">
+      {%- for block in section.blocks -%}
+        {%- case block.type -%}
+          {%- when '@app' -%}
+            {% render block %}
+
+          {%- when 'vendor' -%}
+            <div class="kz-main-product__vendor" {{ block.shopify_attributes }}>
+              {{ product.vendor }}
+            </div>
+
+          {%- when 'title' -%}
+            <h1 class="kz-main-product__title" {{ block.shopify_attributes }}>
+              {{ product.title }}
+            </h1>
+
+          {%- when 'price' -%}
+            <div class="kz-main-product__price" {{ block.shopify_attributes }}>
+              {% render 'price',
+                product: product,
+                use_variant: true,
+                variant: current_variant,
+                show_badges: true
+              %}
+            </div>
+
+          {%- when 'variant_picker' -%}
+            <variant-selects
+              class="kz-main-product__variants"
+              data-section="{{ section.id }}"
+              data-url="{{ product.url }}"
+              {{ block.shopify_attributes }}
+            >
+              {%- unless product.has_only_default_variant -%}
+                {%- for option in product.options_with_values -%}
+                  <fieldset class="kz-main-product__option-fieldset">
+                    <legend class="kz-main-product__option-legend">
+                      {{ option.name }}: <span class="kz-main-product__option-selected">{{ option.selected_value }}</span>
+                    </legend>
+                    <div class="kz-main-product__swatches-wrap">
+                      {%- for value in option.values -%}
+                        {%- liquid
+                          assign option_disabled = true
+                          for variant in product.variants
+                            if variant.options[forloop.parentloop.index0] == value and variant.available
+                              assign option_disabled = false
+                            endif
+                          endfor
+                          assign is_selected = false
+                          if option.selected_value == value
+                            assign is_selected = true
+                          endif
+                          assign opt_name_lower = option.name | downcase
+                          assign swatch_kind = 'text'
+                          if opt_name_lower contains 'color' or opt_name_lower contains 'colour'
+                            assign swatch_kind = 'color'
+                          endif
+                        -%}
+                        {%- assign swatch_dom_id = section.id | append: '-' | append: option.name | handleize | append: '-' | append: value | handleize -%}
+                        {% render 'swatch',
+                          value: value,
+                          type: swatch_kind,
+                          name: option.name,
+                          checked: is_selected,
+                          disabled: option_disabled,
+                          id: swatch_dom_id
+                        %}
+                      {%- endfor -%}
+                    </div>
+                  </fieldset>
+                {%- endfor -%}
+              {%- endunless -%}
+            </variant-selects>
+
+          {%- when 'quantity_selector' -%}
+            <div class="kz-main-product__quantity" {{ block.shopify_attributes }}>
+              <label class="kz-main-product__label">{{ 'products.product.quantity.label' | t | default: 'Quantity' }}</label>
+              {%- assign qty_input_id = 'Quantity-' | append: section.id -%}
+              {% render 'quantity-input', value: 1, min: 1, id: qty_input_id %}
+            </div>
+
+          {%- when 'buy_buttons' -%}
+            <div class="kz-main-product__buy-buttons" {{ block.shopify_attributes }}>
+              {%- form 'product', product, id: 'product-form-main', class: 'kz-main-product__form' -%}
+                <input type="hidden" name="id" value="{{ current_variant.id }}">
+                <button
+                  type="submit"
+                  name="add"
+                  class="kz-button kz-button--primary kz-button--full-width kz-main-product__add-btn"
+                  {% if current_variant.available == false %}disabled{% endif %}
+                >
+                  {% render 'icon', icon: 'bag', class: 'kz-button__icon' %}
+                  <span>
+                    {%- if current_variant.available -%}
+                      {{ 'products.product.add_to_cart' | t | default: 'Add to Cart' }}
+                    {%- else -%}
+                      {{ 'products.product.sold_out' | t | default: 'Sold Out' }}
+                    {%- endif -%}
+                  </span>
+                </button>
+
+                {%- if block.settings.show_dynamic_checkout -%}
+                  {{ form | payment_button }}
+                {%- endif -%}
+              {%- endform -%}
+            </div>
+
+          {%- when 'description' -%}
+            {%- if product.description != blank -%}
+              <div class="kz-main-product__description" {{ block.shopify_attributes }}>
+                {{ product.description }}
+              </div>
+            {%- endif -%}
+
+          {%- when 'accordion' -%}
+            {% render 'accordion',
+              heading: block.settings.heading,
+              content: block.settings.content,
+              open: block.settings.open,
+              class: 'kz-main-product__accordion'
+            %}
+
+          {%- when 'share' -%}
+            <div class="kz-main-product__share" {{ block.shopify_attributes }}>
+              {% render 'social-sharing',
+                share_title: product.title,
+                share_permalink: product.url,
+                share_image: product.featured_image
+              %}
+            </div>
+        {%- endcase -%}
+      {%- endfor -%}
+    </div>
+  </div>
+</section>
+
+{% stylesheet %}
+  .kz-main-product {
+    padding-top: var(--kz-space-8, 32px);
+    padding-bottom: var(--kz-space-12, 48px);
+    max-width: var(--kz-page-max-width, 1400px);
+    margin: 0 auto;
+  }
+
+  .kz-main-product__grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: var(--kz-space-8, 32px);
+  }
+
+  @media (min-width: 990px) {
+    .kz-main-product__grid {
+      grid-template-columns: 1.2fr 1fr;
+      gap: var(--kz-space-12, 48px);
+    }
+  }
+
+  /* Media Gallery */
+  .kz-main-product__gallery {
+    display: flex;
+    flex-direction: column;
+    gap: var(--kz-space-4, 16px);
+  }
+
+  .kz-main-product__main-media {
+    width: 100%;
+    border-radius: var(--kz-radius-card, 4px);
+    overflow: hidden;
+    background-color: var(--kz-color-surface, #f8f9fa);
+  }
+
+  .kz-main-product__featured-img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+
+  .kz-main-product__thumbnails {
+    display: flex;
+    gap: var(--kz-space-3, 12px);
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    overflow-x: auto;
+  }
+
+  .kz-main-product__thumbnail-btn {
+    width: 72px;
+    height: 72px;
+    padding: 0;
+    background: transparent;
+    border: 1px solid var(--kz-color-border, #e5e5e5);
+    border-radius: var(--kz-radius-sm, 4px);
+    overflow: hidden;
+    cursor: pointer;
+    transition: border-color var(--kz-transition-fast, 150ms ease);
+  }
+
+  .kz-main-product__thumbnail-btn.is-active {
+    border-color: var(--kz-color-primary, #111111);
+    border-width: 2px;
+  }
+
+  /* Info Column */
+  .kz-main-product__info-col {
+    display: flex;
+    flex-direction: column;
+    gap: var(--kz-space-4, 16px);
+  }
+
+  .kz-main-product__vendor {
+    font-family: var(--kz-font-family-body);
+    font-size: var(--kz-font-size-xs, 12px);
+    text-transform: uppercase;
+    letter-spacing: var(--kz-letter-spacing-uppercase, 0.1em);
+    color: var(--kz-color-text-muted, #757575);
+  }
+
+  .kz-main-product__title {
+    margin: 0;
+    font-family: var(--kz-font-family-heading);
+    font-size: clamp(24px, 3vw, 36px);
+    font-weight: 700;
+    color: var(--kz-color-text-primary, #111111);
+  }
+
+  .kz-main-product__label {
+    display: block;
+    font-size: 13px;
+    font-weight: 600;
+    margin-bottom: 6px;
+  }
+
+  .kz-main-product__option-fieldset {
+    border: none;
+    padding: 0;
+    margin: 0 0 16px 0;
+  }
+
+  .kz-main-product__option-legend {
+    font-size: 13px;
+    font-weight: 600;
+    margin-bottom: 8px;
+  }
+
+  .kz-main-product__swatches-wrap {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+
+  .kz-main-product__description {
+    font-size: 15px;
+    line-height: 1.6;
+    color: var(--kz-color-text-secondary, #4a4a4a);
+    margin-top: 8px;
+  }
+{% endstylesheet %}
+
+{% javascript %}
+  if (!customElements.get('variant-selects')) {
+    customElements.define(
+      'variant-selects',
+      class VariantSelects extends HTMLElement {
+        constructor() {
+          super();
+          this.addEventListener('change', this.onVariantChange.bind(this));
+        }
+
+        onVariantChange() {
+          // Trigger AJAX variant price update
+        }
+      }
+    );
+  }
+{% endjavascript %}
+
+{% schema %}
+{
+  "name": "Product information",
+  "tag": "section",
+  "class": "section-main-product",
+  "blocks": [
+    {
+      "type": "@app"
+    },
+    {
+      "type": "vendor",
+      "name": "Vendor",
+      "limit": 1
+    },
+    {
+      "type": "title",
+      "name": "Title",
+      "limit": 1
+    },
+    {
+      "type": "price",
+      "name": "Price",
+      "limit": 1
+    },
+    {
+      "type": "variant_picker",
+      "name": "Variant picker",
+      "limit": 1
+    },
+    {
+      "type": "quantity_selector",
+      "name": "Quantity selector",
+      "limit": 1
+    },
+    {
+      "type": "buy_buttons",
+      "name": "Buy buttons",
+      "limit": 1,
+      "settings": [
+        {
+          "type": "checkbox",
+          "id": "show_dynamic_checkout",
+          "default": true,
+          "label": "Show dynamic checkout buttons"
+        }
+      ]
+    },
+    {
+      "type": "description",
+      "name": "Description",
+      "limit": 1
+    },
+    {
+      "type": "accordion",
+      "name": "Collapsible row",
+      "settings": [
+        {
+          "type": "text",
+          "id": "heading",
+          "default": "Shipping & Returns",
+          "label": "Heading"
+        },
+        {
+          "type": "richtext",
+          "id": "content",
+          "default": "<p>Complimentary standard shipping on all domestic orders over $100.</p>",
+          "label": "Content"
+        },
+        {
+          "type": "checkbox",
+          "id": "open",
+          "default": false,
+          "label": "Expand by default"
+        }
+      ]
+    },
+    {
+      "type": "share",
+      "name": "Share",
+      "limit": 1
+    }
+  ]
+}
+{% endschema %}

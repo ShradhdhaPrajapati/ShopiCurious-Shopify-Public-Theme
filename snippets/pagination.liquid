@@ -1,0 +1,139 @@
+{% doc %}
+  Renders page navigation controls (Previous, Page Numbers, Next) for paginated collections and blogs.
+
+  @param {paginate} paginate - Shopify Liquid paginate object
+  @param {string} [anchor] - Optional anchor string (e.g., '#ProductGrid') to preserve scroll position
+  @param {string} [class] - Additional CSS class names
+
+  @example
+  {% render 'pagination', paginate: paginate, anchor: '#ProductGrid' %}
+{% enddoc %}
+
+{%- liquid
+  assign anchor_suffix = anchor | default: ''
+  assign custom_class = class | default: ''
+-%}
+
+{%- if paginate.parts.size > 0 -%}
+  <nav class="kz-pagination {{ custom_class }}" role="navigation" aria-label="{{ 'general.pagination.label' | t | default: 'Pagination' }}">
+    <ul class="kz-pagination__list" role="list">
+      {%- if paginate.previous -%}
+        <li class="kz-pagination__item">
+          <a
+            href="{{ paginate.previous.url }}{{ anchor_suffix }}"
+            class="kz-pagination__link kz-pagination__link--prev"
+            aria-label="{{ 'general.pagination.previous' | t | default: 'Previous page' }}"
+          >
+            {% render 'icon', icon: 'chevron-left', class: 'kz-pagination__icon' %}
+            <span class="visually-hidden">{{ 'general.pagination.previous' | t | default: 'Previous' }}</span>
+          </a>
+        </li>
+      {%- endif -%}
+
+      {%- for part in paginate.parts -%}
+        <li class="kz-pagination__item">
+          {%- if part.is_link -%}
+            <a
+              href="{{ part.url }}{{ anchor_suffix }}"
+              class="kz-pagination__link"
+              aria-label="{{ 'general.pagination.page' | t: number: part.title | default: 'Page ' | append: part.title }}"
+            >
+              {{- part.title -}}
+            </a>
+          {%- else -%}
+            {%- if part.title == paginate.current_page -%}
+              <span
+                class="kz-pagination__link is-current"
+                aria-current="page"
+                aria-label="{{ 'general.pagination.page' | t: number: part.title | default: 'Page ' | append: part.title }}"
+              >
+                {{- part.title -}}
+              </span>
+            {%- else -%}
+              <span class="kz-pagination__ellipsis">&hellip;</span>
+            {%- endif -%}
+          {%- endif -%}
+        </li>
+      {%- endfor -%}
+
+      {%- if paginate.next -%}
+        <li class="kz-pagination__item">
+          <a
+            href="{{ paginate.next.url }}{{ anchor_suffix }}"
+            class="kz-pagination__link kz-pagination__link--next"
+            aria-label="{{ 'general.pagination.next' | t | default: 'Next page' }}"
+          >
+            {% render 'icon', icon: 'chevron-right', class: 'kz-pagination__icon' %}
+            <span class="visually-hidden">{{ 'general.pagination.next' | t | default: 'Next' }}</span>
+          </a>
+        </li>
+      {%- endif -%}
+    </ul>
+  </nav>
+{%- endif -%}
+
+{% stylesheet %}
+  .kz-pagination {
+    display: flex;
+    justify-content: center;
+    margin-top: var(--kz-space-8, 32px);
+    margin-bottom: var(--kz-space-8, 32px);
+  }
+
+  .kz-pagination__list {
+    display: flex;
+    align-items: center;
+    gap: var(--kz-space-2, 8px);
+    list-style: none;
+    padding: 0;
+    margin: 0;
+  }
+
+  .kz-pagination__item {
+    display: inline-flex;
+  }
+
+  .kz-pagination__link {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 40px;
+    height: 40px;
+    padding: 0 8px;
+    font-family: var(--kz-font-family-body);
+    font-size: var(--kz-font-size-sm, 14px);
+    font-weight: 600;
+    color: var(--kz-color-text-primary, #2b2b2b);
+    text-decoration: none;
+    border-radius: var(--kz-radius-button, 2px);
+    border: 1px solid var(--kz-color-border, #e5e5e5);
+    background-color: var(--kz-color-background, #ffffff);
+    transition: all var(--kz-transition-fast, 150ms ease);
+  }
+
+  .kz-pagination__link:hover {
+    border-color: var(--kz-color-primary, #111111);
+    color: var(--kz-color-primary, #111111);
+    background-color: var(--kz-color-surface, #f8f9fa);
+  }
+
+  .kz-pagination__link.is-current {
+    background-color: var(--kz-color-primary, #111111);
+    color: var(--kz-color-text-inverse, #ffffff);
+    border-color: var(--kz-color-primary, #111111);
+    cursor: default;
+  }
+
+  .kz-pagination__ellipsis {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 32px;
+    color: var(--kz-color-text-muted, #757575);
+  }
+
+  .kz-pagination__icon {
+    width: 16px;
+    height: 16px;
+  }
+{% endstylesheet %}

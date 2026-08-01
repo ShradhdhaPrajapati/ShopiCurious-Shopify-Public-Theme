@@ -1,0 +1,341 @@
+{%- liquid
+  assign main_menu = section.settings.menu | default: 'main-menu'
+  assign logo_width = section.settings.logo_width | default: 140
+  assign is_sticky = section.settings.enable_sticky_header
+-%}
+
+<sticky-header class="kz-header-wrapper {% if is_sticky %}is-sticky{% endif %}">
+  <header class="kz-header page-width">
+    <!-- Mobile Hamburger Toggle -->
+    <button
+      type="button"
+      class="kz-header__icon-btn kz-header__mobile-toggle mobile-only"
+      aria-label="{{ 'sections.header.menu' | t | default: 'Toggle menu' }}"
+      data-mobile-menu-trigger
+    >
+      {% render 'icon', icon: 'menu', class: 'kz-header__icon' %}
+    </button>
+
+    <!-- Brand Logo -->
+    <div class="kz-header__logo">
+      <a href="{{ routes.root_url }}" class="kz-header__logo-link">
+        {%- if section.settings.logo != blank -%}
+          {%- assign logo_height = logo_width | divided_by: section.settings.logo.aspect_ratio -%}
+          {{ section.settings.logo | image_url: width: 400 | image_tag:
+            class: 'kz-header__logo-img',
+            width: logo_width,
+            height: logo_height,
+            alt: shop.name,
+            preload: true
+          }}
+        {%- else -%}
+          <span class="kz-header__logo-text">{{ shop.name }}</span>
+        {%- endif -%}
+      </a>
+    </div>
+
+    <!-- Desktop Navigation Menu -->
+    <nav class="kz-header__inline-menu desktop-only" aria-label="{{ 'sections.header.menu' | t | default: 'Main Navigation' }}">
+      <ul class="kz-header__menu-list" role="list">
+        {%- for link in linklists[main_menu].links -%}
+          <li class="kz-header__menu-item {% if link.links != blank %}has-dropdown{% endif %}">
+            <a
+              href="{{ link.url }}"
+              class="kz-header__menu-link {% if link.child_active or link.active %}is-active{% endif %}"
+              {% if link.links != blank %}aria-expanded="false"{% endif %}
+            >
+              <span>{{ link.title }}</span>
+              {%- if link.links != blank -%}
+                {% render 'icon', icon: 'chevron-down', class: 'kz-header__menu-chevron' %}
+              {%- endif -%}
+            </a>
+
+            {%- if link.links != blank -%}
+              <ul class="kz-header__dropdown" role="list">
+                {%- for childlink in link.links -%}
+                  <li class="kz-header__dropdown-item">
+                    <a
+                      href="{{ childlink.url }}"
+                      class="kz-header__dropdown-link {% if childlink.active %}is-active{% endif %}"
+                    >
+                      {{ childlink.title }}
+                    </a>
+                  </li>
+                {%- endfor -%}
+              </ul>
+            {%- endif -%}
+          </li>
+        {%- endfor -%}
+      </ul>
+    </nav>
+
+    <!-- Header Actions (Search, Account, Cart) -->
+    <div class="kz-header__icons">
+      <!-- Search Trigger -->
+      <button
+        type="button"
+        class="kz-header__icon-btn kz-search-trigger"
+        aria-label="{{ 'general.search.search' | t | default: 'Search' }}"
+      >
+        {% render 'icon', icon: 'search', class: 'kz-header__icon' %}
+      </button>
+
+      <!-- Customer Account Link -->
+      {%- if shop.customer_accounts_enabled -%}
+        <a
+          href="{% if customer %}{{ routes.account_url }}{% else %}{{ routes.account_login_url }}{% endif %}"
+          class="kz-header__icon-btn desktop-only"
+          aria-label="{{ 'customer.account_fallback' | t | default: 'Account' }}"
+        >
+          {% render 'icon', icon: 'user', class: 'kz-header__icon' %}
+        </a>
+      {%- endif -%}
+
+      <!-- Cart Drawer Trigger Button -->
+      <button
+        type="button"
+        class="kz-header__icon-btn kz-cart-trigger"
+        aria-label="{{ 'sections.header.cart' | t | default: 'Shopping bag' }}"
+      >
+        {% render 'icon', icon: 'bag', class: 'kz-header__icon' %}
+        <span class="kz-header__cart-badge" data-cart-count="{{ cart.item_count }}">
+          {{ cart.item_count }}
+        </span>
+      </button>
+    </div>
+  </header>
+</sticky-header>
+
+{% stylesheet %}
+  .kz-header-wrapper {
+    display: block;
+    width: 100%;
+    background-color: var(--kz-color-background, #ffffff);
+    border-bottom: 1px solid var(--kz-color-border, #e5e5e5);
+    position: relative;
+    z-index: var(--kz-z-header, 300);
+  }
+
+  .kz-header-wrapper.is-sticky {
+    position: sticky;
+    top: 0;
+    transition: transform var(--kz-transition-base, 250ms ease);
+  }
+
+  .kz-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    height: var(--kz-header-height, 70px);
+    padding: 0 var(--kz-space-6, 24px);
+    max-width: var(--kz-page-max-width, 1400px);
+    margin: 0 auto;
+  }
+
+  .kz-header__logo-link {
+    display: inline-flex;
+    align-items: center;
+    text-decoration: none;
+    color: var(--kz-color-text-primary, #111111);
+  }
+
+  .kz-header__logo-text {
+    font-family: var(--kz-font-family-heading);
+    font-size: var(--kz-font-size-xl, 22px);
+    font-weight: 700;
+    letter-spacing: var(--kz-letter-spacing-wide, 0.05em);
+    text-transform: uppercase;
+  }
+
+  .kz-header__inline-menu {
+    display: flex;
+    align-items: center;
+  }
+
+  .kz-header__menu-list {
+    display: flex;
+    align-items: center;
+    gap: var(--kz-space-6, 24px);
+    list-style: none;
+    margin: 0;
+    padding: 0;
+  }
+
+  .kz-header__menu-item {
+    position: relative;
+  }
+
+  .kz-header__menu-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    padding: 10px 0;
+    font-family: var(--kz-font-family-body);
+    font-size: var(--kz-font-size-sm, 14px);
+    font-weight: 600;
+    color: var(--kz-color-text-primary, #111111);
+    text-decoration: none;
+    text-transform: uppercase;
+    letter-spacing: var(--kz-letter-spacing-wide, 0.05em);
+    transition: color var(--kz-transition-fast, 150ms ease);
+  }
+
+  .kz-header__menu-link:hover,
+  .kz-header__menu-link.is-active {
+    color: var(--kz-color-secondary, #d4a373);
+  }
+
+  .kz-header__menu-chevron {
+    width: 12px;
+    height: 12px;
+  }
+
+  /* Dropdown Menu */
+  .kz-header__dropdown {
+    position: absolute;
+    top: 100%;
+    left: 0;
+    min-width: 200px;
+    background-color: var(--kz-color-background, #ffffff);
+    border: 1px solid var(--kz-color-border, #e5e5e5);
+    border-radius: var(--kz-radius-card, 4px);
+    box-shadow: var(--kz-shadow-md);
+    padding: var(--kz-space-2, 8px) 0;
+    list-style: none;
+    opacity: 0;
+    visibility: hidden;
+    transform: translateY(10px);
+    transition: all var(--kz-transition-fast, 150ms ease);
+  }
+
+  .kz-header__menu-item:hover .kz-header__dropdown {
+    opacity: 1;
+    visibility: visible;
+    transform: translateY(0);
+  }
+
+  .kz-header__dropdown-link {
+    display: block;
+    padding: 8px 16px;
+    font-size: 13px;
+    color: var(--kz-color-text-primary, #2b2b2b);
+    text-decoration: none;
+    transition: background-color var(--kz-transition-fast, 150ms ease);
+  }
+
+  .kz-header__dropdown-link:hover {
+    background-color: var(--kz-color-surface, #f8f9fa);
+    color: var(--kz-color-secondary, #d4a373);
+  }
+
+  /* Header Action Icons */
+  .kz-header__icons {
+    display: flex;
+    align-items: center;
+    gap: var(--kz-space-3, 12px);
+  }
+
+  .kz-header__icon-btn {
+    position: relative;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 40px;
+    height: 40px;
+    border: none;
+    background: transparent;
+    color: var(--kz-color-text-primary, #111111);
+    cursor: pointer;
+    text-decoration: none;
+    border-radius: 50%;
+    transition: background-color var(--kz-transition-fast, 150ms ease);
+  }
+
+  .kz-header__icon-btn:hover {
+    background-color: var(--kz-color-surface, #f8f9fa);
+    color: var(--kz-color-secondary, #d4a373);
+  }
+
+  .kz-header__icon {
+    width: 20px;
+    height: 20px;
+  }
+
+  .kz-header__cart-badge {
+    position: absolute;
+    top: 4px;
+    right: 4px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 18px;
+    height: 18px;
+    padding: 0 4px;
+    font-size: 10px;
+    font-weight: 700;
+    color: #ffffff;
+    background-color: var(--kz-color-primary, #111111);
+    border-radius: 9999px;
+  }
+
+  @media (max-width: 989px) {
+    .desktop-only {
+      display: none !important;
+    }
+  }
+
+  @media (min-width: 990px) {
+    .mobile-only {
+      display: none !important;
+    }
+  }
+{% endstylesheet %}
+
+{% javascript %}
+  if (!customElements.get('sticky-header')) {
+    customElements.define(
+      'sticky-header',
+      class StickyHeader extends HTMLElement {
+        constructor() {
+          super();
+          this.header = this.querySelector('header');
+        }
+      }
+    );
+  }
+{% endjavascript %}
+
+{% schema %}
+{
+  "name": "Header",
+  "settings": [
+    {
+      "type": "image_picker",
+      "id": "logo",
+      "label": "Logo image"
+    },
+    {
+      "type": "range",
+      "id": "logo_width",
+      "min": 80,
+      "max": 300,
+      "step": 10,
+      "default": 140,
+      "unit": "px",
+      "label": "Custom logo width"
+    },
+    {
+      "type": "link_list",
+      "id": "menu",
+      "label": "Menu",
+      "default": "main-menu"
+    },
+    {
+      "type": "checkbox",
+      "id": "enable_sticky_header",
+      "default": true,
+      "label": "Enable sticky header"
+    }
+  ]
+}
+{% endschema %}

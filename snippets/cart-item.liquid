@@ -1,0 +1,180 @@
+{% doc %}
+  Renders a modular cart line item row used inside the cart page table and cart drawer.
+
+  @param {line_item} item - Shopify cart line item object
+  @param {number} index - Line item loop index position
+  @param {string} [class] - Additional CSS class names
+
+  @example
+  {% render 'cart-item', item: line_item, index: forloop.index %}
+{% enddoc %}
+
+{%- liquid
+  assign line_item = item
+  assign item_index = index
+  assign custom_class = class | default: ''
+-%}
+
+{%- if line_item != blank -%}
+  <div class="kz-cart-item {{ custom_class }}" data-key="{{ line_item.key }}" data-line="{{ item_index }}">
+    <a href="{{ line_item.url }}" class="kz-cart-item__media-link">
+      {% render 'image',
+        image: line_item.image,
+        aspect_ratio: '1/1',
+        loading: 'lazy',
+        class: 'kz-cart-item__image'
+      %}
+    </a>
+
+    <div class="kz-cart-item__details">
+      <div class="kz-cart-item__header">
+        <h3 class="kz-cart-item__title">
+          <a href="{{ line_item.url }}">{{ line_item.product.title }}</a>
+        </h3>
+        <button
+          type="button"
+          class="kz-cart-item__remove-btn"
+          data-remove-line="{{ item_index }}"
+          aria-label="{{ 'sections.cart.remove_title' | t: title: line_item.title }}"
+        >
+          {% render 'icon', icon: 'trash', class: 'kz-cart-item__remove-icon' %}
+        </button>
+      </div>
+
+      {%- unless line_item.product.has_only_default_variant -%}
+        <div class="kz-cart-item__variant">
+          {{ line_item.variant.title }}
+        </div>
+      {%- endunless -%}
+
+      {%- if line_item.line_level_discount_allocations.size > 0 -%}
+        <ul class="kz-cart-item__discounts" role="list">
+          {%- for discount in line_item.line_level_discount_allocations -%}
+            <li class="kz-cart-item__discount">
+              {% render 'icon', icon: 'check', class: 'kz-cart-item__discount-icon' %}
+              <span>{{ discount.discount_application.title }} (-{{ discount.amount | money }})</span>
+            </li>
+          {%- endfor -%}
+        </ul>
+      {%- endif -%}
+
+      <div class="kz-cart-item__actions">
+        {% render 'quantity-input',
+          line: item_index,
+          value: line_item.quantity,
+          min: 0,
+          class: 'kz-cart-item__quantity'
+        %}
+
+        <div class="kz-cart-item__price">
+          {%- if line_item.original_line_price != line_item.final_line_price -%}
+            <s class="kz-price__item--regular">{{ line_item.original_line_price | money }}</s>
+            <span class="kz-price__item--sale">{{ line_item.final_line_price | money }}</span>
+          {%- else -%}
+            <span>{{ line_item.final_line_price | money }}</span>
+          {%- endif -%}
+        </div>
+      </div>
+    </div>
+  </div>
+{%- endif -%}
+
+{% stylesheet %}
+  .kz-cart-item {
+    display: flex;
+    gap: var(--kz-space-4, 16px);
+    padding: var(--kz-space-4, 16px) 0;
+    border-bottom: 1px solid var(--kz-color-border, #e5e5e5);
+  }
+
+  .kz-cart-item__media-link {
+    width: 90px;
+    height: 90px;
+    flex-shrink: 0;
+    border-radius: var(--kz-radius-sm, 4px);
+    overflow: hidden;
+    background-color: var(--kz-color-surface, #f8f9fa);
+  }
+
+  .kz-cart-item__details {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+  }
+
+  .kz-cart-item__header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 8px;
+  }
+
+  .kz-cart-item__title {
+    margin: 0;
+    font-family: var(--kz-font-family-heading);
+    font-size: var(--kz-font-size-sm, 15px);
+    font-weight: 600;
+  }
+
+  .kz-cart-item__title a {
+    color: var(--kz-color-text-primary, #111111);
+    text-decoration: none;
+  }
+
+  .kz-cart-item__remove-btn {
+    background: transparent;
+    border: none;
+    color: var(--kz-color-text-muted, #757575);
+    cursor: pointer;
+    padding: 2px;
+    transition: color var(--kz-transition-fast, 150ms ease);
+  }
+
+  .kz-cart-item__remove-btn:hover {
+    color: var(--kz-color-error, #e63946);
+  }
+
+  .kz-cart-item__remove-icon {
+    width: 16px;
+    height: 16px;
+  }
+
+  .kz-cart-item__variant {
+    font-size: 12px;
+    color: var(--kz-color-text-muted, #757575);
+  }
+
+  .kz-cart-item__discounts {
+    list-style: none;
+    padding: 0;
+    margin: 4px 0 0 0;
+    font-size: 11px;
+    color: var(--kz-color-success, #2a9d8f);
+  }
+
+  .kz-cart-item__discount {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+  }
+
+  .kz-cart-item__discount-icon {
+    width: 12px;
+    height: 12px;
+  }
+
+  .kz-cart-item__actions {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-top: auto;
+    padding-top: 8px;
+  }
+
+  .kz-cart-item__price {
+    font-family: var(--kz-font-family-body);
+    font-size: var(--kz-font-size-sm, 14px);
+    font-weight: 700;
+  }
+{% endstylesheet %}

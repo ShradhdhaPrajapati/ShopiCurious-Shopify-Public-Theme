@@ -1,0 +1,163 @@
+{% doc %}
+  Renders a visual collection tile card with title and glassmorphism pill button overlay matching the ShopziCurious UI design.
+
+  @param {collection} card_collection - Collection Liquid object to display
+  @param {string} [title] - Title override for the category card
+  @param {image} [image] - Custom image override
+  @param {string} [button_text] - Button text label (Default: 'SHOP NOW')
+  @param {string} [media_aspect_ratio] - Aspect ratio override ('1/1', '3/4', '4/5', Default: '4/5')
+  @param {string} [class] - Additional CSS class names
+
+  @example
+  {% render 'card-collection', card_collection: collection, title: 'WOMEN', button_text: 'SHOP NOW' %}
+{% enddoc %}
+
+{%- liquid
+  assign collection = card_collection
+  assign title_text = title | default: collection.title | default: 'Category'
+  assign btn_label = button_text | default: 'SHOP NOW'
+  assign aspect_ratio = media_aspect_ratio | default: '4/5'
+  assign custom_class = class | default: ''
+
+  assign collection_img = image | default: collection.featured_image | default: collection.products.first.featured_media.preview_image
+-%}
+
+<div class="kz-card-collection {{ custom_class }}">
+  <a href="{{ collection.url | default: '#' }}" class="kz-card-collection__link" aria-label="{{ title_text | escape }}">
+    <div class="kz-card-collection__media" style="aspect-ratio: {{ aspect_ratio }};">
+      {%- if collection_img != blank -%}
+        {% render 'image',
+          image: collection_img,
+          aspect_ratio: aspect_ratio,
+          loading: 'lazy',
+          class: 'kz-card-collection__image'
+        %}
+      {%- else -%}
+        <div class="kz-card-collection__placeholder">
+          {{ 'collection-1' | placeholder_svg_tag: 'kz-image-placeholder' }}
+        </div>
+      {%- endif -%}
+      <div class="kz-card-collection__overlay"></div>
+
+      <div class="kz-card-collection__content">
+        <h3 class="kz-card-collection__title">{{ title_text | upcase }}</h3>
+        {%- if btn_label != blank -%}
+          <span class="kz-card-collection__btn">{{ btn_label | upcase }}</span>
+        {%- endif -%}
+      </div>
+    </div>
+  </a>
+</div>
+
+{% stylesheet %}
+  .kz-card-collection {
+    position: relative;
+    width: 100%;
+    border-radius: 14px;
+    overflow: hidden;
+    background-color: var(--kz-color-surface, #f4f2ee);
+  }
+
+  .kz-card-collection__link {
+    display: block;
+    text-decoration: none;
+    color: #ffffff;
+    height: 100%;
+  }
+
+  .kz-card-collection__media {
+    position: relative;
+    width: 100%;
+    overflow: hidden;
+    border-radius: 14px;
+  }
+
+  .kz-card-collection__image {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 500ms ease;
+  }
+
+  .kz-card-collection:hover .kz-card-collection__image {
+    transform: scale(1.05);
+  }
+
+  .kz-card-collection__placeholder {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: #e5e2dc;
+  }
+
+  .kz-card-collection__overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(180deg, rgba(0, 0, 0, 0.1) 0%, rgba(0, 0, 0, 0.35) 100%);
+    transition: background 300ms ease;
+    z-index: 2;
+  }
+
+  .kz-card-collection:hover .kz-card-collection__overlay {
+    background: linear-gradient(180deg, rgba(0, 0, 0, 0.15) 0%, rgba(0, 0, 0, 0.45) 100%);
+  }
+
+  .kz-card-collection__content {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 3;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 14px;
+    padding: 24px;
+    text-align: center;
+  }
+
+  .kz-card-collection__title {
+    margin: 0;
+    font-family: var(--kz-font-family-heading, inherit);
+    font-size: clamp(18px, 2vw, 24px);
+    font-weight: 700;
+    color: #ffffff;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    text-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+  }
+
+  .kz-card-collection__btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 10px 24px;
+    font-family: var(--kz-font-family-body, inherit);
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: #ffffff;
+    background: rgba(255, 255, 255, 0.2);
+    border: 1.5px solid rgba(255, 255, 255, 0.85);
+    border-radius: 9999px;
+    backdrop-filter: blur(6px);
+    -webkit-backdrop-filter: blur(6px);
+    transition: all 250ms ease;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  }
+
+  .kz-card-collection:hover .kz-card-collection__btn {
+    background: #ffffff;
+    color: #111111;
+    border-color: #ffffff;
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.25);
+  }
+{% endstylesheet %}

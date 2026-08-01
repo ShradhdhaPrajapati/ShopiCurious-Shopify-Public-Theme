@@ -1,0 +1,293 @@
+{%- comment -%}
+  ShopziCurious - Feature Icons Bar Section (Part 04)
+  Displays key store benefits with icons, headings, and supporting descriptions.
+{%- endcomment -%}
+
+{%- liquid
+  assign bg_color = section.settings.background_color | default: '#ffffff'
+  assign text_color = section.settings.text_color | default: '#111111'
+  assign border_color = section.settings.border_color | default: '#e8e6e1'
+-%}
+
+<section
+  id="FeatureIconsBar-{{ section.id }}"
+  class="kz-feature-icons-bar"
+  style="--kz-fib-bg: {{ bg_color }}; --kz-fib-text: {{ text_color }}; --kz-fib-border: {{ border_color }};"
+>
+  <div class="kz-feature-icons-bar__container page-width">
+    <div class="kz-feature-icons-bar__grid">
+      {%- for block in section.blocks -%}
+        {%- case block.type -%}
+          {%- when 'feature' -%}
+            <div class="kz-feature-icons-bar__item" {{ block.shopify_attributes }}>
+              {%- if block.settings.link != blank -%}
+                <a href="{{ block.settings.link }}" class="kz-feature-icons-bar__link">
+              {%- endif -%}
+
+              <div class="kz-feature-icons-bar__icon-wrapper">
+                {% render 'icon', icon: block.settings.icon, class: 'kz-feature-icons-bar__icon' %}
+              </div>
+
+              <div class="kz-feature-icons-bar__content">
+                {%- if block.settings.title != blank -%}
+                  <h3 class="kz-feature-icons-bar__title">{{ block.settings.title | escape }}</h3>
+                {%- endif -%}
+
+                {%- if block.settings.text != blank -%}
+                  <p class="kz-feature-icons-bar__text">{{ block.settings.text | escape }}</p>
+                {%- endif -%}
+              </div>
+
+              {%- if block.settings.link != blank -%}
+                </a>
+              {%- endif -%}
+            </div>
+        {%- endcase -%}
+      {%- else -%}
+        <!-- Default Fallback Features -->
+        <div class="kz-feature-icons-bar__item">
+          <div class="kz-feature-icons-bar__icon-wrapper">
+            {% render 'icon', icon: 'truck', class: 'kz-feature-icons-bar__icon' %}
+          </div>
+          <div class="kz-feature-icons-bar__content">
+            <h3 class="kz-feature-icons-bar__title">Complimentary Shipping</h3>
+            <p class="kz-feature-icons-bar__text">Free express delivery on all orders over $100</p>
+          </div>
+        </div>
+
+        <div class="kz-feature-icons-bar__item">
+          <div class="kz-feature-icons-bar__icon-wrapper">
+            {% render 'icon', icon: 'shield', class: 'kz-feature-icons-bar__icon' %}
+          </div>
+          <div class="kz-feature-icons-bar__content">
+            <h3 class="kz-feature-icons-bar__title">Secure Checkout</h3>
+            <p class="kz-feature-icons-bar__text">Encrypted payments & guaranteed protection</p>
+          </div>
+        </div>
+
+        <div class="kz-feature-icons-bar__item">
+          <div class="kz-feature-icons-bar__icon-wrapper">
+            {% render 'icon', icon: 'returns', class: 'kz-feature-icons-bar__icon' %}
+          </div>
+          <div class="kz-feature-icons-bar__content">
+            <h3 class="kz-feature-icons-bar__title">Hassle-Free Returns</h3>
+            <p class="kz-feature-icons-bar__text">30-day money back guarantee with free pickup</p>
+          </div>
+        </div>
+
+        <div class="kz-feature-icons-bar__item">
+          <div class="kz-feature-icons-bar__icon-wrapper">
+            {% render 'icon', icon: 'award', class: 'kz-feature-icons-bar__icon' %}
+          </div>
+          <div class="kz-feature-icons-bar__content">
+            <h3 class="kz-feature-icons-bar__title">Premium Craftsmanship</h3>
+            <p class="kz-feature-icons-bar__text">Curated luxury materials built to last</p>
+          </div>
+        </div>
+      {%- endfor -%}
+    </div>
+  </div>
+</section>
+
+{% stylesheet %}
+  .kz-feature-icons-bar {
+    background-color: var(--kz-fib-bg, #ffffff);
+    color: var(--kz-fib-text, #111111);
+    border-top: 1px solid var(--kz-fib-border, #e8e6e1);
+    border-bottom: 1px solid var(--kz-fib-border, #e8e6e1);
+    padding: var(--kz-space-8, 32px) 0;
+  }
+
+  .kz-feature-icons-bar__container {
+    max-width: var(--kz-page-max-width, 1400px);
+    margin: 0 auto;
+    padding: 0 var(--kz-space-6, 24px);
+  }
+
+  .kz-feature-icons-bar__grid {
+    display: grid;
+    grid-template-columns: repeat(1, minmax(0, 1fr));
+    gap: var(--kz-space-6, 24px);
+  }
+
+  @media (min-width: 640px) {
+    .kz-feature-icons-bar__grid {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+  }
+
+  @media (min-width: 1024px) {
+    .kz-feature-icons-bar__grid {
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+    }
+  }
+
+  .kz-feature-icons-bar__item {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    padding: 12px;
+    border-radius: var(--kz-radius-card, 4px);
+    transition: transform var(--kz-transition-fast, 150ms ease);
+  }
+
+  .kz-feature-icons-bar__item:hover {
+    transform: translateY(-2px);
+  }
+
+  .kz-feature-icons-bar__link {
+    color: inherit;
+    text-decoration: none;
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    width: 100%;
+  }
+
+  .kz-feature-icons-bar__icon-wrapper {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 48px;
+    height: 48px;
+    border-radius: 50%;
+    background-color: var(--kz-color-surface, #f8f9fa);
+    flex-shrink: 0;
+    color: var(--kz-color-secondary, #d4a373);
+  }
+
+  .kz-feature-icons-bar__icon {
+    width: 24px;
+    height: 24px;
+  }
+
+  .kz-feature-icons-bar__content {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+  }
+
+  .kz-feature-icons-bar__title {
+    margin: 0;
+    font-family: var(--kz-font-family-heading);
+    font-size: 14px;
+    font-weight: 700;
+    line-height: 1.2;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+  }
+
+  .kz-feature-icons-bar__text {
+    margin: 0;
+    font-family: var(--kz-font-family-body);
+    font-size: 12px;
+    line-height: 1.4;
+    color: var(--kz-color-text-muted, #666666);
+  }
+{% endstylesheet %}
+
+{% schema %}
+{
+  "name": "Feature Icons Bar",
+  "tag": "section",
+  "class": "section-feature-icons-bar",
+  "settings": [
+    {
+      "type": "color",
+      "id": "background_color",
+      "label": "Background color",
+      "default": "#ffffff"
+    },
+    {
+      "type": "color",
+      "id": "text_color",
+      "label": "Text color",
+      "default": "#111111"
+    },
+    {
+      "type": "color",
+      "id": "border_color",
+      "label": "Border color",
+      "default": "#e8e6e1"
+    }
+  ],
+  "blocks": [
+    {
+      "type": "feature",
+      "name": "Feature Item",
+      "settings": [
+        {
+          "type": "select",
+          "id": "icon",
+          "label": "Icon",
+          "options": [
+            { "value": "truck", "label": "Shipping Truck" },
+            { "value": "shield", "label": "Security Shield" },
+            { "value": "returns", "label": "Return Arrow" },
+            { "value": "award", "label": "Quality Ribbon" },
+            { "value": "bag", "label": "Shopping Bag" },
+            { "value": "user", "label": "Customer Support" }
+          ],
+          "default": "truck"
+        },
+        {
+          "type": "text",
+          "id": "title",
+          "default": "Complimentary Shipping",
+          "label": "Heading"
+        },
+        {
+          "type": "text",
+          "id": "text",
+          "default": "Free express delivery on all orders over $100",
+          "label": "Description"
+        },
+        {
+          "type": "url",
+          "id": "link",
+          "label": "Link (Optional)"
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "Feature Icons Bar",
+      "blocks": [
+        {
+          "type": "feature",
+          "settings": {
+            "icon": "truck",
+            "title": "Complimentary Shipping",
+            "text": "Free express delivery on all orders over $100"
+          }
+        },
+        {
+          "type": "feature",
+          "settings": {
+            "icon": "shield",
+            "title": "Secure Checkout",
+            "text": "Encrypted payments & guaranteed protection"
+          }
+        },
+        {
+          "type": "feature",
+          "settings": {
+            "icon": "returns",
+            "title": "Hassle-Free Returns",
+            "text": "30-day money back guarantee with free pickup"
+          }
+        },
+        {
+          "type": "feature",
+          "settings": {
+            "icon": "award",
+            "title": "Premium Craftsmanship",
+            "text": "Curated luxury materials built to last"
+          }
+        }
+      ]
+    }
+  ]
+}
+{% endschema %}

@@ -1,0 +1,253 @@
+{% doc %}
+  Renders faceted collection and search filtering drawer/sidebar forms with active filter pills, price ranges, swatches, and sorting options.
+
+  @param {object} results - Shopify collection or search object
+  @param {boolean} [enable_filtering] - Toggles filter rendering (Default: true)
+  @param {boolean} [enable_sorting] - Toggles sort dropdown rendering (Default: true)
+  @param {string} [filter_type] - Layout mode ('drawer', 'sidebar', 'horizontal', Default: 'drawer')
+
+  @example
+  {% render 'facets', results: collection, enable_filtering: true, enable_sorting: true %}
+{% enddoc %}
+
+{%- liquid
+  assign sort_by = results.sort_by | default: results.default_sort_by
+  assign total_active_values = 0
+  assign filter_type_val = filter_type | default: 'drawer'
+
+  for filter in results.filters
+    assign total_active_values = total_active_values | plus: filter.active_values.size
+    if filter.type == 'price_range'
+      if filter.min_value.value != null or filter.max_value.value != null
+        assign total_active_values = total_active_values | plus: 1
+      endif
+    endif
+  endfor
+-%}
+
+<facet-filters-form class="kz-facets kz-facets--{{ filter_type_val }}">
+  <form id="FacetFiltersForm" class="kz-facets__form">
+    {%- if results.terms -%}
+      <input type="hidden" name="q" value="{{ results.terms | escape }}">
+      <input type="hidden" name="type" value="product">
+    {%- endif -%}
+
+    {%- if results.current_vendor or results.current_type -%}
+      <input type="hidden" name="q" value="{{ results.current_vendor | default: results.current_type | escape }}">
+    {%- endif -%}
+
+    <div class="kz-facets__wrapper">
+      <!-- Active Filters Pill Bar -->
+      {%- if total_active_values > 0 -%}
+        <div class="kz-facets__active-bar">
+          <span class="kz-facets__active-heading">{{ 'products.facets.active_filters' | t | default: 'Active Filters:' }}</span>
+          <div class="kz-facets__active-list">
+            {%- for filter in results.filters -%}
+              {%- for value in filter.active_values -%}
+                <a href="{{ value.url_to_remove }}" class="kz-facets__active-pill">
+                  <span>{{ filter.label }}: {{ value.label }}</span>
+                  {% render 'icon', icon: 'close', class: 'kz-facets__active-icon' %}
+                </a>
+              {%- endfor -%}
+
+              {%- if filter.type == 'price_range' -%}
+                {%- if filter.min_value.value != null or filter.max_value.value != null -%}
+                  <a href="{{ filter.url_to_remove }}" class="kz-facets__active-pill">
+                    <span>
+                      {%- if filter.min_value.value -%}{{ filter.min_value.value | money }}{%- else -%}{{ 0 | money }}{%- endif -%}
+                      -
+                      {%- if filter.max_value.value -%}{{ filter.max_value.value | money }}{%- else -%}{{ filter.range_max | money }}{%- endif -%}
+                    </span>
+                    {% render 'icon', icon: 'close', class: 'kz-facets__active-icon' %}
+                  </a>
+                {%- endif -%}
+              {%- endif -%}
+            {%- endfor -%}
+
+            <a href="{{ results.url }}" class="kz-facets__clear-all">
+              {{ 'products.facets.clear_all' | t | default: 'Clear all' }}
+            </a>
+          </div>
+        </div>
+      {%- endif -%}
+
+      <!-- Filter Groups List -->
+      {%- if enable_filtering != false -%}
+        <div class="kz-facets__groups">
+          {%- for filter in results.filters -%}
+            {%- capture filter_content -%}
+              {%- case filter.type -%}
+                {%- when 'list', 'boolean' -%}
+                  <ul class="kz-facets__list" role="list">
+                    {%- for value in filter.values -%}
+                      <li class="kz-facets__item">
+                        <label class="kz-facets__label {% if value.count == 0 and value.active == false %}is-disabled{% endif %}">
+                          <input
+                            type="checkbox"
+                            name="{{ value.param_name }}"
+                            value="{{ value.value }}"
+                            class="kz-facets__checkbox"
+                            {% if value.active %}checked{% endif %}
+                            {% if value.count == 0 and value.active == false %}disabled{% endif %}
+                          >
+                          <span class="kz-facets__text">{{ value.label }} ({{ value.count }})</span>
+                        </label>
+                      </li>
+                    {%- endfor -%}
+                  </ul>
+                {%- when 'price_range' -%}
+                  <div class="kz-facets__price-range">
+                    <div class="kz-facets__price-field">
+                      <span>{{ cart.currency.symbol }}</span>
+                      <input
+                        type="number"
+                        name="{{ filter.min_value.param_name }}"
+                        placeholder="0"
+                        min="0"
+                        {% if filter.min_value.value %}value="{{ filter.min_value.value | money_without_currency | replace: ',', '' }}"{% endif %}
+                      >
+                    </div>
+                    <span>-</span>
+                    <div class="kz-facets__price-field">
+                      <span>{{ cart.currency.symbol }}</span>
+                      <input
+                        type="number"
+                        name="{{ filter.max_value.param_name }}"
+                        placeholder="{{ filter.range_max | money_without_currency | replace: ',', '' }}"
+                        min="0"
+                        {% if filter.max_value.value %}value="{{ filter.max_value.value | money_without_currency | replace: ',', '' }}"{% endif %}
+                      >
+                    </div>
+                  </div>
+              {%- endcase -%}
+            {%- endcapture -%}
+            {% render 'accordion',
+              heading: filter.label,
+              content: filter_content,
+              open: true,
+              class: 'kz-facets__group'
+            %}
+          {%- endfor -%}
+        </div>
+      {%- endif -%}
+
+      <!-- Sort Dropdown -->
+      {%- if enable_sorting != false -%}
+        <div class="kz-facets__sort">
+          <label for="SortBy" class="kz-facets__sort-label">
+            {{ 'products.facets.sort_by_label' | t | default: 'Sort by:' }}
+          </label>
+          <select name="sort_by" id="SortBy" class="kz-facets__sort-select">
+            {%- for option in results.sort_options -%}
+              <option
+                value="{{ option.value }}"
+                {% if option.value == sort_by %}selected{% endif %}
+              >
+                {{ option.name }}
+              </option>
+            {%- endfor -%}
+          </select>
+        </div>
+      {%- endif -%}
+    </div>
+  </form>
+</facet-filters-form>
+
+{% stylesheet %}
+  .kz-facets {
+    display: block;
+    width: 100%;
+    margin-bottom: var(--kz-space-6, 24px);
+  }
+
+  .kz-facets__active-bar {
+    display: flex;
+    align-items: center;
+    gap: var(--kz-space-3, 12px);
+    padding: var(--kz-space-3, 12px) 0;
+    border-bottom: 1px solid var(--kz-color-border, #e5e5e5);
+  }
+
+  .kz-facets__active-heading {
+    font-size: var(--kz-font-size-xs, 12px);
+    font-weight: 700;
+    text-transform: uppercase;
+  }
+
+  .kz-facets__active-list {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 6px;
+  }
+
+  .kz-facets__active-pill {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    padding: 3px 10px;
+    font-size: 11px;
+    font-weight: 600;
+    color: var(--kz-color-text-primary, #111111);
+    background-color: var(--kz-color-surface-subtle, #f4f3ef);
+    border-radius: 9999px;
+    text-decoration: none;
+  }
+
+  .kz-facets__active-icon {
+    width: 12px;
+    height: 12px;
+  }
+
+  .kz-facets__clear-all {
+    font-size: 11px;
+    color: var(--kz-color-text-muted, #757575);
+    text-decoration: underline;
+  }
+
+  .kz-facets__sort {
+    display: flex;
+    align-items: center;
+    gap: var(--kz-space-3, 12px);
+    margin-top: var(--kz-space-4, 16px);
+  }
+
+  .kz-facets__sort-label {
+    font-size: var(--kz-font-size-xs, 12px);
+    font-weight: 600;
+    color: var(--kz-color-text-muted, #757575);
+  }
+
+  .kz-facets__sort-select {
+    padding: 8px 12px;
+    font-family: var(--kz-font-family-body);
+    font-size: var(--kz-font-size-xs, 13px);
+    border: 1px solid var(--kz-color-border, #e5e5e5);
+    border-radius: var(--kz-radius-button, 2px);
+    background-color: var(--kz-color-background, #ffffff);
+    cursor: pointer;
+  }
+{% endstylesheet %}
+
+{% javascript %}
+  if (!customElements.get('facet-filters-form')) {
+    customElements.define(
+      'facet-filters-form',
+      class FacetFiltersForm extends HTMLElement {
+        constructor() {
+          super();
+          this.form = this.querySelector('form');
+          this.form.addEventListener('input', this.onFormSubmit.bind(this));
+          this.form.addEventListener('change', this.onFormSubmit.bind(this));
+        }
+
+        onFormSubmit(e) {
+          e.preventDefault();
+          const formData = new FormData(this.form);
+          const searchParams = new URLSearchParams(formData).toString();
+          window.location.search = searchParams;
+        }
+      }
+    );
+  }
+{% endjavascript %}

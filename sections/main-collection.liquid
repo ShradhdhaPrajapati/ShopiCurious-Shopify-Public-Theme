@@ -1,0 +1,172 @@
+{%- liquid
+  assign per_page = section.settings.products_per_page | default: 16
+  assign cols_desktop = section.settings.columns_desktop | default: 4
+  assign cols_mobile = section.settings.columns_mobile | default: '2'
+-%}
+
+<div class="kz-main-collection page-width" style="--cols-desktop: {{ cols_desktop }}; --cols-mobile: {{ cols_mobile }};">
+  {% render 'breadcrumbs' %}
+
+  <!-- Collection Banner Header -->
+  <div class="kz-main-collection__header">
+    <h1 class="kz-main-collection__title">{{ collection.title }}</h1>
+    {%- if collection.description != blank -%}
+      <div class="kz-main-collection__description">
+        {{ collection.description }}
+      </div>
+    {%- endif -%}
+  </div>
+
+  <!-- Filtering & Sorting Bar -->
+  {%- if section.settings.enable_filtering or section.settings.enable_sorting -%}
+    <div class="kz-main-collection__facets-wrapper">
+      {% render 'facets',
+        results: collection,
+        enable_filtering: section.settings.enable_filtering,
+        enable_sorting: section.settings.enable_sorting
+      %}
+    </div>
+  {%- endif -%}
+
+  <!-- Collection Product Grid -->
+  {%- paginate collection.products by per_page -%}
+    <div class="kz-main-collection__content">
+      {%- if collection.products.size > 0 -%}
+        <div class="kz-main-collection__grid" id="ProductGrid">
+          {%- for product in collection.products -%}
+            <div class="kz-main-collection__item kz-animate-fade-up">
+              {% render 'product-card',
+                card_product: product,
+                show_secondary_image: true,
+                show_quick_add: true,
+                show_quick_view: true
+              %}
+            </div>
+          {%- endfor -%}
+        </div>
+
+        {%- if paginate.pages > 1 -%}
+          {% render 'pagination', paginate: paginate, anchor: '#ProductGrid' %}
+        {%- endif -%}
+      {%- else -%}
+        <div class="kz-main-collection__empty">
+          {% render 'icon', icon: 'search', class: 'kz-main-collection__empty-icon' %}
+          <h2>{{ 'sections.collection_template.empty' | t | default: 'No products found' }}</h2>
+          <p>{{ 'sections.collection_template.use_fewer_filters' | t | default: 'Try clearing some filters or search for another term.' }}</p>
+          <a href="{{ collection.url }}" class="kz-button kz-button--primary">
+            {{ 'products.facets.clear_all' | t | default: 'Clear All Filters' }}
+          </a>
+        </div>
+      {%- endif -%}
+    </div>
+  {%- endpaginate -%}
+</div>
+
+{% stylesheet %}
+  .kz-main-collection {
+    padding-top: var(--kz-space-4, 16px);
+    padding-bottom: var(--kz-space-12, 48px);
+    max-width: var(--kz-page-max-width, 1400px);
+    margin: 0 auto;
+  }
+
+  .kz-main-collection__header {
+    margin-bottom: var(--kz-space-6, 24px);
+    text-align: center;
+  }
+
+  .kz-main-collection__title {
+    margin: 0 0 var(--kz-space-2, 8px) 0;
+    font-family: var(--kz-font-family-heading);
+    font-size: clamp(28px, 4vw, 42px);
+    font-weight: 700;
+    color: var(--kz-color-text-primary, #111111);
+  }
+
+  .kz-main-collection__description {
+    max-width: 680px;
+    margin: 0 auto;
+    font-size: var(--kz-font-size-sm, 14px);
+    color: var(--kz-color-text-secondary, #666666);
+    line-height: 1.6;
+  }
+
+  .kz-main-collection__grid {
+    display: grid;
+    grid-template-columns: repeat(var(--cols-mobile, 2), 1fr);
+    gap: var(--kz-space-4, 16px);
+  }
+
+  @media (min-width: 750px) {
+    .kz-main-collection__grid {
+      grid-template-columns: repeat(var(--cols-desktop, 4), 1fr);
+      gap: var(--kz-space-6, 24px);
+    }
+  }
+
+  .kz-main-collection__empty {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: var(--kz-space-12, 48px) var(--kz-space-4, 16px);
+    text-align: center;
+  }
+
+  .kz-main-collection__empty-icon {
+    width: 48px;
+    height: 48px;
+    color: var(--kz-color-text-muted, #757575);
+    margin-bottom: 16px;
+  }
+{% endstylesheet %}
+
+{% schema %}
+{
+  "name": "Product grid",
+  "tag": "section",
+  "class": "section-main-collection",
+  "settings": [
+    {
+      "type": "range",
+      "id": "products_per_page",
+      "min": 8,
+      "max": 36,
+      "step": 4,
+      "default": 16,
+      "label": "Products per page"
+    },
+    {
+      "type": "range",
+      "id": "columns_desktop",
+      "min": 2,
+      "max": 5,
+      "step": 1,
+      "default": 4,
+      "label": "Number of columns on desktop"
+    },
+    {
+      "type": "select",
+      "id": "columns_mobile",
+      "label": "Columns on mobile",
+      "options": [
+        { "value": "1", "label": "1" },
+        { "value": "2", "label": "2" }
+      ],
+      "default": "2"
+    },
+    {
+      "type": "checkbox",
+      "id": "enable_filtering",
+      "default": true,
+      "label": "Enable filtering"
+    },
+    {
+      "type": "checkbox",
+      "id": "enable_sorting",
+      "default": true,
+      "label": "Enable sorting"
+    }
+  ]
+}
+{% endschema %}

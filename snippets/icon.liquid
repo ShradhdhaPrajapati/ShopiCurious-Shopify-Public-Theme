@@ -1,0 +1,149 @@
+{% doc %}
+  Renders an inline SVG icon by icon name.
+
+  @param {string} icon - The identifier name of the SVG icon to render
+  @param {string} [class] - Optional extra CSS class names to add to the SVG element
+
+  @example
+  {% render 'icon', icon: 'bag', class: 'kz-header__icon' %}
+{% enddoc %}
+
+{%- liquid
+  assign icon_name = icon | default: ''
+  assign custom_class = class | default: ''
+-%}
+
+{%- case icon_name -%}
+  {%- when 'bag', 'cart' -%}
+    <svg class="kz-icon kz-icon--bag {{ custom_class }}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false">
+      <path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"/>
+      <line x1="3" y1="6" x2="21" y2="6"/>
+      <path d="M16 10a4 4 0 0 1-8 0"/>
+    </svg>
+
+  {%- when 'search' -%}
+    <svg class="kz-icon kz-icon--search {{ custom_class }}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false">
+      <circle cx="11" cy="11" r="8"/>
+      <line x1="21" y1="21" x2="16.65" y2="16.65"/>
+    </svg>
+
+  {%- when 'user', 'account' -%}
+    <svg class="kz-icon kz-icon--user {{ custom_class }}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false">
+      <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/>
+      <circle cx="12" cy="7" r="4"/>
+    </svg>
+
+  {%- when 'heart', 'wishlist' -%}
+    <svg class="kz-icon kz-icon--heart {{ custom_class }}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false">
+      <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/>
+    </svg>
+
+  {%- when 'heart-solid' -%}
+    <svg class="kz-icon kz-icon--heart-solid {{ custom_class }}" viewBox="0 0 24 24" fill="currentColor" stroke="currentColor" stroke-width="1" aria-hidden="true" focusable="false">
+      <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/>
+    </svg>
+
+  {%- when 'close', 'cross' -%}
+    <svg class="kz-icon kz-icon--close {{ custom_class }}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false">
+      <line x1="18" y1="6" x2="6" y2="18"/>
+      <line x1="6" y1="6" x2="18" y2="18"/>
+    </svg>
+
+  {%- when 'menu', 'hamburger' -%}
+    <svg class="kz-icon kz-icon--menu {{ custom_class }}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false">
+      <line x1="3" y1="6" x2="21" y2="6"/>
+      <line x1="3" y1="12" x2="21" y2="12"/>
+      <line x1="3" y1="18" x2="21" y2="18"/>
+    </svg>
+
+  {%- when 'chevron-down' -%}
+    <svg class="kz-icon kz-icon--chevron-down {{ custom_class }}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false">
+      <polyline points="6 9 12 15 18 9"/>
+    </svg>
+
+  {%- when 'chevron-up' -%}
+    <svg class="kz-icon kz-icon--chevron-up {{ custom_class }}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false">
+      <polyline points="18 15 12 9 6 15"/>
+    </svg>
+
+  {%- when 'chevron-left' -%}
+    <svg class="kz-icon kz-icon--chevron-left {{ custom_class }}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false">
+      <polyline points="15 18 9 12 15 6"/>
+    </svg>
+
+  {%- when 'chevron-right' -%}
+    <svg class="kz-icon kz-icon--chevron-right {{ custom_class }}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false">
+      <polyline points="9 18 15 12 9 6"/>
+    </svg>
+
+  {%- when 'arrow-right' -%}
+    <svg class="kz-icon kz-icon--arrow-right {{ custom_class }}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false">
+      <line x1="5" y1="12" x2="19" y2="12"/>
+      <polyline points="12 5 19 12 12 19"/>
+    </svg>
+
+  {%- when 'arrow-left' -%}
+    <svg class="kz-icon kz-icon--arrow-left {{ custom_class }}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false">
+      <line x1="19" y1="12" x2="5" y2="12"/>
+      <polyline points="12 19 5 12 12 5"/>
+    </svg>
+
+  {%- when 'star' -%}
+    <svg class="kz-icon kz-icon--star {{ custom_class }}" viewBox="0 0 24 24" fill="currentColor" stroke="currentColor" stroke-width="1" aria-hidden="true" focusable="false">
+      <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/>
+    </svg>
+
+  {%- when 'star-empty' -%}
+    <svg class="kz-icon kz-icon--star-empty {{ custom_class }}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true" focusable="false">
+      <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/>
+    </svg>
+
+  {%- when 'filter' -%}
+    <svg class="kz-icon kz-icon--filter {{ custom_class }}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false">
+      <polygon points="22 3 2 3 10 12.46 10 19 14 21 14 12.46 22 3"/>
+    </svg>
+
+  {%- when 'check' -%}
+    <svg class="kz-icon kz-icon--check {{ custom_class }}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false">
+      <polyline points="20 6 9 17 4 12"/>
+    </svg>
+
+  {%- when 'eye', 'quick-view' -%}
+    <svg class="kz-icon kz-icon--eye {{ custom_class }}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false">
+      <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/>
+      <circle cx="12" cy="12" r="3"/>
+    </svg>
+
+  {%- when 'trash', 'delete' -%}
+    <svg class="kz-icon kz-icon--trash {{ custom_class }}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false">
+      <polyline points="3 6 5 6 21 6"/>
+      <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/>
+    </svg>
+
+  {%- when 'plus' -%}
+    <svg class="kz-icon kz-icon--plus {{ custom_class }}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false">
+      <line x1="12" y1="5" x2="12" y2="19"/>
+      <line x1="5" y1="12" x2="19" y2="12"/>
+    </svg>
+
+  {%- when 'minus' -%}
+    <svg class="kz-icon kz-icon--minus {{ custom_class }}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false">
+      <line x1="5" y1="12" x2="19" y2="12"/>
+    </svg>
+
+  {%- when 'share' -%}
+    <svg class="kz-icon kz-icon--share {{ custom_class }}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false">
+      <circle cx="18" cy="5" r="3"/>
+      <circle cx="6" cy="12" r="3"/>
+      <circle cx="18" cy="19" r="3"/>
+      <line x1="8.59" y1="13.51" x2="15.42" y2="17.49"/>
+      <line x1="15.41" y1="6.51" x2="8.59" y2="10.49"/>
+    </svg>
+
+  {%- when 'spinner', 'loading' -%}
+    <svg class="kz-icon kz-icon--spinner kz-animate-spin {{ custom_class }}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true" focusable="false">
+      <circle cx="12" cy="12" r="10" stroke-opacity="0.25"/>
+      <path d="M12 2a10 10 0 0 1 10 10" stroke-linecap="round"/>
+    </svg>
+
+{%- endcase -%}

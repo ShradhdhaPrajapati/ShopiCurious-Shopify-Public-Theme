@@ -1,0 +1,182 @@
+/**
+ * Kaizen Theme - Form Controls & Inputs Architecture (forms.css)
+ * Purpose: Standardized form controls, floating labels, select dropdowns,
+ * custom checkboxes, radios, input validation feedback, and field groups.
+ */
+
+/* ==========================================================================
+   1. FORM GROUP & LABEL
+   ========================================================================== */
+.kz-form-group {
+  display: flex;
+  flex-direction: column;
+  gap: var(--kz-space-2);
+  margin-bottom: var(--kz-space-4);
+  position: relative;
+  width: 100%;
+}
+
+.kz-label {
+  font-size: var(--kz-font-size-sm);
+  font-weight: var(--kz-font-weight-medium);
+  color: var(--kz-color-text-primary);
+  letter-spacing: var(--kz-letter-spacing-wide);
+  text-transform: uppercase;
+}
+
+/* ==========================================================================
+   2. TEXT INPUTS & TEXTAREA
+   ========================================================================== */
+.kz-input,
+.kz-select,
+.kz-textarea {
+  width: 100%;
+  padding: var(--kz-space-3) var(--kz-space-4);
+  font-family: var(--kz-font-family-body);
+  font-size: var(--kz-font-size-base);
+  color: var(--kz-color-text-primary);
+  background-color: var(--kz-color-background);
+  border: 1px solid var(--kz-color-border);
+  border-radius: var(--kz-radius-input);
+  transition: border-color var(--kz-transition-fast),
+              box-shadow var(--kz-transition-fast),
+              background-color var(--kz-transition-fast);
+  appearance: none;
+  -webkit-appearance: none;
+}
+
+.kz-input::placeholder,
+.kz-textarea::placeholder {
+  color: var(--kz-color-text-muted);
+  opacity: 0.8;
+}
+
+.kz-input:hover,
+.kz-select:hover,
+.kz-textarea:hover {
+  border-color: var(--kz-color-border-strong);
+}
+
+.kz-input:focus,
+.kz-select:focus,
+.kz-textarea:focus {
+  outline: none;
+  border-color: var(--kz-color-primary);
+  box-shadow: var(--kz-shadow-focus);
+  background-color: var(--kz-color-background);
+}
+
+.kz-textarea {
+  min-height: 120px;
+  resize: vertical;
+}
+
+/* ==========================================================================
+   3. CUSTOM SELECT DROPDOWN
+   ========================================================================== */
+.kz-select-wrapper {
+  position: relative;
+  width: 100%;
+}
+
+.kz-select-wrapper::after {
+  content: "";
+  position: absolute;
+  right: var(--kz-space-4);
+  top: 50%;
+  transform: translateY(-50%);
+  width: 0;
+  height: 0;
+  border-left: 5px solid transparent;
+  border-right: 5px solid transparent;
+  border-top: 5px solid var(--kz-color-text-secondary);
+  pointer-events: none;
+}
+
+.kz-select {
+  padding-right: var(--kz-space-10);
+  cursor: pointer;
+}
+
+/* ==========================================================================
+   4. CHECKBOX & RADIO CONTROLS
+   ========================================================================== */
+.kz-checkbox-group,
+.kz-radio-group {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--kz-space-3);
+  cursor: pointer;
+  user-select: none;
+}
+
+.kz-checkbox,
+.kz-radio {
+  width: 20px;
+  height: 20px;
+  border: 1px solid var(--kz-color-border-strong);
+  background-color: var(--kz-color-background);
+  cursor: pointer;
+  position: relative;
+  flex-shrink: 0;
+  transition: all var(--kz-transition-fast);
+}
+
+.kz-checkbox {
+  border-radius: var(--kz-radius-sm);
+}
+
+.kz-radio {
+  border-radius: var(--kz-radius-circle);
+}
+
+.kz-checkbox:checked,
+.kz-radio:checked {
+  background-color: var(--kz-color-primary);
+  border-color: var(--kz-color-primary);
+}
+
+.kz-checkbox:checked::after {
+  content: "";
+  position: absolute;
+  top: 3px;
+  left: 6px;
+  width: 5px;
+  height: 9px;
+  border: solid white;
+  border-width: 0 2px 2px 0;
+  transform: rotate(45deg);
+}
+
+.kz-radio:checked::after {
+  content: "";
+  position: absolute;
+  top: 5px;
+  left: 5px;
+  width: 8px;
+  height: 8px;
+  background-color: white;
+  border-radius: 50%;
+}
+
+/* ==========================================================================
+   5. VALIDATION & ERROR STATES
+   ========================================================================== */
+.kz-input--error,
+.kz-select--error,
+.kz-textarea--error {
+  border-color: var(--kz-color-error) !important;
+  background-color: var(--kz-color-error-bg);
+}
+
+.kz-form-error {
+  font-size: var(--kz-font-size-xs);
+  color: var(--kz-color-error);
+  margin-top: var(--kz-space-1);
+}
+
+.kz-form-success {
+  font-size: var(--kz-font-size-xs);
+  color: var(--kz-color-success);
+  margin-top: var(--kz-space-1);
+}

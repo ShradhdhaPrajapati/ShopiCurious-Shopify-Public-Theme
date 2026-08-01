@@ -1,0 +1,199 @@
+{% doc %}
+  Renders a primary reusable CTA button or link with optional icon and loading spinner.
+
+  @param {string} label - Text label displayed inside the button
+  @param {string} [url] - Destination URL (renders <a> tag instead of <button> if provided)
+  @param {string} [type] - Button HTML type ('button', 'submit', 'reset', Default: 'button')
+  @param {string} [style] - Visual design variant ('primary', 'secondary', 'accent', 'outline', 'text', Default: 'primary')
+  @param {string} [variant] - Visual design variant alias ('primary', 'secondary', 'accent', 'outline', 'text')
+  @param {string} [size] - Button size ('sm', 'md', 'lg', Default: 'md')
+  @param {string} [icon] - Optional icon name to render inside the button
+  @param {string} [icon_position] - Position of icon relative to label ('left' or 'right', Default: 'left')
+  @param {string} [class] - Additional CSS class names
+  @param {string} [id] - DOM ID attribute
+  @param {string} [aria_label] - ARIA accessibility label override
+  @param {boolean} [disabled] - Disables the button if true
+  @param {boolean} [loading] - Displays loading spinner if true
+
+  @example
+  {% render 'button', label: 'Add to Bag', type: 'submit', style: 'primary', icon: 'bag' %}
+  {% render 'button', label: 'Explore Collection', url: '/collections/all', style: 'outline' %}
+{% enddoc %}
+
+{%- liquid
+  assign btn_label = label | default: ''
+  assign btn_url = url
+  assign btn_type = type | default: 'button'
+  assign btn_style = style | default: variant | default: 'primary'
+  assign btn_size = size | default: 'md'
+  assign btn_icon = icon
+  assign btn_icon_pos = icon_position | default: 'left'
+  assign btn_class = class | default: ''
+  assign btn_id = id
+  assign btn_aria = aria_label | default: btn_label | escape
+  assign is_disabled = disabled | default: false
+  assign is_loading = loading | default: false
+
+  assign full_class = 'kz-button kz-button--' | append: btn_style | append: ' kz-button--' | append: btn_size
+  if is_loading
+    assign full_class = full_class | append: ' is-loading'
+  endif
+  if btn_class != blank
+    assign full_class = full_class | append: ' ' | append: btn_class
+  endif
+
+  if btn_url != blank
+    assign tag_name = 'a'
+  else
+    assign tag_name = 'button'
+  endif
+-%}
+
+<{{ tag_name }}
+  {% if tag_name == 'button' %}
+    type="{{ btn_type }}"
+    {% if is_disabled or is_loading %}disabled{% endif %}
+  {% else %}
+    href="{{ btn_url }}"
+    {% if is_disabled %}aria-disabled="true" tabindex="-1"{% endif %}
+  {% endif %}
+  {% if btn_id != blank %}id="{{ btn_id }}"{% endif %}
+  class="{{ full_class }}"
+  aria-label="{{ btn_aria }}"
+>
+  {%- if is_loading -%}
+    {% render 'icon', icon: 'spinner', class: 'kz-button__spinner' %}
+  {%- endif -%}
+
+  {%- if btn_icon != blank and btn_icon_pos == 'left' and is_loading == false -%}
+    {% render 'icon', icon: btn_icon, class: 'kz-button__icon kz-button__icon--left' %}
+  {%- endif -%}
+
+  <span class="kz-button__text">{{ btn_label }}</span>
+
+  {%- if btn_icon != blank and btn_icon_pos == 'right' and is_loading == false -%}
+    {% render 'icon', icon: btn_icon, class: 'kz-button__icon kz-button__icon--right' %}
+  {%- endif -%}
+</{{ tag_name }}>
+
+{% stylesheet %}
+  .kz-button {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: var(--kz-space-2, 8px);
+    height: var(--kz-button-height, 48px);
+    padding: 0 var(--kz-space-6, 24px);
+    font-family: var(--kz-font-family-body);
+    font-size: var(--kz-font-size-sm, 14px);
+    font-weight: var(--kz-font-weight-semibold, 600);
+    letter-spacing: var(--kz-letter-spacing-wide, 0.05em);
+    text-transform: uppercase;
+    text-decoration: none;
+    white-space: nowrap;
+    border-radius: var(--kz-radius-button, 2px);
+    border: 1px solid transparent;
+    cursor: pointer;
+    user-select: none;
+    transition: all var(--kz-transition-fast, 150ms ease);
+    position: relative;
+    overflow: hidden;
+  }
+
+  .kz-button--sm {
+    height: 38px;
+    padding: 0 var(--kz-space-4, 16px);
+    font-size: var(--kz-font-size-xs, 12px);
+  }
+
+  .kz-button--lg {
+    height: 56px;
+    padding: 0 var(--kz-space-8, 32px);
+    font-size: var(--kz-font-size-base, 16px);
+  }
+
+  /* Style Variants */
+  .kz-button--primary {
+    background-color: var(--kz-color-primary, #111111);
+    color: var(--kz-color-text-inverse, #ffffff);
+    border-color: var(--kz-color-primary, #111111);
+  }
+
+  .kz-button--primary:hover:not([disabled]) {
+    background-color: var(--kz-color-primary-light, #2c2c2c);
+    border-color: var(--kz-color-primary-light, #2c2c2c);
+    transform: translateY(-2px);
+    box-shadow: var(--kz-shadow-md);
+  }
+
+  .kz-button--secondary {
+    background-color: var(--kz-color-secondary, #d4a373);
+    color: var(--kz-color-primary, #111111);
+    border-color: var(--kz-color-secondary, #d4a373);
+  }
+
+  .kz-button--secondary:hover:not([disabled]) {
+    background-color: var(--kz-color-secondary-light, #d6b87b);
+    transform: translateY(-2px);
+  }
+
+  .kz-button--accent {
+    background-color: var(--kz-color-accent, #e76f51);
+    color: #ffffff;
+    border-color: var(--kz-color-accent, #e76f51);
+  }
+
+  .kz-button--accent:hover:not([disabled]) {
+    background-color: var(--kz-color-accent-dark, #d64a27);
+    transform: translateY(-2px);
+  }
+
+  .kz-button--outline {
+    background-color: transparent;
+    color: var(--kz-color-primary, #111111);
+    border-color: var(--kz-color-primary, #111111);
+  }
+
+  .kz-button--outline:hover:not([disabled]) {
+    background-color: var(--kz-color-primary, #111111);
+    color: var(--kz-color-text-inverse, #ffffff);
+  }
+
+  .kz-button--text {
+    background-color: transparent;
+    color: var(--kz-color-primary, #111111);
+    border-color: transparent;
+    padding: 0;
+    height: auto;
+  }
+
+  .kz-button--text:hover:not([disabled]) {
+    color: var(--kz-color-secondary, #d4a373);
+  }
+
+  .kz-button:disabled,
+  .kz-button[aria-disabled="true"] {
+    opacity: 0.5;
+    cursor: not-allowed;
+    transform: none !important;
+    box-shadow: none !important;
+  }
+
+  .kz-button__icon {
+    width: 18px;
+    height: 18px;
+    flex-shrink: 0;
+  }
+
+  .kz-button__spinner {
+    width: 18px;
+    height: 18px;
+    animation: kz-spin 0.8s linear infinite;
+  }
+
+  @keyframes kz-spin {
+    to {
+      transform: rotate(360deg);
+    }
+  }
+{% endstylesheet %}

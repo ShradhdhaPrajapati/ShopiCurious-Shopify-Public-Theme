@@ -1,0 +1,320 @@
+<footer class="kz-footer">
+  <!-- Main Footer Content Columns -->
+  <div class="kz-footer__top page-width">
+    <div class="kz-footer__grid">
+      {%- for block in section.blocks -%}
+        {%- case block.type -%}
+          {%- when 'link_list' -%}
+            <div class="kz-footer__col kz-footer__col--menu" {{ block.shopify_attributes }}>
+              {%- if block.settings.heading != blank -%}
+                <h3 class="kz-footer__heading">{{ block.settings.heading }}</h3>
+              {%- endif -%}
+              {%- if block.settings.menu != blank -%}
+                <ul class="kz-footer__menu-list" role="list">
+                  {%- for link in block.settings.menu.links -%}
+                    <li>
+                      <a href="{{ link.url }}" class="kz-footer__menu-link">
+                        {{ link.title }}
+                      </a>
+                    </li>
+                  {%- endfor -%}
+                </ul>
+              {%- endif -%}
+            </div>
+
+          {%- when 'text' -%}
+            <div class="kz-footer__col kz-footer__col--text" {{ block.shopify_attributes }}>
+              {%- if block.settings.heading != blank -%}
+                <h3 class="kz-footer__heading">{{ block.settings.heading }}</h3>
+              {%- endif -%}
+              {%- if block.settings.subtext != blank -%}
+                <div class="kz-footer__text-content">
+                  {{ block.settings.subtext }}
+                </div>
+              {%- endif -%}
+            </div>
+
+          {%- when 'newsletter' -%}
+            <div class="kz-footer__col kz-footer__col--newsletter" {{ block.shopify_attributes }}>
+              {%- if block.settings.heading != blank -%}
+                <h3 class="kz-footer__heading">{{ block.settings.heading }}</h3>
+              {%- endif -%}
+              {%- if block.settings.subtext != blank -%}
+                <p class="kz-footer__newsletter-subtext">{{ block.settings.subtext }}</p>
+              {%- endif -%}
+
+              {%- form 'customer', class: 'kz-footer__newsletter-form' -%}
+                <input type="hidden" name="contact[tags]" value="newsletter">
+                <div class="kz-footer__newsletter-field">
+                  <input
+                    type="email"
+                    name="contact[email]"
+                    class="kz-footer__newsletter-input"
+                    value="{{ form.email }}"
+                    placeholder="{{ 'newsletter.label' | t | default: 'Enter your email address' }}"
+                    required
+                  >
+                  <button
+                    type="submit"
+                    class="kz-button kz-button--primary kz-footer__newsletter-btn"
+                    aria-label="{{ 'newsletter.button_label' | t | default: 'Subscribe' }}"
+                  >
+                    {% render 'icon', icon: 'arrow-right', class: 'kz-button__icon' %}
+                  </button>
+                </div>
+                {%- if form.posted_successfully? -%}
+                  <p class="kz-footer__newsletter-success">
+                    {{ 'newsletter.success' | t | default: 'Thanks for subscribing!' }}
+                  </p>
+                {%- endif -%}
+              {%- endform -%}
+            </div>
+        {%- endcase -%}
+      {%- endfor -%}
+    </div>
+  </div>
+
+  <!-- Bottom Footer Copyright & Payment Badges -->
+  <div class="kz-footer__bottom">
+    <div class="kz-footer__bottom-inner page-width">
+      <div class="kz-footer__copyright">
+        &copy; {{ 'now' | date: '%Y' }} {{ shop.name }}. All rights reserved. {{ powered_by_link }}
+      </div>
+
+      {%- if section.settings.show_payment_icons -%}
+        <div class="kz-footer__payment-types">
+          {%- for type in shop.enabled_payment_types -%}
+            <span class="kz-footer__payment-icon">
+              {{ type | payment_type_svg_tag: class: 'kz-payment-svg' }}
+            </span>
+          {%- endfor -%}
+        </div>
+      {%- endif -%}
+    </div>
+  </div>
+</footer>
+
+{% stylesheet %}
+  .kz-footer {
+    background-color: var(--kz-color-surface-dark, #111111);
+    color: var(--kz-color-text-inverse, #ffffff);
+    padding-top: var(--kz-space-12, 48px);
+    margin-top: var(--kz-space-12, 48px);
+    font-family: var(--kz-font-family-body);
+  }
+
+  .kz-footer__top {
+    padding-bottom: var(--kz-space-10, 40px);
+    max-width: var(--kz-page-max-width, 1400px);
+    margin: 0 auto;
+  }
+
+  .kz-footer__grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: var(--kz-space-8, 32px);
+  }
+
+  .kz-footer__heading {
+    margin: 0 0 var(--kz-space-4, 16px) 0;
+    font-family: var(--kz-font-family-heading);
+    font-size: var(--kz-font-size-base, 16px);
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: var(--kz-letter-spacing-wide, 0.05em);
+    color: #ffffff;
+  }
+
+  .kz-footer__menu-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  .kz-footer__menu-link {
+    color: #a3a3a3;
+    font-size: var(--kz-font-size-sm, 14px);
+    text-decoration: none;
+    transition: color var(--kz-transition-fast, 150ms ease);
+  }
+
+  .kz-footer__menu-link:hover {
+    color: var(--kz-color-secondary, #d4a373);
+  }
+
+  .kz-footer__text-content {
+    font-size: var(--kz-font-size-sm, 14px);
+    color: #a3a3a3;
+    line-height: 1.6;
+  }
+
+  .kz-footer__newsletter-subtext {
+    font-size: var(--kz-font-size-sm, 14px);
+    color: #a3a3a3;
+    margin-bottom: var(--kz-space-4, 16px);
+  }
+
+  .kz-footer__newsletter-field {
+    display: flex;
+    gap: 8px;
+  }
+
+  .kz-footer__newsletter-input {
+    flex: 1;
+    height: 44px;
+    padding: 0 16px;
+    font-family: var(--kz-font-family-body);
+    font-size: 14px;
+    color: #ffffff;
+    background-color: #222222;
+    border: 1px solid #333333;
+    border-radius: var(--kz-radius-button, 2px);
+  }
+
+  .kz-footer__newsletter-input:focus {
+    border-color: var(--kz-color-secondary, #d4a373);
+    outline: none;
+  }
+
+  .kz-footer__newsletter-btn {
+    height: 44px;
+    width: 44px;
+    padding: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .kz-footer__newsletter-success {
+    font-size: 13px;
+    color: var(--kz-color-success, #2a9d8f);
+    margin-top: 8px;
+  }
+
+  /* Footer Bottom Bar */
+  .kz-footer__bottom {
+    border-top: 1px solid #222222;
+    padding: var(--kz-space-6, 24px) 0;
+  }
+
+  .kz-footer__bottom-inner {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+    max-width: var(--kz-page-max-width, 1400px);
+    margin: 0 auto;
+    font-size: 13px;
+    color: #888888;
+  }
+
+  .kz-footer__copyright a {
+    color: #888888;
+    text-decoration: underline;
+  }
+
+  .kz-footer__payment-types {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    flex-wrap: wrap;
+  }
+
+  .kz-footer__payment-icon {
+    display: inline-flex;
+    align-items: center;
+  }
+
+  .kz-payment-svg {
+    height: 24px;
+    width: auto;
+  }
+{% endstylesheet %}
+
+{% schema %}
+{
+  "name": "Footer",
+  "settings": [
+    {
+      "type": "checkbox",
+      "id": "show_payment_icons",
+      "default": true,
+      "label": "Show payment icons"
+    }
+  ],
+  "blocks": [
+    {
+      "type": "link_list",
+      "name": "Menu column",
+      "settings": [
+        {
+          "type": "text",
+          "id": "heading",
+          "default": "Quick Links",
+          "label": "Heading"
+        },
+        {
+          "type": "link_list",
+          "id": "menu",
+          "default": "footer",
+          "label": "Menu"
+        }
+      ]
+    },
+    {
+      "type": "text",
+      "name": "Text column",
+      "settings": [
+        {
+          "type": "text",
+          "id": "heading",
+          "default": "About ShopziCurious",
+          "label": "Heading"
+        },
+        {
+          "type": "richtext",
+          "id": "subtext",
+          "default": "<p>Curated luxury fashion and timeless aesthetic essentials crafted for modern living.</p>",
+          "label": "Subtext"
+        }
+      ]
+    },
+    {
+      "type": "newsletter",
+      "name": "Newsletter column",
+      "limit": 1,
+      "settings": [
+        {
+          "type": "text",
+          "id": "heading",
+          "default": "Join the Club",
+          "label": "Heading"
+        },
+        {
+          "type": "text",
+          "id": "subtext",
+          "default": "Subscribe to receive private sale invites and new collection drops.",
+          "label": "Subtext"
+        }
+      ]
+    }
+  ],
+  "default": {
+    "blocks": [
+      {
+        "type": "link_list"
+      },
+      {
+        "type": "text"
+      },
+      {
+        "type": "newsletter"
+      }
+    ]
+  }
+}
+{% endschema %}

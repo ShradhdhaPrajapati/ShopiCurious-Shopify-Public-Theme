@@ -1,0 +1,696 @@
+[
+  {
+    "name": "theme_info",
+    "theme_name": "ShopziCurious",
+    "theme_version": "1.0.0",
+    "theme_author": "Theme Architect Team",
+    "theme_documentation_url": "https://shopzicurious.com/docs",
+    "theme_support_url": "https://shopzicurious.com/support"
+  },
+  {
+    "name": "Branding",
+    "settings": [
+      {
+        "type": "header",
+        "content": "Brand Logo"
+      },
+      {
+        "type": "image_picker",
+        "id": "logo",
+        "label": "Desktop Logo"
+      },
+      {
+        "type": "range",
+        "id": "logo_width",
+        "min": 50,
+        "max": 300,
+        "step": 10,
+        "unit": "px",
+        "label": "Custom Logo Width",
+        "default": 160
+      },
+      {
+        "type": "image_picker",
+        "id": "logo_mobile",
+        "label": "Mobile Logo (Optional)"
+      },
+      {
+        "type": "header",
+        "content": "Favicon"
+      },
+      {
+        "type": "image_picker",
+        "id": "favicon",
+        "label": "Favicon Image",
+        "info": "Scaled down to 32x32px PNG"
+      }
+    ]
+  },
+  {
+    "name": "Colors",
+    "settings": [
+      {
+        "type": "header",
+        "content": "Brand Palette"
+      },
+      {
+        "type": "color",
+        "id": "color_primary",
+        "label": "Primary Color",
+        "default": "#111111"
+      },
+      {
+        "type": "color",
+        "id": "color_secondary",
+        "label": "Brand Accent Color (Fashion Warm Neutral)",
+        "default": "#D4A373"
+      },
+      {
+        "type": "color",
+        "id": "color_accent",
+        "label": "Highlight Accent Color",
+        "default": "#E76F51"
+      },
+      {
+        "type": "header",
+        "content": "Backgrounds & Surfaces"
+      },
+      {
+        "type": "color",
+        "id": "color_background",
+        "label": "Page Background",
+        "default": "#FFFFFF"
+      },
+      {
+        "type": "color",
+        "id": "color_surface",
+        "label": "Surface / Card Background",
+        "default": "#F8F9FA"
+      },
+      {
+        "type": "color",
+        "id": "color_border",
+        "label": "Border & Line Color",
+        "default": "#E5E5E5"
+      },
+      {
+        "type": "header",
+        "content": "Typography Colors"
+      },
+      {
+        "type": "color",
+        "id": "color_heading",
+        "label": "Heading Text Color",
+        "default": "#111111"
+      },
+      {
+        "type": "color",
+        "id": "color_text_primary",
+        "label": "Body Text Color",
+        "default": "#2B2B2B"
+      },
+      {
+        "type": "color",
+        "id": "color_text_muted",
+        "label": "Muted / Subtitle Color",
+        "default": "#757575"
+      },
+      {
+        "type": "header",
+        "content": "Status & Overlay"
+      },
+      {
+        "type": "color",
+        "id": "color_success",
+        "label": "Success Color",
+        "default": "#2A9D8F"
+      },
+      {
+        "type": "color",
+        "id": "color_warning",
+        "label": "Warning Color",
+        "default": "#E9C46A"
+      },
+      {
+        "type": "color",
+        "id": "color_error",
+        "label": "Error Color",
+        "default": "#E63946"
+      },
+      {
+        "type": "color",
+        "id": "color_overlay",
+        "label": "Image Overlay Backdrop",
+        "default": "#000000"
+      }
+    ]
+  },
+  {
+    "name": "Typography",
+    "settings": [
+      {
+        "type": "header",
+        "content": "Font Families"
+      },
+      {
+        "type": "font_picker",
+        "id": "type_heading_font",
+        "label": "Heading Font (Editorial Serif / Sans)",
+        "default": "playfair_display_n6"
+      },
+      {
+        "type": "font_picker",
+        "id": "type_primary_font",
+        "label": "Body Font",
+        "default": "work_sans_n4"
+      },
+      {
+        "type": "font_picker",
+        "id": "type_nav_font",
+        "label": "Navigation Font",
+        "default": "work_sans_n5"
+      },
+      {
+        "type": "header",
+        "content": "Sizing & Ratios"
+      },
+      {
+        "type": "range",
+        "id": "base_font_size",
+        "min": 14,
+        "max": 18,
+        "step": 1,
+        "unit": "px",
+        "label": "Base Body Font Size",
+        "default": 16
+      },
+      {
+        "type": "range",
+        "id": "heading_scale",
+        "min": 85,
+        "max": 130,
+        "step": 5,
+        "unit": "%",
+        "label": "Heading Scale Multiplier",
+        "default": 100
+      }
+    ]
+  },
+  {
+    "name": "Layout",
+    "settings": [
+      {
+        "type": "header",
+        "content": "Page Containers"
+      },
+      {
+        "type": "select",
+        "id": "max_page_width",
+        "label": "Container Maximum Width",
+        "options": [
+          { "value": "1200px", "label": "Standard (1200px)" },
+          { "value": "1280px", "label": "Comfortable (1280px)" },
+          { "value": "1440px", "label": "Wide Editorial (1440px)" },
+          { "value": "1600px", "label": "Ultra Wide Fashion (1600px)" }
+        ],
+        "default": "1280px"
+      },
+      {
+        "type": "range",
+        "id": "min_page_margin",
+        "min": 12,
+        "max": 32,
+        "step": 2,
+        "unit": "px",
+        "label": "Mobile Outer Margin",
+        "default": 20
+      },
+      {
+        "type": "header",
+        "content": "Spacing & Grid"
+      },
+      {
+        "type": "range",
+        "id": "section_spacing_desktop",
+        "min": 40,
+        "max": 120,
+        "step": 8,
+        "unit": "px",
+        "label": "Desktop Section Vertical Spacing",
+        "default": 80
+      },
+      {
+        "type": "range",
+        "id": "grid_gap",
+        "min": 12,
+        "max": 48,
+        "step": 4,
+        "unit": "px",
+        "label": "Default Grid Gap",
+        "default": 24
+      },
+      {
+        "type": "header",
+        "content": "Borders & Radii"
+      },
+      {
+        "type": "range",
+        "id": "card_corner_radius",
+        "min": 0,
+        "max": 24,
+        "step": 2,
+        "unit": "px",
+        "label": "Card Corner Radius",
+        "default": 4
+      },
+      {
+        "type": "range",
+        "id": "button_corner_radius",
+        "min": 0,
+        "max": 40,
+        "step": 2,
+        "unit": "px",
+        "label": "Button Corner Radius",
+        "default": 2
+      },
+      {
+        "type": "range",
+        "id": "input_corner_radius",
+        "min": 0,
+        "max": 20,
+        "step": 2,
+        "unit": "px",
+        "label": "Input Corner Radius",
+        "default": 2
+      }
+    ]
+  },
+  {
+    "name": "Buttons",
+    "settings": [
+      {
+        "type": "select",
+        "id": "primary_button_style",
+        "label": "Primary Button Design",
+        "options": [
+          { "value": "solid", "label": "Solid Primary Color" },
+          { "value": "accent", "label": "Solid Accent Color" },
+          { "value": "outline", "label": "Outline Border" }
+        ],
+        "default": "solid"
+      },
+      {
+        "type": "select",
+        "id": "button_hover_effect",
+        "label": "Button Hover Effect",
+        "options": [
+          { "value": "lift", "label": "Lift Up & Shadow" },
+          { "value": "color_shift", "label": "Darken Color" },
+          { "value": "none", "label": "None" }
+        ],
+        "default": "lift"
+      },
+      {
+        "type": "select",
+        "id": "button_height",
+        "label": "Button Height Scale",
+        "options": [
+          { "value": "40px", "label": "Compact (40px)" },
+          { "value": "48px", "label": "Standard (48px)" },
+          { "value": "56px", "label": "Large Editorial (56px)" }
+        ],
+        "default": "48px"
+      }
+    ]
+  },
+  {
+    "name": "Cards",
+    "settings": [
+      {
+        "type": "select",
+        "id": "card_style",
+        "label": "Card Visual Style",
+        "options": [
+          { "value": "flat", "label": "Flat Minimalist" },
+          { "value": "bordered", "label": "Subtle Border" },
+          { "value": "shadow", "label": "Elevated Soft Shadow" }
+        ],
+        "default": "flat"
+      },
+      {
+        "type": "select",
+        "id": "card_hover_effect",
+        "label": "Card Hover Micro-Animation",
+        "options": [
+          { "value": "zoom", "label": "Inner Image Zoom" },
+          { "value": "lift", "label": "Card Elevation Lift" },
+          { "value": "none", "label": "Static" }
+        ],
+        "default": "zoom"
+      }
+    ]
+  },
+  {
+    "name": "Product Card",
+    "settings": [
+      {
+        "type": "header",
+        "content": "Image & Aspect Ratio"
+      },
+      {
+        "type": "select",
+        "id": "product_card_image_ratio",
+        "label": "Fashion Image Aspect Ratio",
+        "options": [
+          { "value": "3/4", "label": "Standard Fashion Portrait (3:4)" },
+          { "value": "2/3", "label": "Editorial Tall Apparel (2:3)" },
+          { "value": "1/1", "label": "Square Accessories (1:1)" },
+          { "value": "natural", "label": "Natural Image Ratio" }
+        ],
+        "default": "3/4"
+      },
+      {
+        "type": "checkbox",
+        "id": "show_secondary_image",
+        "label": "Show Secondary Image on Hover (Second Look)",
+        "default": true
+      },
+      {
+        "type": "header",
+        "content": "Fashion Variant Swatches"
+      },
+      {
+        "type": "checkbox",
+        "id": "enable_color_swatches",
+        "label": "Enable Color Option Swatches on Cards",
+        "default": true
+      },
+      {
+        "type": "checkbox",
+        "id": "enable_size_swatches",
+        "label": "Enable Quick Size Badges on Cards (XS, S, M, L, XL)",
+        "default": true
+      },
+      {
+        "type": "header",
+        "content": "Quick Actions & Badges"
+      },
+      {
+        "type": "checkbox",
+        "id": "enable_quick_shop",
+        "label": "Enable Quick Shop Modal Trigger",
+        "default": true
+      },
+      {
+        "type": "checkbox",
+        "id": "enable_wishlist_button",
+        "label": "Enable Wishlist Quick Trigger",
+        "default": true
+      },
+      {
+        "type": "checkbox",
+        "id": "show_new_arrival_badge",
+        "label": "Show 'New Arrival' Badge",
+        "default": true
+      },
+      {
+        "type": "checkbox",
+        "id": "show_bestseller_badge",
+        "label": "Show 'Best Seller' Badge",
+        "default": true
+      },
+      {
+        "type": "checkbox",
+        "id": "show_limited_badge",
+        "label": "Show 'Limited Edition' Badge",
+        "default": true
+      },
+      {
+        "type": "checkbox",
+        "id": "show_sale_badge",
+        "label": "Show Discount Sale Badge",
+        "default": true
+      }
+    ]
+  },
+  {
+    "name": "Collection",
+    "settings": [
+      {
+        "type": "range",
+        "id": "collection_desktop_columns",
+        "min": 2,
+        "max": 5,
+        "step": 1,
+        "label": "Desktop Grid Columns",
+        "default": 4
+      },
+      {
+        "type": "select",
+        "id": "collection_mobile_columns",
+        "label": "Mobile Grid Columns",
+        "options": [
+          { "value": "1", "label": "1 Column" },
+          { "value": "2", "label": "2 Columns" }
+        ],
+        "default": "2"
+      },
+      {
+        "type": "range",
+        "id": "products_per_page",
+        "min": 8,
+        "max": 48,
+        "step": 4,
+        "label": "Products Per Page",
+        "default": 16
+      },
+      {
+        "type": "checkbox",
+        "id": "enable_lookbook_mode",
+        "label": "Enable Editorial Lookbook Grid Layout Mode",
+        "default": false
+      },
+      {
+        "type": "checkbox",
+        "id": "enable_filtering",
+        "label": "Enable Faceted AJAX Filters (Size, Color, Brand, Price)",
+        "default": true
+      },
+      {
+        "type": "checkbox",
+        "id": "enable_sorting",
+        "label": "Enable Sorting Dropdown",
+        "default": true
+      }
+    ]
+  },
+  {
+    "name": "Product Page",
+    "settings": [
+      {
+        "type": "checkbox",
+        "id": "enable_sticky_add_to_cart",
+        "label": "Enable Sticky Add To Cart Bar on Mobile/Scroll",
+        "default": true
+      },
+      {
+        "type": "select",
+        "id": "gallery_layout",
+        "label": "Apparel Media Gallery Layout",
+        "options": [
+          { "value": "stacked", "label": "Editorial Vertical Stacked" },
+          { "value": "thumbnails_left", "label": "Carousel with Left Thumbnails" },
+          { "value": "grid_2col", "label": "2-Column Runway Image Grid" }
+        ],
+        "default": "stacked"
+      },
+      {
+        "type": "checkbox",
+        "id": "enable_size_guide",
+        "label": "Enable Size Guide Popup Modal Link",
+        "default": true
+      },
+      {
+        "type": "checkbox",
+        "id": "show_model_info",
+        "label": "Show Model Information Block (Height & Size Worn)",
+        "default": true
+      },
+      {
+        "type": "checkbox",
+        "id": "show_fabric_info",
+        "label": "Show Fabric & Material Composition Accordion",
+        "default": true
+      },
+      {
+        "type": "checkbox",
+        "id": "show_care_instructions",
+        "label": "Show Garment Washing & Care Instructions Accordion",
+        "default": true
+      },
+      {
+        "type": "checkbox",
+        "id": "show_fit_info",
+        "label": "Show Sizing & Fit Recommendation Bar (e.g. Runs True to Size)",
+        "default": true
+      }
+    ]
+  },
+  {
+    "name": "Cart",
+    "settings": [
+      {
+        "type": "select",
+        "id": "cart_type",
+        "label": "Cart Action Mode",
+        "options": [
+          { "value": "drawer", "label": "Ajax Slide-Out Cart Drawer" },
+          { "value": "page", "label": "Dedicated Cart Page" }
+        ],
+        "default": "drawer"
+      },
+      {
+        "type": "checkbox",
+        "id": "enable_free_shipping_bar",
+        "label": "Enable Free Shipping Goal Progress Bar",
+        "default": true
+      },
+      {
+        "type": "range",
+        "id": "free_shipping_threshold",
+        "min": 25,
+        "max": 300,
+        "step": 25,
+        "unit": "$",
+        "label": "Free Shipping Threshold",
+        "default": 100
+      },
+      {
+        "type": "checkbox",
+        "id": "enable_cart_notes",
+        "label": "Enable Gift Message / Special Notes Box",
+        "default": true
+      }
+    ]
+  },
+  {
+    "name": "Search",
+    "settings": [
+      {
+        "type": "checkbox",
+        "id": "enable_predictive_search",
+        "label": "Enable Live Predictive Instant Search",
+        "default": true
+      },
+      {
+        "type": "text",
+        "id": "search_trending_keywords",
+        "label": "Trending Search Keywords (Comma separated)",
+        "default": "Dresses, Jackets, Denim, Linen, Coats"
+      }
+    ]
+  },
+  {
+    "name": "Blog",
+    "settings": [
+      {
+        "type": "checkbox",
+        "id": "show_article_author",
+        "label": "Show Article Author",
+        "default": true
+      },
+      {
+        "type": "checkbox",
+        "id": "show_article_date",
+        "label": "Show Article Published Date",
+        "default": true
+      },
+      {
+        "type": "checkbox",
+        "id": "show_reading_time",
+        "label": "Show Estimated Reading Time",
+        "default": true
+      }
+    ]
+  },
+  {
+    "name": "Footer",
+    "settings": [
+      {
+        "type": "checkbox",
+        "id": "show_footer_newsletter",
+        "label": "Show Footer Newsletter Signup Form",
+        "default": true
+      },
+      {
+        "type": "checkbox",
+        "id": "show_social_icons",
+        "label": "Show Social Media Link Icons",
+        "default": true
+      },
+      {
+        "type": "checkbox",
+        "id": "show_payment_icons",
+        "label": "Show Secure Payment Method Badges",
+        "default": true
+      },
+      {
+        "type": "text",
+        "id": "copyright_text",
+        "label": "Custom Copyright Text",
+        "default": "© 2026 Premium Fashion Brand. All Rights Reserved."
+      }
+    ]
+  },
+  {
+    "name": "Performance",
+    "settings": [
+      {
+        "type": "checkbox",
+        "id": "enable_lazy_loading",
+        "label": "Enable Native Image Lazy Loading",
+        "default": true
+      },
+      {
+        "type": "checkbox",
+        "id": "enable_animations",
+        "label": "Enable Scroll & Entrance Animations",
+        "default": true
+      }
+    ]
+  },
+  {
+    "name": "Accessibility",
+    "settings": [
+      {
+        "type": "checkbox",
+        "id": "accessibility_focus_ring",
+        "label": "High Visibility Keyboard Focus Ring",
+        "default": true
+      },
+      {
+        "type": "checkbox",
+        "id": "respect_reduced_motion",
+        "label": "Respect User Prefers-Reduced-Motion Browser Setting",
+        "default": true
+      }
+    ]
+  },
+  {
+    "name": "Advanced",
+    "settings": [
+      {
+        "type": "html",
+        "id": "custom_css",
+        "label": "Custom Theme CSS Overrides",
+        "info": "Inject custom CSS properties directly into head without touching theme files."
+      },
+      {
+        "type": "html",
+        "id": "tracking_head_code",
+        "label": "Custom Analytics / Tracking Code",
+        "info": "Will be inserted directly before </head> tag."
+      }
+    ]
+  }
+]

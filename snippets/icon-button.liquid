@@ -1,0 +1,157 @@
+{% doc %}
+  Renders a circular or square icon button element with tooltip and badge count support.
+
+  @param {string} icon - Name of the SVG icon to render
+  @param {string} label - Accessibility text for screen readers (aria-label) and optional tooltip
+  @param {string} [url] - Optional destination URL (renders <a> tag if provided)
+  @param {string} [style] - Design style ('plain', 'outline', 'solid', 'ghost', Default: 'plain')
+  @param {string} [size] - Button size ('sm', 'md', 'lg', Default: 'md')
+  @param {string} [class] - Additional CSS class names
+  @param {string} [id] - DOM element ID
+  @param {string} [tooltip] - Tooltip position ('top', 'bottom', 'left', 'right')
+  @param {number} [badge_count] - Optional numeric badge count overlay (e.g. cart items count)
+  @param {boolean} [disabled] - Disables button state if true
+
+  @example
+  {% render 'icon-button', icon: 'bag', label: 'Cart', badge_count: cart.item_count, tooltip: 'bottom' %}
+  {% render 'icon-button', icon: 'heart', label: 'Wishlist', style: 'outline' %}
+{% enddoc %}
+
+{%- liquid
+  assign btn_icon = icon
+  assign btn_label = label | default: 'Button' | escape
+  assign btn_url = url
+  assign btn_style = style | default: 'plain'
+  assign btn_size = size | default: 'md'
+  assign btn_class = class | default: ''
+  assign btn_id = id
+  assign tooltip_pos = tooltip
+  assign count = badge_count | default: 0
+  assign is_disabled = disabled | default: false
+
+  assign full_class = 'kz-icon-button kz-icon-button--' | append: btn_style | append: ' kz-icon-button--' | append: btn_size
+  if btn_class != blank
+    assign full_class = full_class | append: ' ' | append: btn_class
+  endif
+
+  if btn_url != blank
+    assign tag_name = 'a'
+  else
+    assign tag_name = 'button'
+  endif
+-%}
+
+<{{ tag_name }}
+  {% if tag_name == 'button' %}
+    type="button"
+    {% if is_disabled %}disabled{% endif %}
+  {% else %}
+    href="{{ btn_url }}"
+    {% if is_disabled %}aria-disabled="true" tabindex="-1"{% endif %}
+  {% endif %}
+  {% if btn_id != blank %}id="{{ btn_id }}"{% endif %}
+  class="{{ full_class }}"
+  aria-label="{{ btn_label }}"
+  {% if tooltip_pos != blank %}data-tooltip="{{ tooltip_pos }}" data-tooltip-text="{{ btn_label }}"{% endif %}
+>
+  {% render 'icon', icon: btn_icon, class: 'kz-icon-button__icon' %}
+
+  {%- if count > 0 -%}
+    <span class="kz-icon-button__badge" aria-hidden="true">
+      {{- count -}}
+    </span>
+  {%- endif -%}
+</{{ tag_name }}>
+
+{% stylesheet %}
+  .kz-icon-button {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+    width: 44px;
+    height: 44px;
+    padding: 0;
+    color: var(--kz-color-primary, #111111);
+    background-color: transparent;
+    border: 1px solid transparent;
+    border-radius: var(--kz-radius-circle, 50%);
+    cursor: pointer;
+    text-decoration: none;
+    transition: all var(--kz-transition-fast, 150ms ease);
+    flex-shrink: 0;
+  }
+
+  .kz-icon-button--sm {
+    width: 36px;
+    height: 36px;
+  }
+
+  .kz-icon-button--lg {
+    width: 52px;
+    height: 52px;
+  }
+
+  /* Style Variants */
+  .kz-icon-button--plain:hover:not([disabled]) {
+    color: var(--kz-color-secondary, #d4a373);
+    background-color: var(--kz-color-surface, #f8f9fa);
+  }
+
+  .kz-icon-button--ghost:hover:not([disabled]) {
+    background-color: var(--kz-color-surface-subtle, #f4f3ef);
+  }
+
+  .kz-icon-button--outline {
+    border-color: var(--kz-color-border, #e5e5e5);
+  }
+
+  .kz-icon-button--outline:hover:not([disabled]) {
+    border-color: var(--kz-color-primary, #111111);
+    background-color: var(--kz-color-primary, #111111);
+    color: var(--kz-color-text-inverse, #ffffff);
+  }
+
+  .kz-icon-button--solid {
+    background-color: var(--kz-color-primary, #111111);
+    color: var(--kz-color-text-inverse, #ffffff);
+  }
+
+  .kz-icon-button--solid:hover:not([disabled]) {
+    background-color: var(--kz-color-secondary, #d4a373);
+    color: var(--kz-color-primary, #111111);
+  }
+
+  .kz-icon-button__icon {
+    width: 20px;
+    height: 20px;
+    pointer-events: none;
+  }
+
+  .kz-icon-button--sm .kz-icon-button__icon {
+    width: 16px;
+    height: 16px;
+  }
+
+  .kz-icon-button--lg .kz-icon-button__icon {
+    width: 24px;
+    height: 24px;
+  }
+
+  /* Badge Overlay */
+  .kz-icon-button__badge {
+    position: absolute;
+    top: 2px;
+    right: 2px;
+    min-width: 18px;
+    height: 18px;
+    padding: 0 4px;
+    font-size: 10px;
+    font-weight: 700;
+    line-height: 18px;
+    text-align: center;
+    color: #ffffff;
+    background-color: var(--kz-color-accent, #e76f51);
+    border-radius: 9999px;
+  }
+{% endstylesheet %}
