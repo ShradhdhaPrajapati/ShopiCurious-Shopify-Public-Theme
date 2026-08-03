@@ -17,7 +17,7 @@
   assign badge_size = size | default: 'md'
   assign badge_class = class | default: ''
 
-  assign full_class = 'kz-badge kz-badge--' | append: badge_type | append: ' kz-badge--' | append: badge_size
+  assign full_class = 'szc-badge szc-badge--' | append: badge_type | append: ' szc-badge--' | append: badge_size
   if badge_class != blank
     assign full_class = full_class | append: ' ' | append: badge_class
   endif
@@ -30,61 +30,61 @@
 {%- endif -%}
 
 {% stylesheet %}
-  .kz-badge {
+  .szc-badge {
     display: inline-flex;
     align-items: center;
     justify-content: center;
     padding: 0.25rem 0.6rem;
-    font-family: var(--kz-font-family-body);
-    font-size: var(--kz-font-size-xs, 11px);
+    font-family: var(--szc-font-family-body);
+    font-size: var(--szc-font-size-xs, 11px);
     font-weight: 700;
     line-height: 1;
-    letter-spacing: var(--kz-letter-spacing-uppercase, 0.1em);
+    letter-spacing: var(--szc-letter-spacing-uppercase, 0.1em);
     text-transform: uppercase;
-    border-radius: var(--kz-radius-xs, 2px);
+    border-radius: var(--szc-radius-xs, 2px);
     white-space: nowrap;
     user-select: none;
   }
 
-  .kz-badge--sm {
+  .szc-badge--sm {
     padding: 0.15rem 0.45rem;
     font-size: 10px;
   }
 
   /* Badge Color Variants */
-  .kz-badge--neutral {
-    background-color: var(--kz-color-primary, #111111);
-    color: var(--kz-color-text-inverse, #ffffff);
+  .szc-badge--neutral {
+    background-color: var(--szc-color-primary, #111111);
+    color: var(--szc-color-text-inverse, #ffffff);
   }
 
-  .kz-badge--new {
-    background-color: var(--kz-color-secondary, #d4a373);
-    color: var(--kz-color-primary, #111111);
+  .szc-badge--new {
+    background-color: var(--szc-color-secondary, #d4a373);
+    color: var(--szc-color-primary, #111111);
   }
 
-  .kz-badge--sale {
-    background-color: var(--kz-color-accent, #e76f51);
+  .szc-badge--sale {
+    background-color: var(--szc-color-accent, #e76f51);
     color: #ffffff;
   }
 
-  .kz-badge--bestseller {
+  .szc-badge--bestseller {
     background-color: #2a9d8f;
     color: #ffffff;
   }
 
-  .kz-badge--limited {
+  .szc-badge--limited {
     background-color: #e9c46a;
     color: #111111;
   }
 
-  .kz-badge--sold-out {
-    background-color: var(--kz-color-text-muted, #757575);
+  .szc-badge--sold-out {
+    background-color: var(--szc-color-text-muted, #757575);
     color: #ffffff;
   }
 
-  .kz-badge--outline {
+  .szc-badge--outline {
     background-color: transparent;
-    border: 1px solid var(--kz-color-border-strong, #cccccc);
-    color: var(--kz-color-text-primary, #2b2b2b);
+    border: 1px solid var(--szc-color-border-strong, #cccccc);
+    color: var(--szc-color-text-primary, #2b2b2b);
   }
 {% endstylesheet %}

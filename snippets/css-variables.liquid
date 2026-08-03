@@ -36,38 +36,38 @@
 
     --font-nav--family: {{ settings.type_nav_font.family }}, {{ settings.type_nav_font.fallback_families }};
 
-    --kz-font-size-base: {{ settings.base_font_size | default: 16 }}px;
-    --kz-heading-scale: {{ settings.heading_scale | default: 100 | divided_by: 100.0 }};
+    --szc-font-size-base: {{ settings.base_font_size | default: 16 }}px;
+    --szc-heading-scale: {{ settings.heading_scale | default: 100 | divided_by: 100.0 }};
 
     /* Dynamic Fashion Color Palette */
-    --kz-color-primary: {{ settings.color_primary | default: '#111111' }};
-    --kz-color-secondary: {{ settings.color_secondary | default: '#D4A373' }};
-    --kz-color-accent: {{ settings.color_accent | default: '#E76F51' }};
-    --kz-color-background: {{ settings.color_background | default: '#FFFFFF' }};
-    --kz-color-surface: {{ settings.color_surface | default: '#F8F9FA' }};
-    --kz-color-border: {{ settings.color_border | default: '#E5E5E5' }};
+    --szc-color-primary: {{ settings.color_primary | default: '#111111' }};
+    --szc-color-secondary: {{ settings.color_secondary | default: '#D4A373' }};
+    --szc-color-accent: {{ settings.color_accent | default: '#E76F51' }};
+    --szc-color-background: {{ settings.color_background | default: '#FFFFFF' }};
+    --szc-color-surface: {{ settings.color_surface | default: '#F8F9FA' }};
+    --szc-color-border: {{ settings.color_border | default: '#E5E5E5' }};
 
-    --kz-color-heading: {{ settings.color_heading | default: '#111111' }};
-    --kz-color-text-primary: {{ settings.color_text_primary | default: '#2B2B2B' }};
-    --kz-color-text-muted: {{ settings.color_text_muted | default: '#757575' }};
+    --szc-color-heading: {{ settings.color_heading | default: '#111111' }};
+    --szc-color-text-primary: {{ settings.color_text_primary | default: '#2B2B2B' }};
+    --szc-color-text-muted: {{ settings.color_text_muted | default: '#757575' }};
 
-    --kz-color-success: {{ settings.color_success | default: '#2A9D8F' }};
-    --kz-color-warning: {{ settings.color_warning | default: '#E9C46A' }};
-    --kz-color-error: {{ settings.color_error | default: '#E63946' }};
-    --kz-color-overlay: {{ settings.color_overlay | default: '#000000' }};
+    --szc-color-success: {{ settings.color_success | default: '#2A9D8F' }};
+    --szc-color-warning: {{ settings.color_warning | default: '#E9C46A' }};
+    --szc-color-error: {{ settings.color_error | default: '#E63946' }};
+    --szc-color-overlay: {{ settings.color_overlay | default: '#000000' }};
 
     /* Layout & Container Tokens */
     --page-width: {{ settings.max_page_width | default: '1280px' }};
     --page-margin: {{ settings.min_page_margin | default: 20 }}px;
-    --kz-section-spacing-desktop: {{ settings.section_spacing_desktop | default: 80 }}px;
-    --kz-grid-gap: {{ settings.grid_gap | default: 24 }}px;
+    --szc-section-spacing-desktop: {{ settings.section_spacing_desktop | default: 80 }}px;
+    --szc-grid-gap: {{ settings.grid_gap | default: 24 }}px;
 
     /* Border Radii */
     --style-border-radius-inputs: {{ settings.input_corner_radius | default: 2 }}px;
-    --kz-radius-button: {{ settings.button_corner_radius | default: 2 }}px;
-    --kz-radius-card: {{ settings.card_corner_radius | default: 4 }}px;
+    --szc-radius-button: {{ settings.button_corner_radius | default: 2 }}px;
+    --szc-radius-card: {{ settings.card_corner_radius | default: 4 }}px;
 
     /* Component Heights & Dimensions */
-    --kz-button-height: {{ settings.button_height | default: '48px' }};
+    --szc-button-height: {{ settings.button_height | default: '48px' }};
   }
 {% endstyle %}

@@ -1,11 +1,11 @@
 {%- liquid
-  assign height_class = 'kz-hero-banner--' | append: section.settings.section_height
-  assign layout_style_class = 'kz-hero-banner--layout-' | append: section.settings.layout_style | default: 'kz-hero-banner--layout-card'
+  assign height_class = 'szc-hero-banner--' | append: section.settings.section_height
+  assign layout_style_class = 'szc-hero-banner--layout-' | append: section.settings.layout_style | default: 'szc-hero-banner--layout-card'
   assign mobile_container_class = ''
   if section.settings.show_container_mobile
-    assign mobile_container_class = 'kz-hero-banner--content-below-mobile'
+    assign mobile_container_class = 'szc-hero-banner--content-below-mobile'
   endif
-  assign align_mobile_class = 'kz-hero-banner__content--align-mobile-' | append: section.settings.content_alignment_mobile | default: 'left'
+  assign align_mobile_class = 'szc-hero-banner__content--align-mobile-' | append: section.settings.content_alignment_mobile | default: 'left'
   assign has_blocks = false
   if section.blocks.size > 0
     assign has_blocks = true
@@ -14,12 +14,12 @@
 
 <hero-slider
   id="HeroBanner-{{ section.id }}"
-  class="kz-hero-banner {{ height_class }} {{ layout_style_class }} {{ mobile_container_class }} {{ align_mobile_class }}"
-  style="--kz-banner-radius: {{ section.settings.card_border_radius | default: 16 }}px;"
+  class="szc-hero-banner {{ height_class }} {{ layout_style_class }} {{ mobile_container_class }} {{ align_mobile_class }}"
+  style="--szc-banner-radius: {{ section.settings.card_border_radius | default: 16 }}px;"
   data-auto-rotate="{{ section.settings.auto_rotate }}"
   data-speed="{{ section.settings.change_slides_every }}"
 >
-  <div class="kz-hero-banner__slides" data-slides-container>
+  <div class="szc-hero-banner__slides" data-slides-container>
     {%- if has_blocks -%}
       {%- for block in section.blocks -%}
         {%- case block.type -%}
@@ -27,16 +27,16 @@
             {%- liquid
               assign hero_img = block.settings.image
               assign hero_img_mobile = block.settings.image_mobile | default: hero_img
-              assign align_class = 'kz-hero-banner__content--align-' | append: block.settings.content_alignment
+              assign align_class = 'szc-hero-banner__content--align-' | append: block.settings.content_alignment
               assign overlay_op = block.settings.overlay_opacity | default: section.settings.overlay_opacity
             -%}
             <div
-              class="kz-hero-banner__slide {% if forloop.first %}is-active{% endif %}"
+              class="szc-hero-banner__slide {% if forloop.first %}is-active{% endif %}"
               data-slide-index="{{ forloop.index0 }}"
-              style="--kz-overlay-opacity: {{ overlay_op | divided_by: 100.0 }};"
+              style="--szc-overlay-opacity: {{ overlay_op | divided_by: 100.0 }};"
               {{ block.shopify_attributes }}
             >
-              <div class="kz-hero-banner__media">
+              <div class="szc-hero-banner__media">
                 {%- if hero_img != blank -%}
                   <picture>
                     {%- if hero_img_mobile != blank -%}
@@ -46,32 +46,32 @@
                       hero_img
                       | image_url: width: 2400
                       | image_tag:
-                        class: 'kz-hero-banner__image',
+                        class: 'szc-hero-banner__image',
                         loading: 'eager',
                         fetchpriority: 'high',
                         alt: block.settings.heading
                     }}
                   </picture>
                 {%- else -%}
-                  <div class="kz-hero-banner__placeholder">
-                    {{ 'lifestyle-1' | placeholder_svg_tag: 'kz-image-placeholder' }}
+                  <div class="szc-hero-banner__placeholder">
+                    {{ 'lifestyle-1' | placeholder_svg_tag: 'szc-image-placeholder' }}
                   </div>
                 {%- endif -%}
-                <div class="kz-hero-banner__overlay"></div>
+                <div class="szc-hero-banner__overlay"></div>
               </div>
 
-              <div class="kz-hero-banner__container page-width">
-                <div class="kz-hero-banner__content {{ align_class }} kz-animate-fade-up">
+              <div class="szc-hero-banner__container page-width">
+                <div class="szc-hero-banner__content {{ align_class }} szc-animate-fade-up">
                   {%- if block.settings.subheading != blank -%}
-                    <span class="kz-hero-banner__subheading">{{ block.settings.subheading }}</span>
+                    <span class="szc-hero-banner__subheading">{{ block.settings.subheading }}</span>
                   {%- endif -%}
 
                   {%- if block.settings.heading != blank -%}
-                    <h1 class="kz-hero-banner__heading">{{ block.settings.heading }}</h1>
+                    <h1 class="szc-hero-banner__heading">{{ block.settings.heading }}</h1>
                   {%- endif -%}
 
                   {%- if block.settings.text != blank -%}
-                    <div class="kz-hero-banner__text">{{ block.settings.text }}</div>
+                    <div class="szc-hero-banner__text">{{ block.settings.text }}</div>
                   {%- endif -%}
 
                   {%- if block.settings.button_label_1 != blank or block.settings.button_label_2 != blank -%}
@@ -82,7 +82,7 @@
                       assign b2_size = block.settings.button_2_size | default: 'md'
                       assign mobile_layout = section.settings.buttons_layout_mobile | default: 'inline'
                     -%}
-                    <div class="kz-hero-banner__buttons kz-hero-banner__buttons--mobile-{{ mobile_layout }}">
+                    <div class="szc-hero-banner__buttons szc-hero-banner__buttons--mobile-{{ mobile_layout }}">
                       {%- if block.settings.button_label_1 != blank -%}
                         {% render 'button',
                           label: block.settings.button_label_1,
@@ -94,7 +94,7 @@
 
                       {%- if block.settings.button_label_2 != blank -%}
                         {%- assign hide_b2 = block.settings.hide_button_2_mobile -%}
-                        <div class="{% if hide_b2 %}kz-hero-banner__btn-2-mobile-hide{% endif %}">
+                        <div class="{% if hide_b2 %}szc-hero-banner__btn-2-mobile-hide{% endif %}">
                           {% render 'button',
                             label: block.settings.button_label_2,
                             url: block.settings.button_link_2,
@@ -114,14 +114,14 @@
       {%- liquid
         assign hero_img = section.settings.image
         assign hero_img_mobile = section.settings.image_mobile | default: hero_img
-        assign align_class = 'kz-hero-banner__content--align-' | append: section.settings.content_alignment
+        assign align_class = 'szc-hero-banner__content--align-' | append: section.settings.content_alignment
       -%}
       <div
-        class="kz-hero-banner__slide is-active"
+        class="szc-hero-banner__slide is-active"
         data-slide-index="0"
-        style="--kz-overlay-opacity: {{ section.settings.overlay_opacity | divided_by: 100.0 }};"
+        style="--szc-overlay-opacity: {{ section.settings.overlay_opacity | divided_by: 100.0 }};"
       >
-        <div class="kz-hero-banner__media">
+        <div class="szc-hero-banner__media">
           {%- if hero_img != blank -%}
             <picture>
               {%- if hero_img_mobile != blank -%}
@@ -131,36 +131,36 @@
                 hero_img
                 | image_url: width: 2400
                 | image_tag:
-                  class: 'kz-hero-banner__image',
+                  class: 'szc-hero-banner__image',
                   loading: 'eager',
                   fetchpriority: 'high',
                   alt: section.settings.heading
               }}
             </picture>
           {%- else -%}
-            <div class="kz-hero-banner__placeholder">
-              {{ 'lifestyle-1' | placeholder_svg_tag: 'kz-image-placeholder' }}
+            <div class="szc-hero-banner__placeholder">
+              {{ 'lifestyle-1' | placeholder_svg_tag: 'szc-image-placeholder' }}
             </div>
           {%- endif -%}
-          <div class="kz-hero-banner__overlay"></div>
+          <div class="szc-hero-banner__overlay"></div>
         </div>
 
-        <div class="kz-hero-banner__container page-width">
-          <div class="kz-hero-banner__content {{ align_class }} kz-animate-fade-up">
+        <div class="szc-hero-banner__container page-width">
+          <div class="szc-hero-banner__content {{ align_class }} szc-animate-fade-up">
             {%- if section.settings.subheading != blank -%}
-              <span class="kz-hero-banner__subheading">{{ section.settings.subheading }}</span>
+              <span class="szc-hero-banner__subheading">{{ section.settings.subheading }}</span>
             {%- endif -%}
 
             {%- if section.settings.heading != blank -%}
-              <h1 class="kz-hero-banner__heading">{{ section.settings.heading }}</h1>
+              <h1 class="szc-hero-banner__heading">{{ section.settings.heading }}</h1>
             {%- endif -%}
 
             {%- if section.settings.text != blank -%}
-              <div class="kz-hero-banner__text">{{ section.settings.text }}</div>
+              <div class="szc-hero-banner__text">{{ section.settings.text }}</div>
             {%- endif -%}
 
             {%- if section.settings.button_label_1 != blank or section.settings.button_label_2 != blank -%}
-              <div class="kz-hero-banner__buttons kz-hero-banner__buttons--mobile-{{ section.settings.buttons_layout_mobile | default: 'inline' }}">
+              <div class="szc-hero-banner__buttons szc-hero-banner__buttons--mobile-{{ section.settings.buttons_layout_mobile | default: 'inline' }}">
                 {%- if section.settings.button_label_1 != blank -%}
                   {% render 'button',
                     label: section.settings.button_label_1,
@@ -171,7 +171,7 @@
                 {%- endif -%}
 
                 {%- if section.settings.button_label_2 != blank -%}
-                  <div class="kz-hero-banner__btn-2-mobile-hide">
+                  <div class="szc-hero-banner__btn-2-mobile-hide">
                     {% render 'button',
                       label: section.settings.button_label_2,
                       url: section.settings.button_link_2,
@@ -189,21 +189,21 @@
   </div>
 
   {%- if section.blocks.size > 1 -%}
-    <div class="kz-hero-banner__controls">
+    <div class="szc-hero-banner__controls">
       <button
         type="button"
-        class="kz-hero-banner__nav-btn kz-hero-banner__nav-btn--prev"
+        class="szc-hero-banner__nav-btn szc-hero-banner__nav-btn--prev"
         data-nav-prev
         aria-label="{{ 'general.pagination.previous' | t | default: 'Previous slide' }}"
       >
-        {% render 'icon', icon: 'chevron-left', class: 'kz-hero-banner__nav-icon' %}
+        {% render 'icon', icon: 'chevron-left', class: 'szc-hero-banner__nav-icon' %}
       </button>
 
-      <div class="kz-hero-banner__dots" data-dots-container>
+      <div class="szc-hero-banner__dots" data-dots-container>
         {%- for block in section.blocks -%}
           <button
             type="button"
-            class="kz-hero-banner__dot {% if forloop.first %}is-active{% endif %}"
+            class="szc-hero-banner__dot {% if forloop.first %}is-active{% endif %}"
             data-dot-index="{{ forloop.index0 }}"
             aria-label="Go to slide {{ forloop.index }}"
           ></button>
@@ -212,11 +212,11 @@
 
       <button
         type="button"
-        class="kz-hero-banner__nav-btn kz-hero-banner__nav-btn--next"
+        class="szc-hero-banner__nav-btn szc-hero-banner__nav-btn--next"
         data-nav-next
         aria-label="{{ 'general.pagination.next' | t | default: 'Next slide' }}"
       >
-        {% render 'icon', icon: 'chevron-right', class: 'kz-hero-banner__nav-icon' %}
+        {% render 'icon', icon: 'chevron-right', class: 'szc-hero-banner__nav-icon' %}
       </button>
     </div>
   {%- endif -%}
@@ -226,7 +226,7 @@
   /* ==========================================================================
      1. HERO BANNER - BASE & SHARED STYLES
      ========================================================================== */
-  .kz-hero-banner {
+  .szc-hero-banner {
     position: relative;
     width: 100%;
     overflow: hidden;
@@ -235,8 +235,8 @@
   }
 
   /* Default Desktop / Tablet: Full Width Layout (Ignore Card Settings) */
-  .kz-hero-banner--layout-full,
-  .kz-hero-banner--layout-card {
+  .szc-hero-banner--layout-full,
+  .szc-hero-banner--layout-card {
     width: 100%;
     max-width: none;
     margin: 0;
@@ -244,13 +244,13 @@
     box-shadow: none;
   }
 
-  .kz-hero-banner__slides {
+  .szc-hero-banner__slides {
     position: relative;
     width: 100%;
     height: 100%;
   }
 
-  .kz-hero-banner__slide {
+  .szc-hero-banner__slide {
     position: absolute;
     inset: 0;
     width: 100%;
@@ -264,14 +264,14 @@
     z-index: 1;
   }
 
-  .kz-hero-banner__slide.is-active {
+  .szc-hero-banner__slide.is-active {
     opacity: 1;
     visibility: visible;
     pointer-events: auto;
     z-index: 2;
   }
 
-  .kz-hero-banner__media {
+  .szc-hero-banner__media {
     position: absolute;
     inset: 0;
     width: 100%;
@@ -280,7 +280,7 @@
     overflow: hidden;
   }
 
-  .kz-hero-banner__media picture {
+  .szc-hero-banner__media picture {
     display: block;
     width: 100%;
     height: 100%;
@@ -288,7 +288,7 @@
     inset: 0;
   }
 
-  .kz-hero-banner__image {
+  .szc-hero-banner__image {
     position: absolute;
     inset: 0;
     width: 100%;
@@ -297,7 +297,7 @@
     object-position: center;
   }
 
-  .kz-hero-banner__placeholder {
+  .szc-hero-banner__placeholder {
     width: 100%;
     height: 100%;
     display: flex;
@@ -306,67 +306,67 @@
     background-color: #2b2b2b;
   }
 
-  .kz-hero-banner__overlay {
+  .szc-hero-banner__overlay {
     position: absolute;
     inset: 0;
     width: 100%;
     height: 100%;
-    background-color: rgba(0, 0, 0, var(--kz-overlay-opacity, 0.3));
+    background-color: rgba(0, 0, 0, var(--szc-overlay-opacity, 0.3));
     z-index: 2;
   }
 
-  .kz-hero-banner__container {
+  .szc-hero-banner__container {
     position: relative;
     z-index: 3;
     width: 100%;
     height: 100%;
-    max-width: var(--kz-page-max-width, 1400px);
+    max-width: var(--szc-page-max-width, 1400px);
     margin: 0 auto;
     display: flex;
   }
 
-  .kz-hero-banner__content {
+  .szc-hero-banner__content {
     display: flex;
     flex-direction: column;
     color: #ffffff;
   }
 
-  .kz-hero-banner__subheading {
-    font-family: var(--kz-font-family-body);
+  .szc-hero-banner__subheading {
+    font-family: var(--szc-font-family-body);
     font-weight: 700;
     text-transform: uppercase;
-    letter-spacing: var(--kz-letter-spacing-uppercase, 0.15em);
-    color: var(--kz-color-secondary, #d4a373);
+    letter-spacing: var(--szc-letter-spacing-uppercase, 0.15em);
+    color: var(--szc-color-secondary, #d4a373);
   }
 
-  .kz-hero-banner__heading {
-    font-family: var(--kz-font-family-heading);
+  .szc-hero-banner__heading {
+    font-family: var(--szc-font-family-heading);
     font-weight: 700;
     color: #ffffff;
   }
 
-  .kz-hero-banner__text {
-    font-family: var(--kz-font-family-body);
+  .szc-hero-banner__text {
+    font-family: var(--szc-font-family-body);
     color: rgba(255, 255, 255, 0.9);
   }
 
-  .kz-hero-banner__buttons {
+  .szc-hero-banner__buttons {
     display: flex;
     align-items: center;
   }
 
-  .kz-hero-banner .kz-button--outline {
+  .szc-hero-banner .szc-button--outline {
     border-color: #ffffff;
     color: #ffffff;
   }
 
-  .kz-hero-banner .kz-button--outline:hover {
+  .szc-hero-banner .szc-button--outline:hover {
     background-color: #ffffff;
     color: #111111;
   }
 
   /* Shared Slider Navigation Controls */
-  .kz-hero-banner__controls {
+  .szc-hero-banner__controls {
     position: absolute;
     left: 50%;
     transform: translateX(-50%);
@@ -385,7 +385,7 @@
     box-sizing: border-box;
   }
 
-  .kz-hero-banner__nav-btn {
+  .szc-hero-banner__nav-btn {
     background: transparent !important;
     border: none !important;
     color: #ffffff !important;
@@ -402,17 +402,17 @@
     transition: opacity 150ms ease, transform 150ms ease !important;
   }
 
-  .kz-hero-banner__nav-btn:hover {
+  .szc-hero-banner__nav-btn:hover {
     opacity: 1 !important;
     transform: scale(1.1) !important;
   }
 
-  .kz-hero-banner__nav-icon {
+  .szc-hero-banner__nav-icon {
     width: 16px !important;
     height: 16px !important;
   }
 
-  .kz-hero-banner__dots {
+  .szc-hero-banner__dots {
     display: flex !important;
     align-items: center !important;
     justify-content: center !important;
@@ -420,7 +420,7 @@
     height: 12px !important;
   }
 
-  .kz-hero-banner__dot {
+  .szc-hero-banner__dot {
     width: 8px !important;
     height: 8px !important;
     border-radius: 9999px !important;
@@ -434,7 +434,7 @@
     transition: all 250ms ease !important;
   }
 
-  .kz-hero-banner__dot.is-active {
+  .szc-hero-banner__dot.is-active {
     width: 22px !important;
     height: 8px !important;
     background-color: #ffffff !important;
@@ -444,68 +444,68 @@
      2. DESKTOP LAYOUT (≥ 1024px)
      ========================================================================== */
   @media (min-width: 1024px) {
-    .kz-hero-banner--small {
+    .szc-hero-banner--small {
       height: 450px;
     }
-    .kz-hero-banner--medium {
+    .szc-hero-banner--medium {
       height: 600px;
     }
-    .kz-hero-banner--large {
+    .szc-hero-banner--large {
       height: 750px;
     }
-    .kz-hero-banner--full {
+    .szc-hero-banner--full {
       height: 90vh;
       min-height: 650px;
     }
 
-    .kz-hero-banner__container {
+    .szc-hero-banner__container {
       padding: 48px 24px 110px 24px;
       align-items: center;
     }
 
-    .kz-hero-banner__content {
+    .szc-hero-banner__content {
       max-width: 640px;
     }
 
-    .kz-hero-banner__content--align-left {
+    .szc-hero-banner__content--align-left {
       text-align: left;
       align-items: flex-start;
     }
-    .kz-hero-banner__content--align-center {
+    .szc-hero-banner__content--align-center {
       text-align: center;
       align-items: center;
       margin: 0 auto;
     }
-    .kz-hero-banner__content--align-right {
+    .szc-hero-banner__content--align-right {
       text-align: right;
       align-items: flex-end;
       margin-left: auto;
     }
 
-    .kz-hero-banner__subheading {
+    .szc-hero-banner__subheading {
       font-size: 14px;
       margin-bottom: 12px;
     }
 
-    .kz-hero-banner__heading {
+    .szc-hero-banner__heading {
       font-size: 64px;
       line-height: 1.1;
       margin: 0 0 16px 0;
     }
 
-    .kz-hero-banner__text {
+    .szc-hero-banner__text {
       font-size: 16px;
       line-height: 1.6;
       margin-bottom: 24px;
     }
 
-    .kz-hero-banner__buttons {
+    .szc-hero-banner__buttons {
       flex-direction: row;
       flex-wrap: wrap;
       gap: 16px;
     }
 
-    .kz-hero-banner__controls {
+    .szc-hero-banner__controls {
       bottom: 72px;
       padding: 8px 16px;
       gap: 14px;
@@ -516,68 +516,68 @@
      3. TABLET LAYOUT (768px – 1023px)
      ========================================================================== */
   @media (min-width: 768px) and (max-width: 1023px) {
-    .kz-hero-banner--small {
+    .szc-hero-banner--small {
       height: 380px;
     }
-    .kz-hero-banner--medium {
+    .szc-hero-banner--medium {
       height: 480px;
     }
-    .kz-hero-banner--large {
+    .szc-hero-banner--large {
       height: 560px;
     }
-    .kz-hero-banner--full {
+    .szc-hero-banner--full {
       height: 75vh;
       min-height: 480px;
     }
 
-    .kz-hero-banner__container {
+    .szc-hero-banner__container {
       padding: 36px 20px 80px 20px;
       align-items: center;
     }
 
-    .kz-hero-banner__content {
+    .szc-hero-banner__content {
       max-width: 540px;
     }
 
-    .kz-hero-banner__content--align-left {
+    .szc-hero-banner__content--align-left {
       text-align: left;
       align-items: flex-start;
     }
-    .kz-hero-banner__content--align-center {
+    .szc-hero-banner__content--align-center {
       text-align: center;
       align-items: center;
       margin: 0 auto;
     }
-    .kz-hero-banner__content--align-right {
+    .szc-hero-banner__content--align-right {
       text-align: right;
       align-items: flex-end;
       margin-left: auto;
     }
 
-    .kz-hero-banner__subheading {
+    .szc-hero-banner__subheading {
       font-size: 13px;
       margin-bottom: 10px;
     }
 
-    .kz-hero-banner__heading {
+    .szc-hero-banner__heading {
       font-size: 42px;
       line-height: 1.12;
       margin: 0 0 14px 0;
     }
 
-    .kz-hero-banner__text {
+    .szc-hero-banner__text {
       font-size: 15px;
       line-height: 1.5;
       margin-bottom: 20px;
     }
 
-    .kz-hero-banner__buttons {
+    .szc-hero-banner__buttons {
       flex-direction: row;
       flex-wrap: wrap;
       gap: 12px;
     }
 
-    .kz-hero-banner__controls {
+    .szc-hero-banner__controls {
       bottom: 42px;
       padding: 6px 14px;
       gap: 12px;
@@ -589,80 +589,80 @@
      ========================================================================== */
   @media (max-width: 767px) {
     /* Banner Layout Style & Card Corner Radius Settings apply ONLY on Mobile */
-    .kz-hero-banner--layout-card {
+    .szc-hero-banner--layout-card {
       margin: 10px 12px;
       width: calc(100% - 24px);
-      border-radius: var(--kz-banner-radius, 16px);
+      border-radius: var(--szc-banner-radius, 16px);
       box-shadow: 0 8px 30px rgba(0, 0, 0, 0.12);
       overflow: hidden;
     }
 
-    .kz-hero-banner--layout-full {
+    .szc-hero-banner--layout-full {
       margin: 0;
       width: 100%;
       border-radius: 0;
       box-shadow: none;
     }
 
-    .kz-hero-banner--small {
+    .szc-hero-banner--small {
       height: 360px;
     }
-    .kz-hero-banner--medium {
-      height: 420px;
+    .szc-hero-banner--medium {
+      height: 300px;
     }
-    .kz-hero-banner--large {
-      height: 480px;
+    .szc-hero-banner--large {
+      height: 300px;
     }
-    .kz-hero-banner--full {
-      height: 70vh;
-      min-height: 420px;
+    .szc-hero-banner--full {
+      height: 40vh;
+      min-height: 300px;
     }
 
-    .kz-hero-banner__container {
+    .szc-hero-banner__container {
       padding: 24px 16px 64px 16px;
       align-items: center;
     }
 
-    .kz-hero-banner__content {
+    .szc-hero-banner__content {
       width: 100%;
       max-width: 100%;
     }
 
-    .kz-hero-banner__content--align-mobile-left {
+    .szc-hero-banner__content--align-mobile-left {
       text-align: left;
       align-items: flex-start;
     }
-    .kz-hero-banner__content--align-mobile-center {
+    .szc-hero-banner__content--align-mobile-center {
       text-align: center;
       align-items: center;
       margin: 0 auto;
     }
-    .kz-hero-banner__content--align-mobile-right {
+    .szc-hero-banner__content--align-mobile-right {
       text-align: right;
       align-items: flex-end;
       margin-left: auto;
     }
 
-    .kz-hero-banner__subheading {
+    .szc-hero-banner__subheading {
       font-size: 11px;
       letter-spacing: 0.12em;
       margin-bottom: 6px;
     }
 
-    .kz-hero-banner__heading {
+    .szc-hero-banner__heading {
       font-size: clamp(22px, 6vw, 32px);
       line-height: 1.15;
       margin: 0 0 8px 0;
     }
 
-    .kz-hero-banner__text {
+    .szc-hero-banner__text {
       font-size: 13px;
       line-height: 1.4;
       margin-bottom: 16px;
     }
 
     /* Mobile Compact Luxury Pill Buttons */
-    .kz-hero-banner__buttons {
+    .szc-hero-banner__buttons {
       width: 100%;
       display: flex;
       flex-direction: row;
@@ -670,21 +670,21 @@
       gap: 10px;
     }
 
-    .kz-hero-banner__content--align-mobile-center .kz-hero-banner__buttons {
+    .szc-hero-banner__content--align-mobile-center .szc-hero-banner__buttons {
       justify-content: center;
     }
 
-    .kz-hero-banner__content--align-mobile-left .kz-hero-banner__buttons {
+    .szc-hero-banner__content--align-mobile-left .szc-hero-banner__buttons {
       justify-content: flex-start;
     }
 
-    .kz-hero-banner__content--align-mobile-right .kz-hero-banner__buttons {
+    .szc-hero-banner__content--align-mobile-right .szc-hero-banner__buttons {
       justify-content: flex-end;
     }
 
-    .kz-hero-banner__buttons .kz-button,
-    .kz-hero-banner__buttons a,
-    .kz-hero-banner__buttons button {
+    .szc-hero-banner__buttons .szc-button,
+    .szc-hero-banner__buttons a,
+    .szc-hero-banner__buttons button {
       width: fit-content !important;
       flex: 0 0 auto !important;
       height: 42px !important;
@@ -700,46 +700,46 @@
       white-space: nowrap !important;
     }
 
-    .kz-hero-banner__btn-2-mobile-hide {
+    .szc-hero-banner__btn-2-mobile-hide {
       display: none !important;
     }
 
-    .kz-hero-banner__controls {
+    .szc-hero-banner__controls {
       bottom: 18px;
       padding: 4px 10px;
       gap: 8px;
     }
 
     /* Content Below Mobile Option */
-    .kz-hero-banner--content-below-mobile {
+    .szc-hero-banner--content-below-mobile {
       height: auto !important;
     }
 
-    .kz-hero-banner--content-below-mobile .kz-hero-banner__slides {
+    .szc-hero-banner--content-below-mobile .szc-hero-banner__slides {
       min-height: 0;
       height: auto;
     }
 
-    .kz-hero-banner--content-below-mobile .kz-hero-banner__slide {
+    .szc-hero-banner--content-below-mobile .szc-hero-banner__slide {
       position: absolute;
       inset: 0;
       flex-direction: column;
       height: auto;
     }
 
-    .kz-hero-banner--content-below-mobile .kz-hero-banner__slide.is-active {
+    .szc-hero-banner--content-below-mobile .szc-hero-banner__slide.is-active {
       position: relative;
     }
 
-    .kz-hero-banner--content-below-mobile .kz-hero-banner__media {
+    .szc-hero-banner--content-below-mobile .szc-hero-banner__media {
       position: relative;
       height: 240px;
       width: 100%;
     }
 
-    .kz-hero-banner--content-below-mobile .kz-hero-banner__container {
+    .szc-hero-banner--content-below-mobile .szc-hero-banner__container {
       position: relative;
-      background-color: var(--kz-color-surface-dark, #161616);
+      background-color: var(--szc-color-surface-dark, #161616);
       padding: 20px 16px 64px 16px;
       width: 100%;
       height: auto;
@@ -755,8 +755,8 @@
       class HeroSlider extends HTMLElement {
         constructor() {
           super();
-          this.slides = this.querySelectorAll('.kz-hero-banner__slide');
-          this.dots = this.querySelectorAll('.kz-hero-banner__dot');
+          this.slides = this.querySelectorAll('.szc-hero-banner__slide');
+          this.dots = this.querySelectorAll('.szc-hero-banner__dot');
           this.prevBtn = this.querySelector('[data-nav-prev]');
           this.nextBtn = this.querySelector('[data-nav-next]');
           this.autoRotate = this.dataset.autoRotate === 'true';

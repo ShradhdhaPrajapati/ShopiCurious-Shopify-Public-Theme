@@ -8,168 +8,168 @@
    1. HEADINGS (h1-h6 and heading classes)
    ========================================================================== */
 h1, h2, h3, h4, h5, h6,
-.kz-h1, .kz-h2, .kz-h3, .kz-h4, .kz-h5, .kz-h6,
-.kz-display {
-  font-family: var(--kz-font-family-heading);
-  font-weight: var(--kz-font-weight-semibold);
-  line-height: var(--kz-line-height-heading);
-  color: var(--kz-color-text-primary);
-  letter-spacing: var(--kz-letter-spacing-tight);
+.szc-h1, .szc-h2, .szc-h3, .szc-h4, .szc-h5, .szc-h6,
+.szc-display {
+  font-family: var(--szc-font-family-heading);
+  font-weight: var(--szc-font-weight-semibold);
+  line-height: var(--szc-line-height-heading);
+  color: var(--szc-color-text-primary);
+  letter-spacing: var(--szc-letter-spacing-tight);
 }
 
-.kz-display {
-  font-size: var(--kz-font-size-display);
-  line-height: var(--kz-line-height-tight);
-  font-weight: var(--kz-font-weight-bold);
+.szc-display {
+  font-size: var(--szc-font-size-display);
+  line-height: var(--szc-line-height-tight);
+  font-weight: var(--szc-font-weight-bold);
 }
 
-h1, .kz-h1 {
-  font-size: var(--kz-font-size-h1);
+h1, .szc-h1 {
+  font-size: var(--szc-font-size-h1);
 }
 
-h2, .kz-h2 {
-  font-size: var(--kz-font-size-h2);
+h2, .szc-h2 {
+  font-size: var(--szc-font-size-h2);
 }
 
-h3, .kz-h3 {
-  font-size: var(--kz-font-size-h3);
+h3, .szc-h3 {
+  font-size: var(--szc-font-size-h3);
 }
 
-h4, .kz-h4 {
-  font-size: var(--kz-font-size-h4);
+h4, .szc-h4 {
+  font-size: var(--szc-font-size-h4);
 }
 
-h5, .kz-h5 {
-  font-size: var(--kz-font-size-h5);
+h5, .szc-h5 {
+  font-size: var(--szc-font-size-h5);
 }
 
-h6, .kz-h6 {
-  font-size: var(--kz-font-size-h6);
+h6, .szc-h6 {
+  font-size: var(--szc-font-size-h6);
 }
 
 /* ==========================================================================
    2. TEXT SIZE VARIATIONS
    ========================================================================== */
-.kz-text-xs {
-  font-size: var(--kz-font-size-xs);
+.szc-text-xs {
+  font-size: var(--szc-font-size-xs);
 }
 
-.kz-text-sm {
-  font-size: var(--kz-font-size-sm);
+.szc-text-sm {
+  font-size: var(--szc-font-size-sm);
 }
 
-.kz-text-base {
-  font-size: var(--kz-font-size-base);
+.szc-text-base {
+  font-size: var(--szc-font-size-base);
 }
 
-.kz-text-lg {
-  font-size: var(--kz-font-size-lg);
+.szc-text-lg {
+  font-size: var(--szc-font-size-lg);
 }
 
-.kz-text-xl {
-  font-size: var(--kz-font-size-xl);
+.szc-text-xl {
+  font-size: var(--szc-font-size-xl);
 }
 
 /* ==========================================================================
    3. FONT WEIGHTS
    ========================================================================== */
-.kz-fw-light {
-  font-weight: var(--kz-font-weight-light) !important;
+.szc-fw-light {
+  font-weight: var(--szc-font-weight-light) !important;
 }
 
-.kz-fw-regular {
-  font-weight: var(--kz-font-weight-regular) !important;
+.szc-fw-regular {
+  font-weight: var(--szc-font-weight-regular) !important;
 }
 
-.kz-fw-medium {
-  font-weight: var(--kz-font-weight-medium) !important;
+.szc-fw-medium {
+  font-weight: var(--szc-font-weight-medium) !important;
 }
 
-.kz-fw-semibold {
-  font-weight: var(--kz-font-weight-semibold) !important;
+.szc-fw-semibold {
+  font-weight: var(--szc-font-weight-semibold) !important;
 }
 
-.kz-fw-bold {
-  font-weight: var(--kz-font-weight-bold) !important;
+.szc-fw-bold {
+  font-weight: var(--szc-font-weight-bold) !important;
 }
 
 /* ==========================================================================
    4. TEXT COLORS & MUTED UTILITIES
    ========================================================================== */
-.kz-text-primary {
-  color: var(--kz-color-text-primary);
+.szc-text-primary {
+  color: var(--szc-color-text-primary);
 }
 
-.kz-text-secondary {
-  color: var(--kz-color-text-secondary);
+.szc-text-secondary {
+  color: var(--szc-color-text-secondary);
 }
 
-.kz-text-muted {
-  color: var(--kz-color-text-muted);
+.szc-text-muted {
+  color: var(--szc-color-text-muted);
 }
 
-.kz-text-accent {
-  color: var(--kz-color-accent);
+.szc-text-accent {
+  color: var(--szc-color-accent);
 }
 
-.kz-text-inverse {
-  color: var(--kz-color-text-inverse);
+.szc-text-inverse {
+  color: var(--szc-color-text-inverse);
 }
 
 /* ==========================================================================
    5. ALIGNMENT, TRACKING & TRANSFORMS
    ========================================================================== */
-.kz-text-left {
+.szc-text-left {
   text-align: left;
 }
 
-.kz-text-center {
+.szc-text-center {
   text-align: center;
 }
 
-.kz-text-right {
+.szc-text-right {
   text-align: right;
 }
 
-.kz-uppercase {
+.szc-uppercase {
   text-transform: uppercase;
-  letter-spacing: var(--kz-letter-spacing-uppercase);
+  letter-spacing: var(--szc-letter-spacing-uppercase);
 }
 
-.kz-capitalize {
+.szc-capitalize {
   text-transform: capitalize;
 }
 
-.kz-tracking-wide {
-  letter-spacing: var(--kz-letter-spacing-wide);
+.szc-tracking-wide {
+  letter-spacing: var(--szc-letter-spacing-wide);
 }
 
-.kz-tracking-tight {
-  letter-spacing: var(--kz-letter-spacing-tight);
+.szc-tracking-tight {
+  letter-spacing: var(--szc-letter-spacing-tight);
 }
 
 /* Line Clamp Utilities */
-.kz-truncate {
+.szc-truncate {
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
 }
 
-.kz-line-clamp-1 {
+.szc-line-clamp-1 {
   display: -webkit-box;
   -webkit-line-clamp: 1;
   -webkit-box-orient: vertical;
   overflow: hidden;
 }
 
-.kz-line-clamp-2 {
+.szc-line-clamp-2 {
   display: -webkit-box;
   -webkit-line-clamp: 2;
   -webkit-box-orient: vertical;
   overflow: hidden;
 }
 
-.kz-line-clamp-3 {
+.szc-line-clamp-3 {
   display: -webkit-box;
   -webkit-line-clamp: 3;
   -webkit-box-orient: vertical;

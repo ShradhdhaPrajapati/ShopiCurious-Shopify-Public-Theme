@@ -38,9 +38,9 @@
 
 {%- if img != blank -%}
   {%- if img_url_val != blank -%}
-    <a href="{{ img_url_val }}" class="kz-image-wrapper {{ wrapper_class }}" style="{{ ratio_style }}">
+    <a href="{{ img_url_val }}" class="szc-image-wrapper {{ wrapper_class }}" style="{{ ratio_style }}">
   {%- else -%}
-    <div class="kz-image-wrapper {{ wrapper_class }}" style="{{ ratio_style }}">
+    <div class="szc-image-wrapper {{ wrapper_class }}" style="{{ ratio_style }}">
   {%- endif -%}
 
   {%- if img_height != blank and img_crop != blank -%}
@@ -53,7 +53,7 @@
         sizes: '(min-width: 1200px) 1200px, (min-width: 768px) 50vw, 100vw',
         widths: '165, 360, 535, 750, 940, 1100, 1500, 1800, 2000',
         alt: alt_text,
-        class: 'kz-image'
+        class: 'szc-image'
     }}
   {%- elsif img_height != blank -%}
     {{
@@ -65,7 +65,7 @@
         sizes: '(min-width: 1200px) 1200px, (min-width: 768px) 50vw, 100vw',
         widths: '165, 360, 535, 750, 940, 1100, 1500, 1800, 2000',
         alt: alt_text,
-        class: 'kz-image'
+        class: 'szc-image'
     }}
   {%- elsif img_crop != blank -%}
     {{
@@ -77,7 +77,7 @@
         sizes: '(min-width: 1200px) 1200px, (min-width: 768px) 50vw, 100vw',
         widths: '165, 360, 535, 750, 940, 1100, 1500, 1800, 2000',
         alt: alt_text,
-        class: 'kz-image'
+        class: 'szc-image'
     }}
   {%- else -%}
     {{
@@ -89,7 +89,7 @@
         sizes: '(min-width: 1200px) 1200px, (min-width: 768px) 50vw, 100vw',
         widths: '165, 360, 535, 750, 940, 1100, 1500, 1800, 2000',
         alt: alt_text,
-        class: 'kz-image'
+        class: 'szc-image'
     }}
   {%- endif -%}
 
@@ -99,43 +99,43 @@
     </div>
   {%- endif -%}
 {%- else -%}
-  <div class="kz-image-wrapper kz-image-wrapper--placeholder {{ wrapper_class }}" style="{{ ratio_style }}">
-    {{ 'image' | placeholder_svg_tag: 'kz-image-placeholder' }}
+  <div class="szc-image-wrapper szc-image-wrapper--placeholder {{ wrapper_class }}" style="{{ ratio_style }}">
+    {{ 'image' | placeholder_svg_tag: 'szc-image-placeholder' }}
   </div>
 {%- endif -%}
 
 {% stylesheet %}
-  .kz-image-wrapper {
+  .szc-image-wrapper {
     display: block;
     position: relative;
     overflow: hidden;
     width: 100%;
-    background-color: var(--kz-color-surface, #f8f9fa);
+    background-color: var(--szc-color-surface, #f8f9fa);
   }
 
-  .kz-image-wrapper img.kz-image {
+  .szc-image-wrapper img.szc-image {
     display: block;
     width: 100%;
     height: 100%;
     object-fit: cover;
     object-position: center;
-    transition: transform var(--kz-transition-base, 250ms ease);
+    transition: transform var(--szc-transition-base, 250ms ease);
   }
 
-  .kz-image-wrapper--placeholder {
+  .szc-image-wrapper--placeholder {
     display: flex;
     align-items: center;
     justify-content: center;
     min-height: 200px;
-    background-color: var(--kz-color-surface-subtle, #f4f3ef);
+    background-color: var(--szc-color-surface-subtle, #f4f3ef);
   }
 
-  .kz-image-placeholder {
+  .szc-image-placeholder {
     width: 50%;
     height: 50%;
     max-width: 120px;
     max-height: 120px;
-    fill: var(--kz-color-text-muted, #757575);
+    fill: var(--szc-color-text-muted, #757575);
     opacity: 0.5;
   }
 {% endstylesheet %}

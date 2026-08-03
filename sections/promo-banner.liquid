@@ -14,58 +14,58 @@
   assign content_pos = section.settings.content_position | default: 'right'
 -%}
 
-<section id="PromoBanner-{{ section.id }}" class="kz-promo-banner-section page-width">
-  <div class="kz-promo-banner kz-promo-banner--content-{{ content_pos }}">
+<section id="PromoBanner-{{ section.id }}" class="szc-promo-banner-section page-width">
+  <div class="szc-promo-banner szc-promo-banner--content-{{ content_pos }}">
     <!-- Images Container (Dual Split) -->
-    <div class="kz-promo-banner__media">
-      <div class="kz-promo-banner__media-item kz-promo-banner__media-item--narrow">
+    <div class="szc-promo-banner__media">
+      <div class="szc-promo-banner__media-item szc-promo-banner__media-item--narrow">
         {%- if img_1 != blank -%}
           {% render 'image',
             image: img_1,
             aspect_ratio: '3/4',
             loading: 'lazy',
-            class: 'kz-promo-banner__image'
+            class: 'szc-promo-banner__image'
           %}
         {%- else -%}
-          <div class="kz-promo-banner__placeholder kz-promo-banner__placeholder--1">
-            {{ 'lifestyle-1' | placeholder_svg_tag: 'kz-placeholder-svg' }}
+          <div class="szc-promo-banner__placeholder szc-promo-banner__placeholder--1">
+            {{ 'lifestyle-1' | placeholder_svg_tag: 'szc-placeholder-svg' }}
           </div>
         {%- endif -%}
       </div>
 
-      <div class="kz-promo-banner__media-item kz-promo-banner__media-item--wide">
+      <div class="szc-promo-banner__media-item szc-promo-banner__media-item--wide">
         {%- if img_2 != blank -%}
           {% render 'image',
             image: img_2,
             aspect_ratio: '4/3',
             loading: 'lazy',
-            class: 'kz-promo-banner__image'
+            class: 'szc-promo-banner__image'
           %}
         {%- else -%}
-          <div class="kz-promo-banner__placeholder kz-promo-banner__placeholder--2">
-            {{ 'collection-1' | placeholder_svg_tag: 'kz-placeholder-svg' }}
+          <div class="szc-promo-banner__placeholder szc-promo-banner__placeholder--2">
+            {{ 'collection-1' | placeholder_svg_tag: 'szc-placeholder-svg' }}
           </div>
         {%- endif -%}
       </div>
     </div>
 
     <!-- Content Box -->
-    <div class="kz-promo-banner__content">
-      <div class="kz-promo-banner__content-inner">
+    <div class="szc-promo-banner__content">
+      <div class="szc-promo-banner__content-inner">
         {%- if subtitle != blank -%}
-          <span class="kz-promo-banner__subtitle">{{ subtitle }}</span>
+          <span class="szc-promo-banner__subtitle">{{ subtitle }}</span>
         {%- endif -%}
 
         {%- if title != blank -%}
-          <h2 class="kz-promo-banner__title">{{ title }}</h2>
+          <h2 class="szc-promo-banner__title">{{ title }}</h2>
         {%- endif -%}
 
         {%- if description != blank -%}
-          <p class="kz-promo-banner__description">{{ description }}</p>
+          <p class="szc-promo-banner__description">{{ description }}</p>
         {%- endif -%}
 
         {%- if button_label != blank -%}
-          <a href="{{ button_link }}" class="kz-promo-banner__btn">
+          <a href="{{ button_link }}" class="szc-promo-banner__btn">
             <span>{{ button_label }}</span>
           </a>
         {%- endif -%}
@@ -75,16 +75,16 @@
 </section>
 
 {% stylesheet %}
-  .kz-promo-banner-section {
-    padding-top: var(--kz-space-12, 48px);
-    padding-bottom: var(--kz-space-12, 48px);
-    max-width: var(--kz-page-max-width, 1400px);
+  .szc-promo-banner-section {
+    padding-top: var(--szc-space-12, 48px);
+    padding-bottom: var(--szc-space-12, 48px);
+    max-width: var(--szc-page-max-width, 1400px);
     margin: 0 auto;
-    padding-left: var(--kz-space-6, 24px);
-    padding-right: var(--kz-space-6, 24px);
+    padding-left: var(--szc-space-6, 24px);
+    padding-right: var(--szc-space-6, 24px);
   }
 
-  .kz-promo-banner {
+  .szc-promo-banner {
     display: flex;
     flex-direction: column;
     width: 100%;
@@ -95,24 +95,24 @@
   }
 
   @media (min-width: 990px) {
-    .kz-promo-banner {
+    .szc-promo-banner {
       display: grid;
       grid-template-columns: 1fr 1fr;
       align-items: stretch;
       min-height: 420px;
     }
 
-    .kz-promo-banner--content-left .kz-promo-banner__media {
+    .szc-promo-banner--content-left .szc-promo-banner__media {
       order: 2;
     }
 
-    .kz-promo-banner--content-left .kz-promo-banner__content {
+    .szc-promo-banner--content-left .szc-promo-banner__content {
       order: 1;
     }
   }
 
   /* Dual Media Area */
-  .kz-promo-banner__media {
+  .szc-promo-banner__media {
     display: flex;
     width: 100%;
     height: 100%;
@@ -121,21 +121,21 @@
     background-color: #ede8df;
   }
 
-  .kz-promo-banner__media-item {
+  .szc-promo-banner__media-item {
     position: relative;
     height: 100%;
     overflow: hidden;
   }
 
-  .kz-promo-banner__media-item--narrow {
+  .szc-promo-banner__media-item--narrow {
     flex: 0 0 35%;
   }
 
-  .kz-promo-banner__media-item--wide {
+  .szc-promo-banner__media-item--wide {
     flex: 1 1 65%;
   }
 
-  .kz-promo-banner__image {
+  .szc-promo-banner__image {
     width: 100%;
     height: 100%;
     object-fit: cover;
@@ -143,11 +143,11 @@
     transition: transform 700ms ease;
   }
 
-  .kz-promo-banner:hover .kz-promo-banner__image {
+  .szc-promo-banner:hover .szc-promo-banner__image {
     transform: scale(1.03);
   }
 
-  .kz-promo-banner__placeholder {
+  .szc-promo-banner__placeholder {
     width: 100%;
     height: 100%;
     min-height: 320px;
@@ -158,18 +158,18 @@
     color: #a8a090;
   }
 
-  .kz-promo-banner__placeholder--2 {
+  .szc-promo-banner__placeholder--2 {
     background-color: #dfd9cb;
   }
 
-  .kz-placeholder-svg {
+  .szc-placeholder-svg {
     width: 60%;
     height: 60%;
     opacity: 0.4;
   }
 
   /* Content Area */
-  .kz-promo-banner__content {
+  .szc-promo-banner__content {
     display: flex;
     flex-direction: column;
     justify-content: center;
@@ -178,21 +178,21 @@
   }
 
   @media (min-width: 990px) {
-    .kz-promo-banner__content {
+    .szc-promo-banner__content {
       padding: 56px 64px;
     }
   }
 
-  .kz-promo-banner__content-inner {
+  .szc-promo-banner__content-inner {
     max-width: 460px;
     display: flex;
     flex-direction: column;
     align-items: flex-start;
   }
 
-  .kz-promo-banner__subtitle {
+  .szc-promo-banner__subtitle {
     display: block;
-    font-family: var(--kz-font-family-body, sans-serif);
+    font-family: var(--szc-font-family-body, sans-serif);
     font-size: 11px;
     font-weight: 600;
     text-transform: uppercase;
@@ -201,30 +201,30 @@
     margin-bottom: 12px;
   }
 
-  .kz-promo-banner__title {
+  .szc-promo-banner__title {
     margin: 0 0 14px 0;
-    font-family: var(--kz-font-family-heading, Georgia, 'Playfair Display', serif);
+    font-family: var(--szc-font-family-heading, Georgia, 'Playfair Display', serif);
     font-size: clamp(26px, 2.5vw, 36px);
     font-weight: 500;
     color: #111111;
     line-height: 1.25;
   }
 
-  .kz-promo-banner__description {
+  .szc-promo-banner__description {
     margin: 0 0 28px 0;
-    font-family: var(--kz-font-family-body, sans-serif);
+    font-family: var(--szc-font-family-body, sans-serif);
     font-size: 13px;
     color: #555555;
     line-height: 1.6;
   }
 
-  .kz-promo-banner__btn {
+  .szc-promo-banner__btn {
     display: inline-flex;
     align-items: center;
     justify-content: center;
     background-color: #242424;
     color: #ffffff;
-    font-family: var(--kz-font-family-body, sans-serif);
+    font-family: var(--szc-font-family-body, sans-serif);
     font-size: 11px;
     font-weight: 600;
     letter-spacing: 0.12em;
@@ -235,7 +235,7 @@
     transition: background-color 200ms ease, transform 200ms ease, box-shadow 200ms ease;
   }
 
-  .kz-promo-banner__btn:hover {
+  .szc-promo-banner__btn:hover {
     background-color: #000000;
     transform: translateY(-1px);
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);

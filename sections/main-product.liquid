@@ -3,38 +3,38 @@
   assign featured_media = current_variant.featured_media | default: product.featured_media
 -%}
 
-<section id="MainProduct-{{ section.id }}" class="kz-main-product page-width">
-  <div class="kz-main-product__grid">
+<section id="MainProduct-{{ section.id }}" class="szc-main-product page-width">
+  <div class="szc-main-product__grid">
     <!-- Media Gallery Column -->
-    <div class="kz-main-product__media-col">
-      <div class="kz-main-product__gallery">
-        <div class="kz-main-product__main-media" data-main-media>
+    <div class="szc-main-product__media-col">
+      <div class="szc-main-product__gallery">
+        <div class="szc-main-product__main-media" data-main-media>
           {%- if featured_media != blank -%}
             {% render 'image',
               image: featured_media.preview_image,
               aspect_ratio: '3/4',
               loading: 'eager',
-              class: 'kz-main-product__featured-img'
+              class: 'szc-main-product__featured-img'
             %}
           {%- else -%}
-            {{ 'product-1' | placeholder_svg_tag: 'kz-image-placeholder' }}
+            {{ 'product-1' | placeholder_svg_tag: 'szc-image-placeholder' }}
           {%- endif -%}
         </div>
 
         {%- if product.media.size > 1 -%}
-          <ul class="kz-main-product__thumbnails" role="list">
+          <ul class="szc-main-product__thumbnails" role="list">
             {%- for media in product.media -%}
-              <li class="kz-main-product__thumbnail-item">
+              <li class="szc-main-product__thumbnail-item">
                 <button
                   type="button"
-                  class="kz-main-product__thumbnail-btn {% if media == featured_media %}is-active{% endif %}"
+                  class="szc-main-product__thumbnail-btn {% if media == featured_media %}is-active{% endif %}"
                   data-media-id="{{ media.id }}"
                 >
                   {% render 'image',
                     image: media.preview_image,
                     aspect_ratio: '1/1',
                     loading: 'lazy',
-                    class: 'kz-main-product__thumbnail-img'
+                    class: 'szc-main-product__thumbnail-img'
                   %}
                 </button>
               </li>
@@ -45,24 +45,24 @@
     </div>
 
     <!-- Product Info Details Column -->
-    <div class="kz-main-product__info-col">
+    <div class="szc-main-product__info-col">
       {%- for block in section.blocks -%}
         {%- case block.type -%}
           {%- when '@app' -%}
             {% render block %}
 
           {%- when 'vendor' -%}
-            <div class="kz-main-product__vendor" {{ block.shopify_attributes }}>
+            <div class="szc-main-product__vendor" {{ block.shopify_attributes }}>
               {{ product.vendor }}
             </div>
 
           {%- when 'title' -%}
-            <h1 class="kz-main-product__title" {{ block.shopify_attributes }}>
+            <h1 class="szc-main-product__title" {{ block.shopify_attributes }}>
               {{ product.title }}
             </h1>
 
           {%- when 'price' -%}
-            <div class="kz-main-product__price" {{ block.shopify_attributes }}>
+            <div class="szc-main-product__price" {{ block.shopify_attributes }}>
               {% render 'price',
                 product: product,
                 use_variant: true,
@@ -73,18 +73,18 @@
 
           {%- when 'variant_picker' -%}
             <variant-selects
-              class="kz-main-product__variants"
+              class="szc-main-product__variants"
               data-section="{{ section.id }}"
               data-url="{{ product.url }}"
               {{ block.shopify_attributes }}
             >
               {%- unless product.has_only_default_variant -%}
                 {%- for option in product.options_with_values -%}
-                  <fieldset class="kz-main-product__option-fieldset">
-                    <legend class="kz-main-product__option-legend">
-                      {{ option.name }}: <span class="kz-main-product__option-selected">{{ option.selected_value }}</span>
+                  <fieldset class="szc-main-product__option-fieldset">
+                    <legend class="szc-main-product__option-legend">
+                      {{ option.name }}: <span class="szc-main-product__option-selected">{{ option.selected_value }}</span>
                     </legend>
-                    <div class="kz-main-product__swatches-wrap">
+                    <div class="szc-main-product__swatches-wrap">
                       {%- for value in option.values -%}
                         {%- liquid
                           assign option_disabled = true
@@ -120,23 +120,23 @@
             </variant-selects>
 
           {%- when 'quantity_selector' -%}
-            <div class="kz-main-product__quantity" {{ block.shopify_attributes }}>
-              <label class="kz-main-product__label">{{ 'products.product.quantity.label' | t | default: 'Quantity' }}</label>
+            <div class="szc-main-product__quantity" {{ block.shopify_attributes }}>
+              <label class="szc-main-product__label">{{ 'products.product.quantity.label' | t | default: 'Quantity' }}</label>
               {%- assign qty_input_id = 'Quantity-' | append: section.id -%}
               {% render 'quantity-input', value: 1, min: 1, id: qty_input_id %}
             </div>
 
           {%- when 'buy_buttons' -%}
-            <div class="kz-main-product__buy-buttons" {{ block.shopify_attributes }}>
-              {%- form 'product', product, id: 'product-form-main', class: 'kz-main-product__form' -%}
+            <div class="szc-main-product__buy-buttons" {{ block.shopify_attributes }}>
+              {%- form 'product', product, id: 'product-form-main', class: 'szc-main-product__form' -%}
                 <input type="hidden" name="id" value="{{ current_variant.id }}">
                 <button
                   type="submit"
                   name="add"
-                  class="kz-button kz-button--primary kz-button--full-width kz-main-product__add-btn"
+                  class="szc-button szc-button--primary szc-button--full-width szc-main-product__add-btn"
                   {% if current_variant.available == false %}disabled{% endif %}
                 >
-                  {% render 'icon', icon: 'bag', class: 'kz-button__icon' %}
+                  {% render 'icon', icon: 'bag', class: 'szc-button__icon' %}
                   <span>
                     {%- if current_variant.available -%}
                       {{ 'products.product.add_to_cart' | t | default: 'Add to Cart' }}
@@ -154,7 +154,7 @@
 
           {%- when 'description' -%}
             {%- if product.description != blank -%}
-              <div class="kz-main-product__description" {{ block.shopify_attributes }}>
+              <div class="szc-main-product__description" {{ block.shopify_attributes }}>
                 {{ product.description }}
               </div>
             {%- endif -%}
@@ -164,11 +164,11 @@
               heading: block.settings.heading,
               content: block.settings.content,
               open: block.settings.open,
-              class: 'kz-main-product__accordion'
+              class: 'szc-main-product__accordion'
             %}
 
           {%- when 'share' -%}
-            <div class="kz-main-product__share" {{ block.shopify_attributes }}>
+            <div class="szc-main-product__share" {{ block.shopify_attributes }}>
               {% render 'social-sharing',
                 share_title: product.title,
                 share_permalink: product.url,
@@ -182,124 +182,124 @@
 </section>
 
 {% stylesheet %}
-  .kz-main-product {
-    padding-top: var(--kz-space-8, 32px);
-    padding-bottom: var(--kz-space-12, 48px);
-    max-width: var(--kz-page-max-width, 1400px);
+  .szc-main-product {
+    padding-top: var(--szc-space-8, 32px);
+    padding-bottom: var(--szc-space-12, 48px);
+    max-width: var(--szc-page-max-width, 1400px);
     margin: 0 auto;
   }
 
-  .kz-main-product__grid {
+  .szc-main-product__grid {
     display: grid;
     grid-template-columns: 1fr;
-    gap: var(--kz-space-8, 32px);
+    gap: var(--szc-space-8, 32px);
   }
 
   @media (min-width: 990px) {
-    .kz-main-product__grid {
+    .szc-main-product__grid {
       grid-template-columns: 1.2fr 1fr;
-      gap: var(--kz-space-12, 48px);
+      gap: var(--szc-space-12, 48px);
     }
   }
 
   /* Media Gallery */
-  .kz-main-product__gallery {
+  .szc-main-product__gallery {
     display: flex;
     flex-direction: column;
-    gap: var(--kz-space-4, 16px);
+    gap: var(--szc-space-4, 16px);
   }
 
-  .kz-main-product__main-media {
+  .szc-main-product__main-media {
     width: 100%;
-    border-radius: var(--kz-radius-card, 4px);
+    border-radius: var(--szc-radius-card, 4px);
     overflow: hidden;
-    background-color: var(--kz-color-surface, #f8f9fa);
+    background-color: var(--szc-color-surface, #f8f9fa);
   }
 
-  .kz-main-product__featured-img {
+  .szc-main-product__featured-img {
     width: 100%;
     height: 100%;
     object-fit: cover;
   }
 
-  .kz-main-product__thumbnails {
+  .szc-main-product__thumbnails {
     display: flex;
-    gap: var(--kz-space-3, 12px);
+    gap: var(--szc-space-3, 12px);
     list-style: none;
     padding: 0;
     margin: 0;
     overflow-x: auto;
   }
 
-  .kz-main-product__thumbnail-btn {
+  .szc-main-product__thumbnail-btn {
     width: 72px;
     height: 72px;
     padding: 0;
     background: transparent;
-    border: 1px solid var(--kz-color-border, #e5e5e5);
-    border-radius: var(--kz-radius-sm, 4px);
+    border: 1px solid var(--szc-color-border, #e5e5e5);
+    border-radius: var(--szc-radius-sm, 4px);
     overflow: hidden;
     cursor: pointer;
-    transition: border-color var(--kz-transition-fast, 150ms ease);
+    transition: border-color var(--szc-transition-fast, 150ms ease);
   }
 
-  .kz-main-product__thumbnail-btn.is-active {
-    border-color: var(--kz-color-primary, #111111);
+  .szc-main-product__thumbnail-btn.is-active {
+    border-color: var(--szc-color-primary, #111111);
     border-width: 2px;
   }
 
   /* Info Column */
-  .kz-main-product__info-col {
+  .szc-main-product__info-col {
     display: flex;
     flex-direction: column;
-    gap: var(--kz-space-4, 16px);
+    gap: var(--szc-space-4, 16px);
   }
 
-  .kz-main-product__vendor {
-    font-family: var(--kz-font-family-body);
-    font-size: var(--kz-font-size-xs, 12px);
+  .szc-main-product__vendor {
+    font-family: var(--szc-font-family-body);
+    font-size: var(--szc-font-size-xs, 12px);
     text-transform: uppercase;
-    letter-spacing: var(--kz-letter-spacing-uppercase, 0.1em);
-    color: var(--kz-color-text-muted, #757575);
+    letter-spacing: var(--szc-letter-spacing-uppercase, 0.1em);
+    color: var(--szc-color-text-muted, #757575);
   }
 
-  .kz-main-product__title {
+  .szc-main-product__title {
     margin: 0;
-    font-family: var(--kz-font-family-heading);
+    font-family: var(--szc-font-family-heading);
     font-size: clamp(24px, 3vw, 36px);
     font-weight: 700;
-    color: var(--kz-color-text-primary, #111111);
+    color: var(--szc-color-text-primary, #111111);
   }
 
-  .kz-main-product__label {
+  .szc-main-product__label {
     display: block;
     font-size: 13px;
     font-weight: 600;
     margin-bottom: 6px;
   }
 
-  .kz-main-product__option-fieldset {
+  .szc-main-product__option-fieldset {
     border: none;
     padding: 0;
     margin: 0 0 16px 0;
   }
 
-  .kz-main-product__option-legend {
+  .szc-main-product__option-legend {
     font-size: 13px;
     font-weight: 600;
     margin-bottom: 8px;
   }
 
-  .kz-main-product__swatches-wrap {
+  .szc-main-product__swatches-wrap {
     display: flex;
     flex-wrap: wrap;
     gap: 8px;
   }
 
-  .kz-main-product__description {
+  .szc-main-product__description {
     font-size: 15px;
     line-height: 1.6;
-    color: var(--kz-color-text-secondary, #4a4a4a);
+    color: var(--szc-color-text-secondary, #4a4a4a);
     margin-top: 8px;
   }
 {% endstylesheet %}

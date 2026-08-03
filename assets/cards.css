@@ -7,40 +7,40 @@
 /* ==========================================================================
    1. BASE CARD CONTAINER
    ========================================================================== */
-.kz-card {
+.szc-card {
   position: relative;
   display: flex;
   flex-direction: column;
   height: 100%;
-  background-color: var(--kz-color-surface-elevated);
-  border-radius: var(--kz-radius-card);
+  background-color: var(--szc-color-surface-elevated);
+  border-radius: var(--szc-radius-card);
   overflow: hidden;
-  transition: transform var(--kz-transition-base),
-              box-shadow var(--kz-transition-base),
-              border-color var(--kz-transition-base);
+  transition: transform var(--szc-transition-base),
+              box-shadow var(--szc-transition-base),
+              border-color var(--szc-transition-base);
 }
 
 /* ==========================================================================
    2. CARD VARIANTS
    ========================================================================== */
-.kz-card--bordered {
-  border: 1px solid var(--kz-color-border);
+.szc-card--bordered {
+  border: 1px solid var(--szc-color-border);
 }
 
-.kz-card--bordered:hover {
-  border-color: var(--kz-color-border-strong);
+.szc-card--bordered:hover {
+  border-color: var(--szc-color-border-strong);
 }
 
-.kz-card--shadow {
-  box-shadow: var(--kz-shadow-sm);
+.szc-card--shadow {
+  box-shadow: var(--szc-shadow-sm);
 }
 
-.kz-card--shadow:hover {
-  box-shadow: var(--kz-shadow-md);
+.szc-card--shadow:hover {
+  box-shadow: var(--szc-shadow-md);
   transform: translateY(-4px);
 }
 
-.kz-card--flat {
+.szc-card--flat {
   background-color: transparent;
   border: none;
   box-shadow: none;
@@ -49,72 +49,72 @@
 /* ==========================================================================
    3. CARD SUB-COMPONENTS (BEM Structure)
    ========================================================================== */
-.kz-card__media {
+.szc-card__media {
   position: relative;
   width: 100%;
   overflow: hidden;
-  background-color: var(--kz-color-surface-subtle);
-  border-top-left-radius: var(--kz-radius-card);
-  border-top-right-radius: var(--kz-radius-card);
+  background-color: var(--szc-color-surface-subtle);
+  border-top-left-radius: var(--szc-radius-card);
+  border-top-right-radius: var(--szc-radius-card);
 }
 
-.kz-card__media img {
+.szc-card__media img {
   width: 100%;
   height: 100%;
   object-fit: cover;
-  transition: transform var(--kz-transition-slow);
+  transition: transform var(--szc-transition-slow);
 }
 
-.kz-card:hover .kz-card__media img {
+.szc-card:hover .szc-card__media img {
   transform: scale(1.05);
 }
 
-.kz-card__badge-group {
+.szc-card__badge-group {
   position: absolute;
-  top: var(--kz-space-3);
-  left: var(--kz-space-3);
-  z-index: var(--kz-z-base);
+  top: var(--szc-space-3);
+  left: var(--szc-space-3);
+  z-index: var(--szc-z-base);
   display: flex;
   flex-direction: column;
-  gap: var(--kz-space-1);
+  gap: var(--szc-space-1);
 }
 
-.kz-card__content {
+.szc-card__content {
   display: flex;
   flex-direction: column;
   flex: 1 1 auto;
-  padding: var(--kz-space-4);
-  gap: var(--kz-space-2);
+  padding: var(--szc-space-4);
+  gap: var(--szc-space-2);
 }
 
-.kz-card__header {
-  margin-bottom: var(--kz-space-2);
+.szc-card__header {
+  margin-bottom: var(--szc-space-2);
 }
 
-.kz-card__title {
-  font-size: var(--kz-font-size-base);
-  font-weight: var(--kz-font-weight-medium);
+.szc-card__title {
+  font-size: var(--szc-font-size-base);
+  font-weight: var(--szc-font-weight-medium);
   line-height: 1.3;
-  color: var(--kz-color-text-primary);
+  color: var(--szc-color-text-primary);
 }
 
-.kz-card__title a {
+.szc-card__title a {
   color: inherit;
   text-decoration: none;
 }
 
-.kz-card__title a:hover {
-  color: var(--kz-color-secondary);
+.szc-card__title a:hover {
+  color: var(--szc-color-secondary);
 }
 
-.kz-card__subtitle {
-  font-size: var(--kz-font-size-sm);
-  color: var(--kz-color-text-muted);
+.szc-card__subtitle {
+  font-size: var(--szc-font-size-sm);
+  color: var(--szc-color-text-muted);
 }
 
-.kz-card__footer {
+.szc-card__footer {
   margin-top: auto;
-  padding-top: var(--kz-space-3);
+  padding-top: var(--szc-space-3);
   display: flex;
   align-items: center;
   justify-content: space-between;

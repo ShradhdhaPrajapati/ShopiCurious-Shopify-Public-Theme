@@ -1,47 +1,47 @@
-<section id="Main404-{{ section.id }}" class="kz-main-404 page-width">
-  <div class="kz-main-404__container">
-    <span class="kz-main-404__code">404</span>
-    <h1 class="kz-main-404__title">
+<section id="Main404-{{ section.id }}" class="szc-main-404 page-width">
+  <div class="szc-main-404__container">
+    <span class="szc-main-404__code">404</span>
+    <h1 class="szc-main-404__title">
       {{ '404.title' | t | default: 'Page Not Found' }}
     </h1>
-    <p class="kz-main-404__text">
+    <p class="szc-main-404__text">
       {{ '404.not_found' | t | default: 'The page you are looking for might have been removed, had its name changed, or is temporarily unavailable.' }}
     </p>
 
     <!-- Search Form -->
-    <form action="{{ routes.search_url }}" method="get" role="search" class="kz-main-404__search-form">
-      <div class="kz-main-404__search-field">
+    <form action="{{ routes.search_url }}" method="get" role="search" class="szc-main-404__search-form">
+      <div class="szc-main-404__search-field">
         <input
           type="search"
           name="q"
           placeholder="{{ 'general.search.search' | t | default: 'Search our store...' }}"
-          class="kz-main-404__search-input"
+          class="szc-main-404__search-input"
           aria-label="{{ 'general.search.search' | t | default: 'Search' }}"
         >
-        <button type="submit" class="kz-button kz-button--primary">
-          {% render 'icon', icon: 'search', class: 'kz-button__icon' %}
+        <button type="submit" class="szc-button szc-button--primary">
+          {% render 'icon', icon: 'search', class: 'szc-button__icon' %}
         </button>
       </div>
     </form>
 
-    <div class="kz-main-404__actions">
-      <a href="{{ routes.all_products_collection_url }}" class="kz-button kz-button--primary kz-button--lg">
+    <div class="szc-main-404__actions">
+      <a href="{{ routes.all_products_collection_url }}" class="szc-button szc-button--primary szc-button--lg">
         <span>{{ '404.back_to_shopping' | t | default: 'Back to Shopping' }}</span>
-        {% render 'icon', icon: 'arrow-right', class: 'kz-button__icon' %}
+        {% render 'icon', icon: 'arrow-right', class: 'szc-button__icon' %}
       </a>
     </div>
   </div>
 </section>
 
 {% stylesheet %}
-  .kz-main-404 {
-    padding-top: var(--kz-space-12, 48px);
-    padding-bottom: var(--kz-space-12, 48px);
-    max-width: var(--kz-page-max-width, 1400px);
+  .szc-main-404 {
+    padding-top: var(--szc-space-12, 48px);
+    padding-bottom: var(--szc-space-12, 48px);
+    max-width: var(--szc-page-max-width, 1400px);
     margin: 0 auto;
   }
 
-  .kz-main-404__container {
+  .szc-main-404__container {
     max-width: 600px;
     margin: 0 auto;
     text-align: center;
@@ -50,53 +50,53 @@
     align-items: center;
   }
 
-  .kz-main-404__code {
-    font-family: var(--kz-font-family-heading);
+  .szc-main-404__code {
+    font-family: var(--szc-font-family-heading);
     font-size: clamp(80px, 12vw, 140px);
     font-weight: 800;
     line-height: 1;
-    color: var(--kz-color-surface-subtle, #f4f3ef);
-    letter-spacing: var(--kz-letter-spacing-wide, 0.05em);
+    color: var(--szc-color-surface-subtle, #f4f3ef);
+    letter-spacing: var(--szc-letter-spacing-wide, 0.05em);
     margin-bottom: -20px;
   }
 
-  .kz-main-404__title {
-    margin: 0 0 var(--kz-space-3, 12px) 0;
-    font-family: var(--kz-font-family-heading);
+  .szc-main-404__title {
+    margin: 0 0 var(--szc-space-3, 12px) 0;
+    font-family: var(--szc-font-family-heading);
     font-size: clamp(24px, 3vw, 36px);
     font-weight: 700;
-    color: var(--kz-color-text-primary, #111111);
+    color: var(--szc-color-text-primary, #111111);
   }
 
-  .kz-main-404__text {
-    font-family: var(--kz-font-family-body);
-    font-size: var(--kz-font-size-base, 16px);
-    color: var(--kz-color-text-secondary, #666666);
+  .szc-main-404__text {
+    font-family: var(--szc-font-family-body);
+    font-size: var(--szc-font-size-base, 16px);
+    color: var(--szc-color-text-secondary, #666666);
     line-height: 1.6;
-    margin-bottom: var(--kz-space-6, 24px);
+    margin-bottom: var(--szc-space-6, 24px);
   }
 
-  .kz-main-404__search-form {
+  .szc-main-404__search-form {
     width: 100%;
-    margin-bottom: var(--kz-space-8, 32px);
+    margin-bottom: var(--szc-space-8, 32px);
   }
 
-  .kz-main-404__search-field {
+  .szc-main-404__search-field {
     display: flex;
     gap: 8px;
     max-width: 440px;
     margin: 0 auto;
   }
 
-  .kz-main-404__search-input {
+  .szc-main-404__search-input {
     flex: 1;
     height: 44px;
     padding: 0 16px;
-    font-family: var(--kz-font-family-body);
+    font-family: var(--szc-font-family-body);
     font-size: 14px;
-    border: 1px solid var(--kz-color-border, #e5e5e5);
-    border-radius: var(--kz-radius-button, 2px);
-    background-color: var(--kz-color-surface, #f8f9fa);
+    border: 1px solid var(--szc-color-border, #e5e5e5);
+    border-radius: var(--szc-radius-button, 2px);
+    background-color: var(--szc-color-surface, #f8f9fa);
   }
 {% endstylesheet %}
 

@@ -7,16 +7,16 @@
 /* ==========================================================================
    1. KEYFRAME DEFINITIONS
    ========================================================================== */
-@keyframes kz-spin {
+@keyframes szc-spin {
   to { transform: rotate(360deg); }
 }
 
-@keyframes kz-fade-in {
+@keyframes szc-fade-in {
   from { opacity: 0; }
   to { opacity: 1; }
 }
 
-@keyframes kz-slide-up {
+@keyframes szc-slide-up {
   from {
     opacity: 0;
     transform: translateY(24px);
@@ -27,7 +27,7 @@
   }
 }
 
-@keyframes kz-slide-down {
+@keyframes szc-slide-down {
   from {
     opacity: 0;
     transform: translateY(-24px);
@@ -38,7 +38,7 @@
   }
 }
 
-@keyframes kz-scale-in {
+@keyframes szc-scale-in {
   from {
     opacity: 0;
     transform: scale(0.95);
@@ -49,12 +49,12 @@
   }
 }
 
-@keyframes kz-pulse {
+@keyframes szc-pulse {
   0%, 100% { opacity: 1; }
   50% { opacity: 0.5; }
 }
 
-@keyframes kz-shimmer {
+@keyframes szc-shimmer {
   0% { background-position: -200% 0; }
   100% { background-position: 200% 0; }
 }
@@ -62,56 +62,56 @@
 /* ==========================================================================
    2. UTILITY ANIMATION CLASSES
    ========================================================================== */
-.kz-animate-spin {
-  animation: kz-spin 1s linear infinite;
+.szc-animate-spin {
+  animation: szc-spin 1s linear infinite;
 }
 
-.kz-animate-fade-in {
-  animation: kz-fade-in var(--kz-transition-slow) forwards;
+.szc-animate-fade-in {
+  animation: szc-fade-in var(--szc-transition-slow) forwards;
 }
 
-.kz-animate-slide-up {
-  animation: kz-slide-up var(--kz-transition-slow) forwards;
+.szc-animate-slide-up {
+  animation: szc-slide-up var(--szc-transition-slow) forwards;
 }
 
-.kz-animate-scale-in {
-  animation: kz-scale-in var(--kz-transition-slow) forwards;
+.szc-animate-scale-in {
+  animation: szc-scale-in var(--szc-transition-slow) forwards;
 }
 
 /* Skeleton Loading Shimmer */
-.kz-skeleton {
+.szc-skeleton {
   background: linear-gradient(
     90deg,
-    var(--kz-color-surface-subtle) 25%,
-    var(--kz-color-border-subtle) 37%,
-    var(--kz-color-surface-subtle) 63%
+    var(--szc-color-surface-subtle) 25%,
+    var(--szc-color-border-subtle) 37%,
+    var(--szc-color-surface-subtle) 63%
   );
   background-size: 400% 100%;
-  animation: kz-shimmer 1.4s ease infinite;
-  border-radius: var(--kz-radius-sm);
+  animation: szc-shimmer 1.4s ease infinite;
+  border-radius: var(--szc-radius-sm);
 }
 
 /* ==========================================================================
    3. HOVER MICRO-INTERACTIONS
    ========================================================================== */
-.kz-hover-lift {
-  transition: transform var(--kz-transition-base), box-shadow var(--kz-transition-base);
+.szc-hover-lift {
+  transition: transform var(--szc-transition-base), box-shadow var(--szc-transition-base);
 }
 
-.kz-hover-lift:hover {
+.szc-hover-lift:hover {
   transform: translateY(-4px);
-  box-shadow: var(--kz-shadow-md);
+  box-shadow: var(--szc-shadow-md);
 }
 
-.kz-hover-zoom {
+.szc-hover-zoom {
   overflow: hidden;
 }
 
-.kz-hover-zoom img {
-  transition: transform var(--kz-transition-slow);
+.szc-hover-zoom img {
+  transition: transform var(--szc-transition-slow);
 }
 
-.kz-hover-zoom:hover img {
+.szc-hover-zoom:hover img {
   transform: scale(1.08);
 }
 

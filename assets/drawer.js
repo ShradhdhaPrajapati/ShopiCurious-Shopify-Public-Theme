@@ -10,7 +10,7 @@
   class ThemeDrawer extends HTMLElement {
     constructor() {
       super();
-      this.overlay = this.querySelector('.kz-drawer__overlay');
+      this.overlay = this.querySelector('.szc-drawer__overlay');
       this.closeButton = this.querySelector('[data-drawer-close]');
       this.onKeyUpHandler = this.onKeyUp.bind(this);
     }
@@ -27,10 +27,10 @@
     open(opener = null) {
       this.openedBy = opener;
       this.setAttribute('open', '');
-      document.body.classList.add('kz-overflow-hidden');
+      document.body.classList.add('szc-overflow-hidden');
 
       if (window.ShopziCurious && ShopziCurious.trapFocus) {
-        ShopziCurious.trapFocus(this, this.querySelector('.kz-drawer__inner'));
+        ShopziCurious.trapFocus(this, this.querySelector('.szc-drawer__inner'));
       }
 
       document.addEventListener('keyup', this.onKeyUpHandler);
@@ -39,7 +39,7 @@
 
     close() {
       this.removeAttribute('open');
-      document.body.classList.remove('kz-overflow-hidden');
+      document.body.classList.remove('szc-overflow-hidden');
 
       if (window.ShopziCurious && ShopziCurious.removeTrapFocus) {
         ShopziCurious.removeTrapFocus(this, this.openedBy);

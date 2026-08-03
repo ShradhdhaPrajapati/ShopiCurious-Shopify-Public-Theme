@@ -14,49 +14,49 @@
   assign badge_3 = section.settings.badge_3 | default: 'Style Inspiration'
 -%}
 
-<section id="Newsletter-{{ section.id }}" class="kz-newsletter-section page-width">
-  <div class="kz-newsletter">
+<section id="Newsletter-{{ section.id }}" class="szc-newsletter-section page-width">
+  <div class="szc-newsletter">
     <!-- Left Media Image -->
-    <div class="kz-newsletter__media">
+    <div class="szc-newsletter__media">
       {%- if image != blank -%}
         {% render 'image',
           image: image,
           aspect_ratio: '4/5',
           loading: 'lazy',
-          class: 'kz-newsletter__image'
+          class: 'szc-newsletter__image'
         %}
       {%- else -%}
-        <div class="kz-newsletter__placeholder">
-          {{ 'lifestyle-2' | placeholder_svg_tag: 'kz-placeholder-svg' }}
+        <div class="szc-newsletter__placeholder">
+          {{ 'lifestyle-2' | placeholder_svg_tag: 'szc-placeholder-svg' }}
         </div>
       {%- endif -%}
     </div>
 
     <!-- Right Content Box -->
-    <div class="kz-newsletter__content">
-      <div class="kz-newsletter__content-inner">
+    <div class="szc-newsletter__content">
+      <div class="szc-newsletter__content-inner">
         {%- if subtitle != blank -%}
-          <span class="kz-newsletter__subtitle">{{ subtitle }}</span>
+          <span class="szc-newsletter__subtitle">{{ subtitle }}</span>
         {%- endif -%}
 
         {%- if title != blank -%}
-          <h2 class="kz-newsletter__title">{{ title }}</h2>
+          <h2 class="szc-newsletter__title">{{ title }}</h2>
         {%- endif -%}
 
         {%- if description != blank -%}
-          <p class="kz-newsletter__description">{{ description }}</p>
+          <p class="szc-newsletter__description">{{ description }}</p>
         {%- endif -%}
 
         <!-- Newsletter Form -->
-        {% form 'customer', class: 'kz-newsletter__form' %}
+        {% form 'customer', class: 'szc-newsletter__form' %}
           <input type="hidden" name="contact[tags]" value="newsletter">
 
-          <div class="kz-newsletter__form-field">
+          <div class="szc-newsletter__form-field">
             <input
               id="NewsletterEmail-{{ section.id }}"
               type="email"
               name="contact[email]"
-              class="kz-newsletter__input"
+              class="szc-newsletter__input"
               value="{{ form.email }}"
               aria-required="true"
               autocorrect="off"
@@ -68,7 +68,7 @@
 
             <button
               type="submit"
-              class="kz-newsletter__btn"
+              class="szc-newsletter__btn"
               name="commit"
               id="Subscribe-{{ section.id }}"
             >
@@ -77,13 +77,13 @@
           </div>
 
           {%- if form.posted_successfully? -%}
-            <p class="kz-newsletter__success" tabindex="-1" autofocus>
+            <p class="szc-newsletter__success" tabindex="-1" autofocus>
               {{ 'sections.newsletter.success' | t | default: 'Thanks for subscribing!' }}
             </p>
           {%- endif -%}
 
           {%- if form.errors -%}
-            <small class="kz-newsletter__error" id="Newsletter-error--{{ section.id }}">
+            <small class="szc-newsletter__error" id="Newsletter-error--{{ section.id }}">
               {{ form.errors.translated_fields.email | capitalize }}
               {{ form.errors.messages.email }}
             </small>
@@ -92,24 +92,24 @@
 
         <!-- Bottom Feature Badges -->
         {%- if badge_1 != blank or badge_2 != blank or badge_3 != blank -%}
-          <div class="kz-newsletter__badges">
+          <div class="szc-newsletter__badges">
             {%- if badge_1 != blank -%}
-              <div class="kz-newsletter__badge">
-                <svg class="kz-newsletter__badge-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><polyline points="9 12 11 14 15 10"/></svg>
+              <div class="szc-newsletter__badge">
+                <svg class="szc-newsletter__badge-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><polyline points="9 12 11 14 15 10"/></svg>
                 <span>{{ badge_1 }}</span>
               </div>
             {%- endif -%}
 
             {%- if badge_2 != blank -%}
-              <div class="kz-newsletter__badge">
-                <svg class="kz-newsletter__badge-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20.59 13.41l-7.17 7.17a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.82z"/><line x1="7" y1="7" x2="7.01" y2="7"/></svg>
+              <div class="szc-newsletter__badge">
+                <svg class="szc-newsletter__badge-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20.59 13.41l-7.17 7.17a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.82z"/><line x1="7" y1="7" x2="7.01" y2="7"/></svg>
                 <span>{{ badge_2 }}</span>
               </div>
             {%- endif -%}
 
             {%- if badge_3 != blank -%}
-              <div class="kz-newsletter__badge">
-                <svg class="kz-newsletter__badge-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+              <div class="szc-newsletter__badge">
+                <svg class="szc-newsletter__badge-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
                 <span>{{ badge_3 }}</span>
               </div>
             {%- endif -%}
@@ -121,16 +121,16 @@
 </section>
 
 {% stylesheet %}
-  .kz-newsletter-section {
-    padding-top: var(--kz-space-12, 48px);
-    padding-bottom: var(--kz-space-12, 48px);
-    max-width: var(--kz-page-max-width, 1400px);
+  .szc-newsletter-section {
+    padding-top: var(--szc-space-12, 48px);
+    padding-bottom: var(--szc-space-12, 48px);
+    max-width: var(--szc-page-max-width, 1400px);
     margin: 0 auto;
-    padding-left: var(--kz-space-6, 24px);
-    padding-right: var(--kz-space-6, 24px);
+    padding-left: var(--szc-space-6, 24px);
+    padding-right: var(--szc-space-6, 24px);
   }
 
-  .kz-newsletter {
+  .szc-newsletter {
     display: flex;
     flex-direction: column;
     width: 100%;
@@ -141,7 +141,7 @@
   }
 
   @media (min-width: 990px) {
-    .kz-newsletter {
+    .szc-newsletter {
       display: grid;
       grid-template-columns: 1fr 1fr;
       align-items: stretch;
@@ -150,7 +150,7 @@
   }
 
   /* Left Media Area */
-  .kz-newsletter__media {
+  .szc-newsletter__media {
     position: relative;
     width: 100%;
     height: 100%;
@@ -159,7 +159,7 @@
     background-color: #ede8df;
   }
 
-  .kz-newsletter__image {
+  .szc-newsletter__image {
     width: 100%;
     height: 100%;
     object-fit: cover;
@@ -167,11 +167,11 @@
     transition: transform 700ms ease;
   }
 
-  .kz-newsletter:hover .kz-newsletter__image {
+  .szc-newsletter:hover .szc-newsletter__image {
     transform: scale(1.03);
   }
 
-  .kz-newsletter__placeholder {
+  .szc-newsletter__placeholder {
     width: 100%;
     height: 100%;
     min-height: 320px;
@@ -183,7 +183,7 @@
   }
 
   /* Right Content Area */
-  .kz-newsletter__content {
+  .szc-newsletter__content {
     display: flex;
     flex-direction: column;
     justify-content: center;
@@ -192,21 +192,21 @@
   }
 
   @media (min-width: 990px) {
-    .kz-newsletter__content {
+    .szc-newsletter__content {
       padding: 56px 64px;
     }
   }
 
-  .kz-newsletter__content-inner {
+  .szc-newsletter__content-inner {
     max-width: 440px;
     display: flex;
     flex-direction: column;
     align-items: flex-start;
   }
 
-  .kz-newsletter__subtitle {
+  .szc-newsletter__subtitle {
     display: block;
-    font-family: var(--kz-font-family-body, sans-serif);
+    font-family: var(--szc-font-family-body, sans-serif);
     font-size: 11px;
     font-weight: 600;
     text-transform: uppercase;
@@ -215,30 +215,30 @@
     margin-bottom: 10px;
   }
 
-  .kz-newsletter__title {
+  .szc-newsletter__title {
     margin: 0 0 12px 0;
-    font-family: var(--kz-font-family-heading, Georgia, 'Playfair Display', serif);
+    font-family: var(--szc-font-family-heading, Georgia, 'Playfair Display', serif);
     font-size: clamp(26px, 2.5vw, 36px);
     font-weight: 500;
     color: #111111;
     line-height: 1.25;
   }
 
-  .kz-newsletter__description {
+  .szc-newsletter__description {
     margin: 0 0 24px 0;
-    font-family: var(--kz-font-family-body, sans-serif);
+    font-family: var(--szc-font-family-body, sans-serif);
     font-size: 13px;
     color: #555555;
     line-height: 1.5;
   }
 
   /* Form & Inputs */
-  .kz-newsletter__form {
+  .szc-newsletter__form {
     width: 100%;
     margin-bottom: 28px;
   }
 
-  .kz-newsletter__form-field {
+  .szc-newsletter__form-field {
     display: flex;
     width: 100%;
     border-radius: 6px;
@@ -246,11 +246,11 @@
     box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
   }
 
-  .kz-newsletter__input {
+  .szc-newsletter__input {
     flex: 1;
     height: 48px;
     padding: 0 18px;
-    font-family: var(--kz-font-family-body, sans-serif);
+    font-family: var(--szc-font-family-body, sans-serif);
     font-size: 13px;
     color: #111111;
     background-color: #ffffff;
@@ -261,11 +261,11 @@
     transition: border-color 200ms ease;
   }
 
-  .kz-newsletter__input:focus {
+  .szc-newsletter__input:focus {
     border-color: #111111;
   }
 
-  .kz-newsletter__btn {
+  .szc-newsletter__btn {
     display: inline-flex;
     align-items: center;
     justify-content: center;
@@ -273,7 +273,7 @@
     padding: 0 28px;
     background-color: #242424;
     color: #ffffff;
-    font-family: var(--kz-font-family-body, sans-serif);
+    font-family: var(--szc-font-family-body, sans-serif);
     font-size: 11px;
     font-weight: 600;
     letter-spacing: 0.12em;
@@ -285,18 +285,18 @@
     white-space: nowrap;
   }
 
-  .kz-newsletter__btn:hover {
+  .szc-newsletter__btn:hover {
     background-color: #000000;
   }
 
-  .kz-newsletter__success {
+  .szc-newsletter__success {
     margin: 10px 0 0 0;
     font-size: 13px;
     color: #2e7d32;
     font-weight: 500;
   }
 
-  .kz-newsletter__error {
+  .szc-newsletter__error {
     display: block;
     margin: 10px 0 0 0;
     font-size: 12px;
@@ -304,7 +304,7 @@
   }
 
   /* Badges at bottom */
-  .kz-newsletter__badges {
+  .szc-newsletter__badges {
     display: flex;
     flex-wrap: wrap;
     align-items: center;
@@ -312,17 +312,17 @@
     padding-top: 4px;
   }
 
-  .kz-newsletter__badge {
+  .szc-newsletter__badge {
     display: inline-flex;
     align-items: center;
     gap: 8px;
-    font-family: var(--kz-font-family-body, sans-serif);
+    font-family: var(--szc-font-family-body, sans-serif);
     font-size: 11px;
     font-weight: 600;
     color: #444444;
   }
 
-  .kz-newsletter__badge-icon {
+  .szc-newsletter__badge-icon {
     width: 16px;
     height: 16px;
     color: #222222;

@@ -22,27 +22,27 @@
   assign collection_img = image | default: collection.featured_image | default: collection.products.first.featured_media.preview_image
 -%}
 
-<div class="kz-card-collection {{ custom_class }}">
-  <a href="{{ collection.url | default: '#' }}" class="kz-card-collection__link" aria-label="{{ title_text | escape }}">
-    <div class="kz-card-collection__media" style="aspect-ratio: {{ aspect_ratio }};">
+<div class="szc-card-collection {{ custom_class }}">
+  <a href="{{ collection.url | default: '#' }}" class="szc-card-collection__link" aria-label="{{ title_text | escape }}">
+    <div class="szc-card-collection__media" style="aspect-ratio: {{ aspect_ratio }};">
       {%- if collection_img != blank -%}
         {% render 'image',
           image: collection_img,
           aspect_ratio: aspect_ratio,
           loading: 'lazy',
-          class: 'kz-card-collection__image'
+          class: 'szc-card-collection__image'
         %}
       {%- else -%}
-        <div class="kz-card-collection__placeholder">
-          {{ 'collection-1' | placeholder_svg_tag: 'kz-image-placeholder' }}
+        <div class="szc-card-collection__placeholder">
+          {{ 'collection-1' | placeholder_svg_tag: 'szc-image-placeholder' }}
         </div>
       {%- endif -%}
-      <div class="kz-card-collection__overlay"></div>
+      <div class="szc-card-collection__overlay"></div>
 
-      <div class="kz-card-collection__content">
-        <h3 class="kz-card-collection__title">{{ title_text | upcase }}</h3>
+      <div class="szc-card-collection__content">
+        <h3 class="szc-card-collection__title">{{ title_text | upcase }}</h3>
         {%- if btn_label != blank -%}
-          <span class="kz-card-collection__btn">{{ btn_label | upcase }}</span>
+          <span class="szc-card-collection__btn">{{ btn_label | upcase }}</span>
         {%- endif -%}
       </div>
     </div>
@@ -50,40 +50,40 @@
 </div>
 
 {% stylesheet %}
-  .kz-card-collection {
+  .szc-card-collection {
     position: relative;
     width: 100%;
     border-radius: 14px;
     overflow: hidden;
-    background-color: var(--kz-color-surface, #f4f2ee);
+    background-color: var(--szc-color-surface, #f4f2ee);
   }
 
-  .kz-card-collection__link {
+  .szc-card-collection__link {
     display: block;
     text-decoration: none;
     color: #ffffff;
     height: 100%;
   }
 
-  .kz-card-collection__media {
+  .szc-card-collection__media {
     position: relative;
     width: 100%;
     overflow: hidden;
     border-radius: 14px;
   }
 
-  .kz-card-collection__image {
+  .szc-card-collection__image {
     width: 100%;
     height: 100%;
     object-fit: cover;
     transition: transform 500ms ease;
   }
 
-  .kz-card-collection:hover .kz-card-collection__image {
+  .szc-card-collection:hover .szc-card-collection__image {
     transform: scale(1.05);
   }
 
-  .kz-card-collection__placeholder {
+  .szc-card-collection__placeholder {
     width: 100%;
     height: 100%;
     display: flex;
@@ -92,7 +92,7 @@
     background-color: #e5e2dc;
   }
 
-  .kz-card-collection__overlay {
+  .szc-card-collection__overlay {
     position: absolute;
     top: 0;
     left: 0;
@@ -103,11 +103,11 @@
     z-index: 2;
   }
 
-  .kz-card-collection:hover .kz-card-collection__overlay {
+  .szc-card-collection:hover .szc-card-collection__overlay {
     background: linear-gradient(180deg, rgba(0, 0, 0, 0.15) 0%, rgba(0, 0, 0, 0.45) 100%);
   }
 
-  .kz-card-collection__content {
+  .szc-card-collection__content {
     position: absolute;
     top: 0;
     left: 0;
@@ -123,9 +123,9 @@
     text-align: center;
   }
 
-  .kz-card-collection__title {
+  .szc-card-collection__title {
     margin: 0;
-    font-family: var(--kz-font-family-heading, inherit);
+    font-family: var(--szc-font-family-heading, inherit);
     font-size: clamp(18px, 2vw, 24px);
     font-weight: 700;
     color: #ffffff;
@@ -134,12 +134,12 @@
     text-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
   }
 
-  .kz-card-collection__btn {
+  .szc-card-collection__btn {
     display: inline-flex;
     align-items: center;
     justify-content: center;
     padding: 10px 24px;
-    font-family: var(--kz-font-family-body, inherit);
+    font-family: var(--szc-font-family-body, inherit);
     font-size: 11px;
     font-weight: 600;
     letter-spacing: 0.12em;
@@ -154,7 +154,7 @@
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
   }
 
-  .kz-card-collection:hover .kz-card-collection__btn {
+  .szc-card-collection:hover .szc-card-collection__btn {
     background: #ffffff;
     color: #111111;
     border-color: #ffffff;

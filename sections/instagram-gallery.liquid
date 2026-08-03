@@ -15,19 +15,19 @@
 
 <section
   id="InstagramGallery-{{ section.id }}"
-  class="kz-instagram-section page-width"
+  class="szc-instagram-section page-width"
   style="--cols-desktop: {{ cols_desktop }}; --cols-mobile: {{ cols_mobile }};"
 >
   <!-- Section Header -->
   {%- if title != blank or subtitle != blank -%}
-    <div class="kz-section-header kz-section-header--{{ align_class }}">
-      <div class="kz-instagram-header-inline">
+    <div class="szc-section-header szc-section-header--{{ align_class }}">
+      <div class="szc-instagram-header-inline">
         {%- if subtitle != blank -%}
-          <span class="kz-instagram-header__subtitle">{{ subtitle }}</span>
+          <span class="szc-instagram-header__subtitle">{{ subtitle }}</span>
         {%- endif -%}
 
         {%- if title != blank -%}
-          <a href="{{ link }}" target="_blank" rel="noopener noreferrer" class="kz-instagram-header__link">
+          <a href="{{ link }}" target="_blank" rel="noopener noreferrer" class="szc-instagram-header__link">
             {{ title }}
           </a>
         {%- endif -%}
@@ -36,7 +36,7 @@
   {%- endif -%}
 
   <!-- Instagram Grid -->
-  <div class="kz-instagram__grid">
+  <div class="szc-instagram__grid">
     {%- for block in section.blocks -%}
       {%- liquid
         assign img = block.settings.image
@@ -44,37 +44,37 @@
         assign caption = block.settings.caption
       -%}
 
-      <div class="kz-instagram__item" {{ block.shopify_attributes }}>
+      <div class="szc-instagram__item" {{ block.shopify_attributes }}>
         <a
           href="{{ post_link }}"
           target="_blank"
           rel="noopener noreferrer"
-          class="kz-instagram-card"
+          class="szc-instagram-card"
           style="aspect-ratio: {{ aspect_ratio }};"
           aria-label="{{ caption | default: 'View on Instagram' }}"
         >
-          <div class="kz-instagram-card__media">
+          <div class="szc-instagram-card__media">
             {%- if img != blank -%}
               {% render 'image',
                 image: img,
                 aspect_ratio: aspect_ratio,
                 loading: 'lazy',
-                class: 'kz-instagram-card__image'
+                class: 'szc-instagram-card__image'
               %}
             {%- else -%}
-              <div class="kz-instagram-card__placeholder">
-                {{ 'lifestyle-1' | placeholder_svg_tag: 'kz-placeholder-svg' }}
+              <div class="szc-instagram-card__placeholder">
+                {{ 'lifestyle-1' | placeholder_svg_tag: 'szc-placeholder-svg' }}
               </div>
             {%- endif -%}
           </div>
 
           <!-- Hover Overlay -->
-          <div class="kz-instagram-card__overlay">
-            <div class="kz-instagram-card__icon-wrapper">
-              {% render 'icon', icon: 'instagram', class: 'kz-instagram-card__icon' %}
+          <div class="szc-instagram-card__overlay">
+            <div class="szc-instagram-card__icon-wrapper">
+              {% render 'icon', icon: 'instagram', class: 'szc-instagram-card__icon' %}
             </div>
             {%- if caption != blank -%}
-              <p class="kz-instagram-card__caption">{{ caption }}</p>
+              <p class="szc-instagram-card__caption">{{ caption }}</p>
             {%- endif -%}
           </div>
         </a>
@@ -82,24 +82,24 @@
     {%- else -%}
       <!-- Default 5 Demo Items -->
       {%- for i in (1..5) -%}
-        <div class="kz-instagram__item">
+        <div class="szc-instagram__item">
           <a
             href="{{ link }}"
             target="_blank"
             rel="noopener noreferrer"
-            class="kz-instagram-card"
+            class="szc-instagram-card"
             style="aspect-ratio: {{ aspect_ratio }};"
           >
-            <div class="kz-instagram-card__media">
-              <div class="kz-instagram-card__placeholder">
+            <div class="szc-instagram-card__media">
+              <div class="szc-instagram-card__placeholder">
                 {%- capture placeholder_index -%}lifestyle-{{ i }}{%- endcapture -%}
-                {{ placeholder_index | placeholder_svg_tag: 'kz-placeholder-svg' }}
+                {{ placeholder_index | placeholder_svg_tag: 'szc-placeholder-svg' }}
               </div>
             </div>
 
-            <div class="kz-instagram-card__overlay">
-              <div class="kz-instagram-card__icon-wrapper">
-                {% render 'icon', icon: 'instagram', class: 'kz-instagram-card__icon' %}
+            <div class="szc-instagram-card__overlay">
+              <div class="szc-instagram-card__icon-wrapper">
+                {% render 'icon', icon: 'instagram', class: 'szc-instagram-card__icon' %}
               </div>
             </div>
           </a>
@@ -110,32 +110,32 @@
 </section>
 
 {% stylesheet %}
-  .kz-instagram-section {
-    padding-top: var(--kz-space-12, 48px);
-    padding-bottom: var(--kz-space-12, 48px);
-    max-width: var(--kz-page-max-width, 1400px);
+  .szc-instagram-section {
+    padding-top: var(--szc-space-12, 48px);
+    padding-bottom: var(--szc-space-12, 48px);
+    max-width: var(--szc-page-max-width, 1400px);
     margin: 0 auto;
-    padding-left: var(--kz-space-6, 24px);
-    padding-right: var(--kz-space-6, 24px);
+    padding-left: var(--szc-space-6, 24px);
+    padding-right: var(--szc-space-6, 24px);
   }
 
-  .kz-section-header {
-    margin-bottom: var(--kz-space-8, 32px);
+  .szc-section-header {
+    margin-bottom: var(--szc-space-8, 32px);
   }
 
-  .kz-section-header--left {
+  .szc-section-header--left {
     text-align: left;
   }
 
-  .kz-section-header--center {
+  .szc-section-header--center {
     text-align: center;
   }
 
-  .kz-section-header--right {
+  .szc-section-header--right {
     text-align: right;
   }
 
-  .kz-instagram-header-inline {
+  .szc-instagram-header-inline {
     display: inline-flex;
     align-items: center;
     justify-content: center;
@@ -143,8 +143,8 @@
     flex-wrap: wrap;
   }
 
-  .kz-instagram-header__subtitle {
-    font-family: var(--kz-font-family-body, sans-serif);
+  .szc-instagram-header__subtitle {
+    font-family: var(--szc-font-family-body, sans-serif);
     font-size: 11px;
     font-weight: 600;
     text-transform: uppercase;
@@ -152,8 +152,8 @@
     color: #666666;
   }
 
-  .kz-instagram-header__link {
-    font-family: var(--kz-font-family-body, sans-serif);
+  .szc-instagram-header__link {
+    font-family: var(--szc-font-family-body, sans-serif);
     font-size: 11px;
     font-weight: 600;
     text-transform: uppercase;
@@ -164,25 +164,25 @@
     transition: color 200ms ease;
   }
 
-  .kz-instagram-header__link:hover {
+  .szc-instagram-header__link:hover {
     color: #d4a373;
   }
 
-  .kz-instagram__grid {
+  .szc-instagram__grid {
     display: grid;
     grid-template-columns: repeat(var(--cols-mobile, 2), 1fr);
-    gap: var(--kz-space-4, 16px);
+    gap: var(--szc-space-4, 16px);
   }
 
   @media (min-width: 990px) {
-    .kz-instagram__grid {
+    .szc-instagram__grid {
       grid-template-columns: repeat(var(--cols-desktop, 5), 1fr);
-      gap: var(--kz-space-5, 20px);
+      gap: var(--szc-space-5, 20px);
     }
   }
 
   /* Instagram Card Styling */
-  .kz-instagram-card {
+  .szc-instagram-card {
     position: relative;
     display: flex;
     width: 100%;
@@ -192,7 +192,7 @@
     background-color: #f5f2eb;
   }
 
-  .kz-instagram-card__media {
+  .szc-instagram-card__media {
     position: absolute;
     top: 0;
     left: 0;
@@ -201,18 +201,18 @@
     overflow: hidden;
   }
 
-  .kz-instagram-card__image {
+  .szc-instagram-card__image {
     width: 100%;
     height: 100%;
     object-fit: cover;
     transition: transform 600ms ease;
   }
 
-  .kz-instagram-card:hover .kz-instagram-card__image {
+  .szc-instagram-card:hover .szc-instagram-card__image {
     transform: scale(1.08);
   }
 
-  .kz-instagram-card__placeholder {
+  .szc-instagram-card__placeholder {
     width: 100%;
     height: 100%;
     display: flex;
@@ -223,7 +223,7 @@
   }
 
   /* Hover Overlay */
-  .kz-instagram-card__overlay {
+  .szc-instagram-card__overlay {
     position: absolute;
     top: 0;
     left: 0;
@@ -242,11 +242,11 @@
     z-index: 2;
   }
 
-  .kz-instagram-card:hover .kz-instagram-card__overlay {
+  .szc-instagram-card:hover .szc-instagram-card__overlay {
     opacity: 1;
   }
 
-  .kz-instagram-card__icon-wrapper {
+  .szc-instagram-card__icon-wrapper {
     display: flex;
     align-items: center;
     justify-content: center;
@@ -260,18 +260,18 @@
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
   }
 
-  .kz-instagram-card:hover .kz-instagram-card__icon-wrapper {
+  .szc-instagram-card:hover .szc-instagram-card__icon-wrapper {
     transform: scale(1);
   }
 
-  .kz-instagram-card__icon {
+  .szc-instagram-card__icon {
     width: 22px;
     height: 22px;
   }
 
-  .kz-instagram-card__caption {
+  .szc-instagram-card__caption {
     margin: 10px 0 0 0;
-    font-family: var(--kz-font-family-body, sans-serif);
+    font-family: var(--szc-font-family-body, sans-serif);
     font-size: 11px;
     font-weight: 500;
     color: #ffffff;

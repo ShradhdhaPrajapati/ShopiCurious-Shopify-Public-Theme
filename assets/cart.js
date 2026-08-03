@@ -29,7 +29,7 @@
         // Update header cart count badges
         document.querySelectorAll('[data-cart-count]').forEach((badge) => {
           badge.textContent = cart.item_count;
-          badge.classList.toggle('kz-d-none', cart.item_count === 0);
+          badge.classList.toggle('szc-d-none', cart.item_count === 0);
         });
 
         // Re-render cart drawer contents via Section Rendering API

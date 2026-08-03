@@ -4,14 +4,14 @@
   assign cols_mobile = section.settings.columns_mobile | default: '2'
 -%}
 
-<div class="kz-main-collection page-width" style="--cols-desktop: {{ cols_desktop }}; --cols-mobile: {{ cols_mobile }};">
+<div class="szc-main-collection page-width" style="--cols-desktop: {{ cols_desktop }}; --cols-mobile: {{ cols_mobile }};">
   {% render 'breadcrumbs' %}
 
   <!-- Collection Banner Header -->
-  <div class="kz-main-collection__header">
-    <h1 class="kz-main-collection__title">{{ collection.title }}</h1>
+  <div class="szc-main-collection__header">
+    <h1 class="szc-main-collection__title">{{ collection.title }}</h1>
     {%- if collection.description != blank -%}
-      <div class="kz-main-collection__description">
+      <div class="szc-main-collection__description">
         {{ collection.description }}
       </div>
     {%- endif -%}
@@ -19,7 +19,7 @@
 
   <!-- Filtering & Sorting Bar -->
   {%- if section.settings.enable_filtering or section.settings.enable_sorting -%}
-    <div class="kz-main-collection__facets-wrapper">
+    <div class="szc-main-collection__facets-wrapper">
       {% render 'facets',
         results: collection,
         enable_filtering: section.settings.enable_filtering,
@@ -30,11 +30,11 @@
 
   <!-- Collection Product Grid -->
   {%- paginate collection.products by per_page -%}
-    <div class="kz-main-collection__content">
+    <div class="szc-main-collection__content">
       {%- if collection.products.size > 0 -%}
-        <div class="kz-main-collection__grid" id="ProductGrid">
+        <div class="szc-main-collection__grid" id="ProductGrid">
           {%- for product in collection.products -%}
-            <div class="kz-main-collection__item kz-animate-fade-up">
+            <div class="szc-main-collection__item szc-animate-fade-up">
               {% render 'product-card',
                 card_product: product,
                 show_secondary_image: true,
@@ -49,11 +49,11 @@
           {% render 'pagination', paginate: paginate, anchor: '#ProductGrid' %}
         {%- endif -%}
       {%- else -%}
-        <div class="kz-main-collection__empty">
-          {% render 'icon', icon: 'search', class: 'kz-main-collection__empty-icon' %}
+        <div class="szc-main-collection__empty">
+          {% render 'icon', icon: 'search', class: 'szc-main-collection__empty-icon' %}
           <h2>{{ 'sections.collection_template.empty' | t | default: 'No products found' }}</h2>
           <p>{{ 'sections.collection_template.use_fewer_filters' | t | default: 'Try clearing some filters or search for another term.' }}</p>
-          <a href="{{ collection.url }}" class="kz-button kz-button--primary">
+          <a href="{{ collection.url }}" class="szc-button szc-button--primary">
             {{ 'products.facets.clear_all' | t | default: 'Clear All Filters' }}
           </a>
         </div>
@@ -63,60 +63,60 @@
 </div>
 
 {% stylesheet %}
-  .kz-main-collection {
-    padding-top: var(--kz-space-4, 16px);
-    padding-bottom: var(--kz-space-12, 48px);
-    max-width: var(--kz-page-max-width, 1400px);
+  .szc-main-collection {
+    padding-top: var(--szc-space-4, 16px);
+    padding-bottom: var(--szc-space-12, 48px);
+    max-width: var(--szc-page-max-width, 1400px);
     margin: 0 auto;
   }
 
-  .kz-main-collection__header {
-    margin-bottom: var(--kz-space-6, 24px);
+  .szc-main-collection__header {
+    margin-bottom: var(--szc-space-6, 24px);
     text-align: center;
   }
 
-  .kz-main-collection__title {
-    margin: 0 0 var(--kz-space-2, 8px) 0;
-    font-family: var(--kz-font-family-heading);
+  .szc-main-collection__title {
+    margin: 0 0 var(--szc-space-2, 8px) 0;
+    font-family: var(--szc-font-family-heading);
     font-size: clamp(28px, 4vw, 42px);
     font-weight: 700;
-    color: var(--kz-color-text-primary, #111111);
+    color: var(--szc-color-text-primary, #111111);
   }
 
-  .kz-main-collection__description {
+  .szc-main-collection__description {
     max-width: 680px;
     margin: 0 auto;
-    font-size: var(--kz-font-size-sm, 14px);
-    color: var(--kz-color-text-secondary, #666666);
+    font-size: var(--szc-font-size-sm, 14px);
+    color: var(--szc-color-text-secondary, #666666);
     line-height: 1.6;
   }
 
-  .kz-main-collection__grid {
+  .szc-main-collection__grid {
     display: grid;
     grid-template-columns: repeat(var(--cols-mobile, 2), 1fr);
-    gap: var(--kz-space-4, 16px);
+    gap: var(--szc-space-4, 16px);
   }
 
   @media (min-width: 750px) {
-    .kz-main-collection__grid {
+    .szc-main-collection__grid {
       grid-template-columns: repeat(var(--cols-desktop, 4), 1fr);
-      gap: var(--kz-space-6, 24px);
+      gap: var(--szc-space-6, 24px);
     }
   }
 
-  .kz-main-collection__empty {
+  .szc-main-collection__empty {
     display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    padding: var(--kz-space-12, 48px) var(--kz-space-4, 16px);
+    padding: var(--szc-space-12, 48px) var(--szc-space-4, 16px);
     text-align: center;
   }
 
-  .kz-main-collection__empty-icon {
+  .szc-main-collection__empty-icon {
     width: 48px;
     height: 48px;
-    color: var(--kz-color-text-muted, #757575);
+    color: var(--szc-color-text-muted, #757575);
     margin-bottom: 16px;
   }
 {% endstylesheet %}

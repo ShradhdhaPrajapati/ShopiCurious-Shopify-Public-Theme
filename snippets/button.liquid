@@ -34,7 +34,7 @@
   assign is_disabled = disabled | default: false
   assign is_loading = loading | default: false
 
-  assign full_class = 'kz-button kz-button--' | append: btn_style | append: ' kz-button--' | append: btn_size
+  assign full_class = 'szc-button szc-button--' | append: btn_style | append: ' szc-button--' | append: btn_size
   if is_loading
     assign full_class = full_class | append: ' is-loading'
   endif
@@ -62,136 +62,136 @@
   aria-label="{{ btn_aria }}"
 >
   {%- if is_loading -%}
-    {% render 'icon', icon: 'spinner', class: 'kz-button__spinner' %}
+    {% render 'icon', icon: 'spinner', class: 'szc-button__spinner' %}
   {%- endif -%}
 
   {%- if btn_icon != blank and btn_icon_pos == 'left' and is_loading == false -%}
-    {% render 'icon', icon: btn_icon, class: 'kz-button__icon kz-button__icon--left' %}
+    {% render 'icon', icon: btn_icon, class: 'szc-button__icon szc-button__icon--left' %}
   {%- endif -%}
 
-  <span class="kz-button__text">{{ btn_label }}</span>
+  <span class="szc-button__text">{{ btn_label }}</span>
 
   {%- if btn_icon != blank and btn_icon_pos == 'right' and is_loading == false -%}
-    {% render 'icon', icon: btn_icon, class: 'kz-button__icon kz-button__icon--right' %}
+    {% render 'icon', icon: btn_icon, class: 'szc-button__icon szc-button__icon--right' %}
   {%- endif -%}
 </{{ tag_name }}>
 
 {% stylesheet %}
-  .kz-button {
+  .szc-button {
     display: inline-flex;
     align-items: center;
     justify-content: center;
-    gap: var(--kz-space-2, 8px);
-    height: var(--kz-button-height, 48px);
-    padding: 0 var(--kz-space-6, 24px);
-    font-family: var(--kz-font-family-body);
-    font-size: var(--kz-font-size-sm, 14px);
-    font-weight: var(--kz-font-weight-semibold, 600);
-    letter-spacing: var(--kz-letter-spacing-wide, 0.05em);
+    gap: var(--szc-space-2, 8px);
+    height: var(--szc-button-height, 48px);
+    padding: 0 var(--szc-space-6, 24px);
+    font-family: var(--szc-font-family-body);
+    font-size: var(--szc-font-size-sm, 14px);
+    font-weight: var(--szc-font-weight-semibold, 600);
+    letter-spacing: var(--szc-letter-spacing-wide, 0.05em);
     text-transform: uppercase;
     text-decoration: none;
     white-space: nowrap;
-    border-radius: var(--kz-radius-button, 2px);
+    border-radius: var(--szc-radius-button, 2px);
     border: 1px solid transparent;
     cursor: pointer;
     user-select: none;
-    transition: all var(--kz-transition-fast, 150ms ease);
+    transition: all var(--szc-transition-fast, 150ms ease);
     position: relative;
     overflow: hidden;
   }
 
-  .kz-button--sm {
+  .szc-button--sm {
     height: 38px;
-    padding: 0 var(--kz-space-4, 16px);
-    font-size: var(--kz-font-size-xs, 12px);
+    padding: 0 var(--szc-space-4, 16px);
+    font-size: var(--szc-font-size-xs, 12px);
   }
 
-  .kz-button--lg {
+  .szc-button--lg {
     height: 56px;
-    padding: 0 var(--kz-space-8, 32px);
-    font-size: var(--kz-font-size-base, 16px);
+    padding: 0 var(--szc-space-8, 32px);
+    font-size: var(--szc-font-size-base, 16px);
   }
 
   /* Style Variants */
-  .kz-button--primary {
-    background-color: var(--kz-color-primary, #111111);
-    color: var(--kz-color-text-inverse, #ffffff);
-    border-color: var(--kz-color-primary, #111111);
+  .szc-button--primary {
+    background-color: var(--szc-color-primary, #111111);
+    color: var(--szc-color-text-inverse, #ffffff);
+    border-color: var(--szc-color-primary, #111111);
   }
 
-  .kz-button--primary:hover:not([disabled]) {
-    background-color: var(--kz-color-primary-light, #2c2c2c);
-    border-color: var(--kz-color-primary-light, #2c2c2c);
+  .szc-button--primary:hover:not([disabled]) {
+    background-color: var(--szc-color-primary-light, #2c2c2c);
+    border-color: var(--szc-color-primary-light, #2c2c2c);
     transform: translateY(-2px);
-    box-shadow: var(--kz-shadow-md);
+    box-shadow: var(--szc-shadow-md);
   }
 
-  .kz-button--secondary {
-    background-color: var(--kz-color-secondary, #d4a373);
-    color: var(--kz-color-primary, #111111);
-    border-color: var(--kz-color-secondary, #d4a373);
+  .szc-button--secondary {
+    background-color: var(--szc-color-secondary, #d4a373);
+    color: var(--szc-color-primary, #111111);
+    border-color: var(--szc-color-secondary, #d4a373);
   }
 
-  .kz-button--secondary:hover:not([disabled]) {
-    background-color: var(--kz-color-secondary-light, #d6b87b);
+  .szc-button--secondary:hover:not([disabled]) {
+    background-color: var(--szc-color-secondary-light, #d6b87b);
     transform: translateY(-2px);
   }
 
-  .kz-button--accent {
-    background-color: var(--kz-color-accent, #e76f51);
+  .szc-button--accent {
+    background-color: var(--szc-color-accent, #e76f51);
     color: #ffffff;
-    border-color: var(--kz-color-accent, #e76f51);
+    border-color: var(--szc-color-accent, #e76f51);
   }
 
-  .kz-button--accent:hover:not([disabled]) {
-    background-color: var(--kz-color-accent-dark, #d64a27);
+  .szc-button--accent:hover:not([disabled]) {
+    background-color: var(--szc-color-accent-dark, #d64a27);
     transform: translateY(-2px);
   }
 
-  .kz-button--outline {
+  .szc-button--outline {
     background-color: transparent;
-    color: var(--kz-color-primary, #111111);
-    border-color: var(--kz-color-primary, #111111);
+    color: var(--szc-color-primary, #111111);
+    border-color: var(--szc-color-primary, #111111);
   }
 
-  .kz-button--outline:hover:not([disabled]) {
-    background-color: var(--kz-color-primary, #111111);
-    color: var(--kz-color-text-inverse, #ffffff);
+  .szc-button--outline:hover:not([disabled]) {
+    background-color: var(--szc-color-primary, #111111);
+    color: var(--szc-color-text-inverse, #ffffff);
   }
 
-  .kz-button--text {
+  .szc-button--text {
     background-color: transparent;
-    color: var(--kz-color-primary, #111111);
+    color: var(--szc-color-primary, #111111);
     border-color: transparent;
     padding: 0;
     height: auto;
   }
 
-  .kz-button--text:hover:not([disabled]) {
-    color: var(--kz-color-secondary, #d4a373);
+  .szc-button--text:hover:not([disabled]) {
+    color: var(--szc-color-secondary, #d4a373);
   }
 
-  .kz-button:disabled,
-  .kz-button[aria-disabled="true"] {
+  .szc-button:disabled,
+  .szc-button[aria-disabled="true"] {
     opacity: 0.5;
     cursor: not-allowed;
     transform: none !important;
     box-shadow: none !important;
   }
 
-  .kz-button__icon {
+  .szc-button__icon {
     width: 18px;
     height: 18px;
     flex-shrink: 0;
   }
 
-  .kz-button__spinner {
+  .szc-button__spinner {
     width: 18px;
     height: 18px;
-    animation: kz-spin 0.8s linear infinite;
+    animation: szc-spin 0.8s linear infinite;
   }
 
-  @keyframes kz-spin {
+  @keyframes szc-spin {
     to {
       transform: rotate(360deg);
     }

@@ -36,24 +36,24 @@
   endif
 -%}
 
-<div class="kz-swatch kz-swatch--{{ swatch_type }} {% if is_disabled %}is-disabled{% endif %}">
+<div class="szc-swatch szc-swatch--{{ swatch_type }} {% if is_disabled %}is-disabled{% endif %}">
   <input
     type="radio"
     id="{{ input_id }}"
     name="{{ input_name }}"
     value="{{ swatch_val }}"
-    class="kz-swatch__input visually-hidden"
+    class="szc-swatch__input visually-hidden"
     {% if is_checked %}checked{% endif %}
     {% if is_disabled %}disabled{% endif %}
   >
   <label
     for="{{ input_id }}"
-    class="kz-swatch__label"
+    class="szc-swatch__label"
     title="{{ swatch_val }}"
     {% if swatch_type == 'color' %}style="{{ color_bg_style }}"{% endif %}
   >
     {%- if swatch_type != 'color' -%}
-      <span class="kz-swatch__text">{{ swatch_val }}</span>
+      <span class="szc-swatch__text">{{ swatch_val }}</span>
     {%- else -%}
       <span class="visually-hidden">{{ swatch_val }}</span>
     {%- endif -%}
@@ -61,75 +61,75 @@
 </div>
 
 {% stylesheet %}
-  .kz-swatch {
+  .szc-swatch {
     display: inline-block;
     position: relative;
   }
 
   /* Swatch Input Label Base */
-  .kz-swatch__label {
+  .szc-swatch__label {
     display: flex;
     align-items: center;
     justify-content: center;
     cursor: pointer;
     user-select: none;
-    transition: all var(--kz-transition-fast, 150ms ease);
+    transition: all var(--szc-transition-fast, 150ms ease);
   }
 
   /* Color Swatch Style */
-  .kz-swatch--color .kz-swatch__label {
+  .szc-swatch--color .szc-swatch__label {
     width: 28px;
     height: 28px;
     border-radius: 50%;
-    border: 1px solid var(--kz-color-border, #e5e5e5);
+    border: 1px solid var(--szc-color-border, #e5e5e5);
     outline: 2px solid transparent;
     outline-offset: 2px;
   }
 
-  .kz-swatch--color .kz-swatch__input:checked + .kz-swatch__label {
-    outline-color: var(--kz-color-primary, #111111);
+  .szc-swatch--color .szc-swatch__input:checked + .szc-swatch__label {
+    outline-color: var(--szc-color-primary, #111111);
     transform: scale(1.1);
   }
 
-  .kz-swatch--color:hover .kz-swatch__label {
+  .szc-swatch--color:hover .szc-swatch__label {
     transform: scale(1.1);
   }
 
   /* Size / Text Swatch Style */
-  .kz-swatch--size .kz-swatch__label,
-  .kz-swatch--text .kz-swatch__label {
+  .szc-swatch--size .szc-swatch__label,
+  .szc-swatch--text .szc-swatch__label {
     min-width: 40px;
     height: 36px;
     padding: 0 12px;
-    font-family: var(--kz-font-family-body);
-    font-size: var(--kz-font-size-xs, 12px);
+    font-family: var(--szc-font-family-body);
+    font-size: var(--szc-font-size-xs, 12px);
     font-weight: 600;
-    color: var(--kz-color-text-primary, #2b2b2b);
-    background-color: var(--kz-color-surface, #f8f9fa);
-    border: 1px solid var(--kz-color-border, #e5e5e5);
-    border-radius: var(--kz-radius-button, 2px);
+    color: var(--szc-color-text-primary, #2b2b2b);
+    background-color: var(--szc-color-surface, #f8f9fa);
+    border: 1px solid var(--szc-color-border, #e5e5e5);
+    border-radius: var(--szc-radius-button, 2px);
   }
 
-  .kz-swatch--size .kz-swatch__input:checked + .kz-swatch__label,
-  .kz-swatch--text .kz-swatch__input:checked + .kz-swatch__label {
-    background-color: var(--kz-color-primary, #111111);
-    color: var(--kz-color-text-inverse, #ffffff);
-    border-color: var(--kz-color-primary, #111111);
+  .szc-swatch--size .szc-swatch__input:checked + .szc-swatch__label,
+  .szc-swatch--text .szc-swatch__input:checked + .szc-swatch__label {
+    background-color: var(--szc-color-primary, #111111);
+    color: var(--szc-color-text-inverse, #ffffff);
+    border-color: var(--szc-color-primary, #111111);
   }
 
-  .kz-swatch--size:hover .kz-swatch__label,
-  .kz-swatch--text:hover .kz-swatch__label {
-    border-color: var(--kz-color-primary, #111111);
+  .szc-swatch--size:hover .szc-swatch__label,
+  .szc-swatch--text:hover .szc-swatch__label {
+    border-color: var(--szc-color-primary, #111111);
   }
 
   /* Disabled State */
-  .kz-swatch.is-disabled .kz-swatch__label {
+  .szc-swatch.is-disabled .szc-swatch__label {
     opacity: 0.4;
     cursor: not-allowed;
     text-decoration: line-through;
   }
 
-  .kz-swatch.is-disabled.kz-swatch--color .kz-swatch__label::after {
+  .szc-swatch.is-disabled.szc-swatch--color .szc-swatch__label::after {
     content: '';
     position: absolute;
     top: 50%;

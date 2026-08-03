@@ -1,191 +1,191 @@
 /**
  * Kaizen Theme - Design System & Core UI Component Library (components.css)
  * Purpose: Theme-wide reusable UI components built for Shopify Theme Store submission.
- * Follows BEM methodology, pure kz- namespace, mobile-first design, and WCAG 2.1 AA accessibility.
+ * Follows BEM methodology, pure szc- namespace, mobile-first design, and WCAG 2.1 AA accessibility.
  */
 
 /* ==========================================================================
    1. SECTION WRAPPER & SECTION HEADING
    ========================================================================== */
-.kz-section-header {
-  margin-bottom: var(--kz-space-8);
+.szc-section-header {
+  margin-bottom: var(--szc-space-8);
   display: flex;
   flex-direction: column;
-  gap: var(--kz-space-2);
+  gap: var(--szc-space-2);
 }
 
-.kz-section-header--center {
+.szc-section-header--center {
   text-align: center;
   align-items: center;
 }
 
-.kz-section-header--right {
+.szc-section-header--right {
   text-align: right;
   align-items: flex-end;
 }
 
-.kz-section-header__subtitle {
-  font-size: var(--kz-font-size-sm);
-  font-weight: var(--kz-font-weight-semibold);
-  color: var(--kz-color-secondary);
+.szc-section-header__subtitle {
+  font-size: var(--szc-font-size-sm);
+  font-weight: var(--szc-font-weight-semibold);
+  color: var(--szc-color-secondary);
   text-transform: uppercase;
-  letter-spacing: var(--kz-letter-spacing-uppercase);
+  letter-spacing: var(--szc-letter-spacing-uppercase);
 }
 
-.kz-section-header__title {
-  font-size: var(--kz-font-size-h2);
-  font-weight: var(--kz-font-weight-semibold);
-  color: var(--kz-color-text-primary);
-  line-height: var(--kz-line-height-heading);
+.szc-section-header__title {
+  font-size: var(--szc-font-size-h2);
+  font-weight: var(--szc-font-weight-semibold);
+  color: var(--szc-color-text-primary);
+  line-height: var(--szc-line-height-heading);
 }
 
-.kz-section-header__desc {
-  font-size: var(--kz-font-size-base);
-  color: var(--kz-color-text-secondary);
+.szc-section-header__desc {
+  font-size: var(--szc-font-size-base);
+  color: var(--szc-color-text-secondary);
   max-width: 680px;
-  line-height: var(--kz-line-height-body);
+  line-height: var(--szc-line-height-body);
 }
 
 /* ==========================================================================
    2. BADGE / PRODUCT LABEL
    ========================================================================== */
-.kz-badge {
+.szc-badge {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  padding: var(--kz-space-1) var(--kz-space-3);
-  font-size: var(--kz-font-size-xs);
-  font-weight: var(--kz-font-weight-semibold);
+  padding: var(--szc-space-1) var(--szc-space-3);
+  font-size: var(--szc-font-size-xs);
+  font-weight: var(--szc-font-weight-semibold);
   line-height: 1.2;
-  letter-spacing: var(--kz-letter-spacing-wide);
+  letter-spacing: var(--szc-letter-spacing-wide);
   text-transform: uppercase;
-  border-radius: var(--kz-radius-xs);
+  border-radius: var(--szc-radius-xs);
   white-space: nowrap;
-  background-color: var(--kz-color-primary);
-  color: var(--kz-color-text-inverse);
+  background-color: var(--szc-color-primary);
+  color: var(--szc-color-text-inverse);
   border: 1px solid transparent;
 }
 
-.kz-badge--sale {
-  background-color: var(--kz-color-accent);
-  color: var(--kz-color-text-inverse);
+.szc-badge--sale {
+  background-color: var(--szc-color-accent);
+  color: var(--szc-color-text-inverse);
 }
 
-.kz-badge--new {
-  background-color: var(--kz-color-secondary);
-  color: var(--kz-color-text-inverse);
+.szc-badge--new {
+  background-color: var(--szc-color-secondary);
+  color: var(--szc-color-text-inverse);
 }
 
-.kz-badge--soldout {
-  background-color: var(--kz-color-surface-subtle);
-  color: var(--kz-color-text-muted);
-  border-color: var(--kz-color-border);
+.szc-badge--soldout {
+  background-color: var(--szc-color-surface-subtle);
+  color: var(--szc-color-text-muted);
+  border-color: var(--szc-color-border);
 }
 
-.kz-badge--outline {
+.szc-badge--outline {
   background-color: transparent;
-  color: var(--kz-color-text-primary);
-  border-color: var(--kz-color-border-strong);
+  color: var(--szc-color-text-primary);
+  border-color: var(--szc-color-border-strong);
 }
 
-.kz-badge--pill {
-  border-radius: var(--kz-radius-pill);
+.szc-badge--pill {
+  border-radius: var(--szc-radius-pill);
 }
 
-.kz-badge--sm {
-  padding: 2px var(--kz-space-2);
+.szc-badge--sm {
+  padding: 2px var(--szc-space-2);
   font-size: 10px;
 }
 
 /* ==========================================================================
    3. DIVIDER
    ========================================================================== */
-.kz-divider {
+.szc-divider {
   width: 100%;
   height: 1px;
-  background-color: var(--kz-color-border);
+  background-color: var(--szc-color-border);
   border: none;
-  margin-top: var(--kz-space-6);
-  margin-bottom: var(--kz-space-6);
+  margin-top: var(--szc-space-6);
+  margin-bottom: var(--szc-space-6);
 }
 
-.kz-divider--subtle {
-  background-color: var(--kz-color-border-subtle);
+.szc-divider--subtle {
+  background-color: var(--szc-color-border-subtle);
 }
 
-.kz-divider--strong {
-  background-color: var(--kz-color-border-strong);
+.szc-divider--strong {
+  background-color: var(--szc-color-border-strong);
 }
 
-.kz-divider--vertical {
+.szc-divider--vertical {
   width: 1px;
   height: auto;
   min-height: 100%;
   margin-top: 0;
   margin-bottom: 0;
-  margin-left: var(--kz-space-4);
-  margin-right: var(--kz-space-4);
+  margin-left: var(--szc-space-4);
+  margin-right: var(--szc-space-4);
 }
 
 /* ==========================================================================
    4. OVERLAYS (Hero / Image Backdrops)
    ========================================================================== */
-.kz-overlay {
+.szc-overlay {
   position: absolute;
   top: 0;
   left: 0;
   width: 100%;
   height: 100%;
   pointer-events: none;
-  z-index: var(--kz-z-base);
+  z-index: var(--szc-z-base);
 }
 
-.kz-overlay--dark {
-  background-color: var(--kz-color-overlay);
+.szc-overlay--dark {
+  background-color: var(--szc-color-overlay);
 }
 
-.kz-overlay--light {
-  background-color: var(--kz-color-overlay-light);
+.szc-overlay--light {
+  background-color: var(--szc-color-overlay-light);
 }
 
-.kz-overlay--gradient {
+.szc-overlay--gradient {
   background: linear-gradient(180deg, rgba(0, 0, 0, 0) 0%, rgba(0, 0, 0, 0.65) 100%);
 }
 
-.kz-overlay--blur {
-  backdrop-filter: blur(var(--kz-backdrop-blur));
-  -webkit-backdrop-filter: blur(var(--kz-backdrop-blur));
+.szc-overlay--blur {
+  backdrop-filter: blur(var(--szc-backdrop-blur));
+  -webkit-backdrop-filter: blur(var(--szc-backdrop-blur));
 }
 
 /* ==========================================================================
    5. TOGGLE SWITCH CONTROL
    ========================================================================== */
-.kz-switch {
+.szc-switch {
   position: relative;
   display: inline-flex;
   align-items: center;
-  gap: var(--kz-space-3);
+  gap: var(--szc-space-3);
   cursor: pointer;
   user-select: none;
 }
 
-.kz-switch__input {
+.szc-switch__input {
   opacity: 0;
   width: 0;
   height: 0;
   position: absolute;
 }
 
-.kz-switch__slider {
+.szc-switch__slider {
   position: relative;
   width: 44px;
   height: 24px;
-  background-color: var(--kz-color-border-strong);
-  border-radius: var(--kz-radius-pill);
-  transition: background-color var(--kz-transition-fast);
+  background-color: var(--szc-color-border-strong);
+  border-radius: var(--szc-radius-pill);
+  transition: background-color var(--szc-transition-fast);
 }
 
-.kz-switch__slider::before {
+.szc-switch__slider::before {
   content: "";
   position: absolute;
   height: 18px;
@@ -194,320 +194,320 @@
   bottom: 3px;
   background-color: white;
   border-radius: 50%;
-  transition: transform var(--kz-transition-fast);
-  box-shadow: var(--kz-shadow-sm);
+  transition: transform var(--szc-transition-fast);
+  box-shadow: var(--szc-shadow-sm);
 }
 
-.kz-switch__input:checked + .kz-switch__slider {
-  background-color: var(--kz-color-primary);
+.szc-switch__input:checked + .szc-switch__slider {
+  background-color: var(--szc-color-primary);
 }
 
-.kz-switch__input:checked + .kz-switch__slider::before {
+.szc-switch__input:checked + .szc-switch__slider::before {
   transform: translateX(20px);
 }
 
-.kz-switch__input:focus-visible + .kz-switch__slider {
-  outline: 2px solid var(--kz-color-primary);
+.szc-switch__input:focus-visible + .szc-switch__slider {
+  outline: 2px solid var(--szc-color-primary);
   outline-offset: 2px;
 }
 
 /* ==========================================================================
    6. TABS COMPONENT (WAI-ARIA Pattern)
    ========================================================================== */
-.kz-tabs {
+.szc-tabs {
   width: 100%;
   display: flex;
   flex-direction: column;
 }
 
-.kz-tab-list {
+.szc-tab-list {
   display: flex;
-  gap: var(--kz-space-4);
-  border-bottom: 1px solid var(--kz-color-border);
+  gap: var(--szc-space-4);
+  border-bottom: 1px solid var(--szc-color-border);
   overflow-x: auto;
   scrollbar-width: none;
 }
 
-.kz-tab-list::-webkit-scrollbar {
+.szc-tab-list::-webkit-scrollbar {
   display: none;
 }
 
-.kz-tab-button {
-  padding: var(--kz-space-3) var(--kz-space-4);
-  font-size: var(--kz-font-size-base);
-  font-weight: var(--kz-font-weight-medium);
-  color: var(--kz-color-text-secondary);
+.szc-tab-button {
+  padding: var(--szc-space-3) var(--szc-space-4);
+  font-size: var(--szc-font-size-base);
+  font-weight: var(--szc-font-weight-medium);
+  color: var(--szc-color-text-secondary);
   background: transparent;
   border: none;
   border-bottom: 2px solid transparent;
   cursor: pointer;
   white-space: nowrap;
-  transition: color var(--kz-transition-fast), border-color var(--kz-transition-fast);
+  transition: color var(--szc-transition-fast), border-color var(--szc-transition-fast);
 }
 
-.kz-tab-button:hover {
-  color: var(--kz-color-text-primary);
+.szc-tab-button:hover {
+  color: var(--szc-color-text-primary);
 }
 
-.kz-tab-button[aria-selected="true"] {
-  color: var(--kz-color-primary);
-  border-bottom-color: var(--kz-color-primary);
-  font-weight: var(--kz-font-weight-semibold);
+.szc-tab-button[aria-selected="true"] {
+  color: var(--szc-color-primary);
+  border-bottom-color: var(--szc-color-primary);
+  font-weight: var(--szc-font-weight-semibold);
 }
 
-.kz-tab-panel {
-  padding-top: var(--kz-space-6);
+.szc-tab-panel {
+  padding-top: var(--szc-space-6);
 }
 
-.kz-tab-panel[hidden] {
+.szc-tab-panel[hidden] {
   display: none !important;
 }
 
 /* ==========================================================================
    7. ACCORDION / COLLAPSIBLE DETAILS
    ========================================================================== */
-.kz-accordion {
+.szc-accordion {
   width: 100%;
-  border-top: 1px solid var(--kz-color-border);
-  border-bottom: 1px solid var(--kz-color-border);
+  border-top: 1px solid var(--szc-color-border);
+  border-bottom: 1px solid var(--szc-color-border);
 }
 
-.kz-accordion__item {
-  border-bottom: 1px solid var(--kz-color-border-subtle);
+.szc-accordion__item {
+  border-bottom: 1px solid var(--szc-color-border-subtle);
 }
 
-.kz-accordion__item:last-child {
+.szc-accordion__item:last-child {
   border-bottom: none;
 }
 
-.kz-accordion__header {
+.szc-accordion__header {
   width: 100%;
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: var(--kz-space-4) 0;
+  padding: var(--szc-space-4) 0;
   background: transparent;
   border: none;
   text-align: left;
-  font-size: var(--kz-font-size-lg);
-  font-weight: var(--kz-font-weight-medium);
-  color: var(--kz-color-text-primary);
+  font-size: var(--szc-font-size-lg);
+  font-weight: var(--szc-font-weight-medium);
+  color: var(--szc-color-text-primary);
   cursor: pointer;
-  transition: color var(--kz-transition-fast);
+  transition: color var(--szc-transition-fast);
 }
 
-.kz-accordion__header:hover {
-  color: var(--kz-color-secondary);
+.szc-accordion__header:hover {
+  color: var(--szc-color-secondary);
 }
 
-.kz-accordion__icon {
+.szc-accordion__icon {
   width: 16px;
   height: 16px;
-  transition: transform var(--kz-transition-base);
+  transition: transform var(--szc-transition-base);
   flex-shrink: 0;
 }
 
-.kz-accordion__header[aria-expanded="true"] .kz-accordion__icon {
+.szc-accordion__header[aria-expanded="true"] .szc-accordion__icon {
   transform: rotate(180deg);
 }
 
-.kz-accordion__content {
-  padding-bottom: var(--kz-space-4);
-  color: var(--kz-color-text-secondary);
-  line-height: var(--kz-line-height-body);
+.szc-accordion__content {
+  padding-bottom: var(--szc-space-4);
+  color: var(--szc-color-text-secondary);
+  line-height: var(--szc-line-height-body);
 }
 
-.kz-accordion__content[hidden] {
+.szc-accordion__content[hidden] {
   display: none !important;
 }
 
 /* ==========================================================================
    8. MODAL BASE
    ========================================================================== */
-.kz-modal {
+.szc-modal {
   position: fixed;
   top: 0;
   left: 0;
   width: 100vw;
   height: 100vh;
-  z-index: var(--kz-z-modal);
+  z-index: var(--szc-z-modal);
   display: flex;
   align-items: center;
   justify-content: center;
-  padding: var(--kz-space-4);
+  padding: var(--szc-space-4);
   opacity: 0;
   pointer-events: none;
-  transition: opacity var(--kz-transition-base);
+  transition: opacity var(--szc-transition-base);
 }
 
-.kz-modal[open] {
+.szc-modal[open] {
   opacity: 1;
   pointer-events: auto;
 }
 
-.kz-modal__overlay {
+.szc-modal__overlay {
   position: absolute;
   top: 0;
   left: 0;
   width: 100%;
   height: 100%;
-  background-color: var(--kz-color-overlay);
+  background-color: var(--szc-color-overlay);
   backdrop-filter: blur(4px);
 }
 
-.kz-modal__container {
+.szc-modal__container {
   position: relative;
   width: 100%;
   max-width: 560px;
-  background-color: var(--kz-color-background);
-  border-radius: var(--kz-radius-lg);
-  box-shadow: var(--kz-shadow-xl);
+  background-color: var(--szc-color-background);
+  border-radius: var(--szc-radius-lg);
+  box-shadow: var(--szc-shadow-xl);
   overflow: hidden;
   z-index: 1;
   transform: scale(0.95);
-  transition: transform var(--kz-transition-base);
+  transition: transform var(--szc-transition-base);
 }
 
-.kz-modal[open] .kz-modal__container {
+.szc-modal[open] .szc-modal__container {
   transform: scale(1);
 }
 
-.kz-modal__header {
-  padding: var(--kz-space-4) var(--kz-space-6);
-  border-bottom: 1px solid var(--kz-color-border-subtle);
+.szc-modal__header {
+  padding: var(--szc-space-4) var(--szc-space-6);
+  border-bottom: 1px solid var(--szc-color-border-subtle);
   display: flex;
   align-items: center;
   justify-content: space-between;
 }
 
-.kz-modal__title {
-  font-size: var(--kz-font-size-h5);
-  font-weight: var(--kz-font-weight-semibold);
+.szc-modal__title {
+  font-size: var(--szc-font-size-h5);
+  font-weight: var(--szc-font-weight-semibold);
 }
 
-.kz-modal__body {
-  padding: var(--kz-space-6);
+.szc-modal__body {
+  padding: var(--szc-space-6);
   max-height: 70vh;
   overflow-y: auto;
 }
 
-.kz-modal__footer {
-  padding: var(--kz-space-4) var(--kz-space-6);
-  border-top: 1px solid var(--kz-color-border-subtle);
+.szc-modal__footer {
+  padding: var(--szc-space-4) var(--szc-space-6);
+  border-top: 1px solid var(--szc-color-border-subtle);
   display: flex;
   align-items: center;
   justify-content: flex-end;
-  gap: var(--kz-space-3);
-  background-color: var(--kz-color-surface);
+  gap: var(--szc-space-3);
+  background-color: var(--szc-color-surface);
 }
 
 /* ==========================================================================
    9. DRAWER BASE
    ========================================================================== */
-.kz-drawer {
+.szc-drawer {
   position: fixed;
   top: 0;
   left: 0;
   width: 100vw;
   height: 100vh;
-  z-index: var(--kz-z-drawer);
+  z-index: var(--szc-z-drawer);
   visibility: hidden;
-  transition: visibility var(--kz-transition-base);
+  transition: visibility var(--szc-transition-base);
 }
 
-.kz-drawer[open] {
+.szc-drawer[open] {
   visibility: visible;
 }
 
-.kz-drawer__overlay {
+.szc-drawer__overlay {
   position: absolute;
   top: 0;
   left: 0;
   width: 100%;
   height: 100%;
-  background-color: var(--kz-color-overlay);
+  background-color: var(--szc-color-overlay);
   opacity: 0;
-  transition: opacity var(--kz-transition-base);
+  transition: opacity var(--szc-transition-base);
 }
 
-.kz-drawer[open] .kz-drawer__overlay {
+.szc-drawer[open] .szc-drawer__overlay {
   opacity: 1;
 }
 
-.kz-drawer__inner {
+.szc-drawer__inner {
   position: absolute;
   top: 0;
   right: 0;
   width: 100%;
   max-width: 440px;
   height: 100%;
-  background-color: var(--kz-color-background);
-  box-shadow: var(--kz-shadow-xl);
+  background-color: var(--szc-color-background);
+  box-shadow: var(--szc-shadow-xl);
   display: flex;
   flex-direction: column;
   transform: translateX(100%);
-  transition: transform var(--kz-transition-base);
+  transition: transform var(--szc-transition-base);
   z-index: 1;
 }
 
-.kz-drawer--left .kz-drawer__inner {
+.szc-drawer--left .szc-drawer__inner {
   right: auto;
   left: 0;
   transform: translateX(-100%);
 }
 
-.kz-drawer[open] .kz-drawer__inner {
+.szc-drawer[open] .szc-drawer__inner {
   transform: translateX(0);
 }
 
-.kz-drawer__header {
-  padding: var(--kz-space-4) var(--kz-space-6);
-  border-bottom: 1px solid var(--kz-color-border);
+.szc-drawer__header {
+  padding: var(--szc-space-4) var(--szc-space-6);
+  border-bottom: 1px solid var(--szc-color-border);
   display: flex;
   align-items: center;
   justify-content: space-between;
 }
 
-.kz-drawer__body {
+.szc-drawer__body {
   flex: 1 1 auto;
-  padding: var(--kz-space-6);
+  padding: var(--szc-space-6);
   overflow-y: auto;
 }
 
-.kz-drawer__footer {
-  padding: var(--kz-space-6);
-  border-top: 1px solid var(--kz-color-border);
-  background-color: var(--kz-color-surface);
+.szc-drawer__footer {
+  padding: var(--szc-space-6);
+  border-top: 1px solid var(--szc-color-border);
+  background-color: var(--szc-color-surface);
 }
 
 /* ==========================================================================
    10. TOOLTIP
    ========================================================================== */
-.kz-tooltip {
+.szc-tooltip {
   position: relative;
   display: inline-block;
 }
 
-.kz-tooltip__content {
+.szc-tooltip__content {
   position: absolute;
   bottom: 100%;
   left: 50%;
   transform: translateX(-50%) translateY(-6px);
-  padding: var(--kz-space-1) var(--kz-space-3);
-  background-color: var(--kz-color-primary);
-  color: var(--kz-color-text-inverse);
-  font-size: var(--kz-font-size-xs);
-  font-weight: var(--kz-font-weight-medium);
-  border-radius: var(--kz-radius-xs);
+  padding: var(--szc-space-1) var(--szc-space-3);
+  background-color: var(--szc-color-primary);
+  color: var(--szc-color-text-inverse);
+  font-size: var(--szc-font-size-xs);
+  font-weight: var(--szc-font-weight-medium);
+  border-radius: var(--szc-radius-xs);
   white-space: nowrap;
   pointer-events: none;
   opacity: 0;
-  transition: opacity var(--kz-transition-fast), transform var(--kz-transition-fast);
-  z-index: var(--kz-z-tooltip);
+  transition: opacity var(--szc-transition-fast), transform var(--szc-transition-fast);
+  z-index: var(--szc-z-tooltip);
 }
 
-.kz-tooltip:hover .kz-tooltip__content,
-.kz-tooltip:focus-within .kz-tooltip__content {
+.szc-tooltip:hover .szc-tooltip__content,
+.szc-tooltip:focus-within .szc-tooltip__content {
   opacity: 1;
   transform: translateX(-50%) translateY(-10px);
 }
@@ -515,42 +515,42 @@
 /* ==========================================================================
    11. PAGINATION BAR
    ========================================================================== */
-.kz-pagination {
+.szc-pagination {
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: var(--kz-space-2);
-  margin-top: var(--kz-space-10);
+  gap: var(--szc-space-2);
+  margin-top: var(--szc-space-10);
 }
 
-.kz-pagination__item {
+.szc-pagination__item {
   display: inline-flex;
   align-items: center;
   justify-content: center;
   min-width: 40px;
   height: 40px;
-  padding: 0 var(--kz-space-2);
-  border-radius: var(--kz-radius-md);
-  font-size: var(--kz-font-size-sm);
-  font-weight: var(--kz-font-weight-medium);
-  color: var(--kz-color-text-primary);
-  border: 1px solid var(--kz-color-border);
-  background: var(--kz-color-background);
-  transition: all var(--kz-transition-fast);
+  padding: 0 var(--szc-space-2);
+  border-radius: var(--szc-radius-md);
+  font-size: var(--szc-font-size-sm);
+  font-weight: var(--szc-font-weight-medium);
+  color: var(--szc-color-text-primary);
+  border: 1px solid var(--szc-color-border);
+  background: var(--szc-color-background);
+  transition: all var(--szc-transition-fast);
 }
 
-.kz-pagination__item:hover:not(.kz-pagination__item--active):not(.kz-pagination__item--disabled) {
-  border-color: var(--kz-color-primary);
-  color: var(--kz-color-primary);
+.szc-pagination__item:hover:not(.szc-pagination__item--active):not(.szc-pagination__item--disabled) {
+  border-color: var(--szc-color-primary);
+  color: var(--szc-color-primary);
 }
 
-.kz-pagination__item--active {
-  background-color: var(--kz-color-primary);
-  color: var(--kz-color-text-inverse);
-  border-color: var(--kz-color-primary);
+.szc-pagination__item--active {
+  background-color: var(--szc-color-primary);
+  color: var(--szc-color-text-inverse);
+  border-color: var(--szc-color-primary);
 }
 
-.kz-pagination__item--disabled {
+.szc-pagination__item--disabled {
   opacity: 0.4;
   cursor: not-allowed;
 }
@@ -558,52 +558,52 @@
 /* ==========================================================================
    12. BREADCRUMB NAVIGATION
    ========================================================================== */
-.kz-breadcrumb {
-  font-size: var(--kz-font-size-sm);
-  color: var(--kz-color-text-muted);
-  margin-bottom: var(--kz-space-6);
+.szc-breadcrumb {
+  font-size: var(--szc-font-size-sm);
+  color: var(--szc-color-text-muted);
+  margin-bottom: var(--szc-space-6);
 }
 
-.kz-breadcrumb__list {
+.szc-breadcrumb__list {
   display: flex;
   align-items: center;
   flex-wrap: wrap;
-  gap: var(--kz-space-2);
+  gap: var(--szc-space-2);
 }
 
-.kz-breadcrumb__link {
-  color: var(--kz-color-text-secondary);
-  transition: color var(--kz-transition-fast);
+.szc-breadcrumb__link {
+  color: var(--szc-color-text-secondary);
+  transition: color var(--szc-transition-fast);
 }
 
-.kz-breadcrumb__link:hover {
-  color: var(--kz-color-primary);
+.szc-breadcrumb__link:hover {
+  color: var(--szc-color-primary);
 }
 
-.kz-breadcrumb__separator {
-  color: var(--kz-color-border-strong);
+.szc-breadcrumb__separator {
+  color: var(--szc-color-border-strong);
 }
 
 /* ==========================================================================
    13. LOADING SPINNER
    ========================================================================== */
-.kz-spinner {
+.szc-spinner {
   display: inline-block;
   width: 24px;
   height: 24px;
-  border: 2px solid var(--kz-color-border);
+  border: 2px solid var(--szc-color-border);
   border-radius: 50%;
-  border-top-color: var(--kz-color-primary);
-  animation: kz-spin 0.8s linear infinite;
+  border-top-color: var(--szc-color-primary);
+  animation: szc-spin 0.8s linear infinite;
 }
 
-.kz-spinner--sm {
+.szc-spinner--sm {
   width: 16px;
   height: 16px;
   border-width: 2px;
 }
 
-.kz-spinner--lg {
+.szc-spinner--lg {
   width: 40px;
   height: 40px;
   border-width: 3px;
@@ -612,106 +612,106 @@
 /* ==========================================================================
    14. EMPTY STATE WIDGET
    ========================================================================== */
-.kz-empty-state {
+.szc-empty-state {
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
   text-align: center;
-  padding: var(--kz-space-12) var(--kz-space-6);
-  background-color: var(--kz-color-surface);
-  border-radius: var(--kz-radius-card);
-  gap: var(--kz-space-4);
+  padding: var(--szc-space-12) var(--szc-space-6);
+  background-color: var(--szc-color-surface);
+  border-radius: var(--szc-radius-card);
+  gap: var(--szc-space-4);
 }
 
-.kz-empty-state__icon {
+.szc-empty-state__icon {
   width: 64px;
   height: 64px;
-  color: var(--kz-color-text-muted);
+  color: var(--szc-color-text-muted);
 }
 
-.kz-empty-state__title {
-  font-size: var(--kz-font-size-h4);
-  font-weight: var(--kz-font-weight-semibold);
-  color: var(--kz-color-text-primary);
+.szc-empty-state__title {
+  font-size: var(--szc-font-size-h4);
+  font-weight: var(--szc-font-weight-semibold);
+  color: var(--szc-color-text-primary);
 }
 
-.kz-empty-state__desc {
-  font-size: var(--kz-font-size-base);
-  color: var(--kz-color-text-secondary);
+.szc-empty-state__desc {
+  font-size: var(--szc-font-size-base);
+  color: var(--szc-color-text-secondary);
   max-width: 420px;
 }
 
 /* ==========================================================================
    15. PRICE COMPONENT
    ========================================================================== */
-.kz-price {
+.szc-price {
   display: inline-flex;
   align-items: baseline;
-  gap: var(--kz-space-2);
-  font-family: var(--kz-font-family-body);
+  gap: var(--szc-space-2);
+  font-family: var(--szc-font-family-body);
 }
 
-.kz-price__regular {
-  font-size: var(--kz-font-size-base);
-  font-weight: var(--kz-font-weight-semibold);
-  color: var(--kz-color-text-primary);
+.szc-price__regular {
+  font-size: var(--szc-font-size-base);
+  font-weight: var(--szc-font-weight-semibold);
+  color: var(--szc-color-text-primary);
 }
 
-.kz-price__compare {
-  font-size: var(--kz-font-size-sm);
-  color: var(--kz-color-text-muted);
+.szc-price__compare {
+  font-size: var(--szc-font-size-sm);
+  color: var(--szc-color-text-muted);
   text-decoration: line-through;
 }
 
-.kz-price--on-sale .kz-price__regular {
-  color: var(--kz-color-accent);
+.szc-price--on-sale .szc-price__regular {
+  color: var(--szc-color-accent);
 }
 
-.kz-price--lg .kz-price__regular {
-  font-size: var(--kz-font-size-h4);
+.szc-price--lg .szc-price__regular {
+  font-size: var(--szc-font-size-h4);
 }
 
-.kz-price--sm .kz-price__regular {
-  font-size: var(--kz-font-size-sm);
+.szc-price--sm .szc-price__regular {
+  font-size: var(--szc-font-size-sm);
 }
 
 /* ==========================================================================
    16. RATING COMPONENT
    ========================================================================== */
-.kz-rating {
+.szc-rating {
   display: inline-flex;
   align-items: center;
-  gap: var(--kz-space-2);
+  gap: var(--szc-space-2);
 }
 
-.kz-rating__stars {
+.szc-rating__stars {
   display: inline-flex;
   gap: 2px;
-  color: var(--kz-color-secondary);
+  color: var(--szc-color-secondary);
 }
 
-.kz-rating__star {
+.szc-rating__star {
   width: 16px;
   height: 16px;
   fill: currentColor;
 }
 
-.kz-rating__count {
-  font-size: var(--kz-font-size-xs);
-  color: var(--kz-color-text-muted);
+.szc-rating__count {
+  font-size: var(--szc-font-size-xs);
+  color: var(--szc-color-text-muted);
 }
 
 /* ==========================================================================
    17. COLOR SWATCH PICKER
    ========================================================================== */
-.kz-swatch-group {
+.szc-swatch-group {
   display: flex;
   flex-wrap: wrap;
-  gap: var(--kz-space-2);
+  gap: var(--szc-space-2);
 }
 
-.kz-swatch {
+.szc-swatch {
   position: relative;
   display: inline-flex;
   align-items: center;
@@ -719,47 +719,47 @@
   cursor: pointer;
 }
 
-.kz-swatch__input {
+.szc-swatch__input {
   position: absolute;
   opacity: 0;
   width: 0;
   height: 0;
 }
 
-.kz-swatch__label {
+.szc-swatch__label {
   width: 32px;
   height: 32px;
-  border-radius: var(--kz-radius-circle);
-  border: 1px solid var(--kz-color-border-strong);
+  border-radius: var(--szc-radius-circle);
+  border: 1px solid var(--szc-color-border-strong);
   background-color: var(--swatch-color, #ccc);
   box-shadow: inset 0 0 0 2px white;
-  transition: transform var(--kz-transition-fast), box-shadow var(--kz-transition-fast);
+  transition: transform var(--szc-transition-fast), box-shadow var(--szc-transition-fast);
 }
 
-.kz-swatch__input:checked + .kz-swatch__label {
+.szc-swatch__input:checked + .szc-swatch__label {
   transform: scale(1.1);
-  box-shadow: inset 0 0 0 2px white, 0 0 0 2px var(--kz-color-primary);
+  box-shadow: inset 0 0 0 2px white, 0 0 0 2px var(--szc-color-primary);
 }
 
-.kz-swatch__input:focus-visible + .kz-swatch__label {
-  outline: 2px solid var(--kz-color-primary);
+.szc-swatch__input:focus-visible + .szc-swatch__label {
+  outline: 2px solid var(--szc-color-primary);
   outline-offset: 3px;
 }
 
 /* ==========================================================================
    18. QUANTITY SELECTOR COMPONENT
    ========================================================================== */
-.kz-quantity {
+.szc-quantity {
   display: inline-flex;
   align-items: center;
-  border: 1px solid var(--kz-color-border);
-  border-radius: var(--kz-radius-input);
-  background-color: var(--kz-color-background);
+  border: 1px solid var(--szc-color-border);
+  border-radius: var(--szc-radius-input);
+  background-color: var(--szc-color-background);
   height: 44px;
   overflow: hidden;
 }
 
-.kz-quantity__btn {
+.szc-quantity__btn {
   width: 40px;
   height: 100%;
   border: none;
@@ -768,27 +768,27 @@
   align-items: center;
   justify-content: center;
   cursor: pointer;
-  color: var(--kz-color-text-primary);
-  transition: background-color var(--kz-transition-fast);
+  color: var(--szc-color-text-primary);
+  transition: background-color var(--szc-transition-fast);
 }
 
-.kz-quantity__btn:hover {
-  background-color: var(--kz-color-surface-subtle);
+.szc-quantity__btn:hover {
+  background-color: var(--szc-color-surface-subtle);
 }
 
-.kz-quantity__input {
+.szc-quantity__input {
   width: 48px;
   height: 100%;
   border: none;
   text-align: center;
-  font-size: var(--kz-font-size-base);
-  font-weight: var(--kz-font-weight-medium);
+  font-size: var(--szc-font-size-base);
+  font-weight: var(--szc-font-weight-medium);
   appearance: textfield;
   -moz-appearance: textfield;
 }
 
-.kz-quantity__input::-webkit-outer-spin-button,
-.kz-quantity__input::-webkit-inner-spin-button {
+.szc-quantity__input::-webkit-outer-spin-button,
+.szc-quantity__input::-webkit-inner-spin-button {
   -webkit-appearance: none;
   margin: 0;
 }

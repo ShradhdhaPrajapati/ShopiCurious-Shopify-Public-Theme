@@ -10,7 +10,7 @@
   // Initialize Global Namespace
   window.ShopziCurious = window.ShopziCurious || {};
   window.Kaizen = window.ShopziCurious; // Backward alias
-  window.KZ = window.ShopziCurious;
+  window.SZC = window.ShopziCurious;
 
   /**
    * Safe Custom Element Registrar
@@ -124,11 +124,11 @@
    * Global Theme Init Listener & Event Binding
    */
   document.addEventListener('DOMContentLoaded', () => {
-    document.documentElement.classList.add('kz-js-loaded');
+    document.documentElement.classList.add('szc-js-loaded');
 
     // Bind Cart Drawer Triggers Globally
     document.addEventListener('click', (e) => {
-      const cartBtn = e.target.closest('.kz-cart-trigger');
+      const cartBtn = e.target.closest('.szc-cart-trigger');
       if (cartBtn) {
         e.preventDefault();
         ShopziCurious.pubsub.publish(ShopziCurious.events.CART_OPEN);
@@ -137,7 +137,7 @@
 
     // Bind Skip to Content Smooth Scroll & Focus
     document.addEventListener('click', (e) => {
-      const skipLink = e.target.closest('.kz-skip-to-content, .kz-skip-link');
+      const skipLink = e.target.closest('.szc-skip-to-content, .szc-skip-link');
       if (skipLink) {
         const targetId = skipLink.getAttribute('href');
         if (targetId && targetId.startsWith('#')) {
@@ -154,7 +154,7 @@
     // Update Cart Badge on CART_UPDATED
     ShopziCurious.pubsub.subscribe(ShopziCurious.events.CART_UPDATED, (cartData) => {
       if (cartData && typeof cartData.item_count !== 'undefined') {
-        const badges = document.querySelectorAll('.kz-header__cart-badge');
+        const badges = document.querySelectorAll('.szc-header__cart-badge');
         badges.forEach((badge) => {
           badge.textContent = cartData.item_count;
           badge.setAttribute('data-cart-count', cartData.item_count);

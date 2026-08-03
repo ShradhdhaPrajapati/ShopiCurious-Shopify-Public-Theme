@@ -18,9 +18,9 @@
 
     async onSubmitHandler(evt) {
       evt.preventDefault();
-      if (!this.submitButton || this.submitButton.classList.contains('kz-btn--loading')) return;
+      if (!this.submitButton || this.submitButton.classList.contains('szc-btn--loading')) return;
 
-      this.submitButton.classList.add('kz-btn--loading');
+      this.submitButton.classList.add('szc-btn--loading');
       this.submitButton.setAttribute('aria-disabled', 'true');
 
       const formData = new FormData(this.form);
@@ -50,7 +50,7 @@
         console.error('[ShopziCurious Product Form Error]', error);
         alert(error.message || 'Error adding item to bag');
       } finally {
-        this.submitButton.classList.remove('kz-btn--loading');
+        this.submitButton.classList.remove('szc-btn--loading');
         this.submitButton.removeAttribute('aria-disabled');
       }
     }

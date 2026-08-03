@@ -12,34 +12,34 @@
 
 <section
   id="FeaturedCollection-{{ section.id }}"
-  class="kz-featured-collection page-width"
+  class="szc-featured-collection page-width"
   style="--cols-desktop: {{ cols_desktop }}; --cols-mobile: {{ cols_mobile }};"
 >
   <!-- Section Header -->
   {%- assign align_class = section.settings.heading_alignment | default: 'left' -%}
-  <div class="kz-section-header kz-section-header--{{ align_class }}">
-    <div class="kz-section-header__text">
+  <div class="szc-section-header szc-section-header--{{ align_class }}">
+    <div class="szc-section-header__text">
       {%- if section.settings.subtitle != blank -%}
-        <span class="kz-section-header__subtitle">{{ section.settings.subtitle }}</span>
+        <span class="szc-section-header__subtitle">{{ section.settings.subtitle }}</span>
       {%- endif -%}
 
       {%- if section.settings.title != blank -%}
-        <h2 class="kz-section-header__title">{{ section.settings.title }}</h2>
+        <h2 class="szc-section-header__title">{{ section.settings.title }}</h2>
       {%- endif -%}
     </div>
 
     {%- if section.settings.show_view_all -%}
-      <a href="{{ collection.url | default: '/collections/all' }}" class="kz-section-header__view-all">
+      <a href="{{ collection.url | default: '/collections/all' }}" class="szc-section-header__view-all">
         <span>{{ 'sections.featured_collection.view_all' | t | default: 'VIEW ALL' }}</span>
       </a>
     {%- endif -%}
   </div>
 
   <!-- Product Grid -->
-  <div class="kz-featured-collection__grid">
+  <div class="szc-featured-collection__grid">
     {%- if collection != blank and collection.products.size > 0 -%}
       {%- for product in collection.products limit: limit -%}
-        <div class="kz-featured-collection__item kz-animate-fade-up">
+        <div class="szc-featured-collection__item szc-animate-fade-up">
           {% render 'product-card',
             card_product: product,
             show_secondary_image: true,
@@ -52,19 +52,19 @@
       {%- endfor -%}
     {%- else -%}
       <!-- Demo 5 Items matching approved UI screenshot pixel-for-pixel -->
-      <div class="kz-featured-collection__item">
+      <div class="szc-featured-collection__item">
         {% render 'product-card', card_product: nil, title_override: 'Oversized Knit Sweater', price_override: '$59.99', rating_count: 24, show_rating: section.settings.show_rating, show_price: section.settings.show_price %}
       </div>
-      <div class="kz-featured-collection__item">
+      <div class="szc-featured-collection__item">
         {% render 'product-card', card_product: nil, title_override: 'Linen Blend Shirt', price_override: '$49.99', rating_count: 18, show_rating: section.settings.show_rating, show_price: section.settings.show_price %}
       </div>
-      <div class="kz-featured-collection__item">
+      <div class="szc-featured-collection__item">
         {% render 'product-card', card_product: nil, title_override: 'Satin Slip Dress', price_override: '$69.99', rating_count: 31, show_rating: section.settings.show_rating, show_price: section.settings.show_price %}
       </div>
-      <div class="kz-featured-collection__item">
+      <div class="szc-featured-collection__item">
         {% render 'product-card', card_product: nil, title_override: 'Classic Denim Jacket', price_override: '$78.99', rating_count: 21, show_rating: section.settings.show_rating, show_price: section.settings.show_price %}
       </div>
-      <div class="kz-featured-collection__item">
+      <div class="szc-featured-collection__item">
         {% render 'product-card', card_product: nil, title_override: 'Wide Leg Trousers', price_override: '$54.99', rating_count: 26, show_rating: section.settings.show_rating, show_price: section.settings.show_price %}
       </div>
     {%- endif -%}
@@ -72,39 +72,39 @@
 </section>
 
 {% stylesheet %}
-  .kz-featured-collection {
-    padding-top: var(--kz-space-12, 48px);
-    padding-bottom: var(--kz-space-12, 48px);
-    max-width: var(--kz-page-max-width, 1400px);
+  .szc-featured-collection {
+    padding-top: var(--szc-space-12, 48px);
+    padding-bottom: var(--szc-space-12, 48px);
+    max-width: var(--szc-page-max-width, 1400px);
     margin: 0 auto;
-    padding-left: var(--kz-space-6, 24px);
-    padding-right: var(--kz-space-6, 24px);
+    padding-left: var(--szc-space-6, 24px);
+    padding-right: var(--szc-space-6, 24px);
   }
 
-  .kz-section-header {
+  .szc-section-header {
     display: flex;
     align-items: flex-end;
     justify-content: space-between;
-    margin-bottom: var(--kz-space-8, 32px);
+    margin-bottom: var(--szc-space-8, 32px);
   }
 
-  .kz-section-header--center {
+  .szc-section-header--center {
     flex-direction: column;
     align-items: center;
     text-align: center;
     gap: 12px;
   }
 
-  .kz-section-header--right {
+  .szc-section-header--right {
     flex-direction: row-reverse;
     align-items: flex-end;
     text-align: right;
     gap: 12px;
   }
 
-  .kz-section-header__subtitle {
+  .szc-section-header__subtitle {
     display: block;
-    font-family: var(--kz-font-family-body, sans-serif);
+    font-family: var(--szc-font-family-body, sans-serif);
     font-size: 11px;
     font-weight: 600;
     text-transform: uppercase;
@@ -113,17 +113,17 @@
     margin-bottom: 6px;
   }
 
-  .kz-section-header__title {
+  .szc-section-header__title {
     margin: 0;
-    font-family: var(--kz-font-family-heading, Georgia, 'Playfair Display', serif);
+    font-family: var(--szc-font-family-heading, Georgia, 'Playfair Display', serif);
     font-size: clamp(24px, 3vw, 34px);
     font-weight: 500;
     color: #111111;
     line-height: 1.2;
   }
 
-  .kz-section-header__view-all {
-    font-family: var(--kz-font-family-body, sans-serif);
+  .szc-section-header__view-all {
+    font-family: var(--szc-font-family-body, sans-serif);
     font-size: 11px;
     font-weight: 600;
     letter-spacing: 0.12em;
@@ -135,21 +135,21 @@
     transition: color 150ms ease, text-decoration-color 150ms ease;
   }
 
-  .kz-section-header__view-all:hover {
+  .szc-section-header__view-all:hover {
     color: #111111;
     text-decoration-color: #111111;
   }
 
-  .kz-featured-collection__grid {
+  .szc-featured-collection__grid {
     display: grid;
     grid-template-columns: repeat(var(--cols-mobile, 2), 1fr);
-    gap: var(--kz-space-4, 16px);
+    gap: var(--szc-space-4, 16px);
   }
 
   @media (min-width: 750px) {
-    .kz-featured-collection__grid {
+    .szc-featured-collection__grid {
       grid-template-columns: repeat(var(--cols-desktop, 5), 1fr);
-      gap: var(--kz-space-5, 20px);
+      gap: var(--szc-space-5, 20px);
     }
   }
 {% endstylesheet %}

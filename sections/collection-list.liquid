@@ -11,29 +11,29 @@
 
 <section
   id="CollectionList-{{ section.id }}"
-  class="kz-collection-list page-width"
+  class="szc-collection-list page-width"
   style="--cols-desktop: {{ cols_desktop }}; --cols-mobile: {{ cols_mobile }};"
 >
   {%- if section.settings.title != blank or section.settings.subtitle != blank -%}
     {%- assign align_class = section.settings.heading_alignment | default: 'left' -%}
-    <div class="kz-section-header kz-section-header--{{ align_class }}">
-      <div class="kz-section-header__text">
+    <div class="szc-section-header szc-section-header--{{ align_class }}">
+      <div class="szc-section-header__text">
         {%- if section.settings.subtitle != blank -%}
-          <span class="kz-section-header__subtitle">{{ section.settings.subtitle }}</span>
+          <span class="szc-section-header__subtitle">{{ section.settings.subtitle }}</span>
         {%- endif -%}
 
         {%- if section.settings.title != blank -%}
-          <h2 class="kz-section-header__title">{{ section.settings.title }}</h2>
+          <h2 class="szc-section-header__title">{{ section.settings.title }}</h2>
         {%- endif -%}
       </div>
     </div>
   {%- endif -%}
 
-  <div class="kz-collection-list__grid">
+  <div class="szc-collection-list__grid">
     {%- for block in section.blocks -%}
       {%- case block.type -%}
         {%- when 'featured_collection' -%}
-          <div class="kz-collection-list__item" {{ block.shopify_attributes }}>
+          <div class="szc-collection-list__item" {{ block.shopify_attributes }}>
             {% render 'card-collection',
               card_collection: block.settings.collection,
               title: block.settings.title,
@@ -45,16 +45,16 @@
       {%- endcase -%}
     {%- else -%}
       <!-- Default 4 Category Cards matching the approved UI -->
-      <div class="kz-collection-list__item">
+      <div class="szc-collection-list__item">
         {% render 'card-collection', card_collection: nil, title: 'WOMEN', button_text: 'SHOP NOW', media_aspect_ratio: aspect_ratio %}
       </div>
-      <div class="kz-collection-list__item">
+      <div class="szc-collection-list__item">
         {% render 'card-collection', card_collection: nil, title: 'MEN', button_text: 'SHOP NOW', media_aspect_ratio: aspect_ratio %}
       </div>
-      <div class="kz-collection-list__item">
+      <div class="szc-collection-list__item">
         {% render 'card-collection', card_collection: nil, title: 'ACCESSORIES', button_text: 'SHOP NOW', media_aspect_ratio: aspect_ratio %}
       </div>
-      <div class="kz-collection-list__item">
+      <div class="szc-collection-list__item">
         {% render 'card-collection', card_collection: nil, title: 'SHOES', button_text: 'SHOP NOW', media_aspect_ratio: aspect_ratio %}
       </div>
     {%- endfor -%}
@@ -62,38 +62,38 @@
 </section>
 
 {% stylesheet %}
-  .kz-collection-list {
-    padding-top: var(--kz-space-12, 48px);
-    padding-bottom: var(--kz-space-12, 48px);
-    max-width: var(--kz-page-max-width, 1400px);
+  .szc-collection-list {
+    padding-top: var(--szc-space-12, 48px);
+    padding-bottom: var(--szc-space-12, 48px);
+    max-width: var(--szc-page-max-width, 1400px);
     margin: 0 auto;
-    padding-left: var(--kz-space-6, 24px);
-    padding-right: var(--kz-space-6, 24px);
+    padding-left: var(--szc-space-6, 24px);
+    padding-right: var(--szc-space-6, 24px);
   }
 
-  .kz-section-header {
+  .szc-section-header {
     display: flex;
     align-items: flex-end;
     justify-content: space-between;
     flex-direction: row;
-    margin-bottom: var(--kz-space-8, 32px);
+    margin-bottom: var(--szc-space-8, 32px);
   }
 
-  .kz-section-header--center {
+  .szc-section-header--center {
     flex-direction: column;
     align-items: center;
     text-align: center;
   }
 
-  .kz-section-header--right {
+  .szc-section-header--right {
     flex-direction: column;
     align-items: flex-end;
     text-align: right;
   }
 
-  .kz-section-header__subtitle {
+  .szc-section-header__subtitle {
     display: block;
-    font-family: var(--kz-font-family-body, sans-serif);
+    font-family: var(--szc-font-family-body, sans-serif);
     font-size: 11px;
     font-weight: 600;
     text-transform: uppercase;
@@ -102,25 +102,25 @@
     margin-bottom: 6px;
   }
 
-  .kz-section-header__title {
+  .szc-section-header__title {
     margin: 0;
-    font-family: var(--kz-font-family-heading, Georgia, 'Playfair Display', serif);
+    font-family: var(--szc-font-family-heading, Georgia, 'Playfair Display', serif);
     font-size: clamp(24px, 3vw, 34px);
     font-weight: 500;
     color: #111111;
     line-height: 1.2;
   }
 
-  .kz-collection-list__grid {
+  .szc-collection-list__grid {
     display: grid;
     grid-template-columns: repeat(var(--cols-mobile, 2), 1fr);
-    gap: var(--kz-space-5, 20px);
+    gap: var(--szc-space-5, 20px);
   }
 
   @media (min-width: 750px) {
-    .kz-collection-list__grid {
+    .szc-collection-list__grid {
       grid-template-columns: repeat(var(--cols-desktop, 4), 1fr);
-      gap: var(--kz-space-6, 24px);
+      gap: var(--szc-space-6, 24px);
     }
   }
 {% endstylesheet %}

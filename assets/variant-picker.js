@@ -66,7 +66,7 @@
       // Update Price display
       const priceContainer = document.getElementById(`price-${this.dataset.section}`);
       if (priceContainer && this.currentVariant) {
-        const priceElement = priceContainer.querySelector('.kz-price__regular');
+        const priceElement = priceContainer.querySelector('.szc-price__regular');
         if (priceElement) {
           priceElement.textContent = ShopziCurious.helpers.formatMoney(this.currentVariant.price);
         }

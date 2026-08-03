@@ -7,66 +7,66 @@
 /* ==========================================================================
    1. FORM GROUP & LABEL
    ========================================================================== */
-.kz-form-group {
+.szc-form-group {
   display: flex;
   flex-direction: column;
-  gap: var(--kz-space-2);
-  margin-bottom: var(--kz-space-4);
+  gap: var(--szc-space-2);
+  margin-bottom: var(--szc-space-4);
   position: relative;
   width: 100%;
 }
 
-.kz-label {
-  font-size: var(--kz-font-size-sm);
-  font-weight: var(--kz-font-weight-medium);
-  color: var(--kz-color-text-primary);
-  letter-spacing: var(--kz-letter-spacing-wide);
+.szc-label {
+  font-size: var(--szc-font-size-sm);
+  font-weight: var(--szc-font-weight-medium);
+  color: var(--szc-color-text-primary);
+  letter-spacing: var(--szc-letter-spacing-wide);
   text-transform: uppercase;
 }
 
 /* ==========================================================================
    2. TEXT INPUTS & TEXTAREA
    ========================================================================== */
-.kz-input,
-.kz-select,
-.kz-textarea {
+.szc-input,
+.szc-select,
+.szc-textarea {
   width: 100%;
-  padding: var(--kz-space-3) var(--kz-space-4);
-  font-family: var(--kz-font-family-body);
-  font-size: var(--kz-font-size-base);
-  color: var(--kz-color-text-primary);
-  background-color: var(--kz-color-background);
-  border: 1px solid var(--kz-color-border);
-  border-radius: var(--kz-radius-input);
-  transition: border-color var(--kz-transition-fast),
-              box-shadow var(--kz-transition-fast),
-              background-color var(--kz-transition-fast);
+  padding: var(--szc-space-3) var(--szc-space-4);
+  font-family: var(--szc-font-family-body);
+  font-size: var(--szc-font-size-base);
+  color: var(--szc-color-text-primary);
+  background-color: var(--szc-color-background);
+  border: 1px solid var(--szc-color-border);
+  border-radius: var(--szc-radius-input);
+  transition: border-color var(--szc-transition-fast),
+              box-shadow var(--szc-transition-fast),
+              background-color var(--szc-transition-fast);
   appearance: none;
   -webkit-appearance: none;
 }
 
-.kz-input::placeholder,
-.kz-textarea::placeholder {
-  color: var(--kz-color-text-muted);
+.szc-input::placeholder,
+.szc-textarea::placeholder {
+  color: var(--szc-color-text-muted);
   opacity: 0.8;
 }
 
-.kz-input:hover,
-.kz-select:hover,
-.kz-textarea:hover {
-  border-color: var(--kz-color-border-strong);
+.szc-input:hover,
+.szc-select:hover,
+.szc-textarea:hover {
+  border-color: var(--szc-color-border-strong);
 }
 
-.kz-input:focus,
-.kz-select:focus,
-.kz-textarea:focus {
+.szc-input:focus,
+.szc-select:focus,
+.szc-textarea:focus {
   outline: none;
-  border-color: var(--kz-color-primary);
-  box-shadow: var(--kz-shadow-focus);
-  background-color: var(--kz-color-background);
+  border-color: var(--szc-color-primary);
+  box-shadow: var(--szc-shadow-focus);
+  background-color: var(--szc-color-background);
 }
 
-.kz-textarea {
+.szc-textarea {
   min-height: 120px;
   resize: vertical;
 }
@@ -74,69 +74,69 @@
 /* ==========================================================================
    3. CUSTOM SELECT DROPDOWN
    ========================================================================== */
-.kz-select-wrapper {
+.szc-select-wrapper {
   position: relative;
   width: 100%;
 }
 
-.kz-select-wrapper::after {
+.szc-select-wrapper::after {
   content: "";
   position: absolute;
-  right: var(--kz-space-4);
+  right: var(--szc-space-4);
   top: 50%;
   transform: translateY(-50%);
   width: 0;
   height: 0;
   border-left: 5px solid transparent;
   border-right: 5px solid transparent;
-  border-top: 5px solid var(--kz-color-text-secondary);
+  border-top: 5px solid var(--szc-color-text-secondary);
   pointer-events: none;
 }
 
-.kz-select {
-  padding-right: var(--kz-space-10);
+.szc-select {
+  padding-right: var(--szc-space-10);
   cursor: pointer;
 }
 
 /* ==========================================================================
    4. CHECKBOX & RADIO CONTROLS
    ========================================================================== */
-.kz-checkbox-group,
-.kz-radio-group {
+.szc-checkbox-group,
+.szc-radio-group {
   display: inline-flex;
   align-items: center;
-  gap: var(--kz-space-3);
+  gap: var(--szc-space-3);
   cursor: pointer;
   user-select: none;
 }
 
-.kz-checkbox,
-.kz-radio {
+.szc-checkbox,
+.szc-radio {
   width: 20px;
   height: 20px;
-  border: 1px solid var(--kz-color-border-strong);
-  background-color: var(--kz-color-background);
+  border: 1px solid var(--szc-color-border-strong);
+  background-color: var(--szc-color-background);
   cursor: pointer;
   position: relative;
   flex-shrink: 0;
-  transition: all var(--kz-transition-fast);
+  transition: all var(--szc-transition-fast);
 }
 
-.kz-checkbox {
-  border-radius: var(--kz-radius-sm);
+.szc-checkbox {
+  border-radius: var(--szc-radius-sm);
 }
 
-.kz-radio {
-  border-radius: var(--kz-radius-circle);
+.szc-radio {
+  border-radius: var(--szc-radius-circle);
 }
 
-.kz-checkbox:checked,
-.kz-radio:checked {
-  background-color: var(--kz-color-primary);
-  border-color: var(--kz-color-primary);
+.szc-checkbox:checked,
+.szc-radio:checked {
+  background-color: var(--szc-color-primary);
+  border-color: var(--szc-color-primary);
 }
 
-.kz-checkbox:checked::after {
+.szc-checkbox:checked::after {
   content: "";
   position: absolute;
   top: 3px;
@@ -148,7 +148,7 @@
   transform: rotate(45deg);
 }
 
-.kz-radio:checked::after {
+.szc-radio:checked::after {
   content: "";
   position: absolute;
   top: 5px;
@@ -162,21 +162,21 @@
 /* ==========================================================================
    5. VALIDATION & ERROR STATES
    ========================================================================== */
-.kz-input--error,
-.kz-select--error,
-.kz-textarea--error {
-  border-color: var(--kz-color-error) !important;
-  background-color: var(--kz-color-error-bg);
+.szc-input--error,
+.szc-select--error,
+.szc-textarea--error {
+  border-color: var(--szc-color-error) !important;
+  background-color: var(--szc-color-error-bg);
 }
 
-.kz-form-error {
-  font-size: var(--kz-font-size-xs);
-  color: var(--kz-color-error);
-  margin-top: var(--kz-space-1);
+.szc-form-error {
+  font-size: var(--szc-font-size-xs);
+  color: var(--szc-color-error);
+  margin-top: var(--szc-space-1);
 }
 
-.kz-form-success {
-  font-size: var(--kz-font-size-xs);
-  color: var(--kz-color-success);
-  margin-top: var(--kz-space-1);
+.szc-form-success {
+  font-size: var(--szc-font-size-xs);
+  color: var(--szc-color-success);
+  margin-top: var(--szc-space-1);
 }

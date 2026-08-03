@@ -29,7 +29,7 @@
   assign count = badge_count | default: 0
   assign is_disabled = disabled | default: false
 
-  assign full_class = 'kz-icon-button kz-icon-button--' | append: btn_style | append: ' kz-icon-button--' | append: btn_size
+  assign full_class = 'szc-icon-button szc-icon-button--' | append: btn_style | append: ' szc-icon-button--' | append: btn_size
   if btn_class != blank
     assign full_class = full_class | append: ' ' | append: btn_class
   endif
@@ -54,17 +54,17 @@
   aria-label="{{ btn_label }}"
   {% if tooltip_pos != blank %}data-tooltip="{{ tooltip_pos }}" data-tooltip-text="{{ btn_label }}"{% endif %}
 >
-  {% render 'icon', icon: btn_icon, class: 'kz-icon-button__icon' %}
+  {% render 'icon', icon: btn_icon, class: 'szc-icon-button__icon' %}
 
   {%- if count > 0 -%}
-    <span class="kz-icon-button__badge" aria-hidden="true">
+    <span class="szc-icon-button__badge" aria-hidden="true">
       {{- count -}}
     </span>
   {%- endif -%}
 </{{ tag_name }}>
 
 {% stylesheet %}
-  .kz-icon-button {
+  .szc-icon-button {
     display: inline-flex;
     align-items: center;
     justify-content: center;
@@ -72,74 +72,74 @@
     width: 44px;
     height: 44px;
     padding: 0;
-    color: var(--kz-color-primary, #111111);
+    color: var(--szc-color-primary, #111111);
     background-color: transparent;
     border: 1px solid transparent;
-    border-radius: var(--kz-radius-circle, 50%);
+    border-radius: var(--szc-radius-circle, 50%);
     cursor: pointer;
     text-decoration: none;
-    transition: all var(--kz-transition-fast, 150ms ease);
+    transition: all var(--szc-transition-fast, 150ms ease);
     flex-shrink: 0;
   }
 
-  .kz-icon-button--sm {
+  .szc-icon-button--sm {
     width: 36px;
     height: 36px;
   }
 
-  .kz-icon-button--lg {
+  .szc-icon-button--lg {
     width: 52px;
     height: 52px;
   }
 
   /* Style Variants */
-  .kz-icon-button--plain:hover:not([disabled]) {
-    color: var(--kz-color-secondary, #d4a373);
-    background-color: var(--kz-color-surface, #f8f9fa);
+  .szc-icon-button--plain:hover:not([disabled]) {
+    color: var(--szc-color-secondary, #d4a373);
+    background-color: var(--szc-color-surface, #f8f9fa);
   }
 
-  .kz-icon-button--ghost:hover:not([disabled]) {
-    background-color: var(--kz-color-surface-subtle, #f4f3ef);
+  .szc-icon-button--ghost:hover:not([disabled]) {
+    background-color: var(--szc-color-surface-subtle, #f4f3ef);
   }
 
-  .kz-icon-button--outline {
-    border-color: var(--kz-color-border, #e5e5e5);
+  .szc-icon-button--outline {
+    border-color: var(--szc-color-border, #e5e5e5);
   }
 
-  .kz-icon-button--outline:hover:not([disabled]) {
-    border-color: var(--kz-color-primary, #111111);
-    background-color: var(--kz-color-primary, #111111);
-    color: var(--kz-color-text-inverse, #ffffff);
+  .szc-icon-button--outline:hover:not([disabled]) {
+    border-color: var(--szc-color-primary, #111111);
+    background-color: var(--szc-color-primary, #111111);
+    color: var(--szc-color-text-inverse, #ffffff);
   }
 
-  .kz-icon-button--solid {
-    background-color: var(--kz-color-primary, #111111);
-    color: var(--kz-color-text-inverse, #ffffff);
+  .szc-icon-button--solid {
+    background-color: var(--szc-color-primary, #111111);
+    color: var(--szc-color-text-inverse, #ffffff);
   }
 
-  .kz-icon-button--solid:hover:not([disabled]) {
-    background-color: var(--kz-color-secondary, #d4a373);
-    color: var(--kz-color-primary, #111111);
+  .szc-icon-button--solid:hover:not([disabled]) {
+    background-color: var(--szc-color-secondary, #d4a373);
+    color: var(--szc-color-primary, #111111);
   }
 
-  .kz-icon-button__icon {
+  .szc-icon-button__icon {
     width: 20px;
     height: 20px;
     pointer-events: none;
   }
 
-  .kz-icon-button--sm .kz-icon-button__icon {
+  .szc-icon-button--sm .szc-icon-button__icon {
     width: 16px;
     height: 16px;
   }
 
-  .kz-icon-button--lg .kz-icon-button__icon {
+  .szc-icon-button--lg .szc-icon-button__icon {
     width: 24px;
     height: 24px;
   }
 
   /* Badge Overlay */
-  .kz-icon-button__badge {
+  .szc-icon-button__badge {
     position: absolute;
     top: 2px;
     right: 2px;
@@ -151,7 +151,7 @@
     line-height: 18px;
     text-align: center;
     color: #ffffff;
-    background-color: var(--kz-color-accent, #e76f51);
+    background-color: var(--szc-color-accent, #e76f51);
     border-radius: 9999px;
   }
 {% endstylesheet %}

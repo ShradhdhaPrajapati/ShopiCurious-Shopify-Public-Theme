@@ -4,12 +4,12 @@
   assign cols_mobile = section.settings.columns_mobile | default: '2'
 -%}
 
-<div class="kz-main-search page-width" style="--cols-desktop: {{ cols_desktop }}; --cols-mobile: {{ cols_mobile }};">
+<div class="szc-main-search page-width" style="--cols-desktop: {{ cols_desktop }}; --cols-mobile: {{ cols_mobile }};">
   {% render 'breadcrumbs' %}
 
   <!-- Search Header & Input -->
-  <div class="kz-main-search__header">
-    <h1 class="kz-main-search__title">
+  <div class="szc-main-search__header">
+    <h1 class="szc-main-search__title">
       {%- if search.performed -%}
         {{ 'templates.search.title' | t | default: 'Search Results' }}
       {%- else -%}
@@ -17,25 +17,25 @@
       {%- endif -%}
     </h1>
 
-    <form action="{{ routes.search_url }}" method="get" role="search" class="kz-main-search__form">
-      <div class="kz-main-search__field">
+    <form action="{{ routes.search_url }}" method="get" role="search" class="szc-main-search__form">
+      <div class="szc-main-search__field">
         <input
           type="search"
           name="q"
           value="{{ search.terms | escape }}"
           placeholder="{{ 'general.search.search' | t | default: 'Search for products...' }}"
-          class="kz-main-search__input"
+          class="szc-main-search__input"
           aria-label="{{ 'general.search.search' | t | default: 'Search' }}"
         >
-        <button type="submit" class="kz-button kz-button--primary kz-main-search__btn">
-          {% render 'icon', icon: 'search', class: 'kz-button__icon' %}
+        <button type="submit" class="szc-button szc-button--primary szc-main-search__btn">
+          {% render 'icon', icon: 'search', class: 'szc-button__icon' %}
           <span>{{ 'general.search.search' | t | default: 'Search' }}</span>
         </button>
       </div>
     </form>
 
     {%- if search.performed -%}
-      <p class="kz-main-search__status">
+      <p class="szc-main-search__status">
         {%- if search.results_count > 0 -%}
           {{ 'templates.search.results_with_count_and_term' | t: terms: search.terms, count: search.results_count | default: search.results_count | append: ' results found for "' | append: search.terms | append: '"' }}
         {%- else -%}
@@ -48,7 +48,7 @@
   <!-- Faceted Filters -->
   {%- if search.performed and search.results_count > 0 -%}
     {%- if section.settings.enable_filtering or section.settings.enable_sorting -%}
-      <div class="kz-main-search__facets-wrapper">
+      <div class="szc-main-search__facets-wrapper">
         {% render 'facets',
           results: search,
           enable_filtering: section.settings.enable_filtering,
@@ -59,11 +59,11 @@
 
     <!-- Results Grid -->
     {%- paginate search.results by per_page -%}
-      <div class="kz-main-search__content">
-        <div class="kz-main-search__grid" id="SearchResultsGrid">
+      <div class="szc-main-search__content">
+        <div class="szc-main-search__grid" id="SearchResultsGrid">
           {%- for item in search.results -%}
             {%- if item.object_type == 'product' -%}
-              <div class="kz-main-search__item kz-animate-fade-up">
+              <div class="szc-main-search__item szc-animate-fade-up">
                 {% render 'product-card',
                   card_product: item,
                   show_secondary_image: true,
@@ -84,58 +84,58 @@
 </div>
 
 {% stylesheet %}
-  .kz-main-search {
-    padding-top: var(--kz-space-4, 16px);
-    padding-bottom: var(--kz-space-12, 48px);
-    max-width: var(--kz-page-max-width, 1400px);
+  .szc-main-search {
+    padding-top: var(--szc-space-4, 16px);
+    padding-bottom: var(--szc-space-12, 48px);
+    max-width: var(--szc-page-max-width, 1400px);
     margin: 0 auto;
   }
 
-  .kz-main-search__header {
+  .szc-main-search__header {
     max-width: 680px;
-    margin: 0 auto var(--kz-space-8, 32px) auto;
+    margin: 0 auto var(--szc-space-8, 32px) auto;
     text-align: center;
   }
 
-  .kz-main-search__title {
-    margin: 0 0 var(--kz-space-4, 16px) 0;
-    font-family: var(--kz-font-family-heading);
+  .szc-main-search__title {
+    margin: 0 0 var(--szc-space-4, 16px) 0;
+    font-family: var(--szc-font-family-heading);
     font-size: clamp(28px, 4vw, 40px);
     font-weight: 700;
   }
 
-  .kz-main-search__field {
+  .szc-main-search__field {
     display: flex;
     gap: 8px;
   }
 
-  .kz-main-search__input {
+  .szc-main-search__input {
     flex: 1;
     height: 48px;
     padding: 0 16px;
-    font-family: var(--kz-font-family-body);
+    font-family: var(--szc-font-family-body);
     font-size: 15px;
-    border: 1px solid var(--kz-color-border, #e5e5e5);
-    border-radius: var(--kz-radius-button, 2px);
-    background-color: var(--kz-color-surface, #f8f9fa);
+    border: 1px solid var(--szc-color-border, #e5e5e5);
+    border-radius: var(--szc-radius-button, 2px);
+    background-color: var(--szc-color-surface, #f8f9fa);
   }
 
-  .kz-main-search__status {
+  .szc-main-search__status {
     margin-top: 16px;
-    font-size: var(--kz-font-size-sm, 14px);
-    color: var(--kz-color-text-secondary, #666666);
+    font-size: var(--szc-font-size-sm, 14px);
+    color: var(--szc-color-text-secondary, #666666);
   }
 
-  .kz-main-search__grid {
+  .szc-main-search__grid {
     display: grid;
     grid-template-columns: repeat(var(--cols-mobile, 2), 1fr);
-    gap: var(--kz-space-4, 16px);
+    gap: var(--szc-space-4, 16px);
   }
 
   @media (min-width: 750px) {
-    .kz-main-search__grid {
+    .szc-main-search__grid {
       grid-template-columns: repeat(var(--cols-desktop, 4), 1fr);
-      gap: var(--kz-space-6, 24px);
+      gap: var(--szc-space-6, 24px);
     }
   }
 {% endstylesheet %}

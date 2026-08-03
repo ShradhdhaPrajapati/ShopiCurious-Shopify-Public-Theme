@@ -52,7 +52,7 @@
       setTimeout(() => {
         el.classList.add('is-animated');
         const animationType = el.getAttribute('data-animate') || 'fade-in';
-        el.classList.add(`kz-animate-${animationType}`);
+        el.classList.add(`szc-animate-${animationType}`);
       }, parseInt(delay, 10));
     }
 

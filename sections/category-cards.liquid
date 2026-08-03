@@ -11,20 +11,20 @@
 
 <section
   id="CategoryCards-{{ section.id }}"
-  class="kz-category-cards page-width"
+  class="szc-category-cards page-width"
   style="--cols-desktop: {{ cols_desktop }}; --cols-mobile: {{ cols_mobile }};"
 >
   {%- if section.settings.title != blank -%}
-    <div class="kz-section-header kz-section-header--center">
-      <h2 class="kz-section-header__title">{{ section.settings.title }}</h2>
+    <div class="szc-section-header szc-section-header--center">
+      <h2 class="szc-section-header__title">{{ section.settings.title }}</h2>
     </div>
   {%- endif -%}
 
-  <div class="kz-category-cards__grid">
+  <div class="szc-category-cards__grid">
     {%- for block in section.blocks -%}
       {%- case block.type -%}
         {%- when 'category' -%}
-          <div class="kz-category-cards__item" {{ block.shopify_attributes }}>
+          <div class="szc-category-cards__item" {{ block.shopify_attributes }}>
             {% render 'card-collection',
               card_collection: block.settings.collection,
               title: block.settings.title,
@@ -36,16 +36,16 @@
       {%- endcase -%}
     {%- else -%}
       <!-- Default 4 Category Cards matching the approved UI -->
-      <div class="kz-category-cards__item">
+      <div class="szc-category-cards__item">
         {% render 'card-collection', card_collection: nil, title: 'WOMEN', button_text: 'SHOP NOW', media_aspect_ratio: aspect_ratio %}
       </div>
-      <div class="kz-category-cards__item">
+      <div class="szc-category-cards__item">
         {% render 'card-collection', card_collection: nil, title: 'MEN', button_text: 'SHOP NOW', media_aspect_ratio: aspect_ratio %}
       </div>
-      <div class="kz-category-cards__item">
+      <div class="szc-category-cards__item">
         {% render 'card-collection', card_collection: nil, title: 'ACCESSORIES', button_text: 'SHOP NOW', media_aspect_ratio: aspect_ratio %}
       </div>
-      <div class="kz-category-cards__item">
+      <div class="szc-category-cards__item">
         {% render 'card-collection', card_collection: nil, title: 'SHOES', button_text: 'SHOP NOW', media_aspect_ratio: aspect_ratio %}
       </div>
     {%- endfor -%}
@@ -53,31 +53,31 @@
 </section>
 
 {% stylesheet %}
-  .kz-category-cards {
-    padding-top: var(--kz-space-12, 48px);
-    padding-bottom: var(--kz-space-12, 48px);
-    max-width: var(--kz-page-max-width, 1400px);
+  .szc-category-cards {
+    padding-top: var(--szc-space-12, 48px);
+    padding-bottom: var(--szc-space-12, 48px);
+    max-width: var(--szc-page-max-width, 1400px);
     margin: 0 auto;
-    padding-left: var(--kz-space-6, 24px);
-    padding-right: var(--kz-space-6, 24px);
+    padding-left: var(--szc-space-6, 24px);
+    padding-right: var(--szc-space-6, 24px);
   }
 
-  .kz-section-header--center {
+  .szc-section-header--center {
     text-align: center;
     justify-content: center;
-    margin-bottom: var(--kz-space-8, 32px);
+    margin-bottom: var(--szc-space-8, 32px);
   }
 
-  .kz-category-cards__grid {
+  .szc-category-cards__grid {
     display: grid;
     grid-template-columns: repeat(var(--cols-mobile, 2), 1fr);
-    gap: var(--kz-space-5, 20px);
+    gap: var(--szc-space-5, 20px);
   }
 
   @media (min-width: 750px) {
-    .kz-category-cards__grid {
+    .szc-category-cards__grid {
       grid-template-columns: repeat(var(--cols-desktop, 4), 1fr);
-      gap: var(--kz-space-6, 24px);
+      gap: var(--szc-space-6, 24px);
     }
   }
 {% endstylesheet %}

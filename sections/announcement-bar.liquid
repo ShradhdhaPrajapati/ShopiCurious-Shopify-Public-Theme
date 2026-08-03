@@ -11,26 +11,26 @@
 
 <div
   id="AnnouncementBar-{{ section.id }}"
-  class="kz-announcement-bar"
-  style="--kz-announcement-bg: {{ bg_color }}; --kz-announcement-text: {{ text_color }}; --kz-announcement-border: {{ border_color }};"
+  class="szc-announcement-bar"
+  style="--szc-announcement-bg: {{ bg_color }}; --szc-announcement-text: {{ text_color }}; --szc-announcement-border: {{ border_color }};"
   role="region"
   aria-label="{{ 'sections.announcement-bar.name' | t | default: 'Announcement Bar' }}"
 >
-  <div class="kz-announcement-bar__container">
-    <div class="kz-announcement-bar__items">
+  <div class="szc-announcement-bar__container">
+    <div class="szc-announcement-bar__items">
       {%- for block in section.blocks -%}
         {%- case block.type -%}
           {%- when 'announcement' -%}
-            <div class="kz-announcement-bar__item" {{ block.shopify_attributes }}>
+            <div class="szc-announcement-bar__item" {{ block.shopify_attributes }}>
               {%- if block.settings.link != blank -%}
-                <a href="{{ block.settings.link }}" class="kz-announcement-bar__link">
+                <a href="{{ block.settings.link }}" class="szc-announcement-bar__link">
               {%- endif -%}
 
               {%- if block.settings.icon != blank and block.settings.icon != 'none' -%}
-                {% render 'icon', icon: block.settings.icon, class: 'kz-announcement-bar__icon' %}
+                {% render 'icon', icon: block.settings.icon, class: 'szc-announcement-bar__icon' %}
               {%- endif -%}
 
-              <span class="kz-announcement-bar__text">
+              <span class="szc-announcement-bar__text">
                 {{ block.settings.text | escape }}
               </span>
 
@@ -40,17 +40,17 @@
             </div>
         {%- endcase -%}
       {%- else -%}
-        <div class="kz-announcement-bar__item">
-          {% render 'icon', icon: 'truck', class: 'kz-announcement-bar__icon' %}
-          <span class="kz-announcement-bar__text">FREE SHIPPING ON ORDERS OVER $100</span>
+        <div class="szc-announcement-bar__item">
+          {% render 'icon', icon: 'truck', class: 'szc-announcement-bar__icon' %}
+          <span class="szc-announcement-bar__text">FREE SHIPPING ON ORDERS OVER $100</span>
         </div>
-        <div class="kz-announcement-bar__item">
-          {% render 'icon', icon: 'award', class: 'kz-announcement-bar__icon' %}
-          <span class="kz-announcement-bar__text">LIFETIME WARRANTY</span>
+        <div class="szc-announcement-bar__item">
+          {% render 'icon', icon: 'award', class: 'szc-announcement-bar__icon' %}
+          <span class="szc-announcement-bar__text">LIFETIME WARRANTY</span>
         </div>
-        <div class="kz-announcement-bar__item">
-          {% render 'icon', icon: 'returns', class: 'kz-announcement-bar__icon' %}
-          <span class="kz-announcement-bar__text">30-DAY EASY RETURNS</span>
+        <div class="szc-announcement-bar__item">
+          {% render 'icon', icon: 'returns', class: 'szc-announcement-bar__icon' %}
+          <span class="szc-announcement-bar__text">30-DAY EASY RETURNS</span>
         </div>
       {%- endfor -%}
     </div>
@@ -58,11 +58,11 @@
 </div>
 
 {% stylesheet %}
-  .kz-announcement-bar {
-    background-color: var(--kz-announcement-bg, #f7f6f4);
-    color: var(--kz-announcement-text, #2b2b2b);
-    border-bottom: 1px solid var(--kz-announcement-border, #e8e6e1);
-    font-family: var(--kz-font-family-body, inherit);
+  .szc-announcement-bar {
+    background-color: var(--szc-announcement-bg, #f7f6f4);
+    color: var(--szc-announcement-text, #2b2b2b);
+    border-bottom: 1px solid var(--szc-announcement-border, #e8e6e1);
+    font-family: var(--szc-font-family-body, inherit);
     font-size: 11px;
     font-weight: 500;
     letter-spacing: 0.06em;
@@ -72,21 +72,21 @@
     width: 100%;
   }
 
-  .kz-announcement-bar__container {
+  .szc-announcement-bar__container {
     max-width: 1400px;
     margin: 0 auto;
-    padding: 0 var(--kz-space-4, 16px);
+    padding: 0 var(--szc-space-4, 16px);
   }
 
-  .kz-announcement-bar__items {
+  .szc-announcement-bar__items {
     display: flex;
     align-items: center;
     justify-content: space-between;
     min-height: 38px;
-    gap: var(--kz-space-4, 16px);
+    gap: var(--szc-space-4, 16px);
   }
 
-  .kz-announcement-bar__item {
+  .szc-announcement-bar__item {
     display: inline-flex;
     align-items: center;
     justify-content: center;
@@ -95,7 +95,7 @@
     text-align: center;
   }
 
-  .kz-announcement-bar__link {
+  .szc-announcement-bar__link {
     color: inherit;
     text-decoration: none;
     display: inline-flex;
@@ -104,34 +104,34 @@
     transition: opacity 150ms ease;
   }
 
-  .kz-announcement-bar__link:hover {
+  .szc-announcement-bar__link:hover {
     opacity: 0.75;
   }
 
-  .kz-announcement-bar__icon {
+  .szc-announcement-bar__icon {
     width: 14px;
     height: 14px;
     flex-shrink: 0;
   }
 
-  .kz-announcement-bar__text {
+  .szc-announcement-bar__text {
     line-height: 1;
     white-space: nowrap;
   }
 
   @media (max-width: 768px) {
-    .kz-announcement-bar__items {
+    .szc-announcement-bar__items {
       overflow-x: auto;
       justify-content: flex-start;
       scrollbar-width: none;
       padding: 8px 0;
     }
 
-    .kz-announcement-bar__items::-webkit-scrollbar {
+    .szc-announcement-bar__items::-webkit-scrollbar {
       display: none;
     }
 
-    .kz-announcement-bar__item {
+    .szc-announcement-bar__item {
       flex: 0 0 auto;
       padding: 0 12px;
     }

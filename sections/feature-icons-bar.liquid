@@ -12,30 +12,30 @@
 
 <section
   id="FeatureIconsBar-{{ section.id }}"
-  class="kz-feature-icons-bar"
-  style="--kz-fib-bg: {{ bg_color }}; --kz-fib-text: {{ text_color }}; --kz-fib-border: {{ border_color }};"
+  class="szc-feature-icons-bar"
+  style="--szc-fib-bg: {{ bg_color }}; --szc-fib-text: {{ text_color }}; --szc-fib-border: {{ border_color }};"
 >
-  <div class="kz-feature-icons-bar__container page-width">
-    <div class="kz-feature-icons-bar__grid">
+  <div class="szc-feature-icons-bar__container page-width">
+    <div class="szc-feature-icons-bar__grid">
       {%- for block in section.blocks -%}
         {%- case block.type -%}
           {%- when 'feature' -%}
-            <div class="kz-feature-icons-bar__item" {{ block.shopify_attributes }}>
+            <div class="szc-feature-icons-bar__item" {{ block.shopify_attributes }}>
               {%- if block.settings.link != blank -%}
-                <a href="{{ block.settings.link }}" class="kz-feature-icons-bar__link">
+                <a href="{{ block.settings.link }}" class="szc-feature-icons-bar__link">
               {%- endif -%}
 
-              <div class="kz-feature-icons-bar__icon-wrapper">
-                {% render 'icon', icon: block.settings.icon, class: 'kz-feature-icons-bar__icon' %}
+              <div class="szc-feature-icons-bar__icon-wrapper">
+                {% render 'icon', icon: block.settings.icon, class: 'szc-feature-icons-bar__icon' %}
               </div>
 
-              <div class="kz-feature-icons-bar__content">
+              <div class="szc-feature-icons-bar__content">
                 {%- if block.settings.title != blank -%}
-                  <h3 class="kz-feature-icons-bar__title">{{ block.settings.title | escape }}</h3>
+                  <h3 class="szc-feature-icons-bar__title">{{ block.settings.title | escape }}</h3>
                 {%- endif -%}
 
                 {%- if block.settings.text != blank -%}
-                  <p class="kz-feature-icons-bar__text">{{ block.settings.text | escape }}</p>
+                  <p class="szc-feature-icons-bar__text">{{ block.settings.text | escape }}</p>
                 {%- endif -%}
               </div>
 
@@ -46,53 +46,53 @@
         {%- endcase -%}
       {%- else -%}
         <!-- Default 5 Floating Banner Overlay Trust Pillars -->
-        <div class="kz-feature-icons-bar__item">
-          <div class="kz-feature-icons-bar__icon-wrapper">
-            {% render 'icon', icon: 'truck', class: 'kz-feature-icons-bar__icon' %}
+        <div class="szc-feature-icons-bar__item">
+          <div class="szc-feature-icons-bar__icon-wrapper">
+            {% render 'icon', icon: 'truck', class: 'szc-feature-icons-bar__icon' %}
           </div>
-          <div class="kz-feature-icons-bar__content">
-            <h3 class="kz-feature-icons-bar__title">Free Shipping</h3>
-            <p class="kz-feature-icons-bar__text">On orders over $100</p>
-          </div>
-        </div>
-
-        <div class="kz-feature-icons-bar__item">
-          <div class="kz-feature-icons-bar__icon-wrapper">
-            {% render 'icon', icon: 'returns', class: 'kz-feature-icons-bar__icon' %}
-          </div>
-          <div class="kz-feature-icons-bar__content">
-            <h3 class="kz-feature-icons-bar__title">Easy Returns</h3>
-            <p class="kz-feature-icons-bar__text">30-day return policy</p>
+          <div class="szc-feature-icons-bar__content">
+            <h3 class="szc-feature-icons-bar__title">Free Shipping</h3>
+            <p class="szc-feature-icons-bar__text">On orders over $100</p>
           </div>
         </div>
 
-        <div class="kz-feature-icons-bar__item">
-          <div class="kz-feature-icons-bar__icon-wrapper">
-            {% render 'icon', icon: 'lock', class: 'kz-feature-icons-bar__icon' %}
+        <div class="szc-feature-icons-bar__item">
+          <div class="szc-feature-icons-bar__icon-wrapper">
+            {% render 'icon', icon: 'returns', class: 'szc-feature-icons-bar__icon' %}
           </div>
-          <div class="kz-feature-icons-bar__content">
-            <h3 class="kz-feature-icons-bar__title">Secure Payments</h3>
-            <p class="kz-feature-icons-bar__text">100% Protected</p>
-          </div>
-        </div>
-
-        <div class="kz-feature-icons-bar__item">
-          <div class="kz-feature-icons-bar__icon-wrapper">
-            {% render 'icon', icon: 'diamond', class: 'kz-feature-icons-bar__icon' %}
-          </div>
-          <div class="kz-feature-icons-bar__content">
-            <h3 class="kz-feature-icons-bar__title">Premium Quality</h3>
-            <p class="kz-feature-icons-bar__text">Crafted with care</p>
+          <div class="szc-feature-icons-bar__content">
+            <h3 class="szc-feature-icons-bar__title">Easy Returns</h3>
+            <p class="szc-feature-icons-bar__text">30-day return policy</p>
           </div>
         </div>
 
-        <div class="kz-feature-icons-bar__item">
-          <div class="kz-feature-icons-bar__icon-wrapper">
-            {% render 'icon', icon: 'package', class: 'kz-feature-icons-bar__icon' %}
+        <div class="szc-feature-icons-bar__item">
+          <div class="szc-feature-icons-bar__icon-wrapper">
+            {% render 'icon', icon: 'lock', class: 'szc-feature-icons-bar__icon' %}
           </div>
-          <div class="kz-feature-icons-bar__content">
-            <h3 class="kz-feature-icons-bar__title">Elegant Packaging</h3>
-            <p class="kz-feature-icons-bar__text">Perfect for Gifting</p>
+          <div class="szc-feature-icons-bar__content">
+            <h3 class="szc-feature-icons-bar__title">Secure Payments</h3>
+            <p class="szc-feature-icons-bar__text">100% Protected</p>
+          </div>
+        </div>
+
+        <div class="szc-feature-icons-bar__item">
+          <div class="szc-feature-icons-bar__icon-wrapper">
+            {% render 'icon', icon: 'diamond', class: 'szc-feature-icons-bar__icon' %}
+          </div>
+          <div class="szc-feature-icons-bar__content">
+            <h3 class="szc-feature-icons-bar__title">Premium Quality</h3>
+            <p class="szc-feature-icons-bar__text">Crafted with care</p>
+          </div>
+        </div>
+
+        <div class="szc-feature-icons-bar__item">
+          <div class="szc-feature-icons-bar__icon-wrapper">
+            {% render 'icon', icon: 'package', class: 'szc-feature-icons-bar__icon' %}
+          </div>
+          <div class="szc-feature-icons-bar__content">
+            <h3 class="szc-feature-icons-bar__title">Elegant Packaging</h3>
+            <p class="szc-feature-icons-bar__text">Perfect for Gifting</p>
           </div>
         </div>
       {%- endfor -%}
@@ -101,7 +101,7 @@
 </section>
 
 {% stylesheet %}
-  .kz-feature-icons-bar {
+  .szc-feature-icons-bar {
     position: relative;
     z-index: 25;
     margin-top: -45px;
@@ -111,59 +111,59 @@
   }
 
   @media (max-width: 768px) {
-    .kz-feature-icons-bar {
+    .szc-feature-icons-bar {
       margin-top: -24px;
     }
   }
 
-  .kz-feature-icons-bar__container {
-    max-width: var(--kz-page-max-width, 1400px);
+  .szc-feature-icons-bar__container {
+    max-width: var(--szc-page-max-width, 1400px);
     margin: 0 auto;
     padding: 22px 28px;
-    background-color: var(--kz-fib-bg, #ffffff);
+    background-color: var(--szc-fib-bg, #ffffff);
     border-radius: 12px;
     box-shadow: 0 10px 30px rgba(0, 0, 0, 0.07);
-    border: 1px solid var(--kz-fib-border, rgba(0, 0, 0, 0.06));
+    border: 1px solid var(--szc-fib-border, rgba(0, 0, 0, 0.06));
   }
 
-  .kz-feature-icons-bar__grid {
+  .szc-feature-icons-bar__grid {
     display: grid;
     grid-template-columns: repeat(1, minmax(0, 1fr));
     gap: 20px;
   }
 
   @media (min-width: 550px) {
-    .kz-feature-icons-bar__grid {
+    .szc-feature-icons-bar__grid {
       grid-template-columns: repeat(2, minmax(0, 1fr));
     }
   }
 
   @media (min-width: 850px) {
-    .kz-feature-icons-bar__grid {
+    .szc-feature-icons-bar__grid {
       grid-template-columns: repeat(3, minmax(0, 1fr));
     }
   }
 
   @media (min-width: 1100px) {
-    .kz-feature-icons-bar__grid {
+    .szc-feature-icons-bar__grid {
       grid-template-columns: repeat(5, minmax(0, 1fr));
       gap: 16px;
     }
   }
 
-  .kz-feature-icons-bar__item {
+  .szc-feature-icons-bar__item {
     display: flex;
     align-items: center;
     gap: 14px;
     padding: 4px 6px;
-    transition: transform var(--kz-transition-fast, 150ms ease);
+    transition: transform var(--szc-transition-fast, 150ms ease);
   }
 
-  .kz-feature-icons-bar__item:hover {
+  .szc-feature-icons-bar__item:hover {
     transform: translateY(-2px);
   }
 
-  .kz-feature-icons-bar__link {
+  .szc-feature-icons-bar__link {
     color: inherit;
     text-decoration: none;
     display: flex;
@@ -172,7 +172,7 @@
     width: 100%;
   }
 
-  .kz-feature-icons-bar__icon-wrapper {
+  .szc-feature-icons-bar__icon-wrapper {
     display: flex;
     align-items: center;
     justify-content: center;
@@ -185,37 +185,37 @@
     transition: background-color 200ms ease;
   }
 
-  .kz-feature-icons-bar__item:hover .kz-feature-icons-bar__icon-wrapper {
+  .szc-feature-icons-bar__item:hover .szc-feature-icons-bar__icon-wrapper {
     background-color: #eee9df;
   }
 
-  .kz-feature-icons-bar__icon {
+  .szc-feature-icons-bar__icon {
     width: 20px;
     height: 20px;
   }
 
-  .kz-feature-icons-bar__content {
+  .szc-feature-icons-bar__content {
     display: flex;
     flex-direction: column;
     gap: 2px;
   }
 
-  .kz-feature-icons-bar__title {
+  .szc-feature-icons-bar__title {
     margin: 0;
-    font-family: var(--kz-font-family-body, sans-serif);
+    font-family: var(--szc-font-family-body, sans-serif);
     font-size: 13px;
     font-weight: 700;
     line-height: 1.25;
-    color: var(--kz-fib-text, #111111);
+    color: var(--szc-fib-text, #111111);
     letter-spacing: -0.01em;
   }
 
-  .kz-feature-icons-bar__text {
+  .szc-feature-icons-bar__text {
     margin: 0;
-    font-family: var(--kz-font-family-body, sans-serif);
+    font-family: var(--szc-font-family-body, sans-serif);
     font-size: 11px;
     line-height: 1.3;
-    color: var(--kz-color-text-muted, #666666);
+    color: var(--szc-color-text-muted, #666666);
   }
 {% endstylesheet %}
 

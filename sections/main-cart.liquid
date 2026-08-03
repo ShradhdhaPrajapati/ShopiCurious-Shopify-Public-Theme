@@ -1,34 +1,34 @@
-<section id="MainCart-{{ section.id }}" class="kz-main-cart page-width">
-  <div class="kz-main-cart__header">
-    <h1 class="kz-main-cart__title">
+<section id="MainCart-{{ section.id }}" class="szc-main-cart page-width">
+  <div class="szc-main-cart__header">
+    <h1 class="szc-main-cart__title">
       {{ 'sections.cart.title' | t | default: 'Your Shopping Bag' }}
-      <span class="kz-main-cart__count">({{ cart.item_count }})</span>
+      <span class="szc-main-cart__count">({{ cart.item_count }})</span>
     </h1>
-    <a href="{{ routes.all_products_collection_url }}" class="kz-main-cart__continue-link">
+    <a href="{{ routes.all_products_collection_url }}" class="szc-main-cart__continue-link">
       {{ 'general.continue_shopping' | t | default: 'Continue Shopping' }}
     </a>
   </div>
 
   {%- if cart.item_count > 0 -%}
-    <div class="kz-main-cart__grid">
+    <div class="szc-main-cart__grid">
       <!-- Cart Items List Column -->
-      <div class="kz-main-cart__items-col">
-        <form action="{{ routes.cart_url }}" method="post" id="CartForm" class="kz-main-cart__form">
-          <div class="kz-main-cart__items-list">
+      <div class="szc-main-cart__items-col">
+        <form action="{{ routes.cart_url }}" method="post" id="CartForm" class="szc-main-cart__form">
+          <div class="szc-main-cart__items-list">
             {%- for item in cart.items -%}
               {% render 'cart-item', item: item, index: forloop.index %}
             {%- endfor -%}
           </div>
 
           {%- if section.settings.show_cart_note -%}
-            <div class="kz-main-cart__note">
-              <label for="CartNote" class="kz-main-cart__note-label">
+            <div class="szc-main-cart__note">
+              <label for="CartNote" class="szc-main-cart__note-label">
                 {{ 'sections.cart.note' | t | default: 'Add special instructions or a gift note' }}
               </label>
               <textarea
                 id="CartNote"
                 name="note"
-                class="kz-main-cart__note-input"
+                class="szc-main-cart__note-input"
                 rows="3"
                 placeholder="{{ 'sections.cart.note_placeholder' | t | default: 'How can we help make your order special?' }}"
               >{{ cart.note }}</textarea>
@@ -38,29 +38,29 @@
       </div>
 
       <!-- Order Summary Card Column -->
-      <div class="kz-main-cart__summary-col">
-        <div class="kz-main-cart__summary-card">
-          <h2 class="kz-main-cart__summary-title">
+      <div class="szc-main-cart__summary-col">
+        <div class="szc-main-cart__summary-card">
+          <h2 class="szc-main-cart__summary-title">
             {{ 'sections.cart.summary' | t | default: 'Order Summary' }}
           </h2>
 
-          <div class="kz-main-cart__summary-row">
+          <div class="szc-main-cart__summary-row">
             <span>{{ 'sections.cart.subtotal' | t | default: 'Subtotal' }}</span>
-            <span class="kz-main-cart__subtotal">{{ cart.total_price | money }}</span>
+            <span class="szc-main-cart__subtotal">{{ cart.total_price | money }}</span>
           </div>
 
-          <p class="kz-main-cart__taxes-notice">
+          <p class="szc-main-cart__taxes-notice">
             {{ 'sections.cart.taxes_and_shipping_at_checkout' | t | default: 'Taxes and shipping calculated at checkout.' }}
           </p>
 
-          <div class="kz-main-cart__actions">
+          <div class="szc-main-cart__actions">
             <button
               type="submit"
               name="checkout"
               form="CartForm"
-              class="kz-button kz-button--primary kz-button--full-width kz-main-cart__checkout-btn"
+              class="szc-button szc-button--primary szc-button--full-width szc-main-cart__checkout-btn"
             >
-              {% render 'icon', icon: 'bag', class: 'kz-button__icon' %}
+              {% render 'icon', icon: 'bag', class: 'szc-button__icon' %}
               <span>{{ 'sections.cart.checkout' | t | default: 'Proceed to Checkout' }}</span>
             </button>
           </div>
@@ -68,11 +68,11 @@
       </div>
     </div>
   {%- else -%}
-    <div class="kz-main-cart__empty">
-      {% render 'icon', icon: 'bag', class: 'kz-main-cart__empty-icon' %}
+    <div class="szc-main-cart__empty">
+      {% render 'icon', icon: 'bag', class: 'szc-main-cart__empty-icon' %}
       <h2>{{ 'sections.cart.empty' | t | default: 'Your bag is empty' }}</h2>
       <p>{{ 'sections.cart.empty_subtext' | t | default: 'Looks like you haven\'t added any items to your shopping bag yet.' }}</p>
-      <a href="{{ routes.all_products_collection_url }}" class="kz-button kz-button--primary">
+      <a href="{{ routes.all_products_collection_url }}" class="szc-button szc-button--primary">
         {{ 'general.continue_shopping' | t | default: 'Start Shopping' }}
       </a>
     </div>
@@ -80,119 +80,119 @@
 </section>
 
 {% stylesheet %}
-  .kz-main-cart {
-    padding-top: var(--kz-space-8, 32px);
-    padding-bottom: var(--kz-space-12, 48px);
-    max-width: var(--kz-page-max-width, 1400px);
+  .szc-main-cart {
+    padding-top: var(--szc-space-8, 32px);
+    padding-bottom: var(--szc-space-12, 48px);
+    max-width: var(--szc-page-max-width, 1400px);
     margin: 0 auto;
   }
 
-  .kz-main-cart__header {
+  .szc-main-cart__header {
     display: flex;
     align-items: baseline;
     justify-content: space-between;
-    margin-bottom: var(--kz-space-8, 32px);
-    border-bottom: 1px solid var(--kz-color-border, #e5e5e5);
-    padding-bottom: var(--kz-space-4, 16px);
+    margin-bottom: var(--szc-space-8, 32px);
+    border-bottom: 1px solid var(--szc-color-border, #e5e5e5);
+    padding-bottom: var(--szc-space-4, 16px);
   }
 
-  .kz-main-cart__title {
+  .szc-main-cart__title {
     margin: 0;
-    font-family: var(--kz-font-family-heading);
+    font-family: var(--szc-font-family-heading);
     font-size: clamp(24px, 3vw, 36px);
     font-weight: 700;
   }
 
-  .kz-main-cart__count {
-    color: var(--kz-color-text-muted, #757575);
+  .szc-main-cart__count {
+    color: var(--szc-color-text-muted, #757575);
     font-weight: 400;
   }
 
-  .kz-main-cart__continue-link {
-    font-size: var(--kz-font-size-sm, 14px);
+  .szc-main-cart__continue-link {
+    font-size: var(--szc-font-size-sm, 14px);
     font-weight: 600;
-    color: var(--kz-color-primary, #111111);
+    color: var(--szc-color-primary, #111111);
     text-decoration: none;
   }
 
-  .kz-main-cart__grid {
+  .szc-main-cart__grid {
     display: grid;
     grid-template-columns: 1fr;
-    gap: var(--kz-space-8, 32px);
+    gap: var(--szc-space-8, 32px);
   }
 
   @media (min-width: 990px) {
-    .kz-main-cart__grid {
+    .szc-main-cart__grid {
       grid-template-columns: 1fr 380px;
     }
   }
 
-  .kz-main-cart__note {
-    margin-top: var(--kz-space-6, 24px);
+  .szc-main-cart__note {
+    margin-top: var(--szc-space-6, 24px);
   }
 
-  .kz-main-cart__note-label {
+  .szc-main-cart__note-label {
     display: block;
     font-size: 13px;
     font-weight: 600;
     margin-bottom: 8px;
   }
 
-  .kz-main-cart__note-input {
+  .szc-main-cart__note-input {
     width: 100%;
     padding: 12px;
-    font-family: var(--kz-font-family-body);
+    font-family: var(--szc-font-family-body);
     font-size: 14px;
-    border: 1px solid var(--kz-color-border, #e5e5e5);
-    border-radius: var(--kz-radius-card, 4px);
-    background-color: var(--kz-color-surface, #f8f9fa);
+    border: 1px solid var(--szc-color-border, #e5e5e5);
+    border-radius: var(--szc-radius-card, 4px);
+    background-color: var(--szc-color-surface, #f8f9fa);
     resize: vertical;
   }
 
   /* Summary Card */
-  .kz-main-cart__summary-card {
-    padding: var(--kz-space-6, 24px);
-    background-color: var(--kz-color-surface, #f8f9fa);
-    border-radius: var(--kz-radius-card, 4px);
-    border: 1px solid var(--kz-color-border, #e5e5e5);
+  .szc-main-cart__summary-card {
+    padding: var(--szc-space-6, 24px);
+    background-color: var(--szc-color-surface, #f8f9fa);
+    border-radius: var(--szc-radius-card, 4px);
+    border: 1px solid var(--szc-color-border, #e5e5e5);
     position: sticky;
-    top: calc(var(--kz-header-height, 70px) + 20px);
+    top: calc(var(--szc-header-height, 70px) + 20px);
   }
 
-  .kz-main-cart__summary-title {
-    margin: 0 0 var(--kz-space-4, 16px) 0;
-    font-family: var(--kz-font-family-heading);
-    font-size: var(--kz-font-size-lg, 18px);
+  .szc-main-cart__summary-title {
+    margin: 0 0 var(--szc-space-4, 16px) 0;
+    font-family: var(--szc-font-family-heading);
+    font-size: var(--szc-font-size-lg, 18px);
     font-weight: 700;
   }
 
-  .kz-main-cart__summary-row {
+  .szc-main-cart__summary-row {
     display: flex;
     justify-content: space-between;
-    font-size: var(--kz-font-size-base, 16px);
+    font-size: var(--szc-font-size-base, 16px);
     font-weight: 700;
     margin-bottom: 8px;
   }
 
-  .kz-main-cart__taxes-notice {
+  .szc-main-cart__taxes-notice {
     font-size: 12px;
-    color: var(--kz-color-text-muted, #757575);
-    margin-bottom: var(--kz-space-6, 24px);
+    color: var(--szc-color-text-muted, #757575);
+    margin-bottom: var(--szc-space-6, 24px);
   }
 
-  .kz-main-cart__empty {
+  .szc-main-cart__empty {
     display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    padding: var(--kz-space-12, 48px) var(--kz-space-4, 16px);
+    padding: var(--szc-space-12, 48px) var(--szc-space-4, 16px);
     text-align: center;
   }
 
-  .kz-main-cart__empty-icon {
+  .szc-main-cart__empty-icon {
     width: 56px;
     height: 56px;
-    color: var(--kz-color-text-muted, #757575);
+    color: var(--szc-color-text-muted, #757575);
     margin-bottom: 16px;
   }
 {% endstylesheet %}

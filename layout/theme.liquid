@@ -66,14 +66,14 @@
     <script src="{{ 'animations.js' | asset_url }}" defer="defer"></script>
   </head>
 
-  <body class="kz-body template-{{ template.name | handle }} template-{{ template | replace: '.', '-' | handle }}">
-    <a class="kz-skip-to-content kz-skip-link" href="#MainContent">
+  <body class="szc-body template-{{ template.name | handle }} template-{{ template | replace: '.', '-' | handle }}">
+    <a class="szc-skip-to-content szc-skip-link" href="#MainContent">
       {{ 'general.accessibility.skip_to_content' | t | default: 'Skip to content' }}
     </a>
 
     {% sections 'header-group' %}
 
-    <main id="MainContent" class="kz-main-content focus-none" tabindex="-1">
+    <main id="MainContent" class="szc-main-content focus-none" tabindex="-1">
       {{ content_for_layout }}
     </main>
 
@@ -83,6 +83,6 @@
     {% render 'cart-drawer' %}
     {% render 'quick-view-modal' %}
 
-    <div id="ShopziCuriousToastContainer" class="kz-toast-container" aria-live="polite"></div>
+    <div id="ShopziCuriousToastContainer" class="szc-toast-container" aria-live="polite"></div>
   </body>
 </html>

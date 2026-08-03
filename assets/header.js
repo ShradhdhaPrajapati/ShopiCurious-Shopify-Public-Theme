@@ -18,7 +18,7 @@
     }
 
     connectedCallback() {
-      this.header = this.querySelector('.kz-header');
+      this.header = this.querySelector('.szc-header');
       this.headerBounds = this.getBoundingClientRect();
       window.addEventListener('scroll', this.onScrollHandler, false);
     }
@@ -46,18 +46,18 @@
 
     hide() {
       if (this.preventReveal) return;
-      this.classList.add('kz-header--hidden', 'kz-header--sticky');
-      this.classList.remove('kz-header--visible');
+      this.classList.add('szc-header--hidden', 'szc-header--sticky');
+      this.classList.remove('szc-header--visible');
     }
 
     reveal() {
       if (this.preventReveal) return;
-      this.classList.add('kz-header--sticky', 'kz-header--visible');
-      this.classList.remove('kz-header--hidden');
+      this.classList.add('szc-header--sticky', 'szc-header--visible');
+      this.classList.remove('szc-header--hidden');
     }
 
     reset() {
-      this.classList.remove('kz-header--hidden', 'kz-header--sticky', 'kz-header--visible');
+      this.classList.remove('szc-header--hidden', 'szc-header--sticky', 'szc-header--visible');
     }
   }
 

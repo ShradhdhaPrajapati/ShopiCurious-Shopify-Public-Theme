@@ -3,9 +3,9 @@
   Displays 4 trust pillars with circular icon badges matching the approved UI screenshot pixel-for-pixel.
 {%- endcomment -%}
 
-<section id="BottomUspBar-{{ section.id }}" class="kz-bottom-usp-section">
-  <div class="kz-bottom-usp-wrapper page-width">
-    <div class="kz-bottom-usp__grid">
+<section id="BottomUspBar-{{ section.id }}" class="szc-bottom-usp-section">
+  <div class="szc-bottom-usp-wrapper page-width">
+    <div class="szc-bottom-usp__grid">
       {%- for block in section.blocks -%}
         {%- liquid
           assign icon_name = block.settings.icon | default: 'truck'
@@ -13,58 +13,58 @@
           assign subtitle = block.settings.subtitle
         -%}
 
-        <div class="kz-bottom-usp__item" {{ block.shopify_attributes }}>
-          <div class="kz-bottom-usp__icon-badge">
-            {% render 'icon', icon: icon_name, class: 'kz-bottom-usp__icon' %}
+        <div class="szc-bottom-usp__item" {{ block.shopify_attributes }}>
+          <div class="szc-bottom-usp__icon-badge">
+            {% render 'icon', icon: icon_name, class: 'szc-bottom-usp__icon' %}
           </div>
-          <div class="kz-bottom-usp__text">
+          <div class="szc-bottom-usp__text">
             {%- if title != blank -%}
-              <h3 class="kz-bottom-usp__title">{{ title }}</h3>
+              <h3 class="szc-bottom-usp__title">{{ title }}</h3>
             {%- endif -%}
             {%- if subtitle != blank -%}
-              <p class="kz-bottom-usp__subtitle">{{ subtitle }}</p>
+              <p class="szc-bottom-usp__subtitle">{{ subtitle }}</p>
             {%- endif -%}
           </div>
         </div>
       {%- else -%}
         <!-- Default 4 Demo Items matching approved UI screenshot pixel-for-pixel -->
-        <div class="kz-bottom-usp__item">
-          <div class="kz-bottom-usp__icon-badge">
-            {% render 'icon', icon: 'truck', class: 'kz-bottom-usp__icon' %}
+        <div class="szc-bottom-usp__item">
+          <div class="szc-bottom-usp__icon-badge">
+            {% render 'icon', icon: 'truck', class: 'szc-bottom-usp__icon' %}
           </div>
-          <div class="kz-bottom-usp__text">
-            <h3 class="kz-bottom-usp__title">Free Shipping</h3>
-            <p class="kz-bottom-usp__subtitle">On orders over $100</p>
-          </div>
-        </div>
-
-        <div class="kz-bottom-usp__item">
-          <div class="kz-bottom-usp__icon-badge">
-            {% render 'icon', icon: 'returns', class: 'kz-bottom-usp__icon' %}
-          </div>
-          <div class="kz-bottom-usp__text">
-            <h3 class="kz-bottom-usp__title">Easy Returns</h3>
-            <p class="kz-bottom-usp__subtitle">30-day return policy</p>
+          <div class="szc-bottom-usp__text">
+            <h3 class="szc-bottom-usp__title">Free Shipping</h3>
+            <p class="szc-bottom-usp__subtitle">On orders over $100</p>
           </div>
         </div>
 
-        <div class="kz-bottom-usp__item">
-          <div class="kz-bottom-usp__icon-badge">
-            {% render 'icon', icon: 'heart', class: 'kz-bottom-usp__icon' %}
+        <div class="szc-bottom-usp__item">
+          <div class="szc-bottom-usp__icon-badge">
+            {% render 'icon', icon: 'returns', class: 'szc-bottom-usp__icon' %}
           </div>
-          <div class="kz-bottom-usp__text">
-            <h3 class="kz-bottom-usp__title">Lifetime Warranty</h3>
-            <p class="kz-bottom-usp__subtitle">On all products</p>
+          <div class="szc-bottom-usp__text">
+            <h3 class="szc-bottom-usp__title">Easy Returns</h3>
+            <p class="szc-bottom-usp__subtitle">30-day return policy</p>
           </div>
         </div>
 
-        <div class="kz-bottom-usp__item">
-          <div class="kz-bottom-usp__icon-badge">
-            {% render 'icon', icon: 'lock', class: 'kz-bottom-usp__icon' %}
+        <div class="szc-bottom-usp__item">
+          <div class="szc-bottom-usp__icon-badge">
+            {% render 'icon', icon: 'heart', class: 'szc-bottom-usp__icon' %}
           </div>
-          <div class="kz-bottom-usp__text">
-            <h3 class="kz-bottom-usp__title">Secure Checkout</h3>
-            <p class="kz-bottom-usp__subtitle">100% safe & secure</p>
+          <div class="szc-bottom-usp__text">
+            <h3 class="szc-bottom-usp__title">Lifetime Warranty</h3>
+            <p class="szc-bottom-usp__subtitle">On all products</p>
+          </div>
+        </div>
+
+        <div class="szc-bottom-usp__item">
+          <div class="szc-bottom-usp__icon-badge">
+            {% render 'icon', icon: 'lock', class: 'szc-bottom-usp__icon' %}
+          </div>
+          <div class="szc-bottom-usp__text">
+            <h3 class="szc-bottom-usp__title">Secure Checkout</h3>
+            <p class="szc-bottom-usp__subtitle">100% safe & secure</p>
           </div>
         </div>
       {%- endfor -%}
@@ -73,49 +73,49 @@
 </section>
 
 {% stylesheet %}
-  .kz-bottom-usp-section {
+  .szc-bottom-usp-section {
     background-color: #f7f4ee;
     border-top: 1px solid #eae5db;
     border-bottom: 1px solid #eae5db;
-    padding-top: var(--kz-space-6, 24px);
-    padding-bottom: var(--kz-space-6, 24px);
-    margin-top: var(--kz-space-8, 32px);
+    padding-top: var(--szc-space-6, 24px);
+    padding-bottom: var(--szc-space-6, 24px);
+    margin-top: var(--szc-space-8, 32px);
   }
 
-  .kz-bottom-usp-wrapper {
-    max-width: var(--kz-page-max-width, 1400px);
+  .szc-bottom-usp-wrapper {
+    max-width: var(--szc-page-max-width, 1400px);
     margin: 0 auto;
-    padding-left: var(--kz-space-6, 24px);
-    padding-right: var(--kz-space-6, 24px);
+    padding-left: var(--szc-space-6, 24px);
+    padding-right: var(--szc-space-6, 24px);
   }
 
-  .kz-bottom-usp__grid {
+  .szc-bottom-usp__grid {
     display: grid;
     grid-template-columns: repeat(1, 1fr);
-    gap: var(--kz-space-6, 24px);
+    gap: var(--szc-space-6, 24px);
   }
 
   @media (min-width: 600px) {
-    .kz-bottom-usp__grid {
+    .szc-bottom-usp__grid {
       grid-template-columns: repeat(2, 1fr);
     }
   }
 
   @media (min-width: 990px) {
-    .kz-bottom-usp__grid {
+    .szc-bottom-usp__grid {
       grid-template-columns: repeat(4, 1fr);
-      gap: var(--kz-space-6, 24px);
+      gap: var(--szc-space-6, 24px);
     }
   }
 
   /* USP Item Styling */
-  .kz-bottom-usp__item {
+  .szc-bottom-usp__item {
     display: flex;
     align-items: center;
     gap: 14px;
   }
 
-  .kz-bottom-usp__icon-badge {
+  .szc-bottom-usp__icon-badge {
     display: flex;
     align-items: center;
     justify-content: center;
@@ -128,33 +128,33 @@
     transition: transform 250ms ease, background-color 250ms ease;
   }
 
-  .kz-bottom-usp__item:hover .kz-bottom-usp__icon-badge {
+  .szc-bottom-usp__item:hover .szc-bottom-usp__icon-badge {
     transform: scale(1.06);
     background-color: #e2dbcd;
   }
 
-  .kz-bottom-usp__icon {
+  .szc-bottom-usp__icon {
     width: 22px;
     height: 22px;
   }
 
-  .kz-bottom-usp__text {
+  .szc-bottom-usp__text {
     display: flex;
     flex-direction: column;
   }
 
-  .kz-bottom-usp__title {
+  .szc-bottom-usp__title {
     margin: 0;
-    font-family: var(--kz-font-family-body, sans-serif);
+    font-family: var(--szc-font-family-body, sans-serif);
     font-size: 13px;
     font-weight: 600;
     color: #111111;
     line-height: 1.3;
   }
 
-  .kz-bottom-usp__subtitle {
+  .szc-bottom-usp__subtitle {
     margin: 2px 0 0 0;
-    font-family: var(--kz-font-family-body, sans-serif);
+    font-family: var(--szc-font-family-body, sans-serif);
     font-size: 11px;
     color: #666666;
     line-height: 1.3;

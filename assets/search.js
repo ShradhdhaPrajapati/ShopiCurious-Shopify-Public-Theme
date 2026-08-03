@@ -46,7 +46,7 @@
       if (!this.predictiveSearchResults) return;
 
       if (!products || products.length === 0) {
-        this.predictiveSearchResults.innerHTML = '<div class="kz-p-4 kz-text-muted">No results found</div>';
+        this.predictiveSearchResults.innerHTML = '<div class="szc-p-4 szc-text-muted">No results found</div>';
         this.open();
         return;
       }
@@ -54,11 +54,11 @@
       const html = products
         .map(
           (product) => `
-        <a href="${product.url}" class="kz-flex kz-items-center kz-gap-3 kz-p-2 kz-hover-lift">
-          <img src="${product.image}" width="40" height="40" alt="${product.title}" class="kz-object-cover kz-radius-xs">
+        <a href="${product.url}" class="szc-flex szc-items-center szc-gap-3 szc-p-2 szc-hover-lift">
+          <img src="${product.image}" width="40" height="40" alt="${product.title}" class="szc-object-cover szc-radius-xs">
           <div>
-            <div class="kz-text-sm kz-fw-medium">${product.title}</div>
-            <div class="kz-text-xs kz-text-muted">${ShopziCurious.helpers.formatMoney(product.price * 100)}</div>
+            <div class="szc-text-sm szc-fw-medium">${product.title}</div>
+            <div class="szc-text-xs szc-text-muted">${ShopziCurious.helpers.formatMoney(product.price * 100)}</div>
           </div>
         </a>
       `

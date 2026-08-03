@@ -3,75 +3,75 @@
   Displays brand trust pillars (Premium Fabrics, Ethically Made, etc.) matching the approved UI screenshot.
 {%- endcomment -%}
 
-<section id="BrandFeatures-{{ section.id }}" class="kz-brand-features-section page-width">
-  <div class="kz-brand-features">
-    <div class="kz-brand-features__grid">
+<section id="BrandFeatures-{{ section.id }}" class="szc-brand-features-section page-width">
+  <div class="szc-brand-features">
+    <div class="szc-brand-features__grid">
       {%- for block in section.blocks -%}
-        <div class="kz-brand-features__item" {{ block.shopify_attributes }}>
-          <div class="kz-brand-features__icon-wrapper">
+        <div class="szc-brand-features__item" {{ block.shopify_attributes }}>
+          <div class="szc-brand-features__icon-wrapper">
             {%- if block.settings.custom_icon != blank -%}
               {% render 'image',
                 image: block.settings.custom_icon,
                 aspect_ratio: '1/1',
                 loading: 'lazy',
-                class: 'kz-brand-features__custom-icon'
+                class: 'szc-brand-features__custom-icon'
               %}
             {%- else -%}
               {% render 'icon',
                 icon: block.settings.icon,
-                class: 'kz-brand-features__icon'
+                class: 'szc-brand-features__icon'
               %}
             {%- endif -%}
           </div>
 
-          <div class="kz-brand-features__text">
+          <div class="szc-brand-features__text">
             {%- if block.settings.title != blank -%}
-              <h3 class="kz-brand-features__title">{{ block.settings.title }}</h3>
+              <h3 class="szc-brand-features__title">{{ block.settings.title }}</h3>
             {%- endif -%}
             {%- if block.settings.subtitle != blank -%}
-              <p class="kz-brand-features__subtitle">{{ block.settings.subtitle }}</p>
+              <p class="szc-brand-features__subtitle">{{ block.settings.subtitle }}</p>
             {%- endif -%}
           </div>
         </div>
       {%- else -%}
         <!-- Default 4 Brand Features matching approved UI screenshot -->
-        <div class="kz-brand-features__item">
-          <div class="kz-brand-features__icon-wrapper">
-            {% render 'icon', icon: 'fabric', class: 'kz-brand-features__icon' %}
+        <div class="szc-brand-features__item">
+          <div class="szc-brand-features__icon-wrapper">
+            {% render 'icon', icon: 'fabric', class: 'szc-brand-features__icon' %}
           </div>
-          <div class="kz-brand-features__text">
-            <h3 class="kz-brand-features__title">Premium Fabrics</h3>
-            <p class="kz-brand-features__subtitle">Soft, Durable & Sustainable</p>
-          </div>
-        </div>
-
-        <div class="kz-brand-features__item">
-          <div class="kz-brand-features__icon-wrapper">
-            {% render 'icon', icon: 'diamond', class: 'kz-brand-features__icon' %}
-          </div>
-          <div class="kz-brand-features__text">
-            <h3 class="kz-brand-features__title">Ethically Made</h3>
-            <p class="kz-brand-features__subtitle">Fair Labor Practices</p>
+          <div class="szc-brand-features__text">
+            <h3 class="szc-brand-features__title">Premium Fabrics</h3>
+            <p class="szc-brand-features__subtitle">Soft, Durable & Sustainable</p>
           </div>
         </div>
 
-        <div class="kz-brand-features__item">
-          <div class="kz-brand-features__icon-wrapper">
-            {% render 'icon', icon: 'shield-check', class: 'kz-brand-features__icon' %}
+        <div class="szc-brand-features__item">
+          <div class="szc-brand-features__icon-wrapper">
+            {% render 'icon', icon: 'diamond', class: 'szc-brand-features__icon' %}
           </div>
-          <div class="kz-brand-features__text">
-            <h3 class="kz-brand-features__title">Made to Last</h3>
-            <p class="kz-brand-features__subtitle">Timeless Designs</p>
+          <div class="szc-brand-features__text">
+            <h3 class="szc-brand-features__title">Ethically Made</h3>
+            <p class="szc-brand-features__subtitle">Fair Labor Practices</p>
           </div>
         </div>
 
-        <div class="kz-brand-features__item">
-          <div class="kz-brand-features__icon-wrapper">
-            {% render 'icon', icon: 'user-heart', class: 'kz-brand-features__icon' %}
+        <div class="szc-brand-features__item">
+          <div class="szc-brand-features__icon-wrapper">
+            {% render 'icon', icon: 'shield-check', class: 'szc-brand-features__icon' %}
           </div>
-          <div class="kz-brand-features__text">
-            <h3 class="kz-brand-features__title">Trusted by 10,000+</h3>
-            <p class="kz-brand-features__subtitle">Happy Customers</p>
+          <div class="szc-brand-features__text">
+            <h3 class="szc-brand-features__title">Made to Last</h3>
+            <p class="szc-brand-features__subtitle">Timeless Designs</p>
+          </div>
+        </div>
+
+        <div class="szc-brand-features__item">
+          <div class="szc-brand-features__icon-wrapper">
+            {% render 'icon', icon: 'user-heart', class: 'szc-brand-features__icon' %}
+          </div>
+          <div class="szc-brand-features__text">
+            <h3 class="szc-brand-features__title">Trusted by 10,000+</h3>
+            <p class="szc-brand-features__subtitle">Happy Customers</p>
           </div>
         </div>
       {%- endfor -%}
@@ -80,48 +80,48 @@
 </section>
 
 {% stylesheet %}
-  .kz-brand-features-section {
-    padding-top: var(--kz-space-8, 32px);
-    padding-bottom: var(--kz-space-8, 32px);
-    max-width: var(--kz-page-max-width, 1400px);
+  .szc-brand-features-section {
+    padding-top: var(--szc-space-8, 32px);
+    padding-bottom: var(--szc-space-8, 32px);
+    max-width: var(--szc-page-max-width, 1400px);
     margin: 0 auto;
-    padding-left: var(--kz-space-6, 24px);
-    padding-right: var(--kz-space-6, 24px);
+    padding-left: var(--szc-space-6, 24px);
+    padding-right: var(--szc-space-6, 24px);
   }
 
-  .kz-brand-features {
+  .szc-brand-features {
     background-color: #f7f4ee;
     border-radius: 12px;
     padding: 24px 32px;
     box-shadow: 0 2px 8px rgba(0, 0, 0, 0.02);
   }
 
-  .kz-brand-features__grid {
+  .szc-brand-features__grid {
     display: grid;
     grid-template-columns: repeat(1, 1fr);
     gap: 24px;
   }
 
   @media (min-width: 600px) {
-    .kz-brand-features__grid {
+    .szc-brand-features__grid {
       grid-template-columns: repeat(2, 1fr);
     }
   }
 
   @media (min-width: 990px) {
-    .kz-brand-features__grid {
+    .szc-brand-features__grid {
       grid-template-columns: repeat(4, 1fr);
       gap: 28px;
     }
   }
 
-  .kz-brand-features__item {
+  .szc-brand-features__item {
     display: flex;
     align-items: center;
     gap: 14px;
   }
 
-  .kz-brand-features__icon-wrapper {
+  .szc-brand-features__icon-wrapper {
     display: flex;
     align-items: center;
     justify-content: center;
@@ -130,35 +130,35 @@
     flex-shrink: 0;
   }
 
-  .kz-brand-features__icon {
+  .szc-brand-features__icon {
     width: 28px;
     height: 28px;
     color: #111111;
   }
 
-  .kz-brand-features__custom-icon {
+  .szc-brand-features__custom-icon {
     width: 28px;
     height: 28px;
     object-fit: contain;
   }
 
-  .kz-brand-features__text {
+  .szc-brand-features__text {
     display: flex;
     flex-direction: column;
   }
 
-  .kz-brand-features__title {
+  .szc-brand-features__title {
     margin: 0;
-    font-family: var(--kz-font-family-body, sans-serif);
+    font-family: var(--szc-font-family-body, sans-serif);
     font-size: 14px;
     font-weight: 700;
     color: #111111;
     line-height: 1.3;
   }
 
-  .kz-brand-features__subtitle {
+  .szc-brand-features__subtitle {
     margin: 2px 0 0 0;
-    font-family: var(--kz-font-family-body, sans-serif);
+    font-family: var(--szc-font-family-body, sans-serif);
     font-size: 12px;
     color: #666666;
     line-height: 1.4;

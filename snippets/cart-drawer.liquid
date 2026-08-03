@@ -22,30 +22,30 @@
   endif
 -%}
 
-<cart-drawer id="CartDrawer" class="kz-drawer kz-cart-drawer" aria-hidden="true" role="dialog" aria-modal="true" aria-labelledby="CartDrawerTitle">
-  <div class="kz-drawer__overlay" data-drawer-close></div>
+<cart-drawer id="CartDrawer" class="szc-drawer szc-cart-drawer" aria-hidden="true" role="dialog" aria-modal="true" aria-labelledby="CartDrawerTitle">
+  <div class="szc-drawer__overlay" data-drawer-close></div>
 
-  <div class="kz-drawer__container">
+  <div class="szc-drawer__container">
     <!-- Header -->
-    <div class="kz-drawer__header">
-      <h2 id="CartDrawerTitle" class="kz-drawer__title">
+    <div class="szc-drawer__header">
+      <h2 id="CartDrawerTitle" class="szc-drawer__title">
         {{ 'sections.cart.title' | t | default: 'Your Shopping Bag' }}
-        <span class="kz-drawer__count">({{ cart.item_count }})</span>
+        <span class="szc-drawer__count">({{ cart.item_count }})</span>
       </h2>
       <button
         type="button"
-        class="kz-drawer__close-btn"
+        class="szc-drawer__close-btn"
         data-drawer-close
         aria-label="{{ 'accessibility.close' | t | default: 'Close cart' }}"
       >
-        {% render 'icon', icon: 'close', class: 'kz-drawer__close-icon' %}
+        {% render 'icon', icon: 'close', class: 'szc-drawer__close-icon' %}
       </button>
     </div>
 
     <!-- Free Shipping Progress Bar -->
     {%- if free_shipping_threshold > 0 -%}
-      <div class="kz-cart-drawer__shipping-bar" data-threshold="{{ free_shipping_threshold }}">
-        <div class="kz-cart-drawer__shipping-text">
+      <div class="szc-cart-drawer__shipping-bar" data-threshold="{{ free_shipping_threshold }}">
+        <div class="szc-cart-drawer__shipping-text">
           {%- if free_shipping_reached -%}
             <span>🎉 {{ 'sections.cart.free_shipping_reached' | t | default: 'Congratulations! You qualify for FREE Shipping!' }}</span>
           {%- else -%}
@@ -56,61 +56,61 @@
             </span>
           {%- endif -%}
         </div>
-        <div class="kz-cart-drawer__progress-track">
-          <div class="kz-cart-drawer__progress-fill" style="width: {{ shipping_progress }}%;"></div>
+        <div class="szc-cart-drawer__progress-track">
+          <div class="szc-cart-drawer__progress-fill" style="width: {{ shipping_progress }}%;"></div>
         </div>
       </div>
     {%- endif -%}
 
     <!-- Main Content Area -->
-    <div class="kz-drawer__body">
+    <div class="szc-drawer__body">
       {%- if cart.item_count > 0 -%}
-        <form action="{{ routes.cart_url }}" method="post" id="CartDrawerForm" class="kz-cart-drawer__form">
-          <div class="kz-cart-drawer__items" data-cart-items>
+        <form action="{{ routes.cart_url }}" method="post" id="CartDrawerForm" class="szc-cart-drawer__form">
+          <div class="szc-cart-drawer__items" data-cart-items>
             {%- for item in cart.items -%}
-              <div class="kz-cart-drawer__item" data-key="{{ item.key }}" data-line="{{ forloop.index }}">
-                <a href="{{ item.url }}" class="kz-cart-drawer__item-media">
+              <div class="szc-cart-drawer__item" data-key="{{ item.key }}" data-line="{{ forloop.index }}">
+                <a href="{{ item.url }}" class="szc-cart-drawer__item-media">
                   {% render 'image',
                     image: item.image,
                     aspect_ratio: '1/1',
                     loading: 'lazy',
-                    class: 'kz-cart-drawer__item-image'
+                    class: 'szc-cart-drawer__item-image'
                   %}
                 </a>
 
-                <div class="kz-cart-drawer__item-details">
-                  <div class="kz-cart-drawer__item-top">
-                    <h3 class="kz-cart-drawer__item-title">
+                <div class="szc-cart-drawer__item-details">
+                  <div class="szc-cart-drawer__item-top">
+                    <h3 class="szc-cart-drawer__item-title">
                       <a href="{{ item.url }}">{{ item.product.title }}</a>
                     </h3>
                     <button
                       type="button"
-                      class="kz-cart-drawer__item-remove"
+                      class="szc-cart-drawer__item-remove"
                       data-remove-line="{{ forloop.index }}"
                       aria-label="{{ 'sections.cart.remove_title' | t: title: item.title }}"
                     >
-                      {% render 'icon', icon: 'trash', class: 'kz-cart-drawer__remove-icon' %}
+                      {% render 'icon', icon: 'trash', class: 'szc-cart-drawer__remove-icon' %}
                     </button>
                   </div>
 
                   {%- unless item.product.has_only_default_variant -%}
-                    <div class="kz-cart-drawer__item-options">
+                    <div class="szc-cart-drawer__item-options">
                       {{ item.variant.title }}
                     </div>
                   {%- endunless -%}
 
-                  <div class="kz-cart-drawer__item-bottom">
+                  <div class="szc-cart-drawer__item-bottom">
                     {% render 'quantity-input',
                       line: forloop.index,
                       value: item.quantity,
                       min: 0,
-                      class: 'kz-cart-drawer__quantity'
+                      class: 'szc-cart-drawer__quantity'
                     %}
 
-                    <div class="kz-cart-drawer__item-price">
+                    <div class="szc-cart-drawer__item-price">
                       {%- if item.original_price != item.final_price -%}
-                        <s class="kz-price__item--regular">{{ item.original_price | money }}</s>
-                        <span class="kz-price__item--sale">{{ item.final_price | money }}</span>
+                        <s class="szc-price__item--regular">{{ item.original_price | money }}</s>
+                        <span class="szc-price__item--sale">{{ item.final_price | money }}</span>
                       {%- else -%}
                         <span>{{ item.final_line_price | money }}</span>
                       {%- endif -%}
@@ -122,10 +122,10 @@
           </div>
         </form>
       {%- else -%}
-        <div class="kz-cart-drawer__empty">
-          {% render 'icon', icon: 'bag', class: 'kz-cart-drawer__empty-icon' %}
-          <p class="kz-cart-drawer__empty-text">{{ 'sections.cart.empty' | t | default: 'Your shopping bag is currently empty.' }}</p>
-          <a href="{{ routes.all_products_collection_url }}" class="kz-button kz-button--primary">
+        <div class="szc-cart-drawer__empty">
+          {% render 'icon', icon: 'bag', class: 'szc-cart-drawer__empty-icon' %}
+          <p class="szc-cart-drawer__empty-text">{{ 'sections.cart.empty' | t | default: 'Your shopping bag is currently empty.' }}</p>
+          <a href="{{ routes.all_products_collection_url }}" class="szc-button szc-button--primary">
             {{ 'general.continue_shopping' | t | default: 'Start Shopping' }}
           </a>
         </div>
@@ -139,24 +139,24 @@
 
     <!-- Footer Subtotal & Checkout -->
     {%- if cart.item_count > 0 -%}
-      <div class="kz-drawer__footer">
-        <div class="kz-cart-drawer__subtotal-row">
-          <span class="kz-cart-drawer__subtotal-label">{{ 'sections.cart.subtotal' | t | default: 'Subtotal' }}</span>
-          <span class="kz-cart-drawer__subtotal-value">{{ cart.total_price | money }}</span>
+      <div class="szc-drawer__footer">
+        <div class="szc-cart-drawer__subtotal-row">
+          <span class="szc-cart-drawer__subtotal-label">{{ 'sections.cart.subtotal' | t | default: 'Subtotal' }}</span>
+          <span class="szc-cart-drawer__subtotal-value">{{ cart.total_price | money }}</span>
         </div>
 
-        <p class="kz-cart-drawer__taxes-note">
+        <p class="szc-cart-drawer__taxes-note">
           {{ 'sections.cart.taxes_and_shipping_at_checkout' | t | default: 'Taxes and shipping calculated at checkout.' }}
         </p>
 
-        <div class="kz-cart-drawer__buttons">
+        <div class="szc-cart-drawer__buttons">
           <button
             type="submit"
             name="checkout"
             form="CartDrawerForm"
-            class="kz-button kz-button--primary kz-button--full-width kz-cart-drawer__checkout-btn"
+            class="szc-button szc-button--primary szc-button--full-width szc-cart-drawer__checkout-btn"
           >
-            {% render 'icon', icon: 'bag', class: 'kz-button__icon' %}
+            {% render 'icon', icon: 'bag', class: 'szc-button__icon' %}
             <span>{{ 'sections.cart.checkout' | t | default: 'Proceed to Checkout' }}</span>
           </button>
         </div>
@@ -166,196 +166,196 @@
 </cart-drawer>
 
 {% stylesheet %}
-  .kz-drawer {
+  .szc-drawer {
     position: fixed;
     top: 0;
     left: 0;
     width: 100vw;
     height: 100vh;
-    z-index: var(--kz-z-drawer, 500);
+    z-index: var(--szc-z-drawer, 500);
     display: flex;
     justify-content: flex-end;
     opacity: 0;
     visibility: hidden;
     pointer-events: none;
-    transition: all var(--kz-transition-base, 250ms ease);
+    transition: all var(--szc-transition-base, 250ms ease);
   }
 
-  .kz-drawer.is-open {
+  .szc-drawer.is-open {
     opacity: 1;
     visibility: visible;
     pointer-events: auto;
   }
 
-  .kz-drawer__overlay {
+  .szc-drawer__overlay {
     position: absolute;
     top: 0;
     left: 0;
     width: 100%;
     height: 100%;
-    background-color: var(--kz-color-overlay, rgba(0, 0, 0, 0.5));
-    backdrop-filter: blur(var(--kz-backdrop-blur, 4px));
+    background-color: var(--szc-color-overlay, rgba(0, 0, 0, 0.5));
+    backdrop-filter: blur(var(--szc-backdrop-blur, 4px));
   }
 
-  .kz-drawer__container {
+  .szc-drawer__container {
     position: relative;
     width: 100%;
     max-width: 440px;
     height: 100%;
-    background-color: var(--kz-color-background, #ffffff);
-    box-shadow: var(--kz-shadow-xl);
+    background-color: var(--szc-color-background, #ffffff);
+    box-shadow: var(--szc-shadow-xl);
     display: flex;
     flex-direction: column;
     z-index: 2;
     transform: translateX(100%);
-    transition: transform var(--kz-transition-base, 250ms ease);
+    transition: transform var(--szc-transition-base, 250ms ease);
   }
 
-  .kz-drawer.is-open .kz-drawer__container {
+  .szc-drawer.is-open .szc-drawer__container {
     transform: translateX(0);
   }
 
-  .kz-drawer__header {
+  .szc-drawer__header {
     display: flex;
     align-items: center;
     justify-content: space-between;
-    padding: var(--kz-space-4, 16px) var(--kz-space-6, 24px);
-    border-bottom: 1px solid var(--kz-color-border, #e5e5e5);
+    padding: var(--szc-space-4, 16px) var(--szc-space-6, 24px);
+    border-bottom: 1px solid var(--szc-color-border, #e5e5e5);
   }
 
-  .kz-drawer__title {
+  .szc-drawer__title {
     margin: 0;
-    font-family: var(--kz-font-family-heading);
-    font-size: var(--kz-font-size-lg, 18px);
+    font-family: var(--szc-font-family-heading);
+    font-size: var(--szc-font-size-lg, 18px);
     font-weight: 600;
   }
 
-  .kz-drawer__close-btn {
+  .szc-drawer__close-btn {
     background: transparent;
     border: none;
     cursor: pointer;
-    color: var(--kz-color-text-primary, #111111);
+    color: var(--szc-color-text-primary, #111111);
   }
 
-  .kz-drawer__close-icon {
+  .szc-drawer__close-icon {
     width: 20px;
     height: 20px;
   }
 
   /* Free Shipping Bar */
-  .kz-cart-drawer__shipping-bar {
-    padding: var(--kz-space-3, 12px) var(--kz-space-6, 24px);
-    background-color: var(--kz-color-surface, #f8f9fa);
-    border-bottom: 1px solid var(--kz-color-border, #e5e5e5);
-    font-size: var(--kz-font-size-xs, 12px);
+  .szc-cart-drawer__shipping-bar {
+    padding: var(--szc-space-3, 12px) var(--szc-space-6, 24px);
+    background-color: var(--szc-color-surface, #f8f9fa);
+    border-bottom: 1px solid var(--szc-color-border, #e5e5e5);
+    font-size: var(--szc-font-size-xs, 12px);
     text-align: center;
   }
 
-  .kz-cart-drawer__progress-track {
+  .szc-cart-drawer__progress-track {
     width: 100%;
     height: 6px;
-    background-color: var(--kz-color-border, #e5e5e5);
+    background-color: var(--szc-color-border, #e5e5e5);
     border-radius: 9999px;
     margin-top: 8px;
     overflow: hidden;
   }
 
-  .kz-cart-drawer__progress-fill {
+  .szc-cart-drawer__progress-fill {
     height: 100%;
-    background-color: var(--kz-color-success, #2a9d8f);
-    transition: width var(--kz-transition-base, 250ms ease);
+    background-color: var(--szc-color-success, #2a9d8f);
+    transition: width var(--szc-transition-base, 250ms ease);
   }
 
-  .kz-drawer__body {
+  .szc-drawer__body {
     flex: 1;
     overflow-y: auto;
-    padding: var(--kz-space-6, 24px);
+    padding: var(--szc-space-6, 24px);
   }
 
-  .kz-cart-drawer__item {
+  .szc-cart-drawer__item {
     display: flex;
-    gap: var(--kz-space-4, 16px);
-    padding-bottom: var(--kz-space-4, 16px);
-    margin-bottom: var(--kz-space-4, 16px);
-    border-bottom: 1px solid var(--kz-color-border-subtle, #f0f0f0);
+    gap: var(--szc-space-4, 16px);
+    padding-bottom: var(--szc-space-4, 16px);
+    margin-bottom: var(--szc-space-4, 16px);
+    border-bottom: 1px solid var(--szc-color-border-subtle, #f0f0f0);
   }
 
-  .kz-cart-drawer__item-media {
+  .szc-cart-drawer__item-media {
     width: 80px;
     height: 80px;
     flex-shrink: 0;
-    border-radius: var(--kz-radius-sm, 4px);
+    border-radius: var(--szc-radius-sm, 4px);
     overflow: hidden;
   }
 
-  .kz-cart-drawer__item-details {
+  .szc-cart-drawer__item-details {
     flex: 1;
     display: flex;
     flex-direction: column;
     gap: 4px;
   }
 
-  .kz-cart-drawer__item-top {
+  .szc-cart-drawer__item-top {
     display: flex;
     justify-content: space-between;
     gap: 8px;
   }
 
-  .kz-cart-drawer__item-title {
+  .szc-cart-drawer__item-title {
     margin: 0;
-    font-size: var(--kz-font-size-sm, 14px);
+    font-size: var(--szc-font-size-sm, 14px);
     font-weight: 600;
   }
 
-  .kz-cart-drawer__item-title a {
-    color: var(--kz-color-text-primary, #111111);
+  .szc-cart-drawer__item-title a {
+    color: var(--szc-color-text-primary, #111111);
     text-decoration: none;
   }
 
-  .kz-cart-drawer__item-remove {
+  .szc-cart-drawer__item-remove {
     background: transparent;
     border: none;
-    color: var(--kz-color-text-muted, #757575);
+    color: var(--szc-color-text-muted, #757575);
     cursor: pointer;
   }
 
-  .kz-cart-drawer__remove-icon {
+  .szc-cart-drawer__remove-icon {
     width: 16px;
     height: 16px;
   }
 
-  .kz-cart-drawer__item-options {
+  .szc-cart-drawer__item-options {
     font-size: 12px;
-    color: var(--kz-color-text-muted, #757575);
+    color: var(--szc-color-text-muted, #757575);
   }
 
-  .kz-cart-drawer__item-bottom {
+  .szc-cart-drawer__item-bottom {
     display: flex;
     align-items: center;
     justify-content: space-between;
     margin-top: 8px;
   }
 
-  .kz-drawer__footer {
-    padding: var(--kz-space-6, 24px);
-    border-top: 1px solid var(--kz-color-border, #e5e5e5);
-    background-color: var(--kz-color-background, #ffffff);
+  .szc-drawer__footer {
+    padding: var(--szc-space-6, 24px);
+    border-top: 1px solid var(--szc-color-border, #e5e5e5);
+    background-color: var(--szc-color-background, #ffffff);
   }
 
-  .kz-cart-drawer__subtotal-row {
+  .szc-cart-drawer__subtotal-row {
     display: flex;
     justify-content: space-between;
-    font-size: var(--kz-font-size-base, 16px);
+    font-size: var(--szc-font-size-base, 16px);
     font-weight: 700;
   }
 
-  .kz-cart-drawer__taxes-note {
+  .szc-cart-drawer__taxes-note {
     font-size: 12px;
-    color: var(--kz-color-text-muted, #757575);
+    color: var(--szc-color-text-muted, #757575);
     margin: 6px 0 16px 0;
   }
 
-  .kz-cart-drawer__empty {
+  .szc-cart-drawer__empty {
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -364,10 +364,10 @@
     text-align: center;
   }
 
-  .kz-cart-drawer__empty-icon {
+  .szc-cart-drawer__empty-icon {
     width: 48px;
     height: 48px;
-    color: var(--kz-color-text-muted, #757575);
+    color: var(--szc-color-text-muted, #757575);
     margin-bottom: 16px;
   }
 {% endstylesheet %}
@@ -379,14 +379,14 @@
       class CartDrawer extends HTMLElement {
         constructor() {
           super();
-          this.container = this.querySelector('.kz-drawer__container');
+          this.container = this.querySelector('.szc-drawer__container');
 
           this.querySelectorAll('[data-drawer-close]').forEach((btn) =>
             btn.addEventListener('click', this.close.bind(this))
           );
 
           document.addEventListener('click', (e) => {
-            const trigger = e.target.closest('.kz-cart-trigger');
+            const trigger = e.target.closest('.szc-cart-trigger');
             if (trigger) {
               e.preventDefault();
               this.open();

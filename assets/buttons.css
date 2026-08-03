@@ -7,17 +7,17 @@
 /* ==========================================================================
    1. BASE BUTTON ARCHITECTURE
    ========================================================================== */
-.kz-btn {
+.szc-btn {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  gap: var(--kz-space-2);
-  padding: var(--kz-space-3) var(--kz-space-6);
-  font-family: var(--kz-font-family-body);
-  font-size: var(--kz-font-size-base);
-  font-weight: var(--kz-font-weight-medium);
+  gap: var(--szc-space-2);
+  padding: var(--szc-space-3) var(--szc-space-6);
+  font-family: var(--szc-font-family-body);
+  font-size: var(--szc-font-size-base);
+  font-weight: var(--szc-font-weight-medium);
   line-height: 1.25;
-  letter-spacing: var(--kz-letter-spacing-wide);
+  letter-spacing: var(--szc-letter-spacing-wide);
   text-align: center;
   text-decoration: none;
   text-transform: uppercase;
@@ -26,28 +26,28 @@
   cursor: pointer;
   user-select: none;
   border: 1px solid transparent;
-  border-radius: var(--kz-radius-button);
+  border-radius: var(--szc-radius-button);
   background-color: transparent;
-  color: var(--kz-color-text-primary);
-  transition: background-color var(--kz-transition-base),
-              border-color var(--kz-transition-base),
-              color var(--kz-transition-base),
-              transform var(--kz-transition-fast),
-              box-shadow var(--kz-transition-fast);
+  color: var(--szc-color-text-primary);
+  transition: background-color var(--szc-transition-base),
+              border-color var(--szc-transition-base),
+              color var(--szc-transition-base),
+              transform var(--szc-transition-fast),
+              box-shadow var(--szc-transition-fast);
   position: relative;
   overflow: hidden;
 }
 
-.kz-btn:hover {
+.szc-btn:hover {
   transform: translateY(-1px);
 }
 
-.kz-btn:active {
+.szc-btn:active {
   transform: translateY(0);
 }
 
-.kz-btn:disabled,
-.kz-btn[aria-disabled="true"] {
+.szc-btn:disabled,
+.szc-btn[aria-disabled="true"] {
   opacity: 0.5;
   cursor: not-allowed !important;
   pointer-events: none !important;
@@ -59,104 +59,104 @@
    2. BUTTON VARIANTS
    ========================================================================== */
 /* Primary Button */
-.kz-btn--primary {
-  background-color: var(--kz-color-primary);
-  color: var(--kz-color-text-inverse);
-  border-color: var(--kz-color-primary);
-  box-shadow: var(--kz-shadow-sm);
+.szc-btn--primary {
+  background-color: var(--szc-color-primary);
+  color: var(--szc-color-text-inverse);
+  border-color: var(--szc-color-primary);
+  box-shadow: var(--szc-shadow-sm);
 }
 
-.kz-btn--primary:hover {
-  background-color: var(--kz-color-primary-light);
-  border-color: var(--kz-color-primary-light);
-  color: var(--kz-color-text-inverse);
-  box-shadow: var(--kz-shadow-md);
+.szc-btn--primary:hover {
+  background-color: var(--szc-color-primary-light);
+  border-color: var(--szc-color-primary-light);
+  color: var(--szc-color-text-inverse);
+  box-shadow: var(--szc-shadow-md);
 }
 
 /* Secondary / Accent Button */
-.kz-btn--secondary {
-  background-color: var(--kz-color-secondary);
-  color: var(--kz-color-text-inverse);
-  border-color: var(--kz-color-secondary);
+.szc-btn--secondary {
+  background-color: var(--szc-color-secondary);
+  color: var(--szc-color-text-inverse);
+  border-color: var(--szc-color-secondary);
 }
 
-.kz-btn--secondary:hover {
-  background-color: var(--kz-color-secondary-dark);
-  border-color: var(--kz-color-secondary-dark);
-  color: var(--kz-color-text-inverse);
+.szc-btn--secondary:hover {
+  background-color: var(--szc-color-secondary-dark);
+  border-color: var(--szc-color-secondary-dark);
+  color: var(--szc-color-text-inverse);
 }
 
 /* Outline Button */
-.kz-btn--outline {
+.szc-btn--outline {
   background-color: transparent;
-  color: var(--kz-color-text-primary);
-  border-color: var(--kz-color-text-primary);
+  color: var(--szc-color-text-primary);
+  border-color: var(--szc-color-text-primary);
 }
 
-.kz-btn--outline:hover {
-  background-color: var(--kz-color-primary);
-  color: var(--kz-color-text-inverse);
+.szc-btn--outline:hover {
+  background-color: var(--szc-color-primary);
+  color: var(--szc-color-text-inverse);
 }
 
 /* Ghost / Plain Link Button */
-.kz-btn--ghost {
+.szc-btn--ghost {
   background-color: transparent;
-  color: var(--kz-color-text-primary);
+  color: var(--szc-color-text-primary);
   border-color: transparent;
-  padding-left: var(--kz-space-2);
-  padding-right: var(--kz-space-2);
+  padding-left: var(--szc-space-2);
+  padding-right: var(--szc-space-2);
 }
 
-.kz-btn--ghost:hover {
-  background-color: var(--kz-color-surface-subtle);
-  color: var(--kz-color-primary);
+.szc-btn--ghost:hover {
+  background-color: var(--szc-color-surface-subtle);
+  color: var(--szc-color-primary);
 }
 
 /* ==========================================================================
    3. BUTTON SIZING & SHAPES
    ========================================================================== */
-.kz-btn--sm {
-  padding: var(--kz-space-2) var(--kz-space-4);
-  font-size: var(--kz-font-size-sm);
+.szc-btn--sm {
+  padding: var(--szc-space-2) var(--szc-space-4);
+  font-size: var(--szc-font-size-sm);
 }
 
-.kz-btn--lg {
-  padding: var(--kz-space-4) var(--kz-space-8);
-  font-size: var(--kz-font-size-lg);
+.szc-btn--lg {
+  padding: var(--szc-space-4) var(--szc-space-8);
+  font-size: var(--szc-font-size-lg);
 }
 
-.kz-btn--full {
+.szc-btn--full {
   width: 100%;
 }
 
-.kz-btn--pill {
-  border-radius: var(--kz-radius-pill);
+.szc-btn--pill {
+  border-radius: var(--szc-radius-pill);
 }
 
-.kz-btn--icon {
+.szc-btn--icon {
   width: 44px;
   height: 44px;
   padding: 0;
-  border-radius: var(--kz-radius-circle);
+  border-radius: var(--szc-radius-circle);
   flex-shrink: 0;
 }
 
-.kz-btn--icon-sm {
+.szc-btn--icon-sm {
   width: 36px;
   height: 36px;
   padding: 0;
-  border-radius: var(--kz-radius-circle);
+  border-radius: var(--szc-radius-circle);
 }
 
 /* ==========================================================================
    4. LOADING SPINNER STATE
    ========================================================================== */
-.kz-btn--loading {
+.szc-btn--loading {
   color: transparent !important;
   pointer-events: none;
 }
 
-.kz-btn--loading::after {
+.szc-btn--loading::after {
   content: "";
   position: absolute;
   width: 18px;
@@ -166,11 +166,11 @@
   border: 2px solid rgba(255, 255, 255, 0.3);
   border-radius: 50%;
   border-top-color: currentColor;
-  animation: kz-spin 0.6s linear infinite;
+  animation: szc-spin 0.6s linear infinite;
 }
 
-.kz-btn--outline.kz-btn--loading::after,
-.kz-btn--ghost.kz-btn--loading::after {
+.szc-btn--outline.szc-btn--loading::after,
+.szc-btn--ghost.szc-btn--loading::after {
   border-color: rgba(0, 0, 0, 0.2);
-  border-top-color: var(--kz-color-text-primary);
+  border-top-color: var(--szc-color-text-primary);
 }

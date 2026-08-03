@@ -1,51 +1,51 @@
-<section id="MainPage-{{ section.id }}" class="kz-main-page page-width kz-main-page--{{ section.settings.page_width }}">
+<section id="MainPage-{{ section.id }}" class="szc-main-page page-width szc-main-page--{{ section.settings.page_width }}">
   {% render 'breadcrumbs' %}
 
-  <div class="kz-main-page__header">
-    <h1 class="kz-main-page__title">{{ page.title }}</h1>
+  <div class="szc-main-page__header">
+    <h1 class="szc-main-page__title">{{ page.title }}</h1>
   </div>
 
-  <div class="kz-main-page__content rte">
+  <div class="szc-main-page__content rte">
     {{ page.content }}
   </div>
 </section>
 
 {% stylesheet %}
-  .kz-main-page {
-    padding-top: var(--kz-space-4, 16px);
-    padding-bottom: var(--kz-space-12, 48px);
+  .szc-main-page {
+    padding-top: var(--szc-space-4, 16px);
+    padding-bottom: var(--szc-space-12, 48px);
     margin: 0 auto;
   }
 
-  .kz-main-page--narrow {
+  .szc-main-page--narrow {
     max-width: 800px;
   }
 
-  .kz-main-page--normal {
+  .szc-main-page--normal {
     max-width: 1000px;
   }
 
-  .kz-main-page--wide {
-    max-width: var(--kz-page-max-width, 1400px);
+  .szc-main-page--wide {
+    max-width: var(--szc-page-max-width, 1400px);
   }
 
-  .kz-main-page__header {
-    margin-bottom: var(--kz-space-8, 32px);
+  .szc-main-page__header {
+    margin-bottom: var(--szc-space-8, 32px);
     text-align: center;
   }
 
-  .kz-main-page__title {
+  .szc-main-page__title {
     margin: 0;
-    font-family: var(--kz-font-family-heading);
+    font-family: var(--szc-font-family-heading);
     font-size: clamp(28px, 4vw, 42px);
     font-weight: 700;
   }
 
-  .kz-main-page__content {
-    font-family: var(--kz-font-family-body);
-    font-size: var(--kz-font-size-base, 16px);
+  .szc-main-page__content {
+    font-family: var(--szc-font-family-body);
+    font-size: var(--szc-font-size-base, 16px);
     line-height: 1.7;
-    color: var(--kz-color-text-primary, #2b2b2b);
+    color: var(--szc-color-text-primary, #2b2b2b);
   }
 {% endstylesheet %}
 

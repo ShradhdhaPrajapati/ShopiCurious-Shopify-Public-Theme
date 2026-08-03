@@ -3,47 +3,47 @@
   Light luxury theme footer matching the approved UI screenshot pixel-for-pixel.
 {%- endcomment -%}
 
-<footer class="kz-footer" id="Footer-{{ section.id }}">
+<footer class="szc-footer" id="Footer-{{ section.id }}">
   <!-- Top Main Footer Grid -->
-  <div class="kz-footer__top page-width">
-    <div class="kz-footer__grid">
+  <div class="szc-footer__top page-width">
+    <div class="szc-footer__grid">
       {%- for block in section.blocks -%}
         {%- case block.type -%}
           {%- when 'brand_info' -%}
-            <div class="kz-footer__col kz-footer__col--brand" {{ block.shopify_attributes }}>
+            <div class="szc-footer__col szc-footer__col--brand" {{ block.shopify_attributes }}>
               <!-- Brand Logo / Title -->
-              <div class="kz-footer__brand-header">
+              <div class="szc-footer__brand-header">
                 {%- if block.settings.logo != blank -%}
                   {% render 'image',
                     image: block.settings.logo,
                     aspect_ratio: 'auto',
-                    class: 'kz-footer__logo-img'
+                    class: 'szc-footer__logo-img'
                   %}
                 {%- else -%}
-                  <span class="kz-footer__brand-title">LUMIÈRE</span>
-                  <span class="kz-footer__brand-sub">FINE FASHION</span>
+                  <span class="szc-footer__brand-title">LUMIÈRE</span>
+                  <span class="szc-footer__brand-sub">FINE FASHION</span>
                 {%- endif -%}
               </div>
 
               <!-- Brand Bio Text -->
               {%- if block.settings.bio != blank -%}
-                <p class="kz-footer__brand-bio">
+                <p class="szc-footer__brand-bio">
                   {{ block.settings.bio }}
                 </p>
               {%- endif -%}
 
               <!-- Social Media Icons Row -->
               {%- if block.settings.show_socials -%}
-                <div class="kz-footer__socials">
+                <div class="szc-footer__socials">
                   {%- if settings.social_instagram_link != blank or true -%}
                     <a
                       href="{{ settings.social_instagram_link | default: 'https://instagram.com' }}"
                       target="_blank"
                       rel="noopener noreferrer"
-                      class="kz-footer__social-link"
+                      class="szc-footer__social-link"
                       aria-label="Instagram"
                     >
-                      <svg class="kz-social-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="2" y="2" width="20" height="20" rx="5" ry="5"/><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"/><line x1="17.5" y1="6.5" x2="17.51" y2="6.5"/></svg>
+                      <svg class="szc-social-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="2" y="2" width="20" height="20" rx="5" ry="5"/><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"/><line x1="17.5" y1="6.5" x2="17.51" y2="6.5"/></svg>
                     </a>
                   {%- endif -%}
 
@@ -52,10 +52,10 @@
                       href="{{ settings.social_facebook_link | default: 'https://facebook.com' }}"
                       target="_blank"
                       rel="noopener noreferrer"
-                      class="kz-footer__social-link"
+                      class="szc-footer__social-link"
                       aria-label="Facebook"
                     >
-                      <svg class="kz-social-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z"/></svg>
+                      <svg class="szc-social-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z"/></svg>
                     </a>
                   {%- endif -%}
 
@@ -64,10 +64,10 @@
                       href="{{ settings.social_pinterest_link | default: 'https://pinterest.com' }}"
                       target="_blank"
                       rel="noopener noreferrer"
-                      class="kz-footer__social-link"
+                      class="szc-footer__social-link"
                       aria-label="Pinterest"
                     >
-                      <svg class="kz-social-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 2C6.48 2 2 6.48 2 12c0 4.17 2.56 7.74 6.19 9.21-.09-.79-.17-2.01.03-2.87.19-.8 1.22-5.17 1.22-5.17s-.31-.63-.31-1.56c0-1.46.85-2.55 1.9-2.55.9 0 1.33.67 1.33 1.48 0 .9-.57 2.25-.87 3.5-.25 1.05.52 1.91 1.56 1.91 1.87 0 3.31-1.97 3.31-4.82 0-2.52-1.81-4.28-4.39-4.28-2.99 0-4.75 2.24-4.75 4.56 0 .9.35 1.87.79 2.4.09.11.1.2.07.31-.08.32-.25 1.03-.29 1.17-.05.21-.18.26-.41.16-1.53-.71-2.48-2.94-2.48-4.73 0-3.85 2.8-7.39 8.07-7.39 4.24 0 7.54 3.02 7.54 7.06 0 4.21-2.65 7.6-6.33 7.6-1.24 0-2.4-.64-2.8-1.4l-.76 2.91c-.28 1.07-1.03 2.41-1.54 3.23A10.007 10.007 0 0 0 12 22c5.52 0 10-4.48 10-10S17.52 2 12 2z"/></svg>
+                      <svg class="szc-social-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 2C6.48 2 2 6.48 2 12c0 4.17 2.56 7.74 6.19 9.21-.09-.79-.17-2.01.03-2.87.19-.8 1.22-5.17 1.22-5.17s-.31-.63-.31-1.56c0-1.46.85-2.55 1.9-2.55.9 0 1.33.67 1.33 1.48 0 .9-.57 2.25-.87 3.5-.25 1.05.52 1.91 1.56 1.91 1.87 0 3.31-1.97 3.31-4.82 0-2.52-1.81-4.28-4.39-4.28-2.99 0-4.75 2.24-4.75 4.56 0 .9.35 1.87.79 2.4.09.11.1.2.07.31-.08.32-.25 1.03-.29 1.17-.05.21-.18.26-.41.16-1.53-.71-2.48-2.94-2.48-4.73 0-3.85 2.8-7.39 8.07-7.39 4.24 0 7.54 3.02 7.54 7.06 0 4.21-2.65 7.6-6.33 7.6-1.24 0-2.4-.64-2.8-1.4l-.76 2.91c-.28 1.07-1.03 2.41-1.54 3.23A10.007 10.007 0 0 0 12 22c5.52 0 10-4.48 10-10S17.52 2 12 2z"/></svg>
                     </a>
                   {%- endif -%}
 
@@ -76,10 +76,10 @@
                       href="{{ settings.social_youtube_link | default: 'https://youtube.com' }}"
                       target="_blank"
                       rel="noopener noreferrer"
-                      class="kz-footer__social-link"
+                      class="szc-footer__social-link"
                       aria-label="YouTube"
                     >
-                      <svg class="kz-social-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M22.54 6.42a2.78 2.78 0 0 0-1.94-2C18.88 4 12 4 12 4s-6.88 0-8.6.46a2.78 2.78 0 0 0-1.94 2A29 29 0 0 0 1 11.75a29 29 0 0 0 .46 5.33A2.78 2.78 0 0 0 3.4 19c1.72.46 8.6.46 8.6.46s6.88 0 8.6-.46a2.78 2.78 0 0 0 1.94-2 29 29 0 0 0 .46-5.25 29 29 0 0 0-.46-5.33z"/><polygon points="9.75 15.02 15.5 11.75 9.75 8.48 9.75 15.02"/></svg>
+                      <svg class="szc-social-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M22.54 6.42a2.78 2.78 0 0 0-1.94-2C18.88 4 12 4 12 4s-6.88 0-8.6.46a2.78 2.78 0 0 0-1.94 2A29 29 0 0 0 1 11.75a29 29 0 0 0 .46 5.33A2.78 2.78 0 0 0 3.4 19c1.72.46 8.6.46 8.6.46s6.88 0 8.6-.46a2.78 2.78 0 0 0 1.94-2 29 29 0 0 0 .46-5.25 29 29 0 0 0-.46-5.33z"/><polygon points="9.75 15.02 15.5 11.75 9.75 8.48 9.75 15.02"/></svg>
                     </a>
                   {%- endif -%}
                 </div>
@@ -87,17 +87,17 @@
             </div>
 
           {%- when 'link_list' -%}
-            <div class="kz-footer__col kz-footer__col--menu" {{ block.shopify_attributes }}>
+            <div class="szc-footer__col szc-footer__col--menu" {{ block.shopify_attributes }}>
               {%- if block.settings.heading != blank -%}
-                <h3 class="kz-footer__heading">{{ block.settings.heading }}</h3>
+                <h3 class="szc-footer__heading">{{ block.settings.heading }}</h3>
               {%- endif -%}
 
               {%- assign menu_links = block.settings.menu.links -%}
               {%- if block.settings.menu != blank and menu_links.size > 0 -%}
-                <ul class="kz-footer__menu-list" role="list">
+                <ul class="szc-footer__menu-list" role="list">
                   {%- for link in menu_links -%}
                     <li>
-                      <a href="{{ link.url }}" class="kz-footer__menu-link">
+                      <a href="{{ link.url }}" class="szc-footer__menu-link">
                         {{ link.title }}
                       </a>
                     </li>
@@ -105,44 +105,44 @@
                 </ul>
               {%- else -%}
                 <!-- Clean Default Links: Home, Catalog, Contact Us -->
-                <ul class="kz-footer__menu-list" role="list">
-                  <li><a href="/" class="kz-footer__menu-link">Home</a></li>
-                  <li><a href="/collections/all" class="kz-footer__menu-link">Catalog</a></li>
-                  <li><a href="/pages/contact" class="kz-footer__menu-link">Contact Us</a></li>
+                <ul class="szc-footer__menu-list" role="list">
+                  <li><a href="/" class="szc-footer__menu-link">Home</a></li>
+                  <li><a href="/collections/all" class="szc-footer__menu-link">Catalog</a></li>
+                  <li><a href="/pages/contact" class="szc-footer__menu-link">Contact Us</a></li>
                 </ul>
               {%- endif -%}
             </div>
 
           {%- when 'newsletter' -%}
-            <div class="kz-footer__col kz-footer__col--newsletter" {{ block.shopify_attributes }}>
+            <div class="szc-footer__col szc-footer__col--newsletter" {{ block.shopify_attributes }}>
               {%- if block.settings.heading != blank -%}
-                <h3 class="kz-footer__heading">{{ block.settings.heading }}</h3>
+                <h3 class="szc-footer__heading">{{ block.settings.heading }}</h3>
               {%- endif -%}
               {%- if block.settings.subtext != blank -%}
-                <p class="kz-footer__newsletter-subtext">{{ block.settings.subtext }}</p>
+                <p class="szc-footer__newsletter-subtext">{{ block.settings.subtext }}</p>
               {%- endif -%}
 
-              {%- form 'customer', class: 'kz-footer__newsletter-form' -%}
+              {%- form 'customer', class: 'szc-footer__newsletter-form' -%}
                 <input type="hidden" name="contact[tags]" value="newsletter">
-                <div class="kz-footer__newsletter-field">
+                <div class="szc-footer__newsletter-field">
                   <input
                     type="email"
                     name="contact[email]"
-                    class="kz-footer__newsletter-input"
+                    class="szc-footer__newsletter-input"
                     value="{{ form.email }}"
                     placeholder="{{ 'newsletter.label' | t | default: 'Enter your email' }}"
                     required
                   >
                   <button
                     type="submit"
-                    class="kz-footer__newsletter-btn"
+                    class="szc-footer__newsletter-btn"
                     aria-label="{{ 'newsletter.button_label' | t | default: 'Subscribe' }}"
                   >
-                    <svg class="kz-arrow-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+                    <svg class="szc-arrow-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
                   </button>
                 </div>
                 {%- if form.posted_successfully? -%}
-                  <p class="kz-footer__newsletter-success">
+                  <p class="szc-footer__newsletter-success">
                     {{ 'sections.newsletter.success' | t | default: 'Thanks for subscribing!' }}
                   </p>
                 {%- endif -%}
@@ -154,31 +154,31 @@
   </div>
 
   <!-- Bottom Bar: Copyright & Payment Badges -->
-  <div class="kz-footer__bottom">
-    <div class="kz-footer__bottom-inner page-width">
-      <div class="kz-footer__copyright">
+  <div class="szc-footer__bottom">
+    <div class="szc-footer__bottom-inner page-width">
+      <div class="szc-footer__copyright">
         &copy; {{ 'now' | date: '%Y' }} {{ section.settings.copyright_text | default: 'Lumière Fine Fashion, All Rights Reserved.' }}
       </div>
 
       {%- if section.settings.show_payment_icons -%}
-        <div class="kz-footer__payment-types">
+        <div class="szc-footer__payment-types">
           {%- if shop.enabled_payment_types.size > 0 -%}
             {%- for type in shop.enabled_payment_types -%}
-              <span class="kz-footer__payment-icon">
-                {{ type | payment_type_svg_tag: class: 'kz-payment-svg' }}
+              <span class="szc-footer__payment-icon">
+                {{ type | payment_type_svg_tag: class: 'szc-payment-svg' }}
               </span>
             {%- endfor -%}
           {%- else -%}
             <!-- Payment Icons matching UI Screenshot -->
-            <span class="kz-payment-badge kz-payment-badge--visa">VISA</span>
-            <span class="kz-payment-badge kz-payment-badge--mc">
-              <span class="kz-mc-circle kz-mc-red"></span>
-              <span class="kz-mc-circle kz-mc-yellow"></span>
+            <span class="szc-payment-badge szc-payment-badge--visa">VISA</span>
+            <span class="szc-payment-badge szc-payment-badge--mc">
+              <span class="szc-mc-circle szc-mc-red"></span>
+              <span class="szc-mc-circle szc-mc-yellow"></span>
             </span>
-            <span class="kz-payment-badge kz-payment-badge--amex">AMEX</span>
-            <span class="kz-payment-badge kz-payment-badge--paypal">PayPal</span>
-            <span class="kz-payment-badge kz-payment-badge--apple"> Pay</span>
-            <span class="kz-payment-badge kz-payment-badge--gpay">G Pay</span>
+            <span class="szc-payment-badge szc-payment-badge--amex">AMEX</span>
+            <span class="szc-payment-badge szc-payment-badge--paypal">PayPal</span>
+            <span class="szc-payment-badge szc-payment-badge--apple"> Pay</span>
+            <span class="szc-payment-badge szc-payment-badge--gpay">G Pay</span>
           {%- endif -%}
         </div>
       {%- endif -%}
@@ -187,50 +187,50 @@
 </footer>
 
 {% stylesheet %}
-  .kz-footer {
+  .szc-footer {
     background-color: #f7f4ee;
     color: #111111;
     border-top: 1px solid #eae5db;
-    padding-top: var(--kz-space-12, 48px);
+    padding-top: var(--szc-space-12, 48px);
     margin-top: 0;
-    font-family: var(--kz-font-family-body, sans-serif);
+    font-family: var(--szc-font-family-body, sans-serif);
   }
 
-  .kz-footer__top {
-    padding-bottom: var(--kz-space-12, 48px);
-    max-width: var(--kz-page-max-width, 1400px);
+  .szc-footer__top {
+    padding-bottom: var(--szc-space-12, 48px);
+    max-width: var(--szc-page-max-width, 1400px);
     margin: 0 auto;
-    padding-left: var(--kz-space-6, 24px);
-    padding-right: var(--kz-space-6, 24px);
+    padding-left: var(--szc-space-6, 24px);
+    padding-right: var(--szc-space-6, 24px);
   }
 
-  .kz-footer__grid {
+  .szc-footer__grid {
     display: grid;
     grid-template-columns: repeat(1, 1fr);
-    gap: var(--kz-space-8, 32px);
+    gap: var(--szc-space-8, 32px);
   }
 
   @media (min-width: 640px) {
-    .kz-footer__grid {
+    .szc-footer__grid {
       grid-template-columns: repeat(2, 1fr);
     }
   }
 
   @media (min-width: 990px) {
-    .kz-footer__grid {
+    .szc-footer__grid {
       grid-template-columns: 1.4fr 0.9fr 1fr 0.9fr 1.4fr;
       gap: 36px;
     }
   }
 
   /* Brand Info Column */
-  .kz-footer__brand-header {
+  .szc-footer__brand-header {
     display: flex;
     flex-direction: column;
   }
 
-  .kz-footer__brand-title {
-    font-family: var(--kz-font-family-serif, "Playfair Display", Georgia, serif);
+  .szc-footer__brand-title {
+    font-family: var(--szc-font-family-serif, "Playfair Display", Georgia, serif);
     font-size: 22px;
     font-weight: 700;
     letter-spacing: 0.08em;
@@ -238,8 +238,8 @@
     line-height: 1.1;
   }
 
-  .kz-footer__brand-sub {
-    font-family: var(--kz-font-family-body, sans-serif);
+  .szc-footer__brand-sub {
+    font-family: var(--szc-font-family-body, sans-serif);
     font-size: 9px;
     font-weight: 600;
     letter-spacing: 0.22em;
@@ -247,7 +247,7 @@
     margin-top: 3px;
   }
 
-  .kz-footer__brand-bio {
+  .szc-footer__brand-bio {
     font-size: 13px;
     color: #555555;
     line-height: 1.5;
@@ -256,13 +256,13 @@
   }
 
   /* Social Icons */
-  .kz-footer__socials {
+  .szc-footer__socials {
     display: flex;
     align-items: center;
     gap: 14px;
   }
 
-  .kz-footer__social-link {
+  .szc-footer__social-link {
     display: inline-flex;
     align-items: center;
     justify-content: center;
@@ -270,20 +270,20 @@
     transition: color 200ms ease, transform 200ms ease;
   }
 
-  .kz-footer__social-link:hover {
+  .szc-footer__social-link:hover {
     color: #d4a373;
     transform: translateY(-2px);
   }
 
-  .kz-social-icon {
+  .szc-social-icon {
     width: 18px;
     height: 18px;
   }
 
   /* Menu Columns */
-  .kz-footer__heading {
-    margin: 0 0 var(--kz-space-4, 16px) 0;
-    font-family: var(--kz-font-family-body, sans-serif);
+  .szc-footer__heading {
+    margin: 0 0 var(--szc-space-4, 16px) 0;
+    font-family: var(--szc-font-family-body, sans-serif);
     font-size: 11px;
     font-weight: 700;
     text-transform: uppercase;
@@ -291,7 +291,7 @@
     color: #111111;
   }
 
-  .kz-footer__menu-list {
+  .szc-footer__menu-list {
     list-style: none;
     padding: 0;
     margin: 0;
@@ -300,26 +300,26 @@
     gap: 9px;
   }
 
-  .kz-footer__menu-link {
+  .szc-footer__menu-link {
     color: #555555;
     font-size: 13px;
     text-decoration: none;
     transition: color 150ms ease;
   }
 
-  .kz-footer__menu-link:hover {
+  .szc-footer__menu-link:hover {
     color: #111111;
   }
 
   /* Newsletter Column */
-  .kz-footer__newsletter-subtext {
+  .szc-footer__newsletter-subtext {
     font-size: 13px;
     color: #555555;
     line-height: 1.4;
-    margin: 0 0 var(--kz-space-4, 16px) 0;
+    margin: 0 0 var(--szc-space-4, 16px) 0;
   }
 
-  .kz-footer__newsletter-field {
+  .szc-footer__newsletter-field {
     display: flex;
     align-items: center;
     border-radius: 6px;
@@ -327,11 +327,11 @@
     box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04);
   }
 
-  .kz-footer__newsletter-input {
+  .szc-footer__newsletter-input {
     flex: 1;
     height: 44px;
     padding: 0 14px;
-    font-family: var(--kz-font-family-body, sans-serif);
+    font-family: var(--szc-font-family-body, sans-serif);
     font-size: 13px;
     color: #111111;
     background-color: #ffffff;
@@ -342,11 +342,11 @@
     transition: border-color 200ms ease;
   }
 
-  .kz-footer__newsletter-input:focus {
+  .szc-footer__newsletter-input:focus {
     border-color: #d4a373;
   }
 
-  .kz-footer__newsletter-btn {
+  .szc-footer__newsletter-btn {
     height: 44px;
     width: 46px;
     padding: 0;
@@ -361,60 +361,60 @@
     transition: background-color 200ms ease;
   }
 
-  .kz-footer__newsletter-btn:hover {
+  .szc-footer__newsletter-btn:hover {
     background-color: #d4a373;
   }
 
-  .kz-arrow-icon {
+  .szc-arrow-icon {
     width: 18px;
     height: 18px;
   }
 
-  .kz-footer__newsletter-success {
+  .szc-footer__newsletter-success {
     font-size: 12px;
     color: #2a9d8f;
     margin-top: 8px;
   }
 
   /* Footer Bottom Bar */
-  .kz-footer__bottom {
+  .szc-footer__bottom {
     border-top: 1px solid #eae5db;
-    padding: var(--kz-space-6, 24px) 0;
+    padding: var(--szc-space-6, 24px) 0;
     background-color: #f7f4ee;
   }
 
-  .kz-footer__bottom-inner {
+  .szc-footer__bottom-inner {
     display: flex;
     flex-wrap: wrap;
     align-items: center;
     justify-content: space-between;
     gap: 16px;
-    max-width: var(--kz-page-max-width, 1400px);
+    max-width: var(--szc-page-max-width, 1400px);
     margin: 0 auto;
-    padding-left: var(--kz-space-6, 24px);
-    padding-right: var(--kz-space-6, 24px);
+    padding-left: var(--szc-space-6, 24px);
+    padding-right: var(--szc-space-6, 24px);
     font-size: 12px;
     color: #666666;
   }
 
-  .kz-footer__copyright {
+  .szc-footer__copyright {
     color: #666666;
   }
 
-  .kz-footer__payment-types {
+  .szc-footer__payment-types {
     display: flex;
     align-items: center;
     gap: 12px;
     flex-wrap: wrap;
   }
 
-  .kz-footer__payment-icon {
+  .szc-footer__payment-icon {
     display: inline-flex;
     align-items: center;
   }
 
   /* Payment Badges Fallback UI matching screenshot */
-  .kz-payment-badge {
+  .szc-payment-badge {
     display: inline-flex;
     align-items: center;
     justify-content: center;
@@ -429,49 +429,49 @@
     color: #1a1f71;
   }
 
-  .kz-payment-badge--visa {
+  .szc-payment-badge--visa {
     color: #1a1f71;
     font-style: italic;
   }
 
-  .kz-payment-badge--mc {
+  .szc-payment-badge--mc {
     padding: 0 6px;
   }
 
-  .kz-mc-circle {
+  .szc-mc-circle {
     width: 10px;
     height: 10px;
     border-radius: 50%;
     display: inline-block;
   }
 
-  .kz-mc-red {
+  .szc-mc-red {
     background-color: #eb001b;
     margin-right: -4px;
     z-index: 1;
   }
 
-  .kz-mc-yellow {
+  .szc-mc-yellow {
     background-color: #f79e1b;
   }
 
-  .kz-payment-badge--amex {
+  .szc-payment-badge--amex {
     background-color: #006fcf;
     color: #ffffff;
     border: none;
     font-size: 9px;
   }
 
-  .kz-payment-badge--paypal {
+  .szc-payment-badge--paypal {
     color: #003087;
     font-style: italic;
   }
 
-  .kz-payment-badge--apple {
+  .szc-payment-badge--apple {
     color: #111111;
   }
 
-  .kz-payment-badge--gpay {
+  .szc-payment-badge--gpay {
     color: #4285f4;
   }
 {% endstylesheet %}
