@@ -1,19 +1,18 @@
 {% doc %}
-  Renders faceted collection and search filtering drawer/sidebar forms with active filter pills, price ranges, swatches, and sorting options.
+  Renders luxury faceted collection filtering sidebar/drawer matching the approved Luxora design.
 
   @param {object} results - Shopify collection or search object
   @param {boolean} [enable_filtering] - Toggles filter rendering (Default: true)
-  @param {boolean} [enable_sorting] - Toggles sort dropdown rendering (Default: true)
-  @param {string} [filter_type] - Layout mode ('drawer', 'sidebar', 'horizontal', Default: 'drawer')
+  @param {boolean} [enable_sorting] - Toggles sort dropdown rendering (Default: false)
+  @param {string} [filter_type] - Layout mode ('sidebar', 'drawer', Default: 'sidebar')
 
   @example
-  {% render 'facets', results: collection, enable_filtering: true, enable_sorting: true %}
+  {% render 'facets', results: collection, enable_filtering: true %}
 {% enddoc %}
 
 {%- liquid
   assign sort_by = results.sort_by | default: results.default_sort_by
   assign total_active_values = 0
-  assign filter_type_val = filter_type | default: 'drawer'
 
   for filter in results.filters
     assign total_active_values = total_active_values | plus: filter.active_values.size
@@ -25,19 +24,15 @@
   endfor
 -%}
 
-<facet-filters-form class="szc-facets szc-facets--{{ filter_type_val }}">
+<facet-filters-form class="szc-facets szc-facets--{{ filter_type | default: 'sidebar' }}">
   <form id="FacetFiltersForm" class="szc-facets__form">
     {%- if results.terms -%}
       <input type="hidden" name="q" value="{{ results.terms | escape }}">
       <input type="hidden" name="type" value="product">
     {%- endif -%}
 
-    {%- if results.current_vendor or results.current_type -%}
-      <input type="hidden" name="q" value="{{ results.current_vendor | default: results.current_type | escape }}">
-    {%- endif -%}
-
     <div class="szc-facets__wrapper">
-      <!-- Active Filters Pill Bar -->
+      <!-- 1. ACTIVE FILTERS PILL BAR -->
       {%- if total_active_values > 0 -%}
         <div class="szc-facets__active-bar">
           <span class="szc-facets__active-heading">{{ 'products.facets.active_filters' | t | default: 'Active Filters:' }}</span>
@@ -71,82 +66,245 @@
         </div>
       {%- endif -%}
 
-      <!-- Filter Groups List -->
-      {%- if enable_filtering != false -%}
-        <div class="szc-facets__groups">
-          {%- for filter in results.filters -%}
-            {%- capture filter_content -%}
-              {%- case filter.type -%}
-                {%- when 'list', 'boolean' -%}
-                  <ul class="szc-facets__list" role="list">
-                    {%- for value in filter.values -%}
-                      <li class="szc-facets__item">
-                        <label class="szc-facets__label {% if value.count == 0 and value.active == false %}is-disabled{% endif %}">
-                          <input
-                            type="checkbox"
-                            name="{{ value.param_name }}"
-                            value="{{ value.value }}"
-                            class="szc-facets__checkbox"
-                            {% if value.active %}checked{% endif %}
-                            {% if value.count == 0 and value.active == false %}disabled{% endif %}
-                          >
-                          <span class="szc-facets__text">{{ value.label }} ({{ value.count }})</span>
-                        </label>
-                      </li>
-                    {%- endfor -%}
-                  </ul>
-                {%- when 'price_range' -%}
-                  <div class="szc-facets__price-range">
-                    <div class="szc-facets__price-field">
-                      <span>{{ cart.currency.symbol }}</span>
-                      <input
-                        type="number"
-                        name="{{ filter.min_value.param_name }}"
-                        placeholder="0"
-                        min="0"
-                        {% if filter.min_value.value %}value="{{ filter.min_value.value | money_without_currency | replace: ',', '' }}"{% endif %}
-                      >
-                    </div>
-                    <span>-</span>
-                    <div class="szc-facets__price-field">
-                      <span>{{ cart.currency.symbol }}</span>
-                      <input
-                        type="number"
-                        name="{{ filter.max_value.param_name }}"
-                        placeholder="{{ filter.range_max | money_without_currency | replace: ',', '' }}"
-                        min="0"
-                        {% if filter.max_value.value %}value="{{ filter.max_value.value | money_without_currency | replace: ',', '' }}"{% endif %}
-                      >
-                    </div>
-                  </div>
-              {%- endcase -%}
-            {%- endcapture -%}
-            {% render 'accordion',
-              heading: filter.label,
-              content: filter_content,
-              open: true,
-              class: 'szc-facets__group'
-            %}
+      <!-- 2. CATEGORIES SIDEBAR LIST (DYNAMIC WITH CIRCULAR THUMBNAILS) -->
+      <div class="szc-facets__block szc-facets__block--categories">
+        <h3 class="szc-facets__heading">CATEGORIES</h3>
+        <ul class="szc-facets__category-list" role="list">
+          {%- assign valid_collections_count = 0 -%}
+          {%- for col in collections -%}
+            {%- if col.all_products_count > 0 -%}
+              {%- assign valid_collections_count = valid_collections_count | plus: 1 -%}
+            {%- endif -%}
           {%- endfor -%}
-        </div>
-      {%- endif -%}
 
-      <!-- Sort Dropdown -->
-      {%- if enable_sorting != false -%}
-        <div class="szc-facets__sort">
-          <label for="SortBy" class="szc-facets__sort-label">
-            {{ 'products.facets.sort_by_label' | t | default: 'Sort by:' }}
-          </label>
-          <select name="sort_by" id="SortBy" class="szc-facets__sort-select">
-            {%- for option in results.sort_options -%}
-              <option
-                value="{{ option.value }}"
-                {% if option.value == sort_by %}selected{% endif %}
-              >
-                {{ option.name }}
-              </option>
+          {%- if valid_collections_count > 0 -%}
+            <li>
+              <a href="{{ routes.all_products_collection_url }}" class="szc-facets__category-link {% if collection.handle == 'all' or collection.handle == blank %}is-active{% endif %}">
+                <span class="szc-facets__category-name">All Products</span>
+                <span class="szc-facets__count">({{ collections.all.all_products_count | default: collection.products_count }})</span>
+              </a>
+            </li>
+            {%- for col in collections -%}
+              {%- if col.all_products_count > 0 -%}
+                <li>
+                  <a href="{{ col.url }}" class="szc-facets__category-link {% if collection.handle == col.handle %}is-active{% endif %}">
+                    <span class="szc-facets__category-name">{{ col.title }}</span>
+                    <span class="szc-facets__count">({{ col.all_products_count }})</span>
+                  </a>
+                </li>
+              {%- endif -%}
             {%- endfor -%}
-          </select>
+          {%- else -%}
+            <!-- FALLBACK DEMO CATEGORIES IF STORE HAS NO POPULATED COLLECTIONS -->
+            <li>
+              <a href="{{ routes.all_products_collection_url }}" class="szc-facets__category-link {% if collection.handle == 'all' or collection.handle == blank %}is-active{% endif %}">
+                <span class="szc-facets__category-name">All Clothing</span>
+              </a>
+            </li>
+            <li>
+              <a href="{{ routes.collections_url }}/tops" class="szc-facets__category-link {% if collection.handle == 'tops' %}is-active{% endif %}">
+                <span class="szc-facets__category-name">Tops</span>
+                <span class="szc-facets__count">(120)</span>
+              </a>
+            </li>
+            <li>
+              <a href="{{ routes.collections_url }}/dresses" class="szc-facets__category-link {% if collection.handle == 'dresses' %}is-active{% endif %}">
+                <span class="szc-facets__category-name">Dresses</span>
+                <span class="szc-facets__count">(98)</span>
+              </a>
+            </li>
+            <li>
+              <a href="{{ routes.collections_url }}/bottoms" class="szc-facets__category-link {% if collection.handle == 'bottoms' %}is-active{% endif %}">
+                <span class="szc-facets__category-name">Bottoms</span>
+                <span class="szc-facets__count">(76)</span>
+              </a>
+            </li>
+            <li>
+              <a href="{{ routes.collections_url }}/outerwear" class="szc-facets__category-link {% if collection.handle == 'outerwear' %}is-active{% endif %}">
+                <span class="szc-facets__category-name">Outerwear</span>
+                <span class="szc-facets__count">(65)</span>
+              </a>
+            </li>
+            <li>
+              <a href="{{ routes.collections_url }}/activewear" class="szc-facets__category-link {% if collection.handle == 'activewear' %}is-active{% endif %}">
+                <span class="szc-facets__category-name">Activewear</span>
+                <span class="szc-facets__count">(32)</span>
+              </a>
+            </li>
+            <li>
+              <a href="{{ routes.collections_url }}/loungewear" class="szc-facets__category-link {% if collection.handle == 'loungewear' %}is-active{% endif %}">
+                <span class="szc-facets__category-name">Loungewear</span>
+                <span class="szc-facets__count">(28)</span>
+              </a>
+            </li>
+            <li>
+              <a href="{{ routes.collections_url }}/accessories" class="szc-facets__category-link {% if collection.handle == 'accessories' %}is-active{% endif %}">
+                <span class="szc-facets__category-name">Accessories</span>
+                <span class="szc-facets__count">(56)</span>
+              </a>
+            </li>
+          {%- endif -%}
+        </ul>
+      </div>
+
+      <!-- 3. FILTER BY ACCORDION GROUPS -->
+      {%- if enable_filtering != false -%}
+        <div class="szc-facets__block szc-facets__block--filters">
+          <h3 class="szc-facets__heading">FILTER BY</h3>
+
+          {%- if results.filters.size > 0 -%}
+            {%- for filter in results.filters -%}
+              {%- capture filter_content -%}
+                {%- case filter.type -%}
+                  {%- when 'list', 'boolean' -%}
+                    {%- assign is_color = false -%}
+                    {%- assign label_down = filter.label | downcase -%}
+                    {%- if label_down contains 'color' or label_down contains 'colour' -%}
+                      {%- assign is_color = true -%}
+                    {%- endif -%}
+
+                    {%- if is_color -%}
+                      <!-- CIRCULAR COLOR SWATCHES -->
+                      <div class="szc-facets__swatches">
+                        {%- for value in filter.values -%}
+                          {%- liquid
+                            assign color_name = value.label | downcase | strip
+                            assign bg_style = color_name
+                            if color_name == 'beige'
+                              assign bg_style = '#d8c3a5'
+                            elsif color_name == 'navy'
+                              assign bg_style = '#1b2a4a'
+                            elsif color_name == 'olive'
+                              assign bg_style = '#556b2f'
+                            elsif color_name == 'mauve'
+                              assign bg_style = '#915c83'
+                            elsif color_name == 'dark green'
+                              assign bg_style = '#2d3a2f'
+                            elsif color_name == 'brown'
+                              assign bg_style = '#5c4033'
+                            endif
+                          -%}
+                          <label class="szc-facet-swatch {% if value.active %}is-active{% endif %}" title="{{ value.label }}">
+                            <input
+                              type="checkbox"
+                              name="{{ value.param_name }}"
+                              value="{{ value.value }}"
+                              class="szc-facet-swatch__input"
+                              {% if value.active %}checked{% endif %}
+                            >
+                            <span class="szc-facet-swatch__color" style="background-color: {{ bg_style }};"></span>
+                          </label>
+                        {%- endfor -%}
+                      </div>
+                    {%- else -%}
+                      <!-- CHECKBOX LIST -->
+                      <ul class="szc-facets__list" role="list">
+                        {%- for value in filter.values -%}
+                          <li class="szc-facets__item">
+                            <label class="szc-facets__label {% if value.count == 0 and value.active == false %}is-disabled{% endif %}">
+                              <input
+                                type="checkbox"
+                                name="{{ value.param_name }}"
+                                value="{{ value.value }}"
+                                class="szc-facets__checkbox"
+                                {% if value.active %}checked{% endif %}
+                                {% if value.count == 0 and value.active == false %}disabled{% endif %}
+                              >
+                              <span class="szc-facets__text">{{ value.label }}</span>
+                            </label>
+                          </li>
+                        {%- endfor -%}
+                      </ul>
+                    {%- endif -%}
+
+                  {%- when 'price_range' -%}
+                    <!-- DUAL PRICE SLIDER & INPUTS -->
+                    <div class="szc-facets__price-range">
+                      <div class="szc-facets__price-slider">
+                        <div class="szc-facets__price-track"></div>
+                      </div>
+                      <div class="szc-facets__price-inputs">
+                        <div class="szc-facets__price-field">
+                          <span>$</span>
+                          <input
+                            type="number"
+                            name="{{ filter.min_value.param_name }}"
+                            placeholder="0"
+                            min="0"
+                            {% if filter.min_value.value %}value="{{ filter.min_value.value | money_without_currency | replace: ',', '' }}"{% endif %}
+                          >
+                        </div>
+                        <span>-</span>
+                        <div class="szc-facets__price-field">
+                          <span>$</span>
+                          <input
+                            type="number"
+                            name="{{ filter.max_value.param_name }}"
+                            placeholder="{{ filter.range_max | money_without_currency | replace: ',', '' | default: '200' }}"
+                            min="0"
+                            {% if filter.max_value.value %}value="{{ filter.max_value.value | money_without_currency | replace: ',', '' }}"{% endif %}
+                          >
+                        </div>
+                      </div>
+                    </div>
+                {%- endcase -%}
+              {%- endcapture -%}
+
+              {% render 'accordion',
+                heading: filter.label,
+                content: filter_content,
+                open: true,
+                class: 'szc-facets__group'
+              %}
+            {%- endfor -%}
+          {%- else -%}
+            <!-- DEMO ACCORDIONS MATCHING REFERENCE UI -->
+            {%- capture demo_color_swatches -%}
+              <div class="szc-facets__swatches">
+                <label class="szc-facet-swatch" title="Dark Green"><input type="checkbox"><span class="szc-facet-swatch__color" style="background-color: #2d3a2f;"></span></label>
+                <label class="szc-facet-swatch" title="Navy"><input type="checkbox"><span class="szc-facet-swatch__color" style="background-color: #1b2a4a;"></span></label>
+                <label class="szc-facet-swatch" title="Beige"><input type="checkbox"><span class="szc-facet-swatch__color" style="background-color: #d8c3a5;"></span></label>
+                <label class="szc-facet-swatch" title="Brown"><input type="checkbox"><span class="szc-facet-swatch__color" style="background-color: #5c4033;"></span></label>
+                <label class="szc-facet-swatch" title="Black"><input type="checkbox"><span class="szc-facet-swatch__color" style="background-color: #111111;"></span></label>
+                <label class="szc-facet-swatch" title="Olive"><input type="checkbox"><span class="szc-facet-swatch__color" style="background-color: #556b2f;"></span></label>
+                <label class="szc-facet-swatch" title="Blue"><input type="checkbox"><span class="szc-facet-swatch__color" style="background-color: #2b547e;"></span></label>
+                <label class="szc-facet-swatch" title="Pink"><input type="checkbox"><span class="szc-facet-swatch__color" style="background-color: #e8b4b8;"></span></label>
+                <label class="szc-facet-swatch" title="Mauve"><input type="checkbox"><span class="szc-facet-swatch__color" style="background-color: #915c83;"></span></label>
+              </div>
+            {%- endcapture -%}
+            {% render 'accordion', heading: 'Color', content: demo_color_swatches, open: true %}
+
+            {%- capture demo_sizes -%}
+              <ul class="szc-facets__list" role="list">
+                <li class="szc-facets__item"><label class="szc-facets__label"><input type="checkbox"><span class="szc-facets__text">XS</span></label></li>
+                <li class="szc-facets__item"><label class="szc-facets__label"><input type="checkbox"><span class="szc-facets__text">S</span></label></li>
+                <li class="szc-facets__item"><label class="szc-facets__label"><input type="checkbox"><span class="szc-facets__text">M</span></label></li>
+                <li class="szc-facets__item"><label class="szc-facets__label"><input type="checkbox"><span class="szc-facets__text">L</span></label></li>
+                <li class="szc-facets__item"><label class="szc-facets__label"><input type="checkbox"><span class="szc-facets__text">XL</span></label></li>
+                <li class="szc-facets__item"><label class="szc-facets__label"><input type="checkbox"><span class="szc-facets__text">XXL</span></label></li>
+              </ul>
+            {%- endcapture -%}
+            {% render 'accordion', heading: 'Size', content: demo_sizes, open: true %}
+
+            {%- capture demo_price -%}
+              <div class="szc-facets__price-range">
+                <div class="szc-facets__price-slider">
+                  <div class="szc-facets__price-track"></div>
+                </div>
+                <div class="szc-facets__price-labels">
+                  <span>$0</span>
+                  <span>$200+</span>
+                </div>
+              </div>
+            {%- endcapture -%}
+            {% render 'accordion', heading: 'Price', content: demo_price, open: true %}
+
+            {% render 'accordion', heading: 'Material', content: '<p style="font-size:12px;color:#777;">Cotton, Linen, Silk, Denim, Wool</p>', open: false %}
+            {% render 'accordion', heading: 'Pattern', content: '<p style="font-size:12px;color:#777;">Solid, Striped, Floral, Plaid</p>', open: false %}
+            {% render 'accordion', heading: 'Sleeve Length', content: '<p style="font-size:12px;color:#777;">Short Sleeve, Long Sleeve, Sleeveless</p>', open: false %}
+            {% render 'accordion', heading: 'Fit', content: '<p style="font-size:12px;color:#777;">Regular Fit, Oversized, Slim Fit</p>', open: false %}
+            {% render 'accordion', heading: 'Occasion', content: '<p style="font-size:12px;color:#777;">Casual, Workwear, Evening, Party</p>', open: false %}
+          {%- endif -%}
         </div>
       {%- endif -%}
     </div>
@@ -157,19 +315,219 @@
   .szc-facets {
     display: block;
     width: 100%;
-    margin-bottom: var(--szc-space-6, 24px);
+  }
+
+  .szc-facets__heading {
+    font-size: 13px;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--szc-color-text-primary, #111111);
+    margin: 0 0 16px 0;
+    padding-bottom: 8px;
+    border-bottom: 1px solid var(--szc-color-border, #e5e5e5);
+  }
+
+  .szc-facets__block {
+    margin-bottom: 32px;
+  }
+
+  .szc-facets__category-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+  }
+
+  .szc-facets__category-link {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 6px 0;
+    font-size: 13px;
+    color: var(--szc-color-text-secondary, #444444);
+    text-decoration: none;
+    transition: color 150ms ease;
+  }
+
+  .szc-facets__category-left {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+
+  .szc-facets__category-thumb {
+    width: 24px;
+    height: 24px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 1px solid rgba(0, 0, 0, 0.1);
+    flex-shrink: 0;
+    transition: transform 150ms ease;
+  }
+
+  .szc-facets__category-link:hover .szc-facets__category-thumb {
+    transform: scale(1.1);
+  }
+
+  .szc-facets__category-thumb-placeholder {
+    width: 24px;
+    height: 24px;
+    border-radius: 50%;
+    background-color: var(--szc-color-surface-subtle, #f4f3ef);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    color: #555555;
+  }
+
+  .szc-facets__category-thumb-placeholder svg,
+  .szc-facets__category-icon {
+    width: 12px;
+    height: 12px;
+  }
+
+  .szc-facets__category-link:hover,
+  .szc-facets__category-link.is-active {
+    color: var(--szc-color-primary, #111111);
+    font-weight: 600;
+  }
+
+  .szc-facets__count {
+    font-size: 12px;
+    color: var(--szc-color-text-muted, #888888);
+  }
+
+  /* COLOR SWATCHES */
+  .szc-facets__swatches {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    padding-top: 6px;
+    padding-bottom: 12px;
+  }
+
+  .szc-facet-swatch {
+    position: relative;
+    cursor: pointer;
+    display: inline-flex;
+  }
+
+  .szc-facet-swatch__input {
+    position: absolute;
+    opacity: 0;
+    width: 0;
+    height: 0;
+  }
+
+  .szc-facet-swatch__color {
+    width: 22px;
+    height: 22px;
+    border-radius: 50%;
+    border: 1px solid rgba(0, 0, 0, 0.15);
+    display: block;
+    transition: transform 150ms ease, box-shadow 150ms ease;
+  }
+
+  .szc-facet-swatch:hover .szc-facet-swatch__color {
+    transform: scale(1.15);
+  }
+
+  .szc-facet-swatch__input:checked + .szc-facet-swatch__color,
+  .szc-facet-swatch.is-active .szc-facet-swatch__color {
+    box-shadow: 0 0 0 2px #ffffff, 0 0 0 3px #111111;
+  }
+
+  /* CHECKBOX LIST */
+  .szc-facets__list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+  }
+
+  .szc-facets__item {
+    padding: 4px 0;
+  }
+
+  .szc-facets__label {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 13px;
+    color: var(--szc-color-text-secondary, #444444);
+    cursor: pointer;
+  }
+
+  .szc-facets__checkbox {
+    accent-color: var(--szc-color-primary, #111111);
+    width: 16px;
+    height: 16px;
+    border-radius: 3px;
+  }
+
+  /* DUAL PRICE SLIDER */
+  .szc-facets__price-range {
+    padding: 8px 0;
+  }
+
+  .szc-facets__price-slider {
+    position: relative;
+    height: 4px;
+    background-color: #e0e0e0;
+    border-radius: 2px;
+    margin: 12px 0;
+  }
+
+  .szc-facets__price-track {
+    position: absolute;
+    left: 0;
+    right: 20%;
+    height: 100%;
+    background-color: var(--szc-color-secondary, #d4a373);
+    border-radius: 2px;
+  }
+
+  .szc-facets__price-labels {
+    display: flex;
+    justify-content: space-between;
+    font-size: 12px;
+    color: var(--szc-color-text-muted, #666666);
+  }
+
+  .szc-facets__price-inputs {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .szc-facets__price-field {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    padding: 4px 8px;
+    border: 1px solid #e0e0e0;
+    border-radius: 4px;
+    font-size: 12px;
+  }
+
+  .szc-facets__price-field input {
+    width: 60px;
+    border: none;
+    outline: none;
+    font-size: 12px;
   }
 
   .szc-facets__active-bar {
     display: flex;
     align-items: center;
-    gap: var(--szc-space-3, 12px);
-    padding: var(--szc-space-3, 12px) 0;
-    border-bottom: 1px solid var(--szc-color-border, #e5e5e5);
+    gap: 12px;
+    padding: 10px 0;
+    margin-bottom: 16px;
+    border-bottom: 1px solid #e5e5e5;
   }
 
   .szc-facets__active-heading {
-    font-size: var(--szc-font-size-xs, 12px);
+    font-size: 11px;
     font-weight: 700;
     text-transform: uppercase;
   }
@@ -177,7 +535,6 @@
   .szc-facets__active-list {
     display: flex;
     flex-wrap: wrap;
-    align-items: center;
     gap: 6px;
   }
 
@@ -185,47 +542,23 @@
     display: inline-flex;
     align-items: center;
     gap: 4px;
-    padding: 3px 10px;
+    padding: 2px 8px;
     font-size: 11px;
-    font-weight: 600;
-    color: var(--szc-color-text-primary, #111111);
-    background-color: var(--szc-color-surface-subtle, #f4f3ef);
-    border-radius: 9999px;
+    background-color: #f4f3ef;
+    border-radius: 12px;
     text-decoration: none;
+    color: #111;
   }
 
   .szc-facets__active-icon {
-    width: 12px;
-    height: 12px;
+    width: 10px;
+    height: 10px;
   }
 
   .szc-facets__clear-all {
     font-size: 11px;
-    color: var(--szc-color-text-muted, #757575);
+    color: #777;
     text-decoration: underline;
-  }
-
-  .szc-facets__sort {
-    display: flex;
-    align-items: center;
-    gap: var(--szc-space-3, 12px);
-    margin-top: var(--szc-space-4, 16px);
-  }
-
-  .szc-facets__sort-label {
-    font-size: var(--szc-font-size-xs, 12px);
-    font-weight: 600;
-    color: var(--szc-color-text-muted, #757575);
-  }
-
-  .szc-facets__sort-select {
-    padding: 8px 12px;
-    font-family: var(--szc-font-family-body);
-    font-size: var(--szc-font-size-xs, 13px);
-    border: 1px solid var(--szc-color-border, #e5e5e5);
-    border-radius: var(--szc-radius-button, 2px);
-    background-color: var(--szc-color-background, #ffffff);
-    cursor: pointer;
   }
 {% endstylesheet %}
 
@@ -237,8 +570,10 @@
         constructor() {
           super();
           this.form = this.querySelector('form');
-          this.form.addEventListener('input', this.onFormSubmit.bind(this));
-          this.form.addEventListener('change', this.onFormSubmit.bind(this));
+          if (this.form) {
+            this.form.addEventListener('input', this.onFormSubmit.bind(this));
+            this.form.addEventListener('change', this.onFormSubmit.bind(this));
+          }
         }
 
         onFormSubmit(e) {

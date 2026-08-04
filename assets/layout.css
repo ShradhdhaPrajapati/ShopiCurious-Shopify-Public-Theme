@@ -4,16 +4,30 @@
  * section spacing tokens, and structural wrappers.
  */
 
-/* ==========================================================================
-   1. CONTAINER SYSTEM
-   ========================================================================== */
+/* CONTAINER SYSTEM */
+.page-width,
 .szc-container {
   width: 100%;
-  max-width: var(--szc-container-max-width);
+  max-width: var(--page-width, 1320px);
   margin-left: auto;
   margin-right: auto;
-  padding-left: var(--szc-container-padding);
-  padding-right: var(--szc-container-padding);
+  padding-left: var(--page-margin, 20px);
+  padding-right: var(--page-margin, 20px);
+  box-sizing: border-box;
+}
+
+/* VISUALLY HIDDEN UTILITY (Accessibility text hidden visually) */
+.visually-hidden,
+.szc-visually-hidden {
+  position: absolute !important;
+  width: 1px !important;
+  height: 1px !important;
+  padding: 0 !important;
+  margin: -1px !important;
+  overflow: hidden !important;
+  clip: rect(0, 0, 0, 0) !important;
+  white-space: nowrap !important;
+  border: 0 !important;
 }
 
 .szc-container--narrow {
@@ -31,9 +45,7 @@
   padding-right: 0;
 }
 
-/* ==========================================================================
-   2. SECTION SPACING SYSTEM
-   ========================================================================== */
+/* SECTION SPACING SYSTEM */
 .szc-section {
   position: relative;
   width: 100%;
@@ -51,9 +63,7 @@
   }
 }
 
-/* ==========================================================================
-   3. FLEXBOX SYSTEM
-   ========================================================================== */
+/* FLEXBOX SYSTEM */
 .szc-flex {
   display: flex;
 }
@@ -111,9 +121,7 @@
 .szc-gap-8 { gap: var(--szc-space-8); }
 .szc-gap-10 { gap: var(--szc-space-10); }
 
-/* ==========================================================================
-   4. CSS GRID SYSTEM (Mobile-First Modular Layouts)
-   ========================================================================== */
+/* CSS GRID SYSTEM (Mobile-First Modular Layouts) */
 .szc-grid {
   display: grid;
   grid-template-columns: repeat(1, 1fr);

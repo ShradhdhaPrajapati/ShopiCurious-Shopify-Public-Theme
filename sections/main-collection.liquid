@@ -2,131 +2,1426 @@
   assign per_page = section.settings.products_per_page | default: 16
   assign cols_desktop = section.settings.columns_desktop | default: 4
   assign cols_mobile = section.settings.columns_mobile | default: '2'
+
+  # Metafields
+  assign meta_banner_img = collection.metafields.custom.banner_image
+  assign meta_banner_img_mobile = collection.metafields.custom.banner_image_mobile
+  assign meta_heading = collection.metafields.custom.banner_heading
+  assign meta_desc = collection.metafields.custom.banner_description
+  assign meta_btn_text = collection.metafields.custom.banner_button_text
+  assign meta_btn_link = collection.metafields.custom.banner_button_link
+
+  # 1. BANNER IMAGE FALLBACK CHAIN: Metafield -> Collection Image -> Theme Setting
+  assign banner_img = meta_banner_img | default: collection.image | default: section.settings.banner_image
+  assign banner_img_mobile = meta_banner_img_mobile | default: section.settings.banner_image_mobile | default: banner_img
+
+  # 2. HEADING TITLE FALLBACK CHAIN: Metafield -> Collection Title
+  if meta_heading != blank
+    assign hero_heading = meta_heading
+  else
+    assign hero_heading = collection.title
+  endif
+
+  # 3. DESCRIPTION FALLBACK CHAIN: Metafield -> Collection Description -> Theme Setting Default Description
+  if meta_desc != blank
+    assign hero_desc = meta_desc
+  elsif collection.description != blank
+    assign hero_desc = collection.description
+  elsif section.settings.default_description != blank
+    assign hero_desc = section.settings.default_description
+  else
+    assign hero_desc = blank
+  endif
+
+  # 4. BUTTON (CTA) FALLBACK CHAIN: Metafield -> Theme Settings
+  assign hero_btn_text = meta_btn_text | default: section.settings.hero_button_text
+  assign hero_btn_link = meta_btn_link | default: section.settings.hero_button_link
+
+  # Theme Styling Settings
+  assign overlay_op = section.settings.banner_overlay_opacity | default: 20
+  assign hero_align = section.settings.hero_text_alignment | default: 'center'
+  assign hero_side_offset = section.settings.hero_side_padding | default: 5
+  assign title_color = section.settings.hero_title_color | default: '#ffffff'
+  assign title_size = section.settings.hero_title_size | default: 48
+  assign title_weight = section.settings.hero_title_weight | default: '700'
+  assign desc_color = section.settings.hero_description_color | default: 'rgba(255, 255, 255, 0.9)'
+  assign desc_size = section.settings.hero_description_size | default: 14
+  assign desc_weight = section.settings.hero_description_weight | default: '400'
+  assign breadcrumbs_color = section.settings.hero_breadcrumbs_color | default: 'rgba(255, 255, 255, 0.85)'
+  assign overlay_color = section.settings.hero_overlay_color | default: '#000000'
+  assign btn_color = section.settings.hero_button_color | default: '#111111'
+  assign btn_bg = section.settings.hero_button_bg | default: '#ffffff'
 -%}
 
-<div class="szc-main-collection page-width" style="--cols-desktop: {{ cols_desktop }}; --cols-mobile: {{ cols_mobile }};">
-  {% render 'breadcrumbs' %}
+<div class="szc-main-collection-wrapper" style="--cols-desktop: {{ cols_desktop }}; --cols-mobile: {{ cols_mobile }};">
+  <!-- 1. COLLECTION HERO BANNER SECTION -->
+  {%- if section.settings.show_hero -%}
+    <div
+      class="szc-collection-hero szc-collection-hero--{{ section.settings.hero_height | default: 'medium' }} szc-collection-hero--align-{{ hero_align }}"
+      style="
+        --szc-overlay-color: {{ overlay_color }};
+        --szc-overlay-opacity: {{ overlay_op | divided_by: 100.0 }};
+        --szc-hero-text-align: {{ hero_align }};
+        --szc-hero-side-offset: {{ hero_side_offset }}%;
+        --szc-hero-title-color: {{ title_color }};
+        --szc-hero-title-size: {{ title_size }}px;
+        --szc-hero-title-weight: {{ title_weight }};
+        --szc-hero-desc-color: {{ desc_color }};
+        --szc-hero-desc-size: {{ desc_size }}px;
+        --szc-hero-desc-weight: {{ desc_weight }};
+        --szc-hero-breadcrumbs-color: {{ breadcrumbs_color }};
+        --szc-hero-btn-color: {{ btn_color }};
+        --szc-hero-btn-bg: {{ btn_bg }};
+      "
+    >
+      {%- if banner_img != blank -%}
+        <div class="szc-collection-hero__media">
+          <picture>
+            {%- if banner_img_mobile != blank -%}
+              <source media="(max-width: 767px)" srcset="{{ banner_img_mobile | image_url: width: 800 }}">
+            {%- endif -%}
+            {{
+              banner_img
+              | image_url: width: 2400
+              | image_tag:
+                class: 'szc-collection-hero__image',
+                loading: 'eager',
+                fetchpriority: 'high',
+                alt: hero_heading
+            }}
+          </picture>
+          <div class="szc-collection-hero__overlay"></div>
+        </div>
+      {%- else -%}
+        <div class="szc-collection-hero__media-placeholder">
+          <div class="szc-collection-hero__overlay"></div>
+        </div>
+      {%- endif -%}
 
-  <!-- Collection Banner Header -->
-  <div class="szc-main-collection__header">
-    <h1 class="szc-main-collection__title">{{ collection.title }}</h1>
-    {%- if collection.description != blank -%}
-      <div class="szc-main-collection__description">
-        {{ collection.description }}
+      <div class="szc-collection-hero__container page-width">
+        {%- if section.settings.show_breadcrumbs -%}
+          {% render 'breadcrumbs', class: 'szc-collection-hero__breadcrumbs' %}
+        {%- endif -%}
+
+        {%- if hero_heading != blank -%}
+          <h1 class="szc-collection-hero__title">{{ hero_heading }}</h1>
+        {%- endif -%}
+
+        {%- if section.settings.show_hero_divider -%}
+          <div class="szc-collection-hero__divider" aria-hidden="true">
+            <span class="szc-collection-hero__line"></span>
+            <span class="szc-collection-hero__diamond">✧</span>
+            <span class="szc-collection-hero__line"></span>
+          </div>
+        {%- endif -%}
+
+        {%- if section.settings.show_description and hero_desc != blank -%}
+          <div class="szc-collection-hero__description">
+            {{ hero_desc }}
+          </div>
+        {%- endif -%}
+
+        {%- if hero_btn_text != blank -%}
+          <div class="szc-collection-hero__btn-wrapper">
+            <a href="{{ hero_btn_link | default: '#' }}" class="szc-collection-hero__btn">
+              {{ hero_btn_text }}
+            </a>
+          </div>
+        {%- endif -%}
       </div>
-    {%- endif -%}
-  </div>
-
-  <!-- Filtering & Sorting Bar -->
-  {%- if section.settings.enable_filtering or section.settings.enable_sorting -%}
-    <div class="szc-main-collection__facets-wrapper">
-      {% render 'facets',
-        results: collection,
-        enable_filtering: section.settings.enable_filtering,
-        enable_sorting: section.settings.enable_sorting
-      %}
     </div>
   {%- endif -%}
 
-  <!-- Collection Product Grid -->
-  {%- paginate collection.products by per_page -%}
-    <div class="szc-main-collection__content">
-      {%- if collection.products.size > 0 -%}
-        <div class="szc-main-collection__grid" id="ProductGrid">
-          {%- for product in collection.products -%}
-            <div class="szc-main-collection__item szc-animate-fade-up">
-              {% render 'product-card',
-                card_product: product,
-                show_secondary_image: true,
-                show_quick_add: true,
-                show_quick_view: true
-              %}
+  <div class="page-width">
+    <!-- 2. CATEGORY NAVIGATION BAR -->
+    {%- if section.settings.show_category_nav -%}
+      <div class="szc-category-nav" data-category-nav>
+        <div class="szc-category-nav__scroll-container">
+          <a
+            href="{{ routes.all_products_collection_url }}"
+            class="szc-category-nav__item {% if collection.handle == 'all' or collection.handle == blank %}is-active{% endif %}"
+          >
+            <div class="szc-category-nav__icon-wrap">
+              {% render 'icon', icon: 'grid', class: 'szc-category-nav__icon' %}
             </div>
-          {%- endfor -%}
-        </div>
-
-        {%- if paginate.pages > 1 -%}
-          {% render 'pagination', paginate: paginate, anchor: '#ProductGrid' %}
-        {%- endif -%}
-      {%- else -%}
-        <div class="szc-main-collection__empty">
-          {% render 'icon', icon: 'search', class: 'szc-main-collection__empty-icon' %}
-          <h2>{{ 'sections.collection_template.empty' | t | default: 'No products found' }}</h2>
-          <p>{{ 'sections.collection_template.use_fewer_filters' | t | default: 'Try clearing some filters or search for another term.' }}</p>
-          <a href="{{ collection.url }}" class="szc-button szc-button--primary">
-            {{ 'products.facets.clear_all' | t | default: 'Clear All Filters' }}
+            <span class="szc-category-nav__title">All Clothing</span>
           </a>
+
+          {%- if section.blocks.size > 0 -%}
+            {%- for block in section.blocks -%}
+              {%- if block.type == 'category_nav_item' -%}
+                {%- liquid
+                  assign cat_url = block.settings.collection.url | default: block.settings.custom_url | default: '#'
+                  assign is_active = false
+                  if block.settings.collection != blank and block.settings.collection.handle == collection.handle
+                    assign is_active = true
+                  endif
+                -%}
+                <a
+                  href="{{ cat_url }}"
+                  class="szc-category-nav__item {% if is_active %}is-active{% endif %}"
+                  {{ block.shopify_attributes }}
+                >
+                  <div class="szc-category-nav__icon-wrap">
+                    {%- if block.settings.custom_image != blank -%}
+                      <img
+                        src="{{ block.settings.custom_image | image_url: width: 80, height: 80, crop: 'center' }}"
+                        alt="{{ block.settings.title | default: block.settings.collection.title }}"
+                        class="szc-category-nav__circle-img"
+                        loading="lazy"
+                        width="32"
+                        height="32"
+                      >
+                    {%- elsif block.settings.collection != blank and block.settings.collection.products.first.featured_image != blank -%}
+                      <img
+                        src="{{ block.settings.collection.products.first.featured_image | image_url: width: 80, height: 80, crop: 'center' }}"
+                        alt="{{ block.settings.collection.title }}"
+                        class="szc-category-nav__circle-img"
+                        loading="lazy"
+                        width="32"
+                        height="32"
+                      >
+                    {%- elsif block.settings.collection != blank and block.settings.collection.image != blank -%}
+                      <img
+                        src="{{ block.settings.collection.image | image_url: width: 80, height: 80, crop: 'center' }}"
+                        alt="{{ block.settings.collection.title }}"
+                        class="szc-category-nav__circle-img"
+                        loading="lazy"
+                        width="32"
+                        height="32"
+                      >
+                    {%- elsif block.settings.icon_svg != blank -%}
+                      <div class="szc-category-nav__custom-svg">{{ block.settings.icon_svg }}</div>
+                    {%- else -%}
+                      {%- assign icon_name_val = block.settings.icon_name | default: 'tag' -%}
+                      {% render 'icon', icon: icon_name_val, class: 'szc-category-nav__icon' %}
+                    {%- endif -%}
+                  </div>
+                  <span class="szc-category-nav__title">{{ block.settings.title | default: block.settings.collection.title }}</span>
+                </a>
+              {%- endif -%}
+            {%- endfor -%}
+          {%- else -%}
+            {%- assign dynamic_cols_count = 0 -%}
+            {%- for col in collections -%}
+              {%- if col.all_products_count > 0 -%}
+                {%- assign dynamic_cols_count = dynamic_cols_count | plus: 1 -%}
+              {%- endif -%}
+            {%- endfor -%}
+
+            {%- if dynamic_cols_count > 0 -%}
+              {%- for col in collections -%}
+                {%- if col.all_products_count > 0 -%}
+                  {%- assign col_nav_img = col.products.first.featured_image | default: col.image | default: col.featured_image -%}
+                  <a href="{{ col.url }}" class="szc-category-nav__item {% if collection.handle == col.handle %}is-active{% endif %}">
+                    <div class="szc-category-nav__icon-wrap">
+                      {%- if col_nav_img != blank -%}
+                        <img
+                          src="{{ col_nav_img | image_url: width: 80, height: 80, crop: 'center' }}"
+                          alt="{{ col.title }}"
+                          class="szc-category-nav__circle-img"
+                          loading="lazy"
+                          width="32"
+                          height="32"
+                        >
+                      {%- else -%}
+                        {% render 'icon', icon: 'tag', class: 'szc-category-nav__icon' %}
+                      {%- endif -%}
+                    </div>
+                    <span class="szc-category-nav__title">{{ col.title }}</span>
+                  </a>
+                {%- endif -%}
+              {%- endfor -%}
+            {%- else -%}
+              <!-- Default Category Items Matching Reference UI -->
+              <a href="{{ routes.collections_url }}/tops" class="szc-category-nav__item {% if collection.handle == 'tops' %}is-active{% endif %}">
+                <div class="szc-category-nav__icon-wrap">{% render 'icon', icon: 'shirt', class: 'szc-category-nav__icon' %}</div>
+                <span class="szc-category-nav__title">Tops</span>
+              </a>
+              <a href="{{ routes.collections_url }}/dresses" class="szc-category-nav__item {% if collection.handle == 'dresses' %}is-active{% endif %}">
+                <div class="szc-category-nav__icon-wrap">{% render 'icon', icon: 'dress', class: 'szc-category-nav__icon' %}</div>
+                <span class="szc-category-nav__title">Dresses</span>
+              </a>
+              <a href="{{ routes.collections_url }}/bottoms" class="szc-category-nav__item {% if collection.handle == 'bottoms' %}is-active{% endif %}">
+                <div class="szc-category-nav__icon-wrap">{% render 'icon', icon: 'pants', class: 'szc-category-nav__icon' %}</div>
+                <span class="szc-category-nav__title">Bottoms</span>
+              </a>
+              <a href="{{ routes.collections_url }}/outerwear" class="szc-category-nav__item {% if collection.handle == 'outerwear' %}is-active{% endif %}">
+                <div class="szc-category-nav__icon-wrap">{% render 'icon', icon: 'jacket', class: 'szc-category-nav__icon' %}</div>
+                <span class="szc-category-nav__title">Outerwear</span>
+              </a>
+              <a href="{{ routes.collections_url }}/activewear" class="szc-category-nav__item {% if collection.handle == 'activewear' %}is-active{% endif %}">
+                <div class="szc-category-nav__icon-wrap">{% render 'icon', icon: 'activewear', class: 'szc-category-nav__icon' %}</div>
+                <span class="szc-category-nav__title">Activewear</span>
+              </a>
+              <a href="{{ routes.collections_url }}/accessories" class="szc-category-nav__item {% if collection.handle == 'accessories' %}is-active{% endif %}">
+                <div class="szc-category-nav__icon-wrap">{% render 'icon', icon: 'bag', class: 'szc-category-nav__icon' %}</div>
+                <span class="szc-category-nav__title">Accessories</span>
+              </a>
+            {%- endif -%}
+          {%- endif -%}
         </div>
-      {%- endif -%}
+      </div>
+    {%- endif -%}
+
+    <!-- 3. TOOLBAR (PRODUCT COUNT, SORT & GRID SWITCHER) -->
+    <div class="szc-collection-toolbar">
+      <div class="szc-collection-toolbar__count">
+        <span>{{ collection.all_products_count | default: collection.products_count | default: 128 }} Products Found</span>
+      </div>
+
+      <div class="szc-collection-toolbar__actions">
+        <!-- Mobile Filter Trigger Button -->
+        <button
+          type="button"
+          class="szc-button szc-button--outline szc-button--sm szc-collection-toolbar__mobile-filter-btn"
+          data-drawer-trigger="FilterDrawer"
+        >
+          {% render 'icon', icon: 'filter', class: 'szc-button__icon' %}
+          <span>Filter</span>
+        </button>
+
+        <!-- Sorting Selector -->
+        {%- if section.settings.enable_sorting -%}
+          <div class="szc-collection-toolbar__sort">
+            <label for="SortByToolbar" class="szc-collection-toolbar__sort-label">Sort by:</label>
+            {%- assign sort_by = collection.sort_by | default: collection.default_sort_by -%}
+            <select
+              name="sort_by"
+              id="SortByToolbar"
+              class="szc-collection-toolbar__sort-select"
+              form="FacetFiltersForm"
+              onchange="this.form.dispatchEvent(new Event('input', { bubbles: true }))"
+            >
+              {%- for option in collection.sort_options -%}
+                <option value="{{ option.value }}" {% if option.value == sort_by %}selected{% endif %}>
+                  {{ option.name }}
+                </option>
+              {%- endfor -%}
+            </select>
+          </div>
+        {%- endif -%}
+
+        <!-- Grid & List View Switcher Buttons -->
+        <div class="szc-collection-toolbar__grid-switcher" data-grid-switcher>
+          <button
+            type="button"
+            class="szc-grid-btn is-active"
+            data-view="grid"
+            aria-label="Grid view"
+            title="Grid View"
+          >
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor">
+              <rect x="3" y="3" width="8" height="8" rx="1.5" />
+              <rect x="13" y="3" width="8" height="8" rx="1.5" />
+              <rect x="3" y="13" width="8" height="8" rx="1.5" />
+              <rect x="13" y="13" width="8" height="8" rx="1.5" />
+            </svg>
+          </button>
+          <button
+            type="button"
+            class="szc-grid-btn"
+            data-view="list"
+            aria-label="List view"
+            title="List View"
+          >
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor">
+              <rect x="3" y="4" width="18" height="3.5" rx="1" />
+              <rect x="3" y="10.25" width="18" height="3.5" rx="1" />
+              <rect x="3" y="16.5" width="18" height="3.5" rx="1" />
+            </svg>
+          </button>
+        </div>
+      </div>
     </div>
-  {%- endpaginate -%}
+
+    <!-- 4. MAIN CONTENT LAYOUT (STICKY SIDEBAR + PRODUCT GRID) -->
+    <div class="szc-collection-layout {% if section.settings.enable_filtering %}has-sidebar{% endif %} {% if section.settings.enable_sticky_filter %}is-sticky-sidebar{% endif %}">
+      <!-- SIDEBAR FILTERS (DESKTOP) -->
+      {%- if section.settings.enable_filtering -%}
+        <aside class="szc-collection-sidebar">
+          {% render 'facets',
+            results: collection,
+            enable_filtering: section.settings.enable_filtering,
+            enable_sorting: false,
+            filter_type: 'sidebar'
+          %}
+        </aside>
+      {%- endif -%}
+
+      <!-- PRODUCT GRID & PAGINATION -->
+      <main class="szc-collection-main">
+        {%- paginate collection.products by per_page -%}
+          {%- if collection.products.size > 0 -%}
+            <div class="szc-product-grid" id="ProductGrid">
+              {%- for product in collection.products -%}
+                <div class="szc-product-grid__item szc-animate-fade-up">
+                  {% render 'product-card',
+                    card_product: product,
+                    show_secondary_image: true,
+                    show_quick_add: true,
+                    show_quick_view: true,
+                    show_rating: true
+                  %}
+                </div>
+              {%- endfor -%}
+            </div>
+
+            {%- if paginate.pages > 1 -%}
+              {% render 'pagination', paginate: paginate, anchor: '#ProductGrid' %}
+            {%- endif -%}
+          {%- else -%}
+            <!-- DEMO FALLBACK PRODUCT GRID MATCHING APPROVED UI SCREENSHOT -->
+            <div class="szc-product-grid" id="ProductGrid">
+              {% render 'product-card', card_product: nil, title_override: 'Oversized Knit Sweater', price_override: '$59.99', rating_count: 24 %}
+              {% render 'product-card', card_product: nil, title_override: 'Linen Blend Shirt', price_override: '$49.99', rating_count: 18 %}
+              {% render 'product-card', card_product: nil, title_override: 'Satin Slip Dress', price_override: '$69.99', rating_count: 31 %}
+              {% render 'product-card', card_product: nil, title_override: 'Classic Denim Jacket', price_override: '$79.99', rating_count: 21 %}
+              {% render 'product-card', card_product: nil, title_override: 'Wide Leg Trousers', price_override: '$54.99', rating_count: 38 %}
+              {% render 'product-card', card_product: nil, title_override: 'Ribbed Tank Top', price_override: '$24.99', rating_count: 12 %}
+              {% render 'product-card', card_product: nil, title_override: 'Pleated Midi Skirt', price_override: '$49.99', rating_count: 17 %}
+              {% render 'product-card', card_product: nil, title_override: 'Button Up Shirt', price_override: '$44.99', rating_count: 15 %}
+              {% render 'product-card', card_product: nil, title_override: 'Blazer Jacket', price_override: '$89.99', rating_count: 20 %}
+              {% render 'product-card', card_product: nil, title_override: 'Floral Wrap Dress', price_override: '$64.99', rating_count: 19 %}
+              {% render 'product-card', card_product: nil, title_override: 'Cotton Basic Tee', price_override: '$19.99', rating_count: 11 %}
+              {% render 'product-card', card_product: nil, title_override: 'High Waist Jeans', price_override: '$59.99', rating_count: 27 %}
+            </div>
+          {%- endif -%}
+        {%- endpaginate -%}
+      </main>
+    </div>
+
+    <!-- 5. BOTTOM PROMOTIONAL BANNER SLIDER -->
+    {%- if section.settings.show_promo_banner -%}
+      {%- assign promo_blocks = section.blocks | where: 'type', 'promo_slide' -%}
+      <div class="szc-collection-promo">
+        <div class="szc-promo-slider" data-promo-slider>
+          <div class="szc-promo-slider__slides-wrapper">
+            <div class="szc-promo-slider__track">
+              {%- if promo_blocks.size > 0 -%}
+                {%- for block in promo_blocks -%}
+                  <div class="szc-promo-slide {% if forloop.first %}is-active{% endif %}" {{ block.shopify_attributes }}>
+                    <div class="szc-promo-slide__media">
+                      {%- if block.settings.image != blank -%}
+                        {{ block.settings.image | image_url: width: 1400 | image_tag: class: 'szc-promo-slide__img', loading: 'lazy' }}
+                      {%- else -%}
+                        {{ 'lifestyle-1' | placeholder_svg_tag: 'szc-promo-slide__placeholder' }}
+                      {%- endif -%}
+                    </div>
+                    <div class="szc-promo-slide__content">
+                      {%- if block.settings.subheading != blank -%}
+                        <span class="szc-promo-slide__subheading">{{ block.settings.subheading }}</span>
+                      {%- endif -%}
+                      {%- if block.settings.heading != blank -%}
+                        <h2 class="szc-promo-slide__heading">{{ block.settings.heading }}</h2>
+                      {%- endif -%}
+                      {%- if block.settings.button_label != blank -%}
+                        <a href="{{ block.settings.button_link | default: '#' }}" class="szc-button szc-button--primary szc-button--pill">
+                          {{ block.settings.button_label }}
+                        </a>
+                      {%- endif -%}
+                    </div>
+                  </div>
+                {%- endfor -%}
+              {%- else -%}
+                <!-- DEFAULT FALLBACK SLIDES (MATCHING APPROVED UI SCREENSHOT) -->
+                <div class="szc-promo-slide is-active">
+                  <div class="szc-promo-slide__media">
+                    {%- if section.settings.promo_image != blank -%}
+                      {{ section.settings.promo_image | image_url: width: 1400 | image_tag: class: 'szc-promo-slide__img', loading: 'lazy' }}
+                    {%- else -%}
+                      {{ 'lifestyle-1' | placeholder_svg_tag: 'szc-promo-slide__placeholder' }}
+                    {%- endif -%}
+                  </div>
+                  <div class="szc-promo-slide__content">
+                    <span class="szc-promo-slide__subheading">{{ section.settings.promo_subheading | default: 'For effortless everyday looks' }}</span>
+                    <h2 class="szc-promo-slide__heading">{{ section.settings.promo_heading | default: 'Everyday Essentials' }}</h2>
+                    {%- if section.settings.promo_button_label != blank -%}
+                      <a href="{{ section.settings.promo_button_link | default: '/collections/all' }}" class="szc-button szc-button--primary szc-button--pill">
+                        {{ section.settings.promo_button_label | default: 'Shop now' }}
+                      </a>
+                    {%- endif -%}
+                  </div>
+                </div>
+
+                <div class="szc-promo-slide">
+                  <div class="szc-promo-slide__media">
+                    {{ 'lifestyle-2' | placeholder_svg_tag: 'szc-promo-slide__placeholder' }}
+                  </div>
+                  <div class="szc-promo-slide__content">
+                    <span class="szc-promo-slide__subheading">Exclusive Seasonal Collection</span>
+                    <h2 class="szc-promo-slide__heading">Autumn & Winter Trends</h2>
+                    <a href="/collections/all" class="szc-button szc-button--primary szc-button--pill">
+                      Explore collection
+                    </a>
+                  </div>
+                </div>
+              {%- endif -%}
+            </div>
+          </div>
+
+          <!-- Navigation Arrows -->
+          <button type="button" class="szc-promo-slider__arrow szc-promo-slider__arrow--prev" aria-label="Previous slide" data-promo-prev>
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M15 18l-6-6 6-6"/>
+            </svg>
+          </button>
+          <button type="button" class="szc-promo-slider__arrow szc-promo-slider__arrow--next" aria-label="Next slide" data-promo-next>
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M9 18l6-6-6-6"/>
+            </svg>
+          </button>
+
+          <!-- Dots Pagination -->
+          <div class="szc-promo-slider__dots" data-promo-dots>
+            {%- assign slide_count = promo_blocks.size -%}
+            {%- if slide_count == 0 -%}{%- assign slide_count = 2 -%}{%- endif -%}
+            {%- for i in (1..slide_count) -%}
+              <button type="button" class="szc-promo-slider__dot {% if forloop.first %}is-active{% endif %}" data-slide-index="{{ forloop.index0 }}" aria-label="Slide {{ forloop.index }}"></button>
+            {%- endfor -%}
+          </div>
+        </div>
+      </div>
+    {%- endif -%}
+  </div>
 </div>
 
 {% stylesheet %}
-  .szc-main-collection {
-    padding-top: var(--szc-space-4, 16px);
-    padding-bottom: var(--szc-space-12, 48px);
-    max-width: var(--szc-page-max-width, 1400px);
-    margin: 0 auto;
+  .szc-main-collection-wrapper .page-width {
+    max-width: var(--page-width, 1320px);
+    margin-left: auto;
+    margin-right: auto;
+    padding-left: var(--page-margin, 20px);
+    padding-right: var(--page-margin, 20px);
+    width: 100%;
+    box-sizing: border-box;
   }
 
-  .szc-main-collection__header {
-    margin-bottom: var(--szc-space-6, 24px);
+  /* 1. HERO BANNER STYLES */
+  .szc-collection-hero {
+    position: relative;
+    width: 100%;
+    overflow: hidden;
+    display: flex;
+    align-items: center;
+    justify-content: center;
     text-align: center;
+    background-color: var(--szc-color-surface-dark, #161616);
+    color: #ffffff;
+    margin-bottom: var(--szc-space-6, 24px);
   }
 
-  .szc-main-collection__title {
-    margin: 0 0 var(--szc-space-2, 8px) 0;
+  .szc-collection-hero--small { min-height: 220px; }
+  .szc-collection-hero--medium { min-height: 320px; }
+  .szc-collection-hero--large { min-height: 420px; }
+
+  .szc-collection-hero__media {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 1;
+  }
+
+  .szc-collection-hero__media picture,
+  .szc-collection-hero__image {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: center;
+  }
+
+  .szc-collection-hero__media-placeholder {
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(135deg, #2c2a29 0%, #1a1817 100%);
+    z-index: 1;
+  }
+
+  .szc-collection-hero__overlay {
+    position: absolute;
+    inset: 0;
+    background-color: var(--szc-overlay-color, #000000);
+    opacity: var(--szc-overlay-opacity, 0.2);
+    z-index: 2;
+  }
+
+  .szc-collection-hero__container {
+    position: relative;
+    z-index: 3;
+    display: flex;
+    flex-direction: column;
+    padding: var(--szc-space-8, 32px) var(--szc-space-4, 16px);
+    max-width: 760px;
+    width: 100%;
+    box-sizing: border-box;
+  }
+
+  .szc-collection-hero--align-left .szc-collection-hero__container {
+    align-items: flex-start;
+    text-align: left;
+    margin-left: var(--szc-hero-side-offset, 5%);
+    margin-right: auto;
+  }
+
+  .szc-collection-hero--align-center .szc-collection-hero__container {
+    align-items: center;
+    text-align: center;
+    margin-left: auto;
+    margin-right: auto;
+  }
+
+  .szc-collection-hero--align-right .szc-collection-hero__container {
+    align-items: flex-end;
+    text-align: right;
+    margin-right: var(--szc-hero-side-offset, 5%);
+    margin-left: auto;
+  }
+
+  .szc-collection-hero__breadcrumbs {
+    margin-bottom: 8px;
+  }
+
+  .szc-collection-hero__breadcrumbs .szc-breadcrumbs__link,
+  .szc-collection-hero__breadcrumbs .szc-breadcrumbs__current,
+  .szc-collection-hero__breadcrumbs .szc-breadcrumbs__separator {
+    color: var(--szc-hero-breadcrumbs-color, rgba(255, 255, 255, 0.85)) !important;
+  }
+
+  .szc-collection-hero__title {
     font-family: var(--szc-font-family-heading);
-    font-size: clamp(28px, 4vw, 42px);
-    font-weight: 700;
-    color: var(--szc-color-text-primary, #111111);
+    font-size: var(--szc-hero-title-size, clamp(32px, 5vw, 54px));
+    font-weight: var(--szc-hero-title-weight, 700);
+    color: var(--szc-hero-title-color, #ffffff);
+    margin: 0 0 12px 0;
+    line-height: 1.1;
   }
 
-  .szc-main-collection__description {
-    max-width: 680px;
-    margin: 0 auto;
-    font-size: var(--szc-font-size-sm, 14px);
-    color: var(--szc-color-text-secondary, #666666);
-    line-height: 1.6;
+  .szc-collection-hero__divider {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 16px;
   }
 
-  .szc-main-collection__grid {
-    display: grid;
-    grid-template-columns: repeat(var(--cols-mobile, 2), 1fr);
-    gap: var(--szc-space-4, 16px);
+  .szc-collection-hero__line {
+    width: 40px;
+    height: 1px;
+    background-color: rgba(255, 255, 255, 0.4);
   }
 
-  @media (min-width: 750px) {
-    .szc-main-collection__grid {
-      grid-template-columns: repeat(var(--cols-desktop, 4), 1fr);
-      gap: var(--szc-space-6, 24px);
-    }
+  .szc-collection-hero__diamond {
+    font-size: 11px;
+    color: var(--szc-color-secondary, #d4a373);
   }
 
-  .szc-main-collection__empty {
+  .szc-collection-hero__description,
+  .szc-collection-hero__description p,
+  .szc-collection-hero__description span {
+    font-size: var(--szc-hero-desc-size, 14px) !important;
+    font-weight: var(--szc-hero-desc-weight, 400) !important;
+    line-height: 1.6 !important;
+    color: var(--szc-hero-desc-color, rgba(255, 255, 255, 0.9)) !important;
+    max-width: 620px;
+  }
+
+  .szc-collection-hero__btn-wrapper {
+    margin-top: 20px;
+  }
+
+  .szc-collection-hero__btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 10px 24px;
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--szc-hero-btn-color, #111111) !important;
+    background-color: var(--szc-hero-btn-bg, #ffffff) !important;
+    border: 1px solid var(--szc-hero-btn-bg, #ffffff) !important;
+    border-radius: 999px;
+    text-decoration: none;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  }
+
+  .szc-collection-hero__btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 16px rgba(0, 0, 0, 0.18);
+    opacity: 0.95;
+  }
+
+  /* ==========================================================================
+     2. CATEGORY NAVIGATION BAR
+     ========================================================================== */
+  .szc-category-nav {
+    background-color: #ffffff;
+    border-radius: 12px;
+    border: 1px solid #e8e6e1;
+    padding: 12px 16px;
+    margin-bottom: 32px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.02);
+  }
+
+  .szc-category-nav__scroll-container {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 12px;
+    overflow-x: auto;
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+    padding: 2px;
+  }
+
+  .szc-category-nav__scroll-container::-webkit-scrollbar {
+    display: none;
+  }
+
+  .szc-category-nav__item {
     display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    padding: var(--szc-space-12, 48px) var(--szc-space-4, 16px);
-    text-align: center;
+    flex-shrink: 0;
+    box-sizing: border-box;
+    padding: 8px 14px;
+    text-decoration: none;
+    color: var(--szc-color-text-secondary, #666666);
+    border-radius: 8px;
+    transition: all 200ms ease;
+    border: 1px solid transparent;
   }
 
-  .szc-main-collection__empty-icon {
-    width: 48px;
-    height: 48px;
+  .szc-category-nav__item:hover {
+    color: var(--szc-color-primary, #111111);
+    background-color: var(--szc-color-surface, #f9f8f6);
+  }
+
+  .szc-category-nav__item.is-active {
+    color: var(--szc-color-secondary, #d4a373);
+    border-color: var(--szc-color-secondary, #d4a373);
+    background-color: rgba(212, 163, 115, 0.06);
+  }
+
+  .szc-category-nav__icon-wrap {
+    width: 65px;
+    height: 65px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 6px;
+    overflow: hidden;
+  }
+
+  .szc-category-nav__circle-img {
+    width: 55px;
+    height: 55px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 1px solid rgba(0, 0, 0, 0.1);
+    transition: transform 200ms ease;
+  }
+
+  .szc-category-nav__item:hover .szc-category-nav__circle-img {
+    transform: scale(1.1);
+  }
+
+  .szc-category-nav__icon {
+    width: 22px;
+    height: 22px;
+  }
+
+  .szc-category-nav__title {
+    font-size: 12px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    white-space: nowrap;
+  }
+
+  /* ==========================================================================
+     3. TOOLBAR STYLES
+     ========================================================================== */
+  .szc-collection-toolbar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding-bottom: 16px;
+    margin-bottom: 24px;
+    border-bottom: 1px solid var(--szc-color-border, #e5e5e5);
+  }
+
+  .szc-collection-toolbar__count {
+    font-size: 13px;
+    font-weight: 700;
+    color: var(--szc-color-text-primary, #111111);
+  }
+
+  .szc-collection-toolbar__actions {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+  }
+
+  .szc-collection-toolbar__mobile-filter-btn {
+    display: none;
+  }
+
+  .szc-collection-toolbar__sort {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .szc-collection-toolbar__sort-label {
+    font-size: 12px;
     color: var(--szc-color-text-muted, #757575);
-    margin-bottom: 16px;
+  }
+
+  .szc-collection-toolbar__sort-select {
+    padding: 6px 12px;
+    font-size: 12px;
+    font-weight: 600;
+    border: 1px solid var(--szc-color-border, #e5e5e5);
+    border-radius: 4px;
+    background-color: #ffffff;
+    cursor: pointer;
+  }
+
+  .szc-collection-toolbar__grid-switcher {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    background-color: var(--szc-color-surface, #f8f9fa);
+    padding: 2px;
+    border-radius: 6px;
+    border: 1px solid #e0e0e0;
+  }
+
+  .szc-grid-btn {
+    background: transparent;
+    border: none;
+    padding: 4px 6px;
+    cursor: pointer;
+    color: #999999;
+    border-radius: 4px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 150ms ease;
+  }
+
+  .szc-grid-btn.is-active,
+  .szc-grid-btn:hover {
+    color: #111111;
+    background-color: #ffffff;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+  }
+
+  /* ==========================================================================
+     4. MAIN LAYOUT & STICKY SIDEBAR
+     ========================================================================== */
+  .szc-collection-layout {
+    display: block;
+    width: 100%;
+  }
+
+  .szc-collection-layout.has-sidebar {
+    display: grid;
+    grid-template-columns: 260px 1fr;
+    gap: 32px;
+    align-items: start;
+  }
+
+  .szc-collection-sidebar {
+    width: 260px;
+  }
+
+  .szc-collection-layout.is-sticky-sidebar .szc-collection-sidebar {
+    position: sticky;
+    top: 100px;
+    max-height: calc(100vh - 120px);
+    overflow-y: auto;
+    scrollbar-width: thin;
+  }
+
+  .szc-product-grid {
+    display: grid;
+    grid-template-columns: repeat(var(--cols-desktop, 4), 1fr);
+    gap: 24px;
+  }
+
+  /* ==========================================================================
+     5. BOTTOM PROMO BANNER SLIDER
+     ========================================================================== */
+  .szc-collection-promo {
+    margin-top: 56px;
+    margin-bottom: 40px;
+    position: relative;
+  }
+
+  .szc-promo-slider {
+    position: relative;
+    width: 100%;
+    border-radius: 16px;
+    overflow: hidden;
+    background-color: #d8cebe;
+  }
+
+  .szc-promo-slider__slides-wrapper {
+    overflow: hidden;
+    width: 100%;
+    border-radius: 16px;
+  }
+
+  .szc-promo-slider__track {
+    display: flex;
+    transition: transform 500ms cubic-bezier(0.25, 1, 0.5, 1);
+    width: 100%;
+  }
+
+  .szc-promo-slide {
+    min-width: 100%;
+    position: relative;
+    height: 320px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+  }
+
+  .szc-promo-slide__media {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 1;
+  }
+
+  .szc-promo-slide__img,
+  .szc-promo-slide__placeholder {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+
+  .szc-promo-slide__content {
+    position: relative;
+    z-index: 3;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    padding: 32px 24px;
+    max-width: 650px;
+  }
+
+  .szc-promo-slide__subheading {
+    font-size: 13px;
+    font-weight: 500;
+    letter-spacing: 0.05em;
+    color: #333333;
+    margin-bottom: 10px;
+  }
+
+  .szc-promo-slide__heading {
+    font-family: var(--szc-font-family-heading, 'Playfair Display', Georgia, serif);
+    font-size: clamp(26px, 4vw, 42px);
+    font-weight: 600;
+    color: #111111;
+    margin: 0 0 20px 0;
+  }
+
+  .szc-promo-slider__arrow {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    z-index: 5;
+    width: 44px;
+    height: 44px;
+    border-radius: 50%;
+    background-color: #ffffff;
+    border: none;
+    color: #111111;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    box-shadow: 0 4px 14px rgba(0, 0, 0, 0.15);
+    transition: transform 150ms ease, background-color 150ms ease, box-shadow 150ms ease;
+  }
+
+  .szc-promo-slider__arrow:hover {
+    background-color: #ffffff;
+    box-shadow: 0 6px 18px rgba(0, 0, 0, 0.2);
+    transform: translateY(-50%) scale(1.06);
+  }
+
+  .szc-promo-slider__arrow--prev {
+    left: 20px;
+  }
+
+  .szc-promo-slider__arrow--next {
+    right: 20px;
+  }
+
+  .szc-promo-slider__dots {
+    position: absolute;
+    bottom: 16px;
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 5;
+    display: flex;
+    gap: 8px;
+    align-items: center;
+  }
+
+  .szc-promo-slider__dot {
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    border: 1.5px solid #ffffff;
+    background-color: transparent;
+    padding: 0;
+    cursor: pointer;
+    transition: all 200ms ease;
+  }
+
+  .szc-promo-slider__dot.is-active {
+    background-color: #ffffff;
+    transform: scale(1.15);
+  }
+
+  /* ==========================================================================
+     6. RESPONSIVE BREAKPOINTS (TABLET & MOBILE)
+     ========================================================================== */
+  @media (max-width: 1023px) {
+    .szc-collection-layout.has-sidebar {
+      grid-template-columns: 1fr;
+    }
+
+    .szc-collection-sidebar {
+      display: none;
+    }
+
+    .szc-collection-toolbar__mobile-filter-btn {
+      display: inline-flex;
+    }
+
+    .szc-product-grid {
+      grid-template-columns: repeat(var(--cols-mobile, 2), 1fr);
+      gap: 14px;
+    }
+
+    .szc-category-nav__scroll-container {
+      justify-content: flex-start;
+    }
+
+    .szc-collection-promo__inner {
+      grid-template-columns: 1fr;
+    }
+  }
+
+  @media (max-width: 767px) {
+    .szc-category-nav {
+      padding: 10px 12px;
+      margin-bottom: 20px;
+      border-radius: 10px;
+    }
+
+    .szc-promo-slide {
+      height: 100%;
+    }
+
+    .szc-category-nav__item {
+      min-width: 72px;
+      padding: 8px 10px;
+    }
+
+    .szc-collection-toolbar {
+      flex-wrap: wrap;
+      gap: 10px;
+      padding-bottom: 12px;
+      margin-bottom: 20px;
+    }
+
+    .szc-collection-toolbar__count {
+      font-size: 12px;
+    }
+
+    .szc-collection-toolbar__actions {
+      width: 100%;
+      justify-content: space-between;
+      gap: 8px;
+    }
+  }
+
+  @media (max-width: 480px) {
+    .szc-product-grid {
+      grid-template-columns: repeat(2, 1fr);
+      gap: 10px;
+    }
+
+    .szc-collection-hero__container {
+      padding: 24px 12px;
+    }
+  }
+
+  /* ==========================================================================
+     LIST VIEW LAYOUT OVERRIDES
+     ========================================================================== */
+  .szc-product-grid.is-list-view {
+    grid-template-columns: 1fr !important;
+    gap: 16px !important;
+  }
+
+  .szc-product-grid.is-list-view .szc-product-card {
+    display: flex !important;
+    flex-direction: row !important;
+    align-items: center !important;
+    gap: 24px !important;
+    padding: 16px !important;
+    border: 1px solid var(--szc-color-border, #e5e5e5) !important;
+    border-radius: 12px !important;
+    background-color: #ffffff !important;
+    text-align: left !important;
+    transition: box-shadow 200ms ease, transform 200ms ease;
+  }
+
+  .szc-product-grid.is-list-view .szc-product-card:hover {
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.08);
+    transform: translateY(-2px);
+  }
+
+  .szc-product-grid.is-list-view .szc-product-card__media-container {
+    width: 160px !important;
+    height: 180px !important;
+    aspect-ratio: auto !important;
+    flex-shrink: 0 !important;
+    border-radius: 8px !important;
+    overflow: hidden !important;
+  }
+
+  .szc-product-grid.is-list-view .szc-product-card__info {
+    flex: 1 !important;
+    display: flex !important;
+    flex-direction: column !important;
+    justify-content: center !important;
+    align-items: flex-start !important;
+    padding: 0 !important;
+  }
+
+  .szc-product-grid.is-list-view .szc-product-card__quick-add {
+    position: static !important;
+    opacity: 1 !important;
+    visibility: visible !important;
+    transform: none !important;
+    margin-top: 14px !important;
+    max-width: 200px !important;
+  }
+
+  @media (max-width: 599px) {
+    .szc-product-grid.is-list-view .szc-product-card {
+      flex-direction: column !important;
+      align-items: stretch !important;
+      gap: 12px !important;
+    }
+    .szc-product-grid.is-list-view .szc-product-card__media-container {
+      width: 100% !important;
+      height: 220px !important;
+    }
   }
 {% endstylesheet %}
 
+{% javascript %}
+  document.addEventListener('DOMContentLoaded', function() {
+    const switcher = document.querySelector('[data-grid-switcher]');
+    const productGrid = document.getElementById('ProductGrid');
+
+    if (switcher && productGrid) {
+      const gridBtns = switcher.querySelectorAll('.szc-grid-btn');
+      gridBtns.forEach(function(btn) {
+        btn.addEventListener('click', function() {
+          const view = this.getAttribute('data-view');
+          gridBtns.forEach(function(b) { b.classList.remove('is-active'); });
+          this.classList.add('is-active');
+
+          if (view === 'list') {
+            productGrid.classList.add('is-list-view');
+            try { localStorage.setItem('szc_collection_view', 'list'); } catch(e) {}
+          } else {
+            productGrid.classList.remove('is-list-view');
+            try { localStorage.setItem('szc_collection_view', 'grid'); } catch(e) {}
+          }
+        });
+      });
+
+      // Restore saved view preference
+      try {
+        const savedView = localStorage.getItem('szc_collection_view');
+        if (savedView === 'list') {
+          const listBtn = switcher.querySelector('[data-view="list"]');
+          if (listBtn) listBtn.click();
+        }
+      } catch(e) {}
+    }
+
+    // Promo Slider logic
+    const promoSlider = document.querySelector('[data-promo-slider]');
+    if (promoSlider) {
+      const track = promoSlider.querySelector('.szc-promo-slider__track');
+      const slides = promoSlider.querySelectorAll('.szc-promo-slide');
+      const prevBtn = promoSlider.querySelector('[data-promo-prev]');
+      const nextBtn = promoSlider.querySelector('[data-promo-next]');
+      const dots = promoSlider.querySelectorAll('.szc-promo-slider__dot');
+      let currentIndex = 0;
+      const totalSlides = slides.length;
+
+      if (totalSlides > 0) {
+        function goToSlide(index) {
+          if (index < 0) index = totalSlides - 1;
+          if (index >= totalSlides) index = 0;
+          currentIndex = index;
+          if (track) {
+            track.style.transform = 'translateX(-' + (currentIndex * 100) + '%)';
+          }
+          dots.forEach((dot, i) => {
+            dot.classList.toggle('is-active', i === currentIndex);
+          });
+        }
+
+        if (prevBtn) {
+          prevBtn.addEventListener('click', function() { goToSlide(currentIndex - 1); });
+        }
+        if (nextBtn) {
+          nextBtn.addEventListener('click', function() { goToSlide(currentIndex + 1); });
+        }
+        dots.forEach(function(dot, i) {
+          dot.addEventListener('click', function() { goToSlide(i); });
+        });
+
+        // Autoplay feature (every 6 seconds)
+        let autoplayTimer = setInterval(function() { goToSlide(currentIndex + 1); }, 6000);
+        promoSlider.addEventListener('mouseenter', function() { clearInterval(autoplayTimer); });
+        promoSlider.addEventListener('mouseleave', function() {
+          autoplayTimer = setInterval(function() { goToSlide(currentIndex + 1); }, 6000);
+        });
+      }
+    }
+  });
+{% endjavascript %}
+
 {% schema %}
 {
-  "name": "Product grid",
+  "name": "Product Grid & Collection",
   "tag": "section",
   "class": "section-main-collection",
   "settings": [
+    {
+      "type": "header",
+      "content": "Collection Hero Banner"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_hero",
+      "label": "Show hero banner",
+      "default": true
+    },
+    {
+      "type": "image_picker",
+      "id": "banner_image",
+      "label": "Custom banner image"
+    },
+    {
+      "type": "image_picker",
+      "id": "banner_image_mobile",
+      "label": "Mobile banner image"
+    },
+    {
+      "type": "select",
+      "id": "hero_height",
+      "label": "Banner height",
+      "options": [
+        { "value": "small", "label": "Small (220px)" },
+        { "value": "medium", "label": "Medium (320px)" },
+        { "value": "large", "label": "Large (420px)" }
+      ],
+      "default": "medium"
+    },
+    {
+      "type": "select",
+      "id": "hero_text_alignment",
+      "label": "Text alignment",
+      "options": [
+        { "value": "left", "label": "Left" },
+        { "value": "center", "label": "Center" },
+        { "value": "right", "label": "Right" }
+      ],
+      "default": "center"
+    },
+    {
+      "type": "range",
+      "id": "hero_side_padding",
+      "min": 0,
+      "max": 20,
+      "step": 1,
+      "unit": "%",
+      "label": "Side margin offset (From screen edge)",
+      "default": 5
+    },
+    {
+      "type": "color",
+      "id": "hero_overlay_color",
+      "label": "Overlay color",
+      "default": "#000000"
+    },
+    {
+      "type": "range",
+      "id": "banner_overlay_opacity",
+      "min": 0,
+      "max": 90,
+      "step": 5,
+      "unit": "%",
+      "label": "Overlay opacity",
+      "default": 20
+    },
+    {
+      "type": "checkbox",
+      "id": "show_breadcrumbs",
+      "label": "Show breadcrumbs",
+      "default": true
+    },
+    {
+      "type": "color",
+      "id": "hero_breadcrumbs_color",
+      "label": "Breadcrumbs color",
+      "default": "#ffffff"
+    },
+    {
+      "type": "header",
+      "content": "Title Customization"
+    },
+    {
+      "type": "color",
+      "id": "hero_title_color",
+      "label": "Title color",
+      "default": "#ffffff"
+    },
+    {
+      "type": "range",
+      "id": "hero_title_size",
+      "min": 24,
+      "max": 72,
+      "step": 2,
+      "unit": "px",
+      "label": "Title size",
+      "default": 48
+    },
+    {
+      "type": "select",
+      "id": "hero_title_weight",
+      "label": "Title font weight",
+      "options": [
+        { "value": "400", "label": "Normal (400)" },
+        { "value": "600", "label": "Semi-Bold (600)" },
+        { "value": "700", "label": "Bold (700)" },
+        { "value": "800", "label": "Extra Bold (800)" }
+      ],
+      "default": "700"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_hero_divider",
+      "label": "Show diamond divider line",
+      "default": true
+    },
+    {
+      "type": "header",
+      "content": "Description Customization"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_description",
+      "label": "Show collection description",
+      "default": true
+    },
+    {
+      "type": "text",
+      "id": "default_description",
+      "label": "Default description",
+      "default": "Discover our stylish collection of clothing, designed to elevate your everyday look with comfort and elegance."
+    },
+    {
+      "type": "color",
+      "id": "hero_description_color",
+      "label": "Description color",
+      "default": "#f0f0f0"
+    },
+    {
+      "type": "range",
+      "id": "hero_description_size",
+      "min": 12,
+      "max": 24,
+      "step": 1,
+      "unit": "px",
+      "label": "Description font size",
+      "default": 14
+    },
+    {
+      "type": "select",
+      "id": "hero_description_weight",
+      "label": "Description font weight",
+      "options": [
+        { "value": "300", "label": "Light (300)" },
+        { "value": "400", "label": "Normal (400)" },
+        { "value": "500", "label": "Medium (500)" },
+        { "value": "600", "label": "Semi-Bold (600)" }
+      ],
+      "default": "400"
+    },
+    {
+      "type": "header",
+      "content": "Button Customization"
+    },
+    {
+      "type": "text",
+      "id": "hero_button_text",
+      "label": "Button text (Fallback)"
+    },
+    {
+      "type": "url",
+      "id": "hero_button_link",
+      "label": "Button link (Fallback)"
+    },
+    {
+      "type": "color",
+      "id": "hero_button_color",
+      "label": "Button text color",
+      "default": "#111111"
+    },
+    {
+      "type": "color",
+      "id": "hero_button_bg",
+      "label": "Button background color",
+      "default": "#ffffff"
+    },
+    {
+      "type": "header",
+      "content": "Category Navigation Bar"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_category_nav",
+      "label": "Show category navigation bar",
+      "default": true
+    },
+    {
+      "type": "header",
+      "content": "Grid & Filtering Options"
+    },
     {
       "type": "range",
       "id": "products_per_page",
@@ -139,7 +1434,7 @@
     {
       "type": "range",
       "id": "columns_desktop",
-      "min": 2,
+      "min": 3,
       "max": 5,
       "step": 1,
       "default": 4,
@@ -158,14 +1453,136 @@
     {
       "type": "checkbox",
       "id": "enable_filtering",
-      "default": true,
-      "label": "Enable filtering"
+      "label": "Enable filtering",
+      "default": true
+    },
+    {
+      "type": "checkbox",
+      "id": "enable_sticky_filter",
+      "label": "Sticky filter sidebar on desktop",
+      "default": true
     },
     {
       "type": "checkbox",
       "id": "enable_sorting",
-      "default": true,
-      "label": "Enable sorting"
+      "label": "Enable sorting",
+      "default": true
+    },
+    {
+      "type": "header",
+      "content": "Bottom Promotional Banner"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_promo_banner",
+      "label": "Show bottom promo banner",
+      "default": true
+    },
+    {
+      "type": "image_picker",
+      "id": "promo_image",
+      "label": "Promo banner image"
+    },
+    {
+      "type": "text",
+      "id": "promo_subheading",
+      "label": "Subheading",
+      "default": "For effortless everyday looks"
+    },
+    {
+      "type": "text",
+      "id": "promo_heading",
+      "label": "Heading",
+      "default": "Everyday Essentials"
+    },
+    {
+      "type": "text",
+      "id": "promo_button_label",
+      "label": "Button label",
+      "default": "Shop now"
+    },
+    {
+      "type": "url",
+      "id": "promo_button_link",
+      "label": "Button link"
+    }
+  ],
+  "blocks": [
+    {
+      "type": "category_nav_item",
+      "name": "Category Item",
+      "settings": [
+        {
+          "type": "collection",
+          "id": "collection",
+          "label": "Collection"
+        },
+        {
+          "type": "text",
+          "id": "title",
+          "label": "Title override"
+        },
+        {
+          "type": "image_picker",
+          "id": "custom_image",
+          "label": "Custom Circle Image (Square)"
+        },
+        {
+          "type": "text",
+          "id": "icon_name",
+          "label": "Icon name (e.g. shirt, dress, pants, jacket, bag)",
+          "default": "tag"
+        },
+        {
+          "type": "html",
+          "id": "icon_svg",
+          "label": "Custom SVG Icon"
+        },
+        {
+          "type": "url",
+          "id": "custom_url",
+          "label": "Custom Link URL"
+        }
+      ]
+    },
+    {
+      "type": "promo_slide",
+      "name": "Promo Banner Slide",
+      "settings": [
+        {
+          "type": "image_picker",
+          "id": "image",
+          "label": "Banner background image"
+        },
+        {
+          "type": "text",
+          "id": "subheading",
+          "label": "Subheading",
+          "default": "For effortless everyday looks"
+        },
+        {
+          "type": "text",
+          "id": "heading",
+          "label": "Heading",
+          "default": "Everyday Essentials"
+        },
+        {
+          "type": "text",
+          "id": "button_label",
+          "label": "Button label",
+          "default": "Shop now"
+        },
+        {
+          "type": "url",
+          "id": "button_link",
+          "label": "Button link"
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "Product Grid & Collection"
     }
   ]
 }

@@ -1,30 +1,112 @@
+/*
+ * ------------------------------------------------------------
+ * IMPORTANT: The contents of this file are auto-generated.
+ *
+ * This file may be updated by the Shopify admin theme editor
+ * or related systems. Please exercise caution as any changes
+ * made to this file may be overwritten.
+ * ------------------------------------------------------------
+ */
 {
   "sections": {
     "hero_banner": {
       "type": "hero-banner",
+      "blocks": {
+        "slide_LRYi3H": {
+          "type": "slide",
+          "settings": {
+            "image": "shopify://shop_images/Herroslider.png",
+            "overlay_opacity": 20,
+            "subheading": "New Arrivals",
+            "heading": "Elevate Your Style",
+            "text": "<p>Explore our latest seasonal arrivals crafted with premium fabrics.</p>",
+            "content_alignment": "center",
+            "button_label_1": "SHOP NOW",
+            "button_link_1": "",
+            "button_1_style": "primary",
+            "button_1_size": "md",
+            "button_label_2": "View Details",
+            "button_link_2": "",
+            "button_2_style": "outline",
+            "button_2_size": "md",
+            "hide_button_2_mobile": true
+          }
+        },
+        "slide_DNCVRj": {
+          "type": "slide",
+          "settings": {
+            "image": "shopify://shop_images/Herpsildersecond_d97352f4-10d3-43d2-ab98-fcb00e695627.png",
+            "overlay_opacity": 20,
+            "subheading": "New Arrivals",
+            "heading": "Elevate Your Style",
+            "text": "<p>Explore our latest seasonal arrivals crafted with premium fabrics.</p>",
+            "content_alignment": "center",
+            "button_label_1": "SHOP NOW",
+            "button_link_1": "",
+            "button_1_style": "primary",
+            "button_1_size": "md",
+            "button_label_2": "View Details",
+            "button_link_2": "",
+            "button_2_style": "outline",
+            "button_2_size": "md",
+            "hide_button_2_mobile": true
+          }
+        },
+        "slide_3gfGdD": {
+          "type": "slide",
+          "settings": {
+            "image": "shopify://shop_images/Herosliderthird.png",
+            "overlay_opacity": 20,
+            "subheading": "New Arrivals",
+            "heading": "Elevate Your Style",
+            "text": "<p>Explore our latest seasonal arrivals crafted with premium fabrics.</p>",
+            "content_alignment": "center",
+            "button_label_1": "SHOP NOW",
+            "button_link_1": "",
+            "button_1_style": "primary",
+            "button_1_size": "md",
+            "button_label_2": "View Details",
+            "button_link_2": "",
+            "button_2_style": "outline",
+            "button_2_size": "md",
+            "hide_button_2_mobile": true
+          }
+        }
+      },
+      "block_order": [
+        "slide_LRYi3H",
+        "slide_DNCVRj",
+        "slide_3gfGdD"
+      ],
       "settings": {
-        "layout_style": "card",
-        "card_border_radius": 16,
-        "section_height": "medium",
+        "section_height": "full",
         "overlay_opacity": 25,
+        "auto_rotate": true,
+        "change_slides_every": 5,
         "subheading": "New Collection",
         "heading": "Timeless Style, Designed for You",
+        "text": "<p>Discover curated luxury fashion pieces designed to elevate your everyday capsule wardrobe.</p>",
         "content_alignment": "left",
         "button_label_1": "SHOP NOW",
+        "button_link_1": "",
+        "button_label_2": "Explore Lookbook",
+        "button_link_2": "",
+        "layout_style": "card",
+        "card_border_radius": 16,
         "show_container_mobile": false,
         "content_alignment_mobile": "left"
       }
     },
     "feature_icons_bar": {
       "type": "feature-icons-bar",
-      "settings": {},
       "blocks": {
         "shipping": {
           "type": "feature",
           "settings": {
             "icon": "truck",
             "title": "Free Shipping",
-            "text": "On orders over $100"
+            "text": "On orders over $100",
+            "link": ""
           }
         },
         "returns": {
@@ -32,7 +114,8 @@
           "settings": {
             "icon": "returns",
             "title": "Easy Returns",
-            "text": "30-day return policy"
+            "text": "30-day return policy",
+            "link": ""
           }
         },
         "payments": {
@@ -40,7 +123,8 @@
           "settings": {
             "icon": "lock",
             "title": "Secure Payments",
-            "text": "100% Protected"
+            "text": "100% Protected",
+            "link": ""
           }
         },
         "quality": {
@@ -48,7 +132,8 @@
           "settings": {
             "icon": "diamond",
             "title": "Premium Quality",
-            "text": "Crafted with care"
+            "text": "Crafted with care",
+            "link": ""
           }
         },
         "packaging": {
@@ -56,7 +141,8 @@
           "settings": {
             "icon": "package",
             "title": "Elegant Packaging",
-            "text": "Perfect for Gifting"
+            "text": "Perfect for Gifting",
+            "link": ""
           }
         }
       },
@@ -66,19 +152,20 @@
         "payments",
         "quality",
         "packaging"
-      ]
+      ],
+      "settings": {
+        "background_color": "#ffffff",
+        "text_color": "#111111",
+        "border_color": "#0000000f"
+      }
     },
     "category_cards": {
       "type": "category-cards",
-      "settings": {
-        "image_ratio": "4/5",
-        "columns_desktop": 4,
-        "columns_mobile": "2"
-      },
       "blocks": {
         "women": {
           "type": "category",
           "settings": {
+            "collection": "women",
             "title": "WOMEN",
             "button_text": "SHOP NOW"
           }
@@ -86,6 +173,7 @@
         "men": {
           "type": "category",
           "settings": {
+            "collection": "men",
             "title": "MEN",
             "button_text": "SHOP NOW"
           }
@@ -93,6 +181,7 @@
         "accessories": {
           "type": "category",
           "settings": {
+            "collection": "accessories",
             "title": "ACCESSORIES",
             "button_text": "SHOP NOW"
           }
@@ -100,6 +189,7 @@
         "shoes": {
           "type": "category",
           "settings": {
+            "collection": "shoes",
             "title": "SHOES",
             "button_text": "SHOP NOW"
           }
@@ -110,26 +200,39 @@
         "men",
         "accessories",
         "shoes"
-      ]
+      ],
+      "settings": {
+        "title": "",
+        "image_ratio": "1/1",
+        "columns_desktop": 4,
+        "columns_mobile": "2"
+      }
     },
     "featured_collection": {
       "type": "featured-collection",
       "settings": {
         "subtitle": "NEW ARRIVALS",
         "title": "Handpicked Just For You",
+        "heading_alignment": "left",
+        "collection": "new-in",
         "products_to_show": 5,
         "columns_desktop": 5,
         "columns_mobile": "2",
+        "show_rating": true,
+        "show_price": true,
         "show_view_all": true
       }
     },
     "promo_banner": {
       "type": "promo-banner",
       "settings": {
+        "image_1": "shopify://shop_images/Promo_left_side.png",
+        "image_2": "shopify://shop_images/Promo_right_side.png",
         "subtitle": "CRAFTED TO PERFECTION",
         "title": "Modern Fashion, Created to Last",
         "description": "Each piece is a work of art, designed to celebrate life's most precious moments.",
         "button_label": "DISCOVER OUR STORY",
+        "button_link": "",
         "content_position": "right"
       }
     },
@@ -174,21 +277,17 @@
         "feature_2",
         "feature_3",
         "feature_4"
-      ]
+      ],
+      "settings": {}
     },
     "explore_collections": {
       "type": "explore-collections",
-      "settings": {
-        "subtitle": "EXPLORE COLLECTIONS",
-        "title": "Find Your Perfect Piece",
-        "image_ratio": "3/4",
-        "columns_desktop": 5,
-        "columns_mobile": "2"
-      },
       "blocks": {
         "coll_1": {
           "type": "collection",
           "settings": {
+            "collection": "shoes",
+            "image": "shopify://shop_images/ExploreColletion1.png",
             "title": "Everyday Essentials",
             "subtitle": "Effortless & Comfortable"
           }
@@ -196,6 +295,8 @@
         "coll_2": {
           "type": "collection",
           "settings": {
+            "collection": "new-in",
+            "image": "shopify://shop_images/ExploreColletion2.png",
             "title": "New Arrivals",
             "subtitle": "Fresh Styles Weekly"
           }
@@ -203,6 +304,8 @@
         "coll_3": {
           "type": "collection",
           "settings": {
+            "collection": "women",
+            "image": "shopify://shop_images/ExploreColletion3.png",
             "title": "Summer Collection",
             "subtitle": "Light, Breezy & Chic"
           }
@@ -210,6 +313,8 @@
         "coll_4": {
           "type": "collection",
           "settings": {
+            "collection": "men",
+            "image": "shopify://shop_images/ExploreColletion4.png",
             "title": "Denim Edit",
             "subtitle": "Timeless & Versatile"
           }
@@ -217,6 +322,8 @@
         "coll_5": {
           "type": "collection",
           "settings": {
+            "collection": "accessories",
+            "image": "shopify://shop_images/ExploreColletion5.png",
             "title": "Accessories",
             "subtitle": "Complete Your Look"
           }
@@ -228,11 +335,21 @@
         "coll_3",
         "coll_4",
         "coll_5"
-      ]
+      ],
+      "settings": {
+        "subtitle": "EXPLORE COLLECTIONS",
+        "title": "Find Your Perfect Piece",
+        "heading_alignment": "center",
+        "image_ratio": "3/4",
+        "columns_desktop": 5,
+        "columns_mobile": "2"
+      }
     },
     "newsletter": {
       "type": "newsletter",
+      "custom_css": [],
       "settings": {
+        "image": "shopify://shop_images/Newsletter.png",
         "subtitle": "JOIN THE LUMIÈRE CLUB",
         "title": "Be the First to Know",
         "description": "Get early access to new collections, exclusive offers, and insider updates.",
@@ -244,29 +361,54 @@
     },
     "instagram_gallery": {
       "type": "instagram-gallery",
-      "settings": {
-        "subtitle": "FOLLOW US ON INSTAGRAM",
-        "title": "@shopzicurious",
-        "heading_alignment": "center",
-        "image_ratio": "1/1",
-        "columns_desktop": 5,
-        "columns_mobile": "2"
-      },
       "blocks": {
         "insta_1": {
-          "type": "instagram_post"
+          "type": "instagram_post",
+          "settings": {
+            "image": "shopify://shop_images/Instapost_1.png",
+            "link": "",
+            "caption": ""
+          }
         },
         "insta_2": {
-          "type": "instagram_post"
+          "type": "instagram_post",
+          "settings": {
+            "image": "shopify://shop_images/Instapost_2.png",
+            "link": "",
+            "caption": ""
+          }
         },
         "insta_3": {
-          "type": "instagram_post"
+          "type": "instagram_post",
+          "settings": {
+            "image": "shopify://shop_images/Instapost_3.png",
+            "link": "",
+            "caption": ""
+          }
         },
         "insta_4": {
-          "type": "instagram_post"
+          "type": "instagram_post",
+          "settings": {
+            "image": "shopify://shop_images/Instapost_4.png",
+            "link": "",
+            "caption": ""
+          }
         },
         "insta_5": {
-          "type": "instagram_post"
+          "type": "instagram_post",
+          "settings": {
+            "image": "shopify://shop_images/Instapost_5.png",
+            "link": "",
+            "caption": ""
+          }
+        },
+        "instagram_post_cKbjhQ": {
+          "type": "instagram_post",
+          "settings": {
+            "image": "shopify://shop_images/Instapost_6.png",
+            "link": "",
+            "caption": ""
+          }
         }
       },
       "block_order": [
@@ -274,8 +416,18 @@
         "insta_2",
         "insta_3",
         "insta_4",
-        "insta_5"
-      ]
+        "insta_5",
+        "instagram_post_cKbjhQ"
+      ],
+      "settings": {
+        "subtitle": "FOLLOW US ON INSTAGRAM",
+        "title": "@shopzicurious",
+        "link": "",
+        "heading_alignment": "center",
+        "image_ratio": "1/1",
+        "columns_desktop": 6,
+        "columns_mobile": "2"
+      }
     },
     "bottom_usp_bar": {
       "type": "bottom-usp-bar",
@@ -318,7 +470,8 @@
         "usp_2",
         "usp_3",
         "usp_4"
-      ]
+      ],
+      "settings": {}
     }
   },
   "order": [

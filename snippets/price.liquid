@@ -89,13 +89,26 @@
 </div>
 
 {% stylesheet %}
+  .visually-hidden,
+  .szc-visually-hidden {
+    position: absolute !important;
+    width: 1px !important;
+    height: 1px !important;
+    padding: 0 !important;
+    margin: -1px !important;
+    overflow: hidden !important;
+    clip: rect(0, 0, 0, 0) !important;
+    white-space: nowrap !important;
+    border: 0 !important;
+  }
+
   .szc-price {
     display: inline-flex;
     align-items: center;
-    font-family: var(--szc-font-family-body);
-    font-size: var(--szc-font-size-base, 16px);
-    font-weight: var(--szc-font-weight-semibold, 600);
-    color: var(--szc-color-text-primary, #1a1a1a);
+    font-family: inherit;
+    font-size: 14px;
+    font-weight: 700;
+    color: #111111;
     line-height: 1.2;
   }
 
@@ -103,22 +116,34 @@
     display: flex;
     align-items: center;
     flex-wrap: wrap;
-    gap: var(--szc-space-2, 8px);
+    gap: 6px;
+  }
+
+  .szc-price__sale,
+  .szc-price__regular {
+    display: inline-flex;
+    align-items: center;
+  }
+
+  .szc-price__item {
+    font-weight: 700;
+    color: #111111;
   }
 
   .szc-price__item--sale {
-    color: var(--szc-color-accent, #e76f51);
+    color: #111111;
     font-weight: 700;
   }
 
   .szc-price__item--regular {
-    color: var(--szc-color-text-muted, #757575);
+    color: #111111;
   }
 
   s.szc-price__item--regular {
-    text-decoration: line-through;
+    color: #999999 !important;
+    text-decoration: line-through !important;
     font-size: 0.9em;
-    font-weight: 400;
+    font-weight: 400 !important;
   }
 
   .szc-price__badge {

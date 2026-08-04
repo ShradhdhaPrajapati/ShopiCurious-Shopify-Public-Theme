@@ -1,13 +1,149 @@
+/*
+ * ------------------------------------------------------------
+ * IMPORTANT: The contents of this file are auto-generated.
+ *
+ * This file may be updated by the Shopify admin theme editor
+ * or related systems. Please exercise caution as any changes
+ * made to this file may be overwritten.
+ * ------------------------------------------------------------
+ */
 {
   "sections": {
     "main": {
       "type": "main-collection",
+      "blocks": {
+        "category_nav_item_Retfeb": {
+          "type": "category_nav_item",
+          "settings": {
+            "collection": "new-in",
+            "title": "NEW IN",
+            "custom_image": "shopify://shop_images/WideLegTrousers_ee47b5ac-5ba4-4fe8-afcd-a33641f87180.png",
+            "icon_name": "tag",
+            "icon_svg": "",
+            "custom_url": ""
+          }
+        },
+        "category_nav_item_YEGcW6": {
+          "type": "category_nav_item",
+          "settings": {
+            "collection": "frontpage",
+            "title": "HOME",
+            "custom_image": "shopify://shop_images/CashmereSweater1_1bd8f65c-ae2a-4f12-ab7a-716810085c5c.png",
+            "icon_name": "tag",
+            "icon_svg": "",
+            "custom_url": ""
+          }
+        },
+        "category_nav_item_pdgPkb": {
+          "type": "category_nav_item",
+          "settings": {
+            "collection": "men",
+            "title": "MEN",
+            "custom_image": "shopify://shop_images/Categorycard2.png",
+            "icon_name": "tag",
+            "icon_svg": "",
+            "custom_url": ""
+          }
+        },
+        "category_nav_item_GQPGc7": {
+          "type": "category_nav_item",
+          "settings": {
+            "collection": "accessories",
+            "title": "ACCESSORIES",
+            "custom_image": "shopify://shop_images/Categorycard3.png",
+            "icon_name": "tag",
+            "icon_svg": "",
+            "custom_url": ""
+          }
+        },
+        "category_nav_item_cFjwDJ": {
+          "type": "category_nav_item",
+          "settings": {
+            "collection": "shoes",
+            "title": "SHOES",
+            "custom_image": "shopify://shop_images/Categorycard4.png",
+            "icon_name": "tag",
+            "icon_svg": "",
+            "custom_url": ""
+          }
+        },
+        "category_nav_item_ntVX3e": {
+          "type": "category_nav_item",
+          "settings": {
+            "collection": "",
+            "title": "WOMEN",
+            "custom_image": "shopify://shop_images/categorycard1.png",
+            "icon_name": "tag",
+            "icon_svg": "",
+            "custom_url": "shopify://collections/women"
+          }
+        },
+        "promo_slide_HaMg69": {
+          "type": "promo_slide",
+          "settings": {
+            "image": "shopify://shop_images/collectionpagebnner2.png",
+            "subheading": "For effortless everyday looks",
+            "heading": "Everyday Essentials",
+            "button_label": "Shop now",
+            "button_link": ""
+          }
+        },
+        "promo_slide_BGcnG3": {
+          "type": "promo_slide",
+          "settings": {
+            "image": "shopify://shop_images/collectionpageslide1.png",
+            "subheading": "For effortless everyday looks",
+            "heading": "Everyday Essentials",
+            "button_label": "Shop now",
+            "button_link": ""
+          }
+        }
+      },
+      "block_order": [
+        "category_nav_item_Retfeb",
+        "category_nav_item_YEGcW6",
+        "category_nav_item_pdgPkb",
+        "category_nav_item_GQPGc7",
+        "category_nav_item_cFjwDJ",
+        "category_nav_item_ntVX3e",
+        "promo_slide_HaMg69",
+        "promo_slide_BGcnG3"
+      ],
       "settings": {
+        "show_hero": true,
+        "banner_image": "shopify://shop_images/Allproductsbanner.png",
+        "hero_height": "medium",
+        "hero_text_alignment": "left",
+        "hero_side_padding": 5,
+        "hero_overlay_color": "#000000",
+        "banner_overlay_opacity": 20,
+        "show_breadcrumbs": true,
+        "hero_breadcrumbs_color": "#000000",
+        "hero_title_color": "#000000",
+        "hero_title_size": 48,
+        "hero_title_weight": "700",
+        "show_hero_divider": false,
+        "show_description": true,
+        "default_description": "Discover our stylish collection of clothing, designed to elevate your everyday look with comfort and elegance.",
+        "hero_description_color": "#000000",
+        "hero_description_size": 14,
+        "hero_description_weight": "400",
+        "hero_button_text": "SHOP NOW",
+        "hero_button_link": "shopify://collections/accessories",
+        "hero_button_color": "#111111",
+        "hero_button_bg": "#d4d3cb",
+        "show_category_nav": true,
         "products_per_page": 16,
         "columns_desktop": 4,
         "columns_mobile": "2",
         "enable_filtering": true,
-        "enable_sorting": true
+        "enable_sticky_filter": true,
+        "enable_sorting": true,
+        "show_promo_banner": true,
+        "promo_subheading": "For effortless everyday looks",
+        "promo_heading": "Everyday Essentials",
+        "promo_button_label": "Shop now",
+        "promo_button_link": ""
       }
     }
   },
