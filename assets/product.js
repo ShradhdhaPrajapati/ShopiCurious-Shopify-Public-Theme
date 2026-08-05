@@ -41,9 +41,21 @@
           throw new Error(responseData.description || 'Could not add item to bag');
         }
 
+        const cartType = (window.ShopziCurious && window.ShopziCurious.settings && window.ShopziCurious.settings.cartType) ? window.ShopziCurious.settings.cartType : 'drawer';
+
+        if (cartType === 'page') {
+          window.location.href = window.ShopziCurious.routes.cart_url || '/cart';
+          return;
+        }
+
+        // Fetch updated cart details
+        const cartRes = await fetch('/cart.js');
+        const cartData = await cartRes.json();
+
         // Publish Global Cart Update Event
         ShopziCurious.pubsub.publish(ShopziCurious.events.CART_UPDATED, {
           item: responseData,
+          item_count: cartData.item_count,
           openDrawer: true,
         });
       } catch (error) {

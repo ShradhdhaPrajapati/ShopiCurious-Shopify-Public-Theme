@@ -22,12 +22,54 @@
 {%- liquid
   assign product = card_product
   assign aspect_ratio = media_aspect_ratio | default: settings.product_card_aspect_ratio | default: '3/4'
-  assign show_secondary = show_secondary_image | default: settings.product_card_show_secondary_image | default: true
+  
+  assign show_secondary = true
+  if show_secondary_image == false
+    assign show_secondary = false
+  elsif show_secondary_image == true
+    assign show_secondary = true
+  elsif settings.product_card_show_secondary_image != blank
+    assign show_secondary = settings.product_card_show_secondary_image
+  endif
+
   assign show_brand = show_vendor | default: false
-  assign display_rating = show_rating | default: settings.product_card_show_rating | default: true
-  assign display_price = show_price | default: settings.product_card_show_price | default: true
-  assign show_view = show_quick_view | default: false
-  assign show_add = show_quick_add | default: settings.product_card_show_quick_add | default: true
+
+  assign display_rating = true
+  if show_rating == false
+    assign display_rating = false
+  elsif show_rating == true
+    assign display_rating = true
+  elsif settings.product_card_show_rating != blank
+    assign display_rating = settings.product_card_show_rating
+  endif
+
+  assign display_price = true
+  if show_price == false
+    assign display_price = false
+  elsif show_price == true
+    assign display_price = true
+  elsif settings.product_card_show_price != blank
+    assign display_price = settings.product_card_show_price
+  endif
+
+  assign show_view = true
+  if show_quick_view == false
+    assign show_view = false
+  elsif show_quick_view == true
+    assign show_view = true
+  elsif settings.product_card_show_quick_view != blank
+    assign show_view = settings.product_card_show_quick_view
+  endif
+
+  assign show_add = true
+  if show_quick_add == false
+    assign show_add = false
+  elsif show_quick_add == true
+    assign show_add = true
+  elsif settings.product_card_show_quick_add != blank
+    assign show_add = settings.product_card_show_quick_add
+  endif
+
   assign is_lazy = lazy_load | default: true
   assign custom_class = class | default: ''
 
@@ -167,6 +209,35 @@
           {%- endif -%}
         </div>
       {%- endif -%}
+
+      <!-- List View Quick Add / Add to Cart Button -->
+      {%- if show_add -%}
+        <div class="szc-product-card__list-add">
+          {%- if product.available -%}
+            {%- if product.has_only_default_variant -%}
+              <button
+                type="button"
+                class="szc-button szc-button--primary szc-button--sm szc-quick-add-btn"
+                data-variant-id="{{ product.selected_or_first_available_variant.id }}"
+              >
+                {% render 'icon', icon: 'bag', class: 'szc-button__icon' %}
+                <span>{{ 'products.product.add_to_cart' | t | default: 'Add to Cart' }}</span>
+              </button>
+            {%- else -%}
+              <a
+                href="{{ product.url }}"
+                class="szc-button szc-button--secondary szc-button--sm"
+              >
+                <span>{{ 'products.product.choose_options' | t | default: 'Choose Options' }}</span>
+              </a>
+            {%- endif -%}
+          {%- else -%}
+            <button type="button" class="szc-button szc-button--secondary szc-button--sm" disabled>
+              <span>{{ 'products.product.sold_out' | t | default: 'Sold Out' }}</span>
+            </button>
+          {%- endif -%}
+        </div>
+      {%- endif -%}
     </div>
   </product-card>
 {%- else -%}
@@ -197,6 +268,18 @@
             {%- endfor -%}
           </div>
           <span class="szc-product-card__review-count">({{ demo_reviews }})</span>
+        </div>
+      {%- endif -%}
+      <!-- List View Add to Cart Button for Demo -->
+      {%- if show_add -%}
+        <div class="szc-product-card__list-add">
+          <button
+            type="button"
+            class="szc-button szc-button--primary szc-button--sm szc-quick-add-btn"
+          >
+            {% render 'icon', icon: 'bag', class: 'szc-button__icon' %}
+            <span>Add to Cart</span>
+          </button>
         </div>
       {%- endif -%}
     </div>
@@ -331,6 +414,12 @@
   .szc-product-card:hover .szc-product-card__quick-add {
     opacity: 1;
     transform: translateY(0);
+  }
+
+  /* List View Add to Cart Button */
+  .szc-product-card__list-add {
+    display: none;
+    margin-top: 10px;
   }
 
   /* Info Details */

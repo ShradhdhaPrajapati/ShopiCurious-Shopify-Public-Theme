@@ -1,0 +1,45 @@
+/*
+ * ------------------------------------------------------------
+ * IMPORTANT: The contents of this file are auto-generated.
+ *
+ * This file may be updated by the Shopify admin theme editor
+ * or related systems. Please exercise caution as any changes
+ * made to this file may be overwritten.
+ * ------------------------------------------------------------
+ */
+{
+  "sections": {
+    "main": {
+      "type": "cart",
+      "settings": {}
+    },
+    "recommendations": {
+      "type": "product-recommendations",
+      "settings": {
+        "show_heading": true,
+        "heading": "YOU MAY ALSO LIKE",
+        "title_color": "#111111",
+        "title_size": 24,
+        "title_weight": "700",
+        "show_subtitle": false,
+        "subtitle": "COMPLETE THE LOOK",
+        "subtitle_color": "#757575",
+        "subtitle_size": 12,
+        "subtitle_weight": "600",
+        "heading_alignment": "left",
+        "products_to_show": 4,
+        "columns_desktop": 4,
+        "columns_mobile": "2",
+        "show_secondary_image": true,
+        "show_vendor": false,
+        "show_rating": true,
+        "show_price": true,
+        "show_quick_add": true
+      }
+    }
+  },
+  "order": [
+    "main",
+    "recommendations"
+  ]
+}

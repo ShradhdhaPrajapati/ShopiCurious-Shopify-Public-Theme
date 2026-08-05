@@ -91,17 +91,30 @@
         </a>
       {%- endif -%}
 
-      <!-- Cart Drawer Trigger Button -->
-      <button
-        type="button"
-        class="szc-header__icon-btn szc-cart-trigger"
-        aria-label="{{ 'sections.header.cart' | t | default: 'Shopping bag' }}"
-      >
-        {% render 'icon', icon: 'bag', class: 'szc-header__icon' %}
-        <span class="szc-header__cart-badge" data-cart-count="{{ cart.item_count }}">
-          {{ cart.item_count }}
-        </span>
-      </button>
+      <!-- Cart Icon (Drawer vs Page redirect based on settings.cart_type) -->
+      {%- if settings.cart_type == 'page' -%}
+        <a
+          href="{{ routes.cart_url }}"
+          class="szc-header__icon-btn"
+          aria-label="{{ 'sections.header.cart' | t | default: 'Shopping bag' }}"
+        >
+          {% render 'icon', icon: 'bag', class: 'szc-header__icon' %}
+          <span class="szc-header__cart-badge" data-cart-count="{{ cart.item_count }}">
+            {{ cart.item_count }}
+          </span>
+        </a>
+      {%- else -%}
+        <button
+          type="button"
+          class="szc-header__icon-btn szc-cart-trigger"
+          aria-label="{{ 'sections.header.cart' | t | default: 'Shopping bag' }}"
+        >
+          {% render 'icon', icon: 'bag', class: 'szc-header__icon' %}
+          <span class="szc-header__cart-badge" data-cart-count="{{ cart.item_count }}">
+            {{ cart.item_count }}
+          </span>
+        </button>
+      {%- endif -%}
     </div>
   </header>
 </sticky-header>

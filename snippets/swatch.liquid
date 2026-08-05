@@ -24,15 +24,51 @@
   assign color_bg_style = ''
 
   if swatch_type == 'color'
-    # Check for color mapping
-    assign color_bg_style = 'background-color: ' | append: color_handle | append: ';'
+    assign raw_color = value | downcase | strip
+    assign color_code = raw_color
 
-    # Check for custom image swatch asset in files
-    assign swatch_image_name = 'swatch-' | append: color_handle | append: '.png'
-    assign swatch_img_url = swatch_image_name | file_img_url: '50x50'
-    if swatch_img_url contains 'v='
-      assign color_bg_style = 'background-image: url(' | append: swatch_img_url | append: '); background-size: cover;'
-    endif
+    case raw_color
+      when 'beige'
+        assign color_code = '#d7c4b7'
+      when 'light blue'
+        assign color_code = '#7da2c8'
+      when 'dark blue' or 'navy'
+        assign color_code = '#1b2a4a'
+      when 'off white' or 'ivory' or 'cream'
+        assign color_code = '#f5f4ef'
+      when 'black'
+        assign color_code = '#111111'
+      when 'white'
+        assign color_code = '#ffffff'
+      when 'grey' or 'gray'
+        assign color_code = '#808080'
+      when 'heather grey' or 'light grey'
+        assign color_code = '#d3d3d3'
+      when 'charcoal' or 'dark grey'
+        assign color_code = '#333333'
+      when 'rose' or 'pink'
+        assign color_code = '#e8a5b8'
+      when 'olive' or 'green'
+        assign color_code = '#556b2f'
+      when 'khaki'
+        assign color_code = '#c3b091'
+      when 'brown' or 'tan'
+        assign color_code = '#8b4513'
+      when 'maroon' or 'burgundy'
+        assign color_code = '#800020'
+      when 'red'
+        assign color_code = '#d90429'
+      when 'yellow' or 'mustard'
+        assign color_code = '#e1ad01'
+      when 'peach' or 'coral'
+        assign color_code = '#ff7f50'
+      when 'purple' or 'lavender'
+        assign color_code = '#b8c0e0'
+      else
+        assign color_code = raw_color | replace: ' ', '' | replace: '-', ''
+    endcase
+
+    assign color_bg_style = 'background-color: ' | append: color_code | append: ';'
   endif
 -%}
 
@@ -42,9 +78,8 @@
     id="{{ input_id }}"
     name="{{ input_name }}"
     value="{{ swatch_val }}"
-    class="szc-swatch__input visually-hidden"
+    class="szc-swatch__input"
     {% if is_checked %}checked{% endif %}
-    {% if is_disabled %}disabled{% endif %}
   >
   <label
     for="{{ input_id }}"
@@ -62,8 +97,23 @@
 
 {% stylesheet %}
   .szc-swatch {
-    display: inline-block;
+    display: inline-flex;
     position: relative;
+    user-select: none;
+  }
+
+  /* Swatch Invisible Input Layer for 100% Reliability */
+  .szc-swatch__input {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    margin: 0;
+    padding: 0;
+    opacity: 0;
+    cursor: pointer;
+    z-index: 5;
   }
 
   /* Swatch Input Label Base */
@@ -72,60 +122,79 @@
     align-items: center;
     justify-content: center;
     cursor: pointer;
-    user-select: none;
     transition: all var(--szc-transition-fast, 150ms ease);
+    position: relative;
+    pointer-events: none;
   }
 
   /* Color Swatch Style */
+  .szc-swatch--color {
+    width: 36px;
+    height: 36px;
+  }
+
   .szc-swatch--color .szc-swatch__label {
-    width: 28px;
-    height: 28px;
+    width: 32px;
+    height: 32px;
     border-radius: 50%;
-    border: 1px solid var(--szc-color-border, #e5e5e5);
-    outline: 2px solid transparent;
-    outline-offset: 2px;
+    border: 1px solid #d0d0d0;
+    box-shadow: inset 0 0 0 1px rgba(0, 0, 0, 0.08);
+    margin: auto;
   }
 
   .szc-swatch--color .szc-swatch__input:checked + .szc-swatch__label {
-    outline-color: var(--szc-color-primary, #111111);
-    transform: scale(1.1);
+    box-shadow: 0 0 0 2px #ffffff, 0 0 0 4px #111111 !important;
+    transform: scale(1.08);
   }
 
   .szc-swatch--color:hover .szc-swatch__label {
-    transform: scale(1.1);
+    transform: scale(1.08);
   }
 
   /* Size / Text Swatch Style */
+  .szc-swatch--size,
+  .szc-swatch--text {
+    min-width: 48px;
+    height: 44px;
+  }
+
   .szc-swatch--size .szc-swatch__label,
   .szc-swatch--text .szc-swatch__label {
-    min-width: 40px;
-    height: 36px;
-    padding: 0 12px;
-    font-family: var(--szc-font-family-body);
-    font-size: var(--szc-font-size-xs, 12px);
+    width: 100%;
+    height: 100%;
+    padding: 0 18px;
+    font-family: var(--szc-font-family-body, sans-serif);
+    font-size: 13px;
     font-weight: 600;
-    color: var(--szc-color-text-primary, #2b2b2b);
-    background-color: var(--szc-color-surface, #f8f9fa);
-    border: 1px solid var(--szc-color-border, #e5e5e5);
-    border-radius: var(--szc-radius-button, 2px);
+    color: #111111;
+    background-color: #ffffff;
+    border: 1px solid #e2e8f0;
+    border-radius: 8px;
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.02);
   }
 
   .szc-swatch--size .szc-swatch__input:checked + .szc-swatch__label,
   .szc-swatch--text .szc-swatch__input:checked + .szc-swatch__label {
-    background-color: var(--szc-color-primary, #111111);
-    color: var(--szc-color-text-inverse, #ffffff);
-    border-color: var(--szc-color-primary, #111111);
+    background-color: #000000 !important;
+    color: #ffffff !important;
+    border-color: #000000 !important;
+    font-weight: 700 !important;
+    opacity: 1 !important;
+    text-decoration: none !important;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2) !important;
   }
 
   .szc-swatch--size:hover .szc-swatch__label,
   .szc-swatch--text:hover .szc-swatch__label {
-    border-color: var(--szc-color-primary, #111111);
+    border-color: #000000;
   }
 
-  /* Disabled State */
+  /* Unavailable / Disabled State */
+  .szc-swatch.is-disabled {
+    opacity: 0.45;
+  }
+
   .szc-swatch.is-disabled .szc-swatch__label {
-    opacity: 0.4;
-    cursor: not-allowed;
     text-decoration: line-through;
   }
 
@@ -133,9 +202,9 @@
     content: '';
     position: absolute;
     top: 50%;
-    left: -2px;
-    right: -2px;
-    height: 1px;
+    left: 2px;
+    right: 2px;
+    height: 1.5px;
     background-color: #e63946;
     transform: rotate(-45deg);
   }

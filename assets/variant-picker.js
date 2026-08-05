@@ -18,7 +18,6 @@
       this.updateMasterId();
 
       if (!this.currentVariant) {
-        this.updatePickupAvailability();
         this.setUnavailable();
       } else {
         this.updateMedia();
@@ -26,15 +25,24 @@
         this.updateVariantInput();
         this.renderProductInfo();
 
-        ShopziCurious.pubsub.publish(ShopziCurious.events.VARIANT_CHANGE, {
-          variant: this.currentVariant,
-          container: this,
-        });
+        if (window.ShopziCurious && ShopziCurious.pubsub) {
+          ShopziCurious.pubsub.publish(ShopziCurious.events.VARIANT_CHANGE, {
+            variant: this.currentVariant,
+            container: this,
+          });
+        }
       }
     }
 
     updateOptions() {
-      this.options = Array.from(this.querySelectorAll('select, fieldset input:checked'), (element) => element.value);
+      const fieldsets = Array.from(this.querySelectorAll('fieldset'));
+      if (fieldsets.length > 0) {
+        this.options = fieldsets.map((fieldset) => {
+          return Array.from(fieldset.querySelectorAll('input')).find((radio) => radio.checked)?.value;
+        });
+      } else {
+        this.options = Array.from(this.querySelectorAll('select, fieldset input:checked'), (element) => element.value);
+      }
     }
 
     updateMasterId() {
@@ -54,70 +62,68 @@
     }
 
     updateVariantInput() {
-      const productForms = document.querySelectorAll(`#product-form-${this.dataset.section}, #product-form-installment-${this.dataset.section}`);
+      const productForms = document.querySelectorAll(`form[action*="/cart/add"], #product-form-${this.dataset.section}, #product-form-main`);
       productForms.forEach((productForm) => {
         const input = productForm.querySelector('input[name="id"]');
-        input.value = this.currentVariant.id;
-        input.dispatchEvent(new Event('change', { bubbles: true }));
+        if (input) {
+          input.value = this.currentVariant.id;
+          input.dispatchEvent(new Event('change', { bubbles: true }));
+        }
       });
     }
 
     renderProductInfo() {
       // Update Price display
-      const priceContainer = document.getElementById(`price-${this.dataset.section}`);
-      if (priceContainer && this.currentVariant) {
-        const priceElement = priceContainer.querySelector('.szc-price__regular');
-        if (priceElement) {
-          priceElement.textContent = ShopziCurious.helpers.formatMoney(this.currentVariant.price);
+      const priceContainers = document.querySelectorAll(`.szc-main-product__price, #price-${this.dataset.section}`);
+      priceContainers.forEach(priceContainer => {
+        if (priceContainer && this.currentVariant) {
+          const priceElement = priceContainer.querySelector('.price-item--regular, .szc-price__regular') || priceContainer;
+          if (priceElement) {
+            const formattedPrice = (window.ShopziCurious && ShopziCurious.helpers) 
+              ? ShopziCurious.helpers.formatMoney(this.currentVariant.price) 
+              : `$${(this.currentVariant.price / 100).toFixed(2)}`;
+            priceElement.textContent = formattedPrice;
+          }
         }
-      }
+      });
 
       // Update Submit Button State
-      const submitButton = document.getElementById(`product-submit-${this.dataset.section}`);
-      if (submitButton) {
-        if (!this.currentVariant.available) {
-          submitButton.setAttribute('disabled', 'disabled');
-          submitButton.querySelector('span').textContent = 'Sold Out';
-        } else {
-          submitButton.removeAttribute('disabled');
-          submitButton.querySelector('span').textContent = 'Add to Bag';
+      const submitButtons = document.querySelectorAll(`[data-add-to-cart-btn], #product-submit-${this.dataset.section}`);
+      submitButtons.forEach(submitButton => {
+        if (submitButton) {
+          const textSpan = submitButton.querySelector('span') || submitButton;
+          if (!this.currentVariant.available) {
+            submitButton.setAttribute('disabled', 'disabled');
+            textSpan.textContent = 'SOLD OUT';
+          } else {
+            submitButton.removeAttribute('disabled');
+            textSpan.textContent = 'ADD TO BAG';
+          }
         }
-      }
+      });
     }
 
     updateMedia() {
       if (!this.currentVariant || !this.currentVariant.featured_media) return;
-      const mediaGallery = document.getElementById(`MediaGallery-${this.dataset.section}`);
-      if (mediaGallery) {
-        const activeMedia = mediaGallery.querySelector(`[data-media-id="${this.currentVariant.featured_media.id}"]`);
-        if (activeMedia && activeMedia.parentNode) {
-          activeMedia.parentNode.prepend(activeMedia);
-        }
+      const mediaId = this.currentVariant.featured_media.id;
+      const targetThumbnail = document.querySelector(`[data-media-id="${mediaId}"]`);
+      if (targetThumbnail) {
+        targetThumbnail.click();
       }
     }
 
     setUnavailable() {
-      const submitButton = document.getElementById(`product-submit-${this.dataset.section}`);
-      if (submitButton) {
-        submitButton.setAttribute('disabled', 'disabled');
-        submitButton.querySelector('span').textContent = 'Unavailable';
-      }
-    }
-  }
-
-  class VariantRadios extends VariantSelects {
-    constructor() {
-      super();
-    }
-
-    updateOptions() {
-      const fieldsets = Array.from(this.querySelectorAll('fieldset'));
-      this.options = fieldsets.map((fieldset) => {
-        return Array.from(fieldset.querySelectorAll('input')).find((radio) => radio.checked)?.value;
+      const submitButtons = document.querySelectorAll(`[data-add-to-cart-btn], #product-submit-${this.dataset.section}`);
+      submitButtons.forEach(submitButton => {
+        if (submitButton) {
+          const textSpan = submitButton.querySelector('span') || submitButton;
+          submitButton.setAttribute('disabled', 'disabled');
+          textSpan.textContent = 'UNAVAILABLE';
+        }
       });
     }
   }
 
   ShopziCurious.defineCustomElement('variant-selects', VariantSelects);
-  ShopziCurious.defineCustomElement('variant-radios', VariantRadios);
+  ShopziCurious.defineCustomElement('variant-radios', VariantSelects);
 })();

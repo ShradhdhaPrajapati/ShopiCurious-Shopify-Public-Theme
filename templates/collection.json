@@ -139,11 +139,7 @@
         "enable_filtering": true,
         "enable_sticky_filter": true,
         "enable_sorting": true,
-        "show_promo_banner": true,
-        "promo_subheading": "For effortless everyday looks",
-        "promo_heading": "Everyday Essentials",
-        "promo_button_label": "Shop now",
-        "promo_button_link": ""
+        "show_promo_banner": true
       }
     }
   },

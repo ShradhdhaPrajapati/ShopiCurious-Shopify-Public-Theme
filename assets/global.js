@@ -126,12 +126,57 @@
   document.addEventListener('DOMContentLoaded', () => {
     document.documentElement.classList.add('szc-js-loaded');
 
-    // Bind Cart Drawer Triggers Globally
+    // Bind Cart Triggers Globally (Redirect to /cart if cartType == 'page')
     document.addEventListener('click', (e) => {
       const cartBtn = e.target.closest('.szc-cart-trigger');
       if (cartBtn) {
         e.preventDefault();
-        ShopziCurious.pubsub.publish(ShopziCurious.events.CART_OPEN);
+        const cartType = (window.ShopziCurious && window.ShopziCurious.settings && window.ShopziCurious.settings.cartType) ? window.ShopziCurious.settings.cartType : 'drawer';
+        if (cartType === 'page') {
+          window.location.href = (window.ShopziCurious && window.ShopziCurious.routes && window.ShopziCurious.routes.cart_url) ? window.ShopziCurious.routes.cart_url : '/cart';
+        } else {
+          ShopziCurious.pubsub.publish(ShopziCurious.events.CART_OPEN);
+        }
+      }
+    });
+
+    // Global Quick Add Handler (Supports Grid View, List View, Product Cards, Recommendations)
+    document.addEventListener('click', async (e) => {
+      const quickAddBtn = e.target.closest('.szc-quick-add-btn, [data-quick-add]');
+      if (quickAddBtn) {
+        e.preventDefault();
+        const variantId = quickAddBtn.dataset.variantId || quickAddBtn.dataset.id;
+        if (!variantId) return;
+
+        quickAddBtn.classList.add('szc-btn--loading');
+
+        try {
+          const res = await fetch('/cart/add.js', {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+              'Accept': 'application/json',
+              'X-Requested-With': 'XMLHttpRequest'
+            },
+            body: JSON.stringify({ items: [{ id: parseInt(variantId, 10), quantity: 1 }] })
+          });
+
+          const data = await res.json();
+          const cartRes = await fetch('/cart.js');
+          const cartData = await cartRes.json();
+
+          const cartType = (window.ShopziCurious && window.ShopziCurious.settings && window.ShopziCurious.settings.cartType) ? window.ShopziCurious.settings.cartType : 'drawer';
+
+          if (cartType === 'page') {
+            window.location.href = (window.ShopziCurious && window.ShopziCurious.routes && window.ShopziCurious.routes.cart_url) ? window.ShopziCurious.routes.cart_url : '/cart';
+          } else {
+            ShopziCurious.pubsub.publish(ShopziCurious.events.CART_UPDATED, { item: data, item_count: cartData.item_count, openDrawer: true });
+          }
+        } catch (err) {
+          console.error('[ShopziCurious Quick Add Error]', err);
+        } finally {
+          quickAddBtn.classList.remove('szc-btn--loading');
+        }
       }
     });
 
@@ -151,15 +196,26 @@
       }
     });
 
-    // Update Cart Badge on CART_UPDATED
-    ShopziCurious.pubsub.subscribe(ShopziCurious.events.CART_UPDATED, (cartData) => {
-      if (cartData && typeof cartData.item_count !== 'undefined') {
-        const badges = document.querySelectorAll('.szc-header__cart-badge');
+    // Update Cart Badge on CART_UPDATED or cart:updated
+    const updateCartBadges = async (cartData) => {
+      try {
+        let count = (cartData && typeof cartData.item_count !== 'undefined') ? cartData.item_count : undefined;
+        if (typeof count === 'undefined') {
+          const res = await fetch('/cart.js');
+          const cart = await res.json();
+          count = cart.item_count;
+        }
+        const badges = document.querySelectorAll('.szc-header__cart-badge, [data-cart-count], .szc-header__cart-count');
         badges.forEach((badge) => {
-          badge.textContent = cartData.item_count;
-          badge.setAttribute('data-cart-count', cartData.item_count);
+          badge.textContent = count;
+          badge.setAttribute('data-cart-count', count);
         });
+      } catch (err) {
+        console.error('Failed to update cart badge:', err);
       }
-    });
+    };
+
+    ShopziCurious.pubsub.subscribe(ShopziCurious.events.CART_UPDATED, updateCartBadges);
+    ShopziCurious.pubsub.subscribe('cart:updated', updateCartBadges);
   });
 })();

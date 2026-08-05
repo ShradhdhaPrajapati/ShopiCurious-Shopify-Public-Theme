@@ -4,52 +4,97 @@
 -%}
 
 <section id="MainProduct-{{ section.id }}" class="szc-main-product page-width">
-  <div class="szc-main-product__grid">
-    <!-- Media Gallery Column -->
-    <div class="szc-main-product__media-col">
-      <div class="szc-main-product__gallery">
-        <div class="szc-main-product__main-media" data-main-media>
-          {%- if featured_media != blank -%}
-            {% render 'image',
-              image: featured_media.preview_image,
-              aspect_ratio: '3/4',
-              loading: 'eager',
-              class: 'szc-main-product__featured-img'
-            %}
-          {%- else -%}
-            {{ 'product-1' | placeholder_svg_tag: 'szc-image-placeholder' }}
-          {%- endif -%}
-        </div>
+  {% render 'breadcrumbs' %}
 
+  <div class="szc-main-product__grid">
+    <!-- 1. Media Gallery Column (Vertical Thumbnails + Real Slider + Model Info) -->
+    <div class="szc-main-product__media-col">
+      <div class="szc-main-product__gallery-wrap">
         {%- if product.media.size > 1 -%}
-          <ul class="szc-main-product__thumbnails" role="list">
-            {%- for media in product.media -%}
-              <li class="szc-main-product__thumbnail-item">
-                <button
-                  type="button"
-                  class="szc-main-product__thumbnail-btn {% if media == featured_media %}is-active{% endif %}"
-                  data-media-id="{{ media.id }}"
-                >
-                  {% render 'image',
-                    image: media.preview_image,
-                    aspect_ratio: '1/1',
-                    loading: 'lazy',
-                    class: 'szc-main-product__thumbnail-img'
-                  %}
-                </button>
-              </li>
-            {%- endfor -%}
-          </ul>
+          <div class="szc-main-product__thumbnails-col">
+            <ul class="szc-main-product__thumbnails" role="list" data-thumbnails-list>
+              {%- for media in product.media -%}
+                <li class="szc-main-product__thumbnail-item">
+                  <button
+                    type="button"
+                    class="szc-main-product__thumbnail-btn {% if media == featured_media %}is-active{% endif %}"
+                    data-media-id="{{ media.id }}"
+                    data-index="{{ forloop.index0 }}"
+                    data-img-url="{{ media.preview_image | image_url: width: 1200 }}"
+                    data-zoom-url="{{ media.preview_image | image_url: width: 2400 }}"
+                  >
+                    {% render 'image',
+                      image: media.preview_image,
+                      aspect_ratio: '1/1',
+                      loading: 'lazy',
+                      class: 'szc-main-product__thumbnail-img'
+                    %}
+                  </button>
+                </li>
+              {%- endfor -%}
+            </ul>
+            {%- if product.media.size > 5 -%}
+              <button type="button" class="szc-thumb-nav-btn" aria-label="Scroll Thumbnails Down" data-thumb-scroll-down>
+                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="6 9 12 15 18 9"></polyline></svg>
+              </button>
+            {%- endif -%}
+          </div>
         {%- endif -%}
+
+        <div class="szc-main-product__main-media-wrap">
+          <div class="szc-main-product__slider-container" data-main-slider>
+            <ul class="szc-main-product__slider-list" role="list" data-slider-list>
+              {%- if product.media.size > 0 -%}
+                {%- for media in product.media -%}
+                  <li 
+                    class="szc-main-product__slider-slide {% if media == featured_media %}is-active{% endif %}" 
+                    data-media-id="{{ media.id }}" 
+                    data-index="{{ forloop.index0 }}"
+                    data-zoom-url="{{ media.preview_image | image_url: width: 2400 }}"
+                  >
+                    {{ media.preview_image | image_url: width: 1200 | image_tag: class: 'szc-main-product__slider-img', loading: 'eager', alt: media.alt | default: product.title }}
+                  </li>
+                {%- endfor -%}
+              {%- else -%}
+                <li class="szc-main-product__slider-slide is-active" data-index="0">
+                  {{ 'product-1' | placeholder_svg_tag: 'szc-image-placeholder' }}
+                </li>
+              {%- endif -%}
+            </ul>
+
+            {%- if product.media.size > 1 -%}
+              <button type="button" class="szc-media-arrow szc-media-arrow--prev" aria-label="Previous Image" data-media-prev>
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="15 18 9 12 15 6"></polyline></svg>
+              </button>
+              <button type="button" class="szc-media-arrow szc-media-arrow--next" aria-label="Next Image" data-media-next>
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="9 18 15 12 9 6"></polyline></svg>
+              </button>
+            {%- endif -%}
+
+            <button type="button" class="szc-main-product__zoom-btn" aria-label="Zoom Image" data-zoom-btn>
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <circle cx="11" cy="11" r="8"></circle>
+                <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+                <line x1="11" y1="8" x2="11" y2="14"></line>
+                <line x1="8" y1="11" x2="14" y2="11"></line>
+              </svg>
+            </button>
+          </div>
+        </div>
       </div>
     </div>
 
-    <!-- Product Info Details Column -->
+    <!-- 2. Sticky Product Info Details Column -->
     <div class="szc-main-product__info-col">
       {%- for block in section.blocks -%}
         {%- case block.type -%}
           {%- when '@app' -%}
             {% render block %}
+
+          {%- when 'badge' -%}
+            <div class="szc-main-product__badge-wrap" {{ block.shopify_attributes }}>
+              <span class="szc-main-product__badge">{{ block.settings.text | default: 'NEW ARRIVAL' }}</span>
+            </div>
 
           {%- when 'vendor' -%}
             <div class="szc-main-product__vendor" {{ block.shopify_attributes }}>
@@ -62,14 +107,29 @@
             </h1>
 
           {%- when 'price' -%}
-            <div class="szc-main-product__price" {{ block.shopify_attributes }}>
-              {% render 'price',
-                product: product,
-                use_variant: true,
-                variant: current_variant,
-                show_badges: true
-              %}
+            <div class="szc-main-product__price-wrap" {{ block.shopify_attributes }}>
+              <div class="szc-main-product__price">
+                {% render 'price',
+                  product: product,
+                  use_variant: true,
+                  variant: current_variant,
+                  show_badges: false
+                %}
+              </div>
             </div>
+
+          {%- when 'rating' -%}
+            {%- if product.metafields.reviews.rating.value != blank -%}
+              {%- liquid
+                assign rating_val = product.metafields.reviews.rating.value.rating | default: product.metafields.reviews.rating.value | plus: 0
+                assign rating_count = product.metafields.reviews.rating_count.value | default: 0
+              -%}
+              <div class="szc-main-product__rating-block" {{ block.shopify_attributes }}>
+                <span class="szc-stars">★★★★★</span>
+                <span class="szc-rating-val">{{ rating_val | round: 1 }}</span>
+                <span class="szc-rating-count">({{ rating_count }} {% if rating_count == 1 %}Review{% else %}Reviews{% endif %})</span>
+              </div>
+            {%- endif -%}
 
           {%- when 'variant_picker' -%}
             <variant-selects
@@ -80,16 +140,36 @@
             >
               {%- unless product.has_only_default_variant -%}
                 {%- for option in product.options_with_values -%}
+                  {%- liquid
+                    assign option_index = forloop.index0
+                    assign opt_name_lower = option.name | downcase
+                    assign is_color = false
+                    assign is_size = false
+                    if opt_name_lower contains 'color' or opt_name_lower contains 'colour'
+                      assign is_color = true
+                    elsif opt_name_lower contains 'size'
+                      assign is_size = true
+                    endif
+                  -%}
                   <fieldset class="szc-main-product__option-fieldset">
-                    <legend class="szc-main-product__option-legend">
-                      {{ option.name }}: <span class="szc-main-product__option-selected">{{ option.selected_value }}</span>
-                    </legend>
+                    <div class="szc-main-product__option-header">
+                      <legend class="szc-main-product__option-legend">
+                        {{ option.name | upcase }}: <span class="szc-main-product__option-selected" data-option-selected="{{ option.name }}">{{ option.selected_value }}</span>
+                      </legend>
+                      {%- if is_size -%}
+                        <button type="button" class="szc-size-guide-btn" data-size-guide-trigger>
+                          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M2 12h20M2 12v6a2 2 0 002 2h16a2 2 0 002-2v-6M6 12v-3M10 12v-2M14 12v-3M18 12v-2"/></svg>
+                          <span>Size Guide</span>
+                        </button>
+                      {%- endif -%}
+                    </div>
+
                     <div class="szc-main-product__swatches-wrap">
                       {%- for value in option.values -%}
                         {%- liquid
                           assign option_disabled = true
                           for variant in product.variants
-                            if variant.options[forloop.parentloop.index0] == value and variant.available
+                            if variant.options[option_index] == value and variant.available
                               assign option_disabled = false
                             endif
                           endfor
@@ -97,10 +177,11 @@
                           if option.selected_value == value
                             assign is_selected = true
                           endif
-                          assign opt_name_lower = option.name | downcase
                           assign swatch_kind = 'text'
-                          if opt_name_lower contains 'color' or opt_name_lower contains 'colour'
+                          if is_color
                             assign swatch_kind = 'color'
+                          elsif is_size
+                            assign swatch_kind = 'size'
                           endif
                         -%}
                         {%- assign swatch_dom_id = section.id | append: '-' | append: option.name | handleize | append: '-' | append: value | handleize -%}
@@ -117,11 +198,13 @@
                   </fieldset>
                 {%- endfor -%}
               {%- endunless -%}
+              <script type="application/json">
+                {{ product.variants | json }}
+              </script>
             </variant-selects>
 
           {%- when 'quantity_selector' -%}
             <div class="szc-main-product__quantity" {{ block.shopify_attributes }}>
-              <label class="szc-main-product__label">{{ 'products.product.quantity.label' | t | default: 'Quantity' }}</label>
               {%- assign qty_input_id = 'Quantity-' | append: section.id -%}
               {% render 'quantity-input', value: 1, min: 1, id: qty_input_id %}
             </div>
@@ -129,27 +212,105 @@
           {%- when 'buy_buttons' -%}
             <div class="szc-main-product__buy-buttons" {{ block.shopify_attributes }}>
               {%- form 'product', product, id: 'product-form-main', class: 'szc-main-product__form' -%}
-                <input type="hidden" name="id" value="{{ current_variant.id }}">
-                <button
-                  type="submit"
-                  name="add"
-                  class="szc-button szc-button--primary szc-button--full-width szc-main-product__add-btn"
-                  {% if current_variant.available == false %}disabled{% endif %}
-                >
-                  {% render 'icon', icon: 'bag', class: 'szc-button__icon' %}
-                  <span>
-                    {%- if current_variant.available -%}
-                      {{ 'products.product.add_to_cart' | t | default: 'Add to Cart' }}
-                    {%- else -%}
-                      {{ 'products.product.sold_out' | t | default: 'Sold Out' }}
-                    {%- endif -%}
-                  </span>
-                </button>
+                <input type="hidden" name="id" value="{{ current_variant.id }}" data-variant-input>
 
-                {%- if block.settings.show_dynamic_checkout -%}
-                  {{ form | payment_button }}
-                {%- endif -%}
+                <div class="szc-main-product__btn-row">
+                  <button
+                    type="submit"
+                    name="add"
+                    class="szc-button szc-button--primary szc-main-product__add-btn"
+                    {% if current_variant.available == false %}disabled{% endif %}
+                    data-add-to-cart-btn
+                  >
+                    <span>
+                      {%- if current_variant.available -%}
+                        ADD TO BAG
+                      {%- else -%}
+                        SOLD OUT
+                      {%- endif -%}
+                    </span>
+                  </button>
+
+                  <button type="button" class="szc-main-product__wishlist-btn" aria-label="Add to Wishlist">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                      <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l8.78-8.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path>
+                    </svg>
+                  </button>
+                </div>
+
+                <button type="button" class="szc-button szc-button--outline szc-main-product__buy-now-btn">
+                  BUY IT NOW
+                </button>
               {%- endform -%}
+            </div>
+
+          {%- when 'trust_badges' -%}
+            {%- liquid
+              assign icon_color = block.settings.icon_color | default: '#b07d4f'
+              assign icon_size = block.settings.icon_size | default: 22
+              assign title_color = block.settings.title_color | default: '#111111'
+              assign title_size = block.settings.title_size | default: 12
+              assign title_weight = block.settings.title_weight | default: '700'
+              assign subtext_color = block.settings.subtext_color | default: '#666666'
+              assign subtext_size = block.settings.subtext_size | default: 11
+              assign subtext_weight = block.settings.subtext_weight | default: '400'
+              assign bg_color = block.settings.bg_color | default: 'transparent'
+              assign border_color = block.settings.border_color | default: 'transparent'
+              assign border_radius = block.settings.border_radius | default: 0
+            -%}
+            <div
+              class="szc-main-product__trust-badges"
+              style="
+                --tb-icon-color: {{ icon_color }};
+                --tb-icon-size: {{ icon_size }}px;
+                --tb-title-color: {{ title_color }};
+                --tb-title-size: {{ title_size }}px;
+                --tb-title-weight: {{ title_weight }};
+                --tb-subtext-color: {{ subtext_color }};
+                --tb-subtext-size: {{ subtext_size }}px;
+                --tb-subtext-weight: {{ subtext_weight }};
+                --tb-bg-color: {{ bg_color }};
+                --tb-border-color: {{ border_color }};
+                --tb-border-radius: {{ border_radius }}px;
+              "
+              {{ block.shopify_attributes }}
+            >
+              {%- for i in (1..3) -%}
+                {%- liquid
+                  assign title_key = 'badge_' | append: i | append: '_title'
+                  assign subtext_key = 'badge_' | append: i | append: '_subtext'
+                  assign icon_key = 'badge_' | append: i | append: '_icon'
+                  assign b_title = block.settings[title_key]
+                  assign b_subtext = block.settings[subtext_key]
+                  assign b_icon = block.settings[icon_key]
+                -%}
+                {%- if b_title != blank or b_subtext != blank -%}
+                  <div class="szc-trust-badge">
+                    <div class="szc-trust-badge__icon">
+                      {%- case b_icon -%}
+                        {%- when 'returns' -%}
+                          <svg width="{{ icon_size }}" height="{{ icon_size }}" viewBox="0 0 24 24" fill="none" stroke="{{ icon_color }}" stroke-width="2"><polyline points="1 4 1 10 7 10"></polyline><path d="M3.51 15a9 9 0 1 0 2.13-9.36L1 10"></path></svg>
+                        {%- when 'secure' -%}
+                          <svg width="{{ icon_size }}" height="{{ icon_size }}" viewBox="0 0 24 24" fill="none" stroke="{{ icon_color }}" stroke-width="2"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect><path d="M7 11V7a5 5 0 0 1 10 0v4"></path></svg>
+                        {%- when 'star' -%}
+                          <svg width="{{ icon_size }}" height="{{ icon_size }}" viewBox="0 0 24 24" fill="none" stroke="{{ icon_color }}" stroke-width="2"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg>
+                        {%- when 'support' -%}
+                          <svg width="{{ icon_size }}" height="{{ icon_size }}" viewBox="0 0 24 24" fill="none" stroke="{{ icon_color }}" stroke-width="2"><path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"></path></svg>
+                        {%- else -%}
+                          <svg width="{{ icon_size }}" height="{{ icon_size }}" viewBox="0 0 24 24" fill="none" stroke="{{ icon_color }}" stroke-width="2"><rect x="1" y="3" width="15" height="13"></rect><polygon points="16 8 20 8 23 11 23 16 16 16 16 8"></polygon><circle cx="5.5" cy="18.5" r="2.5"></circle><circle cx="18.5" cy="18.5" r="2.5"></circle></svg>
+                      {%- endcase -%}
+                    </div>
+                    <div class="szc-trust-badge__text">
+                      {%- if b_title != blank -%}
+                        <strong>{{ b_title }}</strong>
+                      {%- endif -%}
+                      {%- if b_subtext != blank -%}
+                        <span>{{ b_subtext }}</span>
+                      {%- endif -%}
+                    </div>
+                  </div>
+                {%- endif -%}
+              {%- endfor -%}
             </div>
 
           {%- when 'description' -%}
@@ -158,32 +319,172 @@
                 {{ product.description }}
               </div>
             {%- endif -%}
-
-          {%- when 'accordion' -%}
-            {% render 'accordion',
-              heading: block.settings.heading,
-              content: block.settings.content,
-              open: block.settings.open,
-              class: 'szc-main-product__accordion'
-            %}
-
-          {%- when 'share' -%}
-            <div class="szc-main-product__share" {{ block.shopify_attributes }}>
-              {% render 'social-sharing',
-                share_title: product.title,
-                share_permalink: product.url,
-                share_image: product.featured_image
-              %}
-            </div>
         {%- endcase -%}
       {%- endfor -%}
     </div>
+  </div>
+
+  <!-- 4. Product Details Tabs Section (Reference Exact Copy) -->
+  <div class="szc-product-tabs">
+    <div class="szc-product-tabs__header" role="tablist">
+      <button type="button" class="szc-tab-btn is-active" data-tab="tab-description">DESCRIPTION</button>
+      <button type="button" class="szc-tab-btn" data-tab="tab-fabric">FABRIC & CARE</button>
+      <button type="button" class="szc-tab-btn" data-tab="tab-size">SIZE GUIDE</button>
+      <button type="button" class="szc-tab-btn" data-tab="tab-shipping">SHIPPING & RETURNS</button>
+    </div>
+
+    <div class="szc-product-tabs__content">
+      <!-- Tab 1: Description -->
+      <div id="tab-description" class="szc-tab-pane is-active">
+        <div class="szc-tab-pane__grid">
+          <div class="szc-tab-pane__left">
+            <p>A timeless essential, this classic denim jacket is crafted from premium cotton with a comfortable, regular fit. Designed for everyday wear, it features button front closures, chest pockets, and a versatile light blue wash that pairs effortlessly with any outfit.</p>
+            <ul class="szc-tab-bullets">
+              <li>Regular fit</li>
+              <li>Button front closure</li>
+              <li>Chest flap pockets</li>
+              <li>Side welt pockets</li>
+              <li>Adjustable button tabs at hem</li>
+              <li>Lightweight & durable denim</li>
+            </ul>
+          </div>
+          <div class="szc-tab-pane__right">
+            <div class="szc-tab-card">
+              <h4 class="szc-tab-card__title">FABRIC & CARE</h4>
+              <p class="szc-tab-card__sub">100% Cotton Denim</p>
+              <div class="szc-care-icons-grid">
+                <div class="szc-care-item">
+                  <span class="szc-care-icon">🧺</span>
+                  <span>Machine Wash Cold</span>
+                </div>
+                <div class="szc-care-item">
+                  <span class="szc-care-icon">🚫</span>
+                  <span>Do Not Bleach</span>
+                </div>
+                <div class="szc-care-item">
+                  <span class="szc-care-icon">🌀</span>
+                  <span>Tumble Dry Low</span>
+                </div>
+                <div class="szc-care-item">
+                  <span class="szc-care-icon">👔</span>
+                  <span>Iron Low If Needed</span>
+                </div>
+              </div>
+            </div>
+
+            <div class="szc-tab-card" style="margin-top: 16px;">
+              <h4 class="szc-tab-card__title">FIT INFORMATION</h4>
+              <p class="szc-tab-card__sub">Regular Fit</p>
+              <div class="szc-fit-slider">
+                <div class="szc-fit-track">
+                  <div class="szc-fit-thumb" style="left: 50%;"></div>
+                </div>
+                <div class="szc-fit-labels">
+                  <span>Slim</span>
+                  <span style="font-weight: 700;">Regular</span>
+                  <span>Relaxed</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Tab 2: Fabric & Care -->
+      <div id="tab-fabric" class="szc-tab-pane">
+        <p><strong>Material:</strong> 100% Premium Organic Cotton Denim.</p>
+        <p><strong>Care Instructions:</strong> Machine wash cold inside out with like colors. Do not bleach. Tumble dry low or line dry in shade. Warm iron if needed.</p>
+      </div>
+
+      <!-- Tab 3: Size Guide -->
+      <div id="tab-size" class="szc-tab-pane">
+        <table class="szc-size-table">
+          <thead>
+            <tr><th>Size</th><th>Chest (in)</th><th>Waist (in)</th><th>Length (in)</th></tr>
+          </thead>
+          <tbody>
+            <tr><td>S</td><td>36 - 38</td><td>30 - 32</td><td>26.5</td></tr>
+            <tr><td>M</td><td>38 - 40</td><td>32 - 34</td><td>27.5</td></tr>
+            <tr><td>L</td><td>40 - 42</td><td>34 - 36</td><td>28.5</td></tr>
+            <tr><td>XL</td><td>42 - 44</td><td>36 - 38</td><td>29.5</td></tr>
+            <tr><td>XXL</td><td>44 - 46</td><td>38 - 40</td><td>30.5</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <!-- Tab 4: Shipping & Returns -->
+      <div id="tab-shipping" class="szc-tab-pane">
+        <p><strong>Free Express Shipping:</strong> Available on all orders over $100. Standard delivery takes 3 - 5 business days.</p>
+        <p><strong>Easy 30-Day Returns:</strong> If you are not 100% satisfied with your purchase, return it within 30 days for a full refund or exchange.</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- 5. Sticky Add To Cart Bottom Bar -->
+  <div class="szc-sticky-atc-bar" data-sticky-atc-bar>
+    <div class="szc-sticky-atc-bar__container page-width">
+      <div class="szc-sticky-atc-bar__product">
+        <div class="szc-sticky-atc-bar__img-wrap">
+          {%- if featured_media != blank -%}
+            {{ featured_media.preview_image | image_url: width: 100 | image_tag: class: 'szc-sticky-atc-bar__img' }}
+          {%- endif -%}
+        </div>
+        <div class="szc-sticky-atc-bar__info">
+          <h4 class="szc-sticky-atc-bar__title">{{ product.title }}</h4>
+          <div class="szc-sticky-atc-bar__price">{{ current_variant.price | money }}</div>
+        </div>
+      </div>
+      <div class="szc-sticky-atc-bar__action">
+        <button type="button" class="szc-button szc-button--primary szc-button--sm" data-sticky-atc-btn {% if current_variant.available == false %}disabled{% endif %}>
+          {%- if current_variant.available -%}
+            ADD TO BAG
+          {%- else -%}
+            SOLD OUT
+          {%- endif -%}
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- 6. Shopify Style Native Zoom Modal Lightbox (Crystal Clear Ultra High-Res + Top-to-Bottom Scrollable) -->
+  <div class="szc-zoom-modal" id="ProductZoomModal" aria-hidden="true" data-zoom-modal>
+    <div class="szc-zoom-modal__header">
+      <span class="szc-zoom-modal__counter" data-zoom-counter>1 / {{ product.media.size }}</span>
+      <div class="szc-zoom-modal__controls">
+        <button type="button" class="szc-zoom-modal__ctrl-btn" aria-label="Zoom In" data-zoom-in-btn title="Zoom In (+)">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line><line x1="11" y1="8" x2="11" y2="14"></line><line x1="8" y1="11" x2="14" y2="11"></line></svg>
+        </button>
+        <button type="button" class="szc-zoom-modal__ctrl-btn" aria-label="Zoom Out" data-zoom-out-btn title="Zoom Out (-)">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line><line x1="11" y1="8" x2="11" y2="14"></line></svg>
+        </button>
+        <button type="button" class="szc-zoom-modal__ctrl-btn szc-zoom-modal__ctrl-btn--close" aria-label="Close" data-zoom-close title="Close (Esc)">
+          &times;
+        </button>
+      </div>
+    </div>
+
+    <button type="button" class="szc-zoom-modal__arrow szc-zoom-modal__arrow--prev" data-zoom-prev>&lsaquo;</button>
+
+    <div class="szc-zoom-modal__viewport" data-zoom-viewport>
+      <img
+        id="ZoomModalImg"
+        src="{{ featured_media.preview_image | image_url: width: 2400 }}"
+        alt="{{ product.title | escape }}"
+        width="2400"
+        height="2400"
+        loading="lazy"
+        class="szc-zoom-modal__img"
+        data-zoom-target
+      >
+    </div>
+
+    <button type="button" class="szc-zoom-modal__arrow szc-zoom-modal__arrow--next" data-zoom-next>&rsaquo;</button>
   </div>
 </section>
 
 {% stylesheet %}
   .szc-main-product {
-    padding-top: var(--szc-space-8, 32px);
+    padding-top: var(--szc-space-4, 16px);
     padding-bottom: var(--szc-space-12, 48px);
     max-width: var(--szc-page-max-width, 1400px);
     margin: 0 auto;
@@ -193,132 +494,1122 @@
     display: grid;
     grid-template-columns: 1fr;
     gap: var(--szc-space-8, 32px);
+    margin-top: 16px;
   }
 
   @media (min-width: 990px) {
     .szc-main-product__grid {
       grid-template-columns: 1.2fr 1fr;
-      gap: var(--szc-space-12, 48px);
+      gap: 48px;
     }
   }
 
-  /* Media Gallery */
-  .szc-main-product__gallery {
+  /* Gallery Layout */
+  .szc-main-product__gallery-wrap {
+    display: flex;
+    gap: 16px;
+    flex-direction: column-reverse;
+  }
+
+  @media (min-width: 750px) {
+    .szc-main-product__gallery-wrap {
+      flex-direction: row;
+    }
+  }
+
+  .szc-main-product__thumbnails-col {
+    flex-shrink: 0;
+    width: 100%;
+    position: relative;
     display: flex;
     flex-direction: column;
-    gap: var(--szc-space-4, 16px);
+    align-items: center;
   }
 
-  .szc-main-product__main-media {
+  @media (min-width: 750px) {
+    .szc-main-product__thumbnails-col {
+      width: 76px;
+    }
+  }
+
+  .szc-main-product__thumbnails {
+    display: flex;
+    gap: 10px;
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    overflow-x: auto;
     width: 100%;
-    border-radius: var(--szc-radius-card, 4px);
-    overflow: hidden;
-    background-color: var(--szc-color-surface, #f8f9fa);
   }
 
-  .szc-main-product__featured-img {
+  @media (min-width: 750px) {
+    .szc-main-product__thumbnails {
+      flex-direction: column;
+      overflow-y: auto;
+      max-height: 520px;
+      scrollbar-width: none;
+      scroll-behavior: smooth;
+    }
+    .szc-main-product__thumbnails::-webkit-scrollbar {
+      display: none;
+    }
+  }
+
+  .szc-main-product__thumbnail-btn {
+    width: 70px;
+    height: 70px;
+    padding: 0;
+    background: transparent;
+    border: 1px solid #e5e5e5;
+    border-radius: 6px;
+    overflow: hidden;
+    cursor: pointer;
+    transition: all 150ms ease;
+    flex-shrink: 0;
+  }
+
+  .szc-main-product__thumbnail-btn.is-active {
+    border-color: #b07d4f;
+    border-width: 2px;
+    box-shadow: 0 0 0 1px #b07d4f;
+  }
+
+  .szc-thumb-nav-btn {
+    width: 28px;
+    height: 28px;
+    border-radius: 50%;
+    border: 1px solid #e5e5e5;
+    background: #ffffff;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-top: 8px;
+    cursor: pointer;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.06);
+    transition: all 150ms ease;
+    color: #555;
+  }
+
+  .szc-thumb-nav-btn:hover {
+    border-color: #111;
+    color: #111;
+  }
+
+  .szc-main-product__main-media-wrap {
+    flex-grow: 1;
+    position: relative;
+    overflow: hidden;
+    border-radius: 8px;
+  }
+
+  .szc-main-product__slider-container {
+    position: relative;
+    width: 100%;
+    aspect-ratio: 3/4;
+    background-color: var(--szc-color-surface, #f8f9fa);
+    border-radius: 8px;
+    overflow: hidden;
+  }
+
+  .szc-main-product__slider-list {
+    display: flex;
+    overflow-x: auto;
+    scroll-snap-type: x mandatory;
+    scroll-behavior: smooth;
+    scrollbar-width: none;
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    width: 100%;
+    height: 100%;
+  }
+
+  .szc-main-product__slider-list::-webkit-scrollbar {
+    display: none;
+  }
+
+  .szc-main-product__slider-slide {
+    flex: 0 0 100%;
+    width: 100%;
+    height: 100%;
+    scroll-snap-align: start;
+    scroll-snap-stop: always;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .szc-main-product__slider-img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+    cursor: pointer;
+  }
+
+  .szc-media-arrow {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 38px;
+    height: 38px;
+    border-radius: 50%;
+    background-color: rgba(255, 255, 255, 0.95);
+    border: 1px solid #e5e5e5;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.12);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    z-index: 5;
+    transition: background-color 150ms ease, transform 150ms ease;
+  }
+
+  .szc-media-arrow:hover {
+    background-color: #111111;
+    color: #ffffff;
+    border-color: #111111;
+    transform: translateY(-50%) scale(1.06);
+  }
+
+  .szc-media-arrow--prev {
+    left: 12px;
+  }
+
+  .szc-media-arrow--next {
+    right: 12px;
+  }
+
+  .szc-main-product__zoom-btn {
+    position: absolute;
+    top: 16px;
+    right: 16px;
+    width: 38px;
+    height: 38px;
+    border-radius: 50%;
+    background-color: #ffffff;
+    border: none;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.12);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    color: #111111;
+    z-index: 5;
+    transition: transform 150ms ease, background-color 150ms ease;
+  }
+
+  .szc-main-product__zoom-btn:hover {
+    transform: scale(1.08);
+    background-color: #111111;
+    color: #ffffff;
+  }
+
+  /* Fullscreen Shopify-Style Ultra High-Res Zoom Lightbox Modal */
+  .szc-zoom-modal {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background-color: rgba(0, 0, 0, 0.95);
+    z-index: 99999;
+    display: none;
+    flex-direction: column;
+  }
+
+  .szc-zoom-modal.is-open {
+    display: flex;
+  }
+
+  .szc-zoom-modal__header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 16px 24px;
+    color: #ffffff;
+    z-index: 10;
+    background: linear-gradient(to bottom, rgba(0,0,0,0.8), transparent);
+  }
+
+  .szc-zoom-modal__counter {
+    font-size: 13px;
+    font-weight: 600;
+    letter-spacing: 0.05em;
+  }
+
+  .szc-zoom-modal__controls {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+
+  .szc-zoom-modal__ctrl-btn {
+    background: rgba(255,255,255,0.18);
+    border: none;
+    color: #ffffff;
+    width: 42px;
+    height: 42px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    font-size: 20px;
+    transition: background 150ms ease, transform 150ms ease;
+  }
+
+  .szc-zoom-modal__ctrl-btn:hover {
+    background: rgba(255,255,255,0.38);
+    transform: scale(1.06);
+  }
+
+  .szc-zoom-modal__ctrl-btn--close {
+    font-size: 28px;
+    line-height: 1;
+  }
+
+  .szc-zoom-modal__arrow {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    background: rgba(255,255,255,0.18);
+    border: none;
+    color: #ffffff;
+    font-size: 40px;
+    width: 54px;
+    height: 54px;
+    border-radius: 50%;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 10;
+    transition: background 150ms ease;
+  }
+
+  .szc-zoom-modal__arrow:hover {
+    background: rgba(255,255,255,0.38);
+  }
+
+  .szc-zoom-modal__arrow--prev {
+    left: 24px;
+  }
+
+  .szc-zoom-modal__arrow--next {
+    right: 24px;
+  }
+
+  /* Viewport Container - Supports Free Scroll from Top Collar to Bottom Hem */
+  .szc-zoom-modal__viewport {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: auto;
+    padding: 24px;
+    cursor: zoom-in;
+    position: relative;
+    user-select: none;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  .szc-zoom-modal__viewport.is-zoomed {
+    display: block;
+    overflow: auto;
+    cursor: zoom-out;
+    padding: 40px 24px;
+    text-align: center;
+  }
+
+  .szc-zoom-modal__img {
+    max-width: 90vw;
+    max-height: 82vh;
+    width: auto;
+    height: auto;
+    object-fit: contain;
+    border-radius: 4px;
+    transition: width 200ms ease, max-width 200ms ease;
+    display: inline-block;
+    vertical-align: middle;
+  }
+
+  .szc-zoom-modal__viewport.is-zoomed .szc-zoom-modal__img {
+    max-width: none;
+    max-height: none;
+    width: 1400px;
+    height: auto;
+    margin: 0 auto;
+    display: block;
+    box-shadow: 0 8px 32px rgba(0,0,0,0.5);
+  }
+
+  /* Model Info Card */
+  .szc-main-product__model-card {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    background-color: #f9f8f6;
+    border: 1px solid #f0eae1;
+    border-radius: 8px;
+    padding: 14px 18px;
+    margin-top: 20px;
+  }
+
+  .szc-main-product__model-avatar {
+    width: 48px;
+    height: 48px;
+    border-radius: 50%;
+    overflow: hidden;
+    flex-shrink: 0;
+    background-color: #eee;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .szc-model-avatar-img {
     width: 100%;
     height: 100%;
     object-fit: cover;
   }
 
-  .szc-main-product__thumbnails {
-    display: flex;
-    gap: var(--szc-space-3, 12px);
-    list-style: none;
-    padding: 0;
+  .szc-model-title {
     margin: 0;
-    overflow-x: auto;
+    font-size: 13px;
+    font-weight: 700;
+    color: #111111;
   }
 
-  .szc-main-product__thumbnail-btn {
-    width: 72px;
-    height: 72px;
-    padding: 0;
-    background: transparent;
-    border: 1px solid var(--szc-color-border, #e5e5e5);
-    border-radius: var(--szc-radius-sm, 4px);
-    overflow: hidden;
-    cursor: pointer;
-    transition: border-color var(--szc-transition-fast, 150ms ease);
+  .szc-model-specs {
+    margin: 2px 0 0 0;
+    font-size: 11px;
+    color: #666666;
   }
 
-  .szc-main-product__thumbnail-btn.is-active {
-    border-color: var(--szc-color-primary, #111111);
-    border-width: 2px;
-  }
-
-  /* Info Column */
+  /* Sticky Info Column */
   .szc-main-product__info-col {
     display: flex;
     flex-direction: column;
-    gap: var(--szc-space-4, 16px);
+    gap: 16px;
+  }
+
+  @media (min-width: 990px) {
+    .szc-main-product__info-col {
+      position: sticky;
+      top: 24px;
+      align-self: start;
+    }
+  }
+
+  .szc-main-product__badge-wrap {
+    margin-bottom: -6px;
+  }
+
+  .szc-main-product__badge {
+    display: inline-block;
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: #b07d4f;
+    background-color: #fcf6ef;
+    padding: 4px 10px;
+    border-radius: 3px;
   }
 
   .szc-main-product__vendor {
-    font-family: var(--szc-font-family-body);
-    font-size: var(--szc-font-size-xs, 12px);
+    font-size: 11px;
     text-transform: uppercase;
-    letter-spacing: var(--szc-letter-spacing-uppercase, 0.1em);
-    color: var(--szc-color-text-muted, #757575);
+    letter-spacing: 0.12em;
+    color: #757575;
   }
 
   .szc-main-product__title {
     margin: 0;
-    font-family: var(--szc-font-family-heading);
-    font-size: clamp(24px, 3vw, 36px);
-    font-weight: 700;
-    color: var(--szc-color-text-primary, #111111);
+    font-family: var(--szc-font-family-heading, Georgia, serif);
+    font-size: clamp(26px, 3.2vw, 36px);
+    font-weight: 600;
+    color: #111111;
+    line-height: 1.2;
   }
 
-  .szc-main-product__label {
-    display: block;
+  .szc-main-product__price-wrap {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-top: 4px;
+  }
+
+  .szc-main-product__price {
+    font-size: 24px;
+    font-weight: 700;
+    color: #111111;
+  }
+
+  .szc-main-product__installments {
+    font-size: 12px;
+    color: #666666;
+  }
+
+  .szc-shoppay-badge {
+    font-weight: 700;
+    color: #5a31f4;
+  }
+
+  .szc-learn-more {
+    color: #111111;
+    text-decoration: underline;
+    font-size: 11px;
+  }
+
+  .szc-main-product__rating-block {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    margin-top: 2px;
+  }
+
+  .szc-stars {
+    color: #b07d4f;
+    font-size: 14px;
+    letter-spacing: 1px;
+  }
+
+  .szc-rating-val {
     font-size: 13px;
-    font-weight: 600;
-    margin-bottom: 6px;
+    font-weight: 700;
+    color: #111111;
+  }
+
+  .szc-rating-count {
+    font-size: 12px;
+    color: #666666;
   }
 
   .szc-main-product__option-fieldset {
     border: none;
+    margin: 0 0 20px 0;
     padding: 0;
-    margin: 0 0 16px 0;
+  }
+
+  .szc-main-product__option-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 8px;
   }
 
   .szc-main-product__option-legend {
-    font-size: 13px;
-    font-weight: 600;
-    margin-bottom: 8px;
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    color: #111111;
+  }
+
+  .szc-main-product__option-selected {
+    font-weight: 400;
+    color: #555555;
+  }
+
+  .szc-size-guide-btn {
+    background: transparent;
+    border: none;
+    padding: 0;
+    font-size: 12px;
+    color: #111111;
+    text-decoration: underline;
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
   }
 
   .szc-main-product__swatches-wrap {
     display: flex;
     flex-wrap: wrap;
-    gap: 8px;
+    gap: 10px;
   }
 
-  .szc-main-product__description {
-    font-size: 15px;
-    line-height: 1.6;
-    color: var(--szc-color-text-secondary, #4a4a4a);
+  /* Buy Buttons Row */
+  .szc-main-product__btn-row {
+    display: flex;
+    gap: 10px;
+    align-items: center;
+  }
+
+  .szc-main-product__add-btn {
+    flex: 1;
+    height: 50px;
+    background-color: #000000;
+    color: #ffffff;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: background-color 150ms ease;
+  }
+
+  .szc-main-product__add-btn:hover {
+    background-color: #222222;
+  }
+
+  .szc-main-product__wishlist-btn {
+    width: 50px;
+    height: 50px;
+    flex-shrink: 0;
+    border: 1px solid #e5e5e5;
+    border-radius: 4px;
+    background: #ffffff;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    color: #111111;
+    transition: all 150ms ease;
+  }
+
+  .szc-main-product__wishlist-btn:hover {
+    border-color: #111111;
+    color: #e63946;
+  }
+
+  .szc-main-product__buy-now-btn {
+    width: 100%;
+    height: 48px;
+    margin-top: 10px;
+    background-color: #ffffff;
+    color: #000000;
+    border: 1px solid #000000;
+    border-radius: 4px;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    cursor: pointer;
+    transition: background-color 150ms ease;
+  }
+
+  .szc-main-product__buy-now-btn:hover {
+    background-color: #f8f9fa;
+  }
+
+  /* Trust Badges Block (Fully Dynamic via Schema Settings) */
+  .szc-main-product__trust-badges {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 16px;
+    padding: 12px 14px;
+    background-color: var(--tb-bg-color, transparent);
+    border: 1px solid var(--tb-border-color, transparent);
+    border-radius: var(--tb-border-radius, 0px);
     margin-top: 8px;
+    transition: all 150ms ease;
+  }
+
+  .szc-trust-badge {
+    display: flex;
+    flex-direction: row;
+    align-items: flex-start;
+    text-align: left;
+    gap: 10px;
+  }
+
+  .szc-trust-badge__icon {
+    flex-shrink: 0;
+    margin-top: 2px;
+    color: var(--tb-icon-color, #b07d4f);
+  }
+
+  .szc-trust-badge__icon svg {
+    width: var(--tb-icon-size, 22px);
+    height: var(--tb-icon-size, 22px);
+    stroke: var(--tb-icon-color, #b07d4f);
+  }
+
+  .szc-trust-badge__text strong {
+    display: block;
+    font-size: var(--tb-title-size, 12px);
+    font-weight: var(--tb-title-weight, 700);
+    color: var(--tb-title-color, #111111);
+    line-height: 1.3;
+  }
+
+  .szc-trust-badge__text span {
+    display: block;
+    font-size: var(--tb-subtext-size, 11px);
+    font-weight: var(--tb-subtext-weight, 400);
+    color: var(--tb-subtext-color, #666666);
+    line-height: 1.3;
+    margin-top: 2px;
+  }
+
+  /* Tabs Section */
+  .szc-product-tabs {
+    margin-top: 56px;
+    border-top: 1px solid #e5e5e5;
+    padding-top: 32px;
+  }
+
+  .szc-product-tabs__header {
+    display: flex;
+    gap: 32px;
+    border-bottom: 1px solid #e5e5e5;
+    overflow-x: auto;
+  }
+
+  .szc-tab-btn {
+    background: transparent;
+    border: none;
+    padding: 12px 0;
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    color: #757575;
+    cursor: pointer;
+    position: relative;
+  }
+
+  .szc-tab-btn.is-active {
+    color: #111111;
+  }
+
+  .szc-tab-btn.is-active::after {
+    content: '';
+    position: absolute;
+    bottom: -1px;
+    left: 0;
+    right: 0;
+    height: 2px;
+    background-color: #111111;
+  }
+
+  .szc-product-tabs__content {
+    padding-top: 24px;
+  }
+
+  .szc-tab-pane {
+    display: none;
+  }
+
+  .szc-tab-pane.is-active {
+    display: block;
+  }
+
+  .szc-tab-pane__grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 32px;
+  }
+
+  @media (min-width: 990px) {
+    .szc-tab-pane__grid {
+      grid-template-columns: 1.2fr 1fr;
+    }
+  }
+
+  .szc-tab-bullets {
+    padding-left: 20px;
+    margin-top: 16px;
+  }
+
+  .szc-tab-bullets li {
+    margin-bottom: 6px;
+    font-size: 14px;
+    color: #4a4a4a;
+  }
+
+  .szc-tab-card {
+    background: #ffffff;
+    border: 1px solid #e5e5e5;
+    border-radius: 8px;
+    padding: 20px;
+  }
+
+  .szc-tab-card__title {
+    margin: 0;
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+  }
+
+  .szc-tab-card__sub {
+    margin: 4px 0 16px 0;
+    font-size: 13px;
+    color: #666666;
+  }
+
+  .szc-care-icons-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 12px;
+    text-align: center;
+  }
+
+  .szc-care-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 6px;
+    font-size: 10px;
+    color: #555;
+  }
+
+  .szc-care-icon {
+    font-size: 22px;
+  }
+
+  /* Fit Slider */
+  .szc-fit-slider {
+    margin-top: 12px;
+  }
+
+  .szc-fit-track {
+    position: relative;
+    height: 4px;
+    background: #e5e5e5;
+    border-radius: 2px;
+  }
+
+  .szc-fit-thumb {
+    position: absolute;
+    top: 50%;
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+    background: #111111;
+    transform: translate(-50%, -50%);
+  }
+
+  .szc-fit-labels {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 8px;
+    font-size: 11px;
+    color: #666666;
+  }
+
+  /* Size Table */
+  .szc-size-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 13px;
+  }
+
+  .szc-size-table th, .szc-size-table td {
+    padding: 10px 14px;
+    border: 1px solid #e5e5e5;
+    text-align: left;
+  }
+
+  .szc-size-table th {
+    background-color: #f8f9fa;
+    font-weight: 700;
+  }
+
+  /* Sticky Add to Cart Bar */
+  .szc-sticky-atc-bar {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    z-index: 99;
+    background: #ffffff;
+    border-top: 1px solid #e5e5e5;
+    box-shadow: 0 -4px 16px rgba(0,0,0,0.06);
+    transform: translateY(100%);
+    transition: transform 300ms ease;
+    padding: 12px 0;
+  }
+
+  .szc-sticky-atc-bar.is-visible {
+    transform: translateY(0);
+  }
+
+  .szc-sticky-atc-bar__container {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+
+  .szc-sticky-atc-bar__product {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+
+  .szc-sticky-atc-bar__img-wrap {
+    width: 44px;
+    height: 44px;
+    border-radius: 4px;
+    overflow: hidden;
+  }
+
+  .szc-sticky-atc-bar__img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+
+  .szc-sticky-atc-bar__title {
+    margin: 0;
+    font-size: 13px;
+    font-weight: 600;
+  }
+
+  .szc-sticky-atc-bar__price {
+    font-size: 12px;
+    color: #666666;
   }
 {% endstylesheet %}
 
 {% javascript %}
-  if (!customElements.get('variant-selects')) {
-    customElements.define(
-      'variant-selects',
-      class VariantSelects extends HTMLElement {
-        constructor() {
-          super();
-          this.addEventListener('change', this.onVariantChange.bind(this));
-        }
+  function initProductPageGallery() {
+    const sliderList = document.querySelector('[data-slider-list]');
+    const slides = Array.from(document.querySelectorAll('.szc-main-product__slider-slide'));
+    const thumbnailBtns = Array.from(document.querySelectorAll('.szc-main-product__thumbnail-btn'));
+    const prevArrow = document.querySelector('[data-media-prev]');
+    const nextArrow = document.querySelector('[data-media-next]');
+    const thumbScrollDown = document.querySelector('[data-thumb-scroll-down]');
+    const thumbnailsList = document.querySelector('[data-thumbnails-list]');
+    let activeIndex = 0;
 
-        onVariantChange() {
-          // Trigger AJAX variant price update
+    function scrollToSlide(index) {
+      if (slides.length === 0) return;
+      if (index < 0) index = slides.length - 1;
+      if (index >= slides.length) index = 0;
+
+      activeIndex = index;
+      const targetSlide = slides[activeIndex];
+      if (sliderList && targetSlide) {
+        sliderList.scrollTo({
+          left: targetSlide.offsetLeft,
+          behavior: 'smooth'
+        });
+      }
+
+      thumbnailBtns.forEach(b => b.classList.remove('is-active'));
+      const activeBtn = thumbnailBtns[activeIndex];
+      if (activeBtn) {
+        activeBtn.classList.add('is-active');
+        activeBtn.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+      }
+    }
+
+    thumbnailBtns.forEach((btn, idx) => {
+      btn.addEventListener('click', function(e) {
+        e.preventDefault();
+        scrollToSlide(idx);
+      });
+    });
+
+    if (prevArrow) {
+      prevArrow.addEventListener('click', (e) => {
+        e.preventDefault();
+        scrollToSlide(activeIndex - 1);
+      });
+    }
+
+    if (nextArrow) {
+      nextArrow.addEventListener('click', (e) => {
+        e.preventDefault();
+        scrollToSlide(activeIndex + 1);
+      });
+    }
+
+    if (thumbScrollDown && thumbnailsList) {
+      thumbScrollDown.addEventListener('click', (e) => {
+        e.preventDefault();
+        thumbnailsList.scrollBy({ top: 160, behavior: 'smooth' });
+      });
+    }
+
+    // Scroll listener on main slider to update thumbnail index on swipe
+    if (sliderList && slides.length > 0) {
+      let isScrolling;
+      sliderList.addEventListener('scroll', () => {
+        clearTimeout(isScrolling);
+        isScrolling = setTimeout(() => {
+          const scrollPos = sliderList.scrollLeft;
+          const slideWidth = sliderList.clientWidth;
+          const detectedIdx = Math.round(scrollPos / slideWidth);
+          if (detectedIdx !== activeIndex && detectedIdx >= 0 && detectedIdx < slides.length) {
+            activeIndex = detectedIdx;
+            thumbnailBtns.forEach(b => b.classList.remove('is-active'));
+            if (thumbnailBtns[activeIndex]) {
+              thumbnailBtns[activeIndex].classList.add('is-active');
+              thumbnailBtns[activeIndex].scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+            }
+          }
+        }, 60);
+      });
+    }
+
+    // Shopify Style Interactive Ultra High-Res Zoom Modal Lightbox
+    const zoomBtn = document.querySelector('[data-zoom-btn]');
+    const zoomModal = document.querySelector('[data-zoom-modal]');
+    const zoomModalImg = document.getElementById('ZoomModalImg');
+    const zoomViewport = document.querySelector('[data-zoom-viewport]');
+    const zoomCounter = document.querySelector('[data-zoom-counter]');
+    const zoomInBtn = document.querySelector('[data-zoom-in-btn]');
+    const zoomOutBtn = document.querySelector('[data-zoom-out-btn]');
+    const zoomClose = document.querySelector('[data-zoom-close]');
+    const zoomPrev = document.querySelector('[data-zoom-prev]');
+    const zoomNext = document.querySelector('[data-zoom-next]');
+    let isZoomedIn = false;
+
+    function openZoomModal(index) {
+      if (!zoomModal || slides.length === 0) return;
+      activeIndex = index;
+      const targetSlide = slides[activeIndex];
+      const targetBtn = thumbnailBtns[activeIndex];
+      const zoomUrl = (targetSlide ? targetSlide.dataset.zoomUrl : null) || (targetBtn ? targetBtn.dataset.zoomUrl : null);
+      const slideImg = targetSlide ? targetSlide.querySelector('img') : null;
+
+      if (zoomModalImg) {
+        zoomModalImg.src = zoomUrl || (slideImg ? slideImg.src : '');
+      }
+      if (zoomCounter) {
+        zoomCounter.textContent = `${activeIndex + 1} / ${slides.length}`;
+      }
+      isZoomedIn = false;
+      if (zoomViewport) {
+        zoomViewport.classList.remove('is-zoomed');
+        zoomViewport.scrollTop = 0;
+      }
+      zoomModal.classList.add('is-open');
+      zoomModal.setAttribute('aria-hidden', 'false');
+      document.body.style.overflow = 'hidden';
+    }
+
+    function closeZoomModal() {
+      if (!zoomModal) return;
+      zoomModal.classList.remove('is-open');
+      zoomModal.setAttribute('aria-hidden', 'true');
+      document.body.style.overflow = '';
+    }
+
+    function setZoomState(zoomed) {
+      isZoomedIn = zoomed;
+      if (zoomViewport) {
+        if (isZoomedIn) {
+          zoomViewport.classList.add('is-zoomed');
+        } else {
+          zoomViewport.classList.remove('is-zoomed');
+          zoomViewport.scrollTop = 0;
         }
       }
-    );
+    }
+
+    if (zoomBtn) {
+      zoomBtn.addEventListener('click', (e) => {
+        e.preventDefault();
+        openZoomModal(activeIndex);
+      });
+    }
+
+    slides.forEach((slide, idx) => {
+      slide.addEventListener('click', () => {
+        openZoomModal(idx);
+      });
+    });
+
+    if (zoomInBtn) zoomInBtn.addEventListener('click', () => { setZoomState(true); });
+    if (zoomOutBtn) zoomOutBtn.addEventListener('click', () => { setZoomState(false); });
+    if (zoomViewport) {
+      zoomViewport.addEventListener('click', (e) => {
+        if (e.target === zoomModalImg) {
+          setZoomState(!isZoomedIn);
+        } else if (e.target === zoomViewport) {
+          closeZoomModal();
+        }
+      });
+    }
+
+    if (zoomClose) zoomClose.addEventListener('click', closeZoomModal);
+
+    if (zoomPrev) {
+      zoomPrev.addEventListener('click', () => {
+        let prevIdx = activeIndex - 1;
+        if (prevIdx < 0) prevIdx = slides.length - 1;
+        openZoomModal(prevIdx);
+      });
+    }
+
+    if (zoomNext) {
+      zoomNext.addEventListener('click', () => {
+        let nextIdx = activeIndex + 1;
+        if (nextIdx >= slides.length) nextIdx = 0;
+        openZoomModal(nextIdx);
+      });
+    }
+
+    document.addEventListener('keydown', (e) => {
+      if (!zoomModal || !zoomModal.classList.contains('is-open')) return;
+      if (e.key === 'Escape') closeZoomModal();
+      if (e.key === 'ArrowLeft' && zoomPrev) zoomPrev.click();
+      if (e.key === 'ArrowRight' && zoomNext) zoomNext.click();
+      if (e.key === '+' || e.key === '=') { setZoomState(true); }
+      if (e.key === '-') { setZoomState(false); }
+    });
+
+    // Global Swatch Selection Text Update (Event Delegation for 100% Reliability)
+    document.addEventListener('change', function(e) {
+      if (e.target && e.target.classList.contains('szc-swatch__input')) {
+        const optionName = e.target.name;
+        const selectedSpan = document.querySelector(`[data-option-selected="${optionName}"]`);
+        if (selectedSpan) {
+          selectedSpan.textContent = e.target.value;
+        }
+      }
+    });
+
+    // Tabs Switcher Logic
+    const tabBtns = document.querySelectorAll('.szc-tab-btn');
+    const tabPanes = document.querySelectorAll('.szc-tab-pane');
+
+    tabBtns.forEach(btn => {
+      btn.addEventListener('click', function() {
+        const targetId = this.dataset.tab;
+        tabBtns.forEach(b => b.classList.remove('is-active'));
+        tabPanes.forEach(p => p.classList.remove('is-active'));
+
+        this.classList.add('is-active');
+        const targetPane = document.getElementById(targetId);
+        if (targetPane) {
+          targetPane.classList.add('is-active');
+        }
+      });
+    });
+
+    // Sticky ATC Bar IntersectionObserver
+    const mainAddBtn = document.querySelector('[data-add-to-cart-btn]');
+    const stickyBar = document.querySelector('[data-sticky-atc-bar]');
+    const stickyBtn = document.querySelector('[data-sticky-atc-btn]');
+
+    if (mainAddBtn && stickyBar) {
+      const observer = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+          if (!entry.isIntersecting) {
+            stickyBar.classList.add('is-visible');
+          } else {
+            stickyBar.classList.remove('is-visible');
+          }
+        });
+      }, { threshold: 0.1 });
+
+      observer.observe(mainAddBtn);
+    }
+
+    if (stickyBtn && mainAddBtn) {
+      stickyBtn.addEventListener('click', () => {
+        mainAddBtn.click();
+      });
+    }
+  }
+
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', initProductPageGallery);
+  } else {
+    initProductPageGallery();
   }
 {% endjavascript %}
 
@@ -332,29 +1623,58 @@
       "type": "@app"
     },
     {
+      "type": "badge",
+      "name": "Product Tag Badge",
+      "limit": 1,
+      "settings": [
+        {
+          "type": "text",
+          "id": "text",
+          "default": "NEW ARRIVAL",
+          "label": "Badge Text"
+        }
+      ]
+    },
+    {
       "type": "vendor",
       "name": "Vendor",
-      "limit": 1
+      "limit": 1,
+      "settings": []
     },
     {
       "type": "title",
       "name": "Title",
-      "limit": 1
+      "limit": 1,
+      "settings": []
     },
     {
       "type": "price",
       "name": "Price",
-      "limit": 1
+      "limit": 1,
+      "settings": []
+    },
+    {
+      "type": "rating",
+      "name": "Star Rating",
+      "limit": 1,
+      "settings": [
+        {
+          "type": "paragraph",
+          "content": "To display a rating, add a product reviews app."
+        }
+      ]
     },
     {
       "type": "variant_picker",
       "name": "Variant picker",
-      "limit": 1
+      "limit": 1,
+      "settings": []
     },
     {
       "type": "quantity_selector",
       "name": "Quantity selector",
-      "limit": 1
+      "limit": 1,
+      "settings": []
     },
     {
       "type": "buy_buttons",
@@ -370,9 +1690,205 @@
       ]
     },
     {
+      "type": "trust_badges",
+      "name": "Trust Badges",
+      "limit": 1,
+      "settings": [
+        {
+          "type": "header",
+          "content": "Badge 1"
+        },
+        {
+          "type": "text",
+          "id": "badge_1_title",
+          "label": "Badge 1 Title",
+          "default": "Free Shipping"
+        },
+        {
+          "type": "text",
+          "id": "badge_1_subtext",
+          "label": "Badge 1 Subtext",
+          "default": "On orders over $100"
+        },
+        {
+          "type": "select",
+          "id": "badge_1_icon",
+          "label": "Badge 1 Icon",
+          "options": [
+            { "value": "shipping", "label": "Shipping Truck" },
+            { "value": "returns", "label": "Return Arrow" },
+            { "value": "secure", "label": "Secure Lock" },
+            { "value": "star", "label": "Star Quality" },
+            { "value": "support", "label": "24/7 Support" }
+          ],
+          "default": "shipping"
+        },
+        {
+          "type": "header",
+          "content": "Badge 2"
+        },
+        {
+          "type": "text",
+          "id": "badge_2_title",
+          "label": "Badge 2 Title",
+          "default": "Easy Returns"
+        },
+        {
+          "type": "text",
+          "id": "badge_2_subtext",
+          "label": "Badge 2 Subtext",
+          "default": "30-day return policy"
+        },
+        {
+          "type": "select",
+          "id": "badge_2_icon",
+          "label": "Badge 2 Icon",
+          "options": [
+            { "value": "shipping", "label": "Shipping Truck" },
+            { "value": "returns", "label": "Return Arrow" },
+            { "value": "secure", "label": "Secure Lock" },
+            { "value": "star", "label": "Star Quality" },
+            { "value": "support", "label": "24/7 Support" }
+          ],
+          "default": "returns"
+        },
+        {
+          "type": "header",
+          "content": "Badge 3"
+        },
+        {
+          "type": "text",
+          "id": "badge_3_title",
+          "label": "Badge 3 Title",
+          "default": "Secure Payment"
+        },
+        {
+          "type": "text",
+          "id": "badge_3_subtext",
+          "label": "Badge 3 Subtext",
+          "default": "100% secure checkout"
+        },
+        {
+          "type": "select",
+          "id": "badge_3_icon",
+          "label": "Badge 3 Icon",
+          "options": [
+            { "value": "shipping", "label": "Shipping Truck" },
+            { "value": "returns", "label": "Return Arrow" },
+            { "value": "secure", "label": "Secure Lock" },
+            { "value": "star", "label": "Star Quality" },
+            { "value": "support", "label": "24/7 Support" }
+          ],
+          "default": "secure"
+        },
+        {
+          "type": "header",
+          "content": "Typography & Colors"
+        },
+        {
+          "type": "color",
+          "id": "icon_color",
+          "label": "Icon Color",
+          "default": "#b07d4f"
+        },
+        {
+          "type": "range",
+          "id": "icon_size",
+          "min": 16,
+          "max": 36,
+          "step": 2,
+          "unit": "px",
+          "label": "Icon Size",
+          "default": 22
+        },
+        {
+          "type": "color",
+          "id": "title_color",
+          "label": "Title Color",
+          "default": "#111111"
+        },
+        {
+          "type": "range",
+          "id": "title_size",
+          "min": 10,
+          "max": 20,
+          "step": 1,
+          "unit": "px",
+          "label": "Title Font Size",
+          "default": 12
+        },
+        {
+          "type": "select",
+          "id": "title_weight",
+          "label": "Title Font Weight",
+          "options": [
+            { "value": "400", "label": "Normal (400)" },
+            { "value": "500", "label": "Medium (500)" },
+            { "value": "600", "label": "Semi Bold (600)" },
+            { "value": "700", "label": "Bold (700)" }
+          ],
+          "default": "700"
+        },
+        {
+          "type": "color",
+          "id": "subtext_color",
+          "label": "Subtext Color",
+          "default": "#666666"
+        },
+        {
+          "type": "range",
+          "id": "subtext_size",
+          "min": 8,
+          "max": 16,
+          "step": 1,
+          "unit": "px",
+          "label": "Subtext Font Size",
+          "default": 11
+        },
+        {
+          "type": "select",
+          "id": "subtext_weight",
+          "label": "Subtext Font Weight",
+          "options": [
+            { "value": "300", "label": "Light (300)" },
+            { "value": "400", "label": "Normal (400)" },
+            { "value": "500", "label": "Medium (500)" }
+          ],
+          "default": "400"
+        },
+        {
+          "type": "header",
+          "content": "Box & Spacing"
+        },
+        {
+          "type": "color",
+          "id": "bg_color",
+          "label": "Background Color",
+          "default": "transparent"
+        },
+        {
+          "type": "color",
+          "id": "border_color",
+          "label": "Border Color",
+          "default": "transparent"
+        },
+        {
+          "type": "range",
+          "id": "border_radius",
+          "min": 0,
+          "max": 20,
+          "step": 1,
+          "unit": "px",
+          "label": "Border Radius",
+          "default": 0
+        }
+      ]
+    },
+    {
       "type": "description",
       "name": "Description",
-      "limit": 1
+      "limit": 1,
+      "settings": []
     },
     {
       "type": "accordion",
@@ -401,7 +1917,8 @@
     {
       "type": "share",
       "name": "Share",
-      "limit": 1
+      "limit": 1,
+      "settings": []
     }
   ]
 }

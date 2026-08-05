@@ -267,7 +267,7 @@
     <!-- 3. TOOLBAR (PRODUCT COUNT, SORT & GRID SWITCHER) -->
     <div class="szc-collection-toolbar">
       <div class="szc-collection-toolbar__count">
-        <span>{{ collection.all_products_count | default: collection.products_count | default: 128 }} Products Found</span>
+        <span>{{ collection.products_count }} Products Found</span>
       </div>
 
       <div class="szc-collection-toolbar__actions">
@@ -371,49 +371,113 @@
               {% render 'pagination', paginate: paginate, anchor: '#ProductGrid' %}
             {%- endif -%}
           {%- else -%}
-            <!-- DEMO FALLBACK PRODUCT GRID MATCHING APPROVED UI SCREENSHOT -->
-            <div class="szc-product-grid" id="ProductGrid">
-              {% render 'product-card', card_product: nil, title_override: 'Oversized Knit Sweater', price_override: '$59.99', rating_count: 24 %}
-              {% render 'product-card', card_product: nil, title_override: 'Linen Blend Shirt', price_override: '$49.99', rating_count: 18 %}
-              {% render 'product-card', card_product: nil, title_override: 'Satin Slip Dress', price_override: '$69.99', rating_count: 31 %}
-              {% render 'product-card', card_product: nil, title_override: 'Classic Denim Jacket', price_override: '$79.99', rating_count: 21 %}
-              {% render 'product-card', card_product: nil, title_override: 'Wide Leg Trousers', price_override: '$54.99', rating_count: 38 %}
-              {% render 'product-card', card_product: nil, title_override: 'Ribbed Tank Top', price_override: '$24.99', rating_count: 12 %}
-              {% render 'product-card', card_product: nil, title_override: 'Pleated Midi Skirt', price_override: '$49.99', rating_count: 17 %}
-              {% render 'product-card', card_product: nil, title_override: 'Button Up Shirt', price_override: '$44.99', rating_count: 15 %}
-              {% render 'product-card', card_product: nil, title_override: 'Blazer Jacket', price_override: '$89.99', rating_count: 20 %}
-              {% render 'product-card', card_product: nil, title_override: 'Floral Wrap Dress', price_override: '$64.99', rating_count: 19 %}
-              {% render 'product-card', card_product: nil, title_override: 'Cotton Basic Tee', price_override: '$19.99', rating_count: 11 %}
-              {% render 'product-card', card_product: nil, title_override: 'High Waist Jeans', price_override: '$59.99', rating_count: 27 %}
+            <!-- CLEAN EMPTY STATE (ONLY WHEN ZERO PRODUCTS ARE RETURNED) -->
+            {%- liquid
+              assign active_filters_count = 0
+              for filter in collection.filters
+                assign active_filters_count = active_filters_count | plus: filter.active_values.size
+                if filter.type == 'price_range'
+                  if filter.min_value.value != null or filter.max_value.value != null
+                    assign active_filters_count = active_filters_count | plus: 1
+                  endif
+                endif
+              endfor
+            -%}
+
+            <div class="szc-collection-empty szc-animate-fade-up" id="ProductGrid" role="status" aria-live="polite">
+              <div class="szc-collection-empty__card">
+                <div class="szc-collection-empty__icon-wrap">
+                  <svg class="szc-collection-empty__icon" width="44" height="44" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                    <circle cx="11" cy="11" r="8"></circle>
+                    <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+                    <line x1="8" y1="11" x2="14" y2="11"></line>
+                  </svg>
+                </div>
+
+                <h2 class="szc-collection-empty__title">
+                  {%- if active_filters_count > 0 -%}
+                    No Products Found
+                  {%- else -%}
+                    This Collection is Empty
+                  {%- endif -%}
+                </h2>
+
+                <p class="szc-collection-empty__text">
+                  {%- if active_filters_count > 0 -%}
+                    We couldn't find any products matching your selected filters. Try adjusting or clearing some filters.
+                  {%- else -%}
+                    This collection is currently empty.
+                  {%- endif -%}
+                </p>
+
+                <div class="szc-collection-empty__actions">
+                  {%- if active_filters_count > 0 -%}
+                    <a
+                      href="{{ collection.url }}"
+                      class="szc-button szc-button--primary szc-button--md szc-collection-empty__btn"
+                    >
+                      Clear All Filters
+                    </a>
+                  {%- endif -%}
+
+                  <a
+                    href="{{ routes.all_products_collection_url }}"
+                    class="szc-button {% if active_filters_count > 0 %}szc-button--outline{% else %}szc-button--primary{% endif %} szc-button--md szc-collection-empty__btn"
+                  >
+                    Continue Shopping
+                  </a>
+                </div>
+              </div>
             </div>
           {%- endif -%}
         {%- endpaginate -%}
       </main>
     </div>
 
-    <!-- 5. BOTTOM PROMOTIONAL BANNER SLIDER -->
-    {%- if section.settings.show_promo_banner -%}
+    <!-- 5. BOTTOM PROMOTIONAL BANNER SLIDER (ONLY SHOWN WHEN COLLECTION HAS PRODUCTS) -->
+    {%- if collection.products_count > 0 and section.settings.show_promo_banner -%}
       {%- assign promo_blocks = section.blocks | where: 'type', 'promo_slide' -%}
-      <div class="szc-collection-promo">
-        <div class="szc-promo-slider" data-promo-slider>
-          <div class="szc-promo-slider__slides-wrapper">
-            <div class="szc-promo-slider__track">
-              {%- if promo_blocks.size > 0 -%}
+      {%- if promo_blocks.size > 0 -%}
+        <div class="szc-collection-promo" style="--promo-overlay-opacity: {{ section.settings.promo_overlay_opacity | divided_by: 100.0 }};">
+          <div
+            class="szc-promo-slider szc-promo-slider--desktop-{{ section.settings.promo_desktop_height }} szc-promo-slider--mobile-{{ section.settings.promo_mobile_height }}"
+            data-promo-slider
+            data-autoplay="{{ section.settings.promo_autoplay }}"
+            data-autoplay-speed="{{ section.settings.promo_autoplay_speed | times: 1000 }}"
+            data-infinite="{{ section.settings.promo_infinite_loop }}"
+          >
+            <div class="szc-promo-slider__slides-wrapper">
+              <div class="szc-promo-slider__track">
                 {%- for block in promo_blocks -%}
-                  <div class="szc-promo-slide {% if forloop.first %}is-active{% endif %}" {{ block.shopify_attributes }}>
+                  <div
+                    class="szc-promo-slide {% if forloop.first %}is-active{% endif %} szc-promo-slide--align-{{ block.settings.text_alignment }} szc-promo-slide--pos-{{ block.settings.content_position }}"
+                    style="--slide-text-color: {{ block.settings.text_color }}; --slide-overlay-color: {{ block.settings.overlay_color }};"
+                    {{ block.shopify_attributes }}
+                  >
                     <div class="szc-promo-slide__media">
                       {%- if block.settings.image != blank -%}
-                        {{ block.settings.image | image_url: width: 1400 | image_tag: class: 'szc-promo-slide__img', loading: 'lazy' }}
+                        <picture>
+                          {%- if block.settings.mobile_image != blank -%}
+                            <source media="(max-width: 749px)" srcset="{{ block.settings.mobile_image | image_url: width: 800 }}">
+                          {%- endif -%}
+                          {{ block.settings.image | image_url: width: 1400 | image_tag: class: 'szc-promo-slide__img', loading: 'lazy' }}
+                        </picture>
                       {%- else -%}
                         {{ 'lifestyle-1' | placeholder_svg_tag: 'szc-promo-slide__placeholder' }}
                       {%- endif -%}
                     </div>
+                    <div class="szc-promo-slide__overlay"></div>
                     <div class="szc-promo-slide__content">
                       {%- if block.settings.subheading != blank -%}
-                        <span class="szc-promo-slide__subheading">{{ block.settings.subheading }}</span>
+                        <span class="szc-promo-slide__subheading" style="color: var(--slide-text-color, inherit);">{{ block.settings.subheading }}</span>
                       {%- endif -%}
                       {%- if block.settings.heading != blank -%}
-                        <h2 class="szc-promo-slide__heading">{{ block.settings.heading }}</h2>
+                        <h2 class="szc-promo-slide__heading" style="color: var(--slide-text-color, inherit);">{{ block.settings.heading }}</h2>
+                      {%- endif -%}
+                      {%- if block.settings.description != blank -%}
+                        <div class="szc-promo-slide__description" style="color: var(--slide-text-color, inherit);">
+                          {{ block.settings.description }}
+                        </div>
                       {%- endif -%}
                       {%- if block.settings.button_label != blank -%}
                         <a href="{{ block.settings.button_link | default: '#' }}" class="szc-button szc-button--primary szc-button--pill">
@@ -423,65 +487,34 @@
                     </div>
                   </div>
                 {%- endfor -%}
-              {%- else -%}
-                <!-- DEFAULT FALLBACK SLIDES (MATCHING APPROVED UI SCREENSHOT) -->
-                <div class="szc-promo-slide is-active">
-                  <div class="szc-promo-slide__media">
-                    {%- if section.settings.promo_image != blank -%}
-                      {{ section.settings.promo_image | image_url: width: 1400 | image_tag: class: 'szc-promo-slide__img', loading: 'lazy' }}
-                    {%- else -%}
-                      {{ 'lifestyle-1' | placeholder_svg_tag: 'szc-promo-slide__placeholder' }}
-                    {%- endif -%}
-                  </div>
-                  <div class="szc-promo-slide__content">
-                    <span class="szc-promo-slide__subheading">{{ section.settings.promo_subheading | default: 'For effortless everyday looks' }}</span>
-                    <h2 class="szc-promo-slide__heading">{{ section.settings.promo_heading | default: 'Everyday Essentials' }}</h2>
-                    {%- if section.settings.promo_button_label != blank -%}
-                      <a href="{{ section.settings.promo_button_link | default: '/collections/all' }}" class="szc-button szc-button--primary szc-button--pill">
-                        {{ section.settings.promo_button_label | default: 'Shop now' }}
-                      </a>
-                    {%- endif -%}
-                  </div>
-                </div>
-
-                <div class="szc-promo-slide">
-                  <div class="szc-promo-slide__media">
-                    {{ 'lifestyle-2' | placeholder_svg_tag: 'szc-promo-slide__placeholder' }}
-                  </div>
-                  <div class="szc-promo-slide__content">
-                    <span class="szc-promo-slide__subheading">Exclusive Seasonal Collection</span>
-                    <h2 class="szc-promo-slide__heading">Autumn & Winter Trends</h2>
-                    <a href="/collections/all" class="szc-button szc-button--primary szc-button--pill">
-                      Explore collection
-                    </a>
-                  </div>
-                </div>
-              {%- endif -%}
+              </div>
             </div>
-          </div>
 
-          <!-- Navigation Arrows -->
-          <button type="button" class="szc-promo-slider__arrow szc-promo-slider__arrow--prev" aria-label="Previous slide" data-promo-prev>
-            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
-              <path d="M15 18l-6-6 6-6"/>
-            </svg>
-          </button>
-          <button type="button" class="szc-promo-slider__arrow szc-promo-slider__arrow--next" aria-label="Next slide" data-promo-next>
-            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
-              <path d="M9 18l6-6-6-6"/>
-            </svg>
-          </button>
+            <!-- Navigation Arrows -->
+            {%- if section.settings.promo_show_arrows and promo_blocks.size > 1 -%}
+              <button type="button" class="szc-promo-slider__arrow szc-promo-slider__arrow--prev" aria-label="Previous slide" data-promo-prev>
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M15 18l-6-6 6-6"/>
+                </svg>
+              </button>
+              <button type="button" class="szc-promo-slider__arrow szc-promo-slider__arrow--next" aria-label="Next slide" data-promo-next>
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M9 18l6-6-6-6"/>
+                </svg>
+              </button>
+            {%- endif -%}
 
-          <!-- Dots Pagination -->
-          <div class="szc-promo-slider__dots" data-promo-dots>
-            {%- assign slide_count = promo_blocks.size -%}
-            {%- if slide_count == 0 -%}{%- assign slide_count = 2 -%}{%- endif -%}
-            {%- for i in (1..slide_count) -%}
-              <button type="button" class="szc-promo-slider__dot {% if forloop.first %}is-active{% endif %}" data-slide-index="{{ forloop.index0 }}" aria-label="Slide {{ forloop.index }}"></button>
-            {%- endfor -%}
+            <!-- Dots Pagination -->
+            {%- if section.settings.promo_show_dots and promo_blocks.size > 1 -%}
+              <div class="szc-promo-slider__dots" data-promo-dots>
+                {%- for block in promo_blocks -%}
+                  <button type="button" class="szc-promo-slider__dot {% if forloop.first %}is-active{% endif %}" data-slide-index="{{ forloop.index0 }}" aria-label="Slide {{ forloop.index }}"></button>
+                {%- endfor -%}
+              </div>
+            {%- endif -%}
           </div>
         </div>
-      </div>
+      {%- endif -%}
     {%- endif -%}
   </div>
 </div>
@@ -843,7 +876,14 @@
     top: 100px;
     max-height: calc(100vh - 120px);
     overflow-y: auto;
-    scrollbar-width: thin;
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+  }
+
+  .szc-collection-layout.is-sticky-sidebar .szc-collection-sidebar::-webkit-scrollbar {
+    display: none;
+    width: 0;
+    height: 0;
   }
 
   .szc-product-grid {
@@ -881,15 +921,26 @@
     width: 100%;
   }
 
+  /* Desktop Heights */
+  .szc-promo-slider--desktop-small .szc-promo-slide { height: 320px; }
+  .szc-promo-slider--desktop-medium .szc-promo-slide { height: 420px; }
+  .szc-promo-slider--desktop-large .szc-promo-slide { height: 520px; }
+  .szc-promo-slider--desktop-adapt .szc-promo-slide { height: auto; min-height: 320px; }
+
   .szc-promo-slide {
     min-width: 100%;
     position: relative;
-    height: 320px;
     display: flex;
     align-items: center;
     justify-content: center;
     overflow: hidden;
+    box-sizing: border-box;
   }
+
+  /* Content Positions */
+  .szc-promo-slide--pos-top-center { align-items: flex-start; }
+  .szc-promo-slide--pos-middle-center { align-items: center; }
+  .szc-promo-slide--pos-bottom-center { align-items: flex-end; }
 
   .szc-promo-slide__media {
     position: absolute;
@@ -900,11 +951,22 @@
     z-index: 1;
   }
 
+  .szc-promo-slide__media picture,
   .szc-promo-slide__img,
   .szc-promo-slide__placeholder {
     width: 100%;
     height: 100%;
     object-fit: cover;
+    display: block;
+  }
+
+  .szc-promo-slide__overlay {
+    position: absolute;
+    inset: 0;
+    background-color: var(--slide-overlay-color, #000000);
+    opacity: var(--promo-overlay-opacity, 0.2);
+    z-index: 2;
+    pointer-events: none;
   }
 
   .szc-promo-slide__content {
@@ -912,27 +974,50 @@
     z-index: 3;
     display: flex;
     flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    text-align: center;
-    padding: 32px 24px;
+    padding: 36px 24px;
     max-width: 650px;
+    width: 100%;
+    box-sizing: border-box;
+  }
+
+  /* Text Alignments */
+  .szc-promo-slide--align-left .szc-promo-slide__content {
+    align-items: flex-start;
+    text-align: left;
+  }
+
+  .szc-promo-slide--align-center .szc-promo-slide__content {
+    align-items: center;
+    text-align: center;
+  }
+
+  .szc-promo-slide--align-right .szc-promo-slide__content {
+    align-items: flex-end;
+    text-align: right;
   }
 
   .szc-promo-slide__subheading {
-    font-size: 13px;
+    font-size: 14px;
     font-weight: 500;
     letter-spacing: 0.05em;
-    color: #333333;
+    color: var(--slide-text-color, #111111);
     margin-bottom: 10px;
   }
 
   .szc-promo-slide__heading {
     font-family: var(--szc-font-family-heading, 'Playfair Display', Georgia, serif);
-    font-size: clamp(26px, 4vw, 42px);
+    font-size: clamp(26px, 4vw, 44px);
     font-weight: 600;
-    color: #111111;
-    margin: 0 0 20px 0;
+    color: var(--slide-text-color, #111111);
+    margin: 0 0 16px 0;
+    line-height: 1.15;
+  }
+
+  .szc-promo-slide__description {
+    font-size: 15px;
+    line-height: 1.5;
+    color: var(--slide-text-color, #111111);
+    margin-bottom: 20px;
   }
 
   .szc-promo-slider__arrow {
@@ -993,6 +1078,161 @@
   .szc-promo-slider__dot.is-active {
     background-color: #ffffff;
     transform: scale(1.15);
+  }
+
+  @media screen and (max-width: 749px) {
+    .szc-promo-slider--mobile-small .szc-promo-slide { height: 220px; }
+    .szc-promo-slider--mobile-medium .szc-promo-slide { height: 300px; }
+    .szc-promo-slider--mobile-large .szc-promo-slide { height: 380px; }
+    .szc-promo-slider--mobile-adapt .szc-promo-slide { height: auto; min-height: 220px; }
+  }
+
+  /* ------------------------------------------------------------- */
+  /* ELEGANT EMPTY STATE DESIGN (THEME STORE LUXURY UX)            */
+  /* ------------------------------------------------------------- */
+  .szc-collection-empty {
+    width: 100%;
+    padding: 40px 16px;
+    text-align: center;
+    box-sizing: border-box;
+  }
+
+  .szc-collection-empty__card {
+    max-width: 540px;
+    margin: 0 auto 48px auto;
+    padding: 48px 32px;
+    background: #ffffff;
+    border: 1px solid #e8ecef;
+    border-radius: 16px;
+    box-shadow: 0 6px 24px rgba(0, 0, 0, 0.04);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .szc-collection-empty__icon-wrap {
+    width: 80px;
+    height: 80px;
+    border-radius: 50%;
+    background-color: #f4f6f8;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #1b4947;
+    margin-bottom: 24px;
+    box-shadow: inset 0 0 0 1px rgba(27, 73, 71, 0.12);
+  }
+
+  .szc-collection-empty__icon {
+    width: 36px;
+    height: 36px;
+  }
+
+  .szc-collection-empty__title {
+    font-family: var(--szc-font-family-heading, 'Playfair Display', Georgia, serif);
+    font-size: 26px;
+    font-weight: 700;
+    color: #111111;
+    margin: 0 0 12px 0;
+    letter-spacing: -0.02em;
+  }
+
+  .szc-collection-empty__text {
+    font-size: 15px;
+    line-height: 1.6;
+    color: #666666;
+    margin: 0 0 28px 0;
+    max-width: 440px;
+  }
+
+  .szc-collection-empty__actions {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 12px;
+    flex-wrap: wrap;
+    width: 100%;
+  }
+
+  .szc-collection-empty__btn {
+    min-width: 180px;
+    justify-content: center;
+    border-radius: 8px;
+    font-weight: 600;
+  }
+
+  .szc-collection-empty__recommendations {
+    margin-top: 40px;
+    text-align: left;
+    padding-top: 32px;
+    border-top: 1px solid #eaeaea;
+  }
+
+  .szc-collection-empty__rec-title {
+    font-family: var(--szc-font-family-heading, 'Playfair Display', Georgia, serif);
+    font-size: 22px;
+    font-weight: 700;
+    color: #111111;
+    margin-bottom: 24px;
+    text-align: center;
+  }
+
+  .szc-product-grid--4-col {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 20px;
+  }
+
+  @media screen and (max-width: 990px) {
+    .szc-product-grid--4-col {
+      grid-template-columns: repeat(2, 1fr);
+    }
+  }
+
+  @media screen and (max-width: 640px) {
+    .szc-collection-empty {
+      padding: 24px 8px;
+    }
+
+    .szc-collection-empty__card {
+      padding: 32px 20px;
+      margin-bottom: 32px;
+    }
+
+    .szc-collection-empty__icon-wrap {
+      width: 64px;
+      height: 64px;
+      margin-bottom: 18px;
+    }
+
+    .szc-collection-empty__icon {
+      width: 28px;
+      height: 28px;
+    }
+
+    .szc-collection-empty__title {
+      font-size: 22px;
+    }
+
+    .szc-collection-empty__text {
+      font-size: 14px;
+      margin-bottom: 20px;
+    }
+
+    .szc-collection-empty__actions {
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .szc-collection-empty__btn {
+      width: 100%;
+    }
+
+    .szc-product-grid--4-col {
+      grid-template-columns: repeat(2, 1fr);
+      gap: 12px;
+    }
   }
 
   /* ==========================================================================
@@ -1114,13 +1354,19 @@
     padding: 0 !important;
   }
 
-  .szc-product-grid.is-list-view .szc-product-card__quick-add {
-    position: static !important;
-    opacity: 1 !important;
-    visibility: visible !important;
-    transform: none !important;
+  .szc-product-grid.is-list-view .szc-product-card__media-container .szc-product-card__quick-add {
+    display: none !important;
+  }
+
+  .szc-product-grid.is-list-view .szc-product-card__list-add {
+    display: flex !important;
     margin-top: 14px !important;
-    max-width: 200px !important;
+  }
+
+  .szc-product-grid.is-list-view .szc-product-card__list-add .szc-button {
+    border-radius: 6px;
+    padding: 0 20px;
+    height: 38px;
   }
 
   @media (max-width: 599px) {
@@ -1203,12 +1449,24 @@
           dot.addEventListener('click', function() { goToSlide(i); });
         });
 
-        // Autoplay feature (every 6 seconds)
-        let autoplayTimer = setInterval(function() { goToSlide(currentIndex + 1); }, 6000);
-        promoSlider.addEventListener('mouseenter', function() { clearInterval(autoplayTimer); });
-        promoSlider.addEventListener('mouseleave', function() {
-          autoplayTimer = setInterval(function() { goToSlide(currentIndex + 1); }, 6000);
-        });
+        // Autoplay feature dynamically configured from section settings
+        const isAutoplay = promoSlider.getAttribute('data-autoplay') === 'true';
+        const autoplaySpeed = parseInt(promoSlider.getAttribute('data-autoplay-speed'), 10) || 5000;
+        let autoplayTimer = null;
+
+        function startAutoplay() {
+          if (isAutoplay && totalSlides > 1) {
+            autoplayTimer = setInterval(function() { goToSlide(currentIndex + 1); }, autoplaySpeed);
+          }
+        }
+
+        function stopAutoplay() {
+          if (autoplayTimer) clearInterval(autoplayTimer);
+        }
+
+        startAutoplay();
+        promoSlider.addEventListener('mouseenter', stopAutoplay);
+        promoSlider.addEventListener('mouseleave', startAutoplay);
       }
     }
   });
@@ -1475,36 +1733,82 @@
     {
       "type": "checkbox",
       "id": "show_promo_banner",
-      "label": "Show bottom promo banner",
+      "label": "Enable Bottom Promotional Banner",
       "default": true
     },
     {
-      "type": "image_picker",
-      "id": "promo_image",
-      "label": "Promo banner image"
+      "type": "checkbox",
+      "id": "promo_enable_slider",
+      "label": "Enable Slider",
+      "default": true
     },
     {
-      "type": "text",
-      "id": "promo_subheading",
-      "label": "Subheading",
-      "default": "For effortless everyday looks"
+      "type": "checkbox",
+      "id": "promo_autoplay",
+      "label": "Enable Autoplay",
+      "default": false
     },
     {
-      "type": "text",
-      "id": "promo_heading",
-      "label": "Heading",
-      "default": "Everyday Essentials"
+      "type": "range",
+      "id": "promo_autoplay_speed",
+      "min": 3,
+      "max": 10,
+      "step": 1,
+      "unit": "s",
+      "label": "Autoplay speed",
+      "default": 5
     },
     {
-      "type": "text",
-      "id": "promo_button_label",
-      "label": "Button label",
-      "default": "Shop now"
+      "type": "checkbox",
+      "id": "promo_show_arrows",
+      "label": "Show Navigation Arrows",
+      "default": true
     },
     {
-      "type": "url",
-      "id": "promo_button_link",
-      "label": "Button link"
+      "type": "checkbox",
+      "id": "promo_show_dots",
+      "label": "Show Pagination Dots",
+      "default": true
+    },
+    {
+      "type": "checkbox",
+      "id": "promo_infinite_loop",
+      "label": "Infinite Loop",
+      "default": true
+    },
+    {
+      "type": "select",
+      "id": "promo_desktop_height",
+      "label": "Desktop Height",
+      "options": [
+        { "value": "small", "label": "Small (320px)" },
+        { "value": "medium", "label": "Medium (420px)" },
+        { "value": "large", "label": "Large (520px)" },
+        { "value": "adapt", "label": "Adapt to image" }
+      ],
+      "default": "medium"
+    },
+    {
+      "type": "select",
+      "id": "promo_mobile_height",
+      "label": "Mobile Height",
+      "options": [
+        { "value": "small", "label": "Small (220px)" },
+        { "value": "medium", "label": "Medium (300px)" },
+        { "value": "large", "label": "Large (380px)" },
+        { "value": "adapt", "label": "Adapt to image" }
+      ],
+      "default": "medium"
+    },
+    {
+      "type": "range",
+      "id": "promo_overlay_opacity",
+      "min": 0,
+      "max": 90,
+      "step": 5,
+      "unit": "%",
+      "label": "Overlay Opacity",
+      "default": 20
     }
   ],
   "blocks": [
@@ -1555,6 +1859,11 @@
           "label": "Banner background image"
         },
         {
+          "type": "image_picker",
+          "id": "mobile_image",
+          "label": "Mobile banner image (Optional)"
+        },
+        {
           "type": "text",
           "id": "subheading",
           "label": "Subheading",
@@ -1567,22 +1876,82 @@
           "default": "Everyday Essentials"
         },
         {
+          "type": "richtext",
+          "id": "description",
+          "label": "Description"
+        },
+        {
           "type": "text",
           "id": "button_label",
           "label": "Button label",
-          "default": "Shop now"
+          "default": "SHOP NOW"
         },
         {
           "type": "url",
           "id": "button_link",
-          "label": "Button link"
+          "label": "Button link",
+          "default": "/collections/all"
+        },
+        {
+          "type": "color",
+          "id": "overlay_color",
+          "label": "Overlay color",
+          "default": "#000000"
+        },
+        {
+          "type": "color",
+          "id": "text_color",
+          "label": "Text color",
+          "default": "#111111"
+        },
+        {
+          "type": "select",
+          "id": "text_alignment",
+          "label": "Text alignment",
+          "options": [
+            { "value": "left", "label": "Left" },
+            { "value": "center", "label": "Center" },
+            { "value": "right", "label": "Right" }
+          ],
+          "default": "center"
+        },
+        {
+          "type": "select",
+          "id": "content_position",
+          "label": "Content position",
+          "options": [
+            { "value": "top-center", "label": "Top Center" },
+            { "value": "middle-center", "label": "Middle Center" },
+            { "value": "bottom-center", "label": "Bottom Center" }
+          ],
+          "default": "middle-center"
         }
       ]
     }
   ],
   "presets": [
     {
-      "name": "Product Grid & Collection"
+      "name": "Product Grid & Collection",
+      "blocks": [
+        {
+          "type": "promo_slide",
+          "settings": {
+            "subheading": "For effortless everyday looks",
+            "heading": "Everyday Essentials",
+            "button_label": "Shop now",
+            "button_link": "/collections/all"
+          }
+        },
+        {
+          "type": "promo_slide",
+          "settings": {
+            "subheading": "Exclusive Seasonal Collection",
+            "heading": "Autumn & Winter Trends",
+            "button_label": "Explore collection",
+            "button_link": "/collections/all"
+          }
+        }
+      ]
     }
   ]
 }

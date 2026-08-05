@@ -94,55 +94,6 @@
                 </li>
               {%- endif -%}
             {%- endfor -%}
-          {%- else -%}
-            <!-- FALLBACK DEMO CATEGORIES IF STORE HAS NO POPULATED COLLECTIONS -->
-            <li>
-              <a href="{{ routes.all_products_collection_url }}" class="szc-facets__category-link {% if collection.handle == 'all' or collection.handle == blank %}is-active{% endif %}">
-                <span class="szc-facets__category-name">All Clothing</span>
-              </a>
-            </li>
-            <li>
-              <a href="{{ routes.collections_url }}/tops" class="szc-facets__category-link {% if collection.handle == 'tops' %}is-active{% endif %}">
-                <span class="szc-facets__category-name">Tops</span>
-                <span class="szc-facets__count">(120)</span>
-              </a>
-            </li>
-            <li>
-              <a href="{{ routes.collections_url }}/dresses" class="szc-facets__category-link {% if collection.handle == 'dresses' %}is-active{% endif %}">
-                <span class="szc-facets__category-name">Dresses</span>
-                <span class="szc-facets__count">(98)</span>
-              </a>
-            </li>
-            <li>
-              <a href="{{ routes.collections_url }}/bottoms" class="szc-facets__category-link {% if collection.handle == 'bottoms' %}is-active{% endif %}">
-                <span class="szc-facets__category-name">Bottoms</span>
-                <span class="szc-facets__count">(76)</span>
-              </a>
-            </li>
-            <li>
-              <a href="{{ routes.collections_url }}/outerwear" class="szc-facets__category-link {% if collection.handle == 'outerwear' %}is-active{% endif %}">
-                <span class="szc-facets__category-name">Outerwear</span>
-                <span class="szc-facets__count">(65)</span>
-              </a>
-            </li>
-            <li>
-              <a href="{{ routes.collections_url }}/activewear" class="szc-facets__category-link {% if collection.handle == 'activewear' %}is-active{% endif %}">
-                <span class="szc-facets__category-name">Activewear</span>
-                <span class="szc-facets__count">(32)</span>
-              </a>
-            </li>
-            <li>
-              <a href="{{ routes.collections_url }}/loungewear" class="szc-facets__category-link {% if collection.handle == 'loungewear' %}is-active{% endif %}">
-                <span class="szc-facets__category-name">Loungewear</span>
-                <span class="szc-facets__count">(28)</span>
-              </a>
-            </li>
-            <li>
-              <a href="{{ routes.collections_url }}/accessories" class="szc-facets__category-link {% if collection.handle == 'accessories' %}is-active{% endif %}">
-                <span class="szc-facets__category-name">Accessories</span>
-                <span class="szc-facets__count">(56)</span>
-              </a>
-            </li>
           {%- endif -%}
         </ul>
       </div>
@@ -150,8 +101,6 @@
       <!-- 3. FILTER BY ACCORDION GROUPS -->
       {%- if enable_filtering != false -%}
         <div class="szc-facets__block szc-facets__block--filters">
-          <h3 class="szc-facets__heading">FILTER BY</h3>
-
           {%- if results.filters.size > 0 -%}
             {%- for filter in results.filters -%}
               {%- capture filter_content -%}
@@ -218,34 +167,73 @@
                     {%- endif -%}
 
                   {%- when 'price_range' -%}
-                    <!-- DUAL PRICE SLIDER & INPUTS -->
-                    <div class="szc-facets__price-range">
-                      <div class="szc-facets__price-slider">
-                        <div class="szc-facets__price-track"></div>
+                    {%- liquid
+                      assign max_price_val = filter.range_max | money_without_currency | replace: ',', '' | floor | default: 5000
+                      if max_price_val == 0
+                        assign max_price_val = 5000
+                      endif
+                      assign current_min = filter.min_value.value | money_without_currency | replace: ',', '' | floor | default: 0
+                      assign current_max = filter.max_value.value | money_without_currency | replace: ',', '' | floor | default: max_price_val
+                      assign curr_symbol = cart.currency.symbol | default: '$'
+                      assign is_price_active = false
+                      if filter.min_value.value != null or filter.max_value.value != null
+                        assign is_price_active = true
+                      endif
+                    -%}
+                    <div
+                      class="szc-price-slider {% if is_price_active %}is-active{% endif %}"
+                      data-price-slider
+                      data-max-limit="{{ max_price_val }}"
+                    >
+                      <div class="szc-price-slider__range-container">
+                        <div class="szc-price-slider__track"></div>
+                        <div class="szc-price-slider__progress" data-slider-progress></div>
+                        <input
+                          type="range"
+                          class="szc-price-slider__input szc-price-slider__input--min"
+                          min="0"
+                          max="{{ max_price_val }}"
+                          value="{{ current_min }}"
+                          step="1"
+                          data-range-min
+                          aria-label="Minimum price"
+                        >
+                        <input
+                          type="range"
+                          class="szc-price-slider__input szc-price-slider__input--max"
+                          min="0"
+                          max="{{ max_price_val }}"
+                          value="{{ current_max }}"
+                          step="1"
+                          data-range-max
+                          aria-label="Maximum price"
+                        >
                       </div>
-                      <div class="szc-facets__price-inputs">
-                        <div class="szc-facets__price-field">
-                          <span>$</span>
-                          <input
-                            type="number"
-                            name="{{ filter.min_value.param_name }}"
-                            placeholder="0"
-                            min="0"
-                            {% if filter.min_value.value %}value="{{ filter.min_value.value | money_without_currency | replace: ',', '' }}"{% endif %}
-                          >
-                        </div>
-                        <span>-</span>
-                        <div class="szc-facets__price-field">
-                          <span>$</span>
-                          <input
-                            type="number"
-                            name="{{ filter.max_value.param_name }}"
-                            placeholder="{{ filter.range_max | money_without_currency | replace: ',', '' | default: '200' }}"
-                            min="0"
-                            {% if filter.max_value.value %}value="{{ filter.max_value.value | money_without_currency | replace: ',', '' }}"{% endif %}
-                          >
-                        </div>
+
+                      <div class="szc-price-slider__label">
+                        <span class="szc-price-slider__text">
+                          Price: <span class="szc-price-slider__value-display" data-label-display>
+                            {%- if is_price_active -%}
+                              <span class="szc-price-slider__currency">{{ curr_symbol }}</span><span data-label-min>{{ current_min }}</span> - <span class="szc-price-slider__currency">{{ curr_symbol }}</span><span data-label-max>{{ current_max }}</span>
+                            {%- else -%}
+                              Any Price
+                            {%- endif -%}
+                          </span>
+                        </span>
                       </div>
+
+                      <input
+                        type="hidden"
+                        name="{{ filter.min_value.param_name }}"
+                        value="{% if filter.min_value.value %}{{ current_min }}{% endif %}"
+                        data-hidden-min
+                      >
+                      <input
+                        type="hidden"
+                        name="{{ filter.max_value.param_name }}"
+                        value="{% if filter.max_value.value %}{{ current_max }}{% endif %}"
+                        data-hidden-max
+                      >
                     </div>
                 {%- endcase -%}
               {%- endcapture -%}
@@ -257,53 +245,6 @@
                 class: 'szc-facets__group'
               %}
             {%- endfor -%}
-          {%- else -%}
-            <!-- DEMO ACCORDIONS MATCHING REFERENCE UI -->
-            {%- capture demo_color_swatches -%}
-              <div class="szc-facets__swatches">
-                <label class="szc-facet-swatch" title="Dark Green"><input type="checkbox"><span class="szc-facet-swatch__color" style="background-color: #2d3a2f;"></span></label>
-                <label class="szc-facet-swatch" title="Navy"><input type="checkbox"><span class="szc-facet-swatch__color" style="background-color: #1b2a4a;"></span></label>
-                <label class="szc-facet-swatch" title="Beige"><input type="checkbox"><span class="szc-facet-swatch__color" style="background-color: #d8c3a5;"></span></label>
-                <label class="szc-facet-swatch" title="Brown"><input type="checkbox"><span class="szc-facet-swatch__color" style="background-color: #5c4033;"></span></label>
-                <label class="szc-facet-swatch" title="Black"><input type="checkbox"><span class="szc-facet-swatch__color" style="background-color: #111111;"></span></label>
-                <label class="szc-facet-swatch" title="Olive"><input type="checkbox"><span class="szc-facet-swatch__color" style="background-color: #556b2f;"></span></label>
-                <label class="szc-facet-swatch" title="Blue"><input type="checkbox"><span class="szc-facet-swatch__color" style="background-color: #2b547e;"></span></label>
-                <label class="szc-facet-swatch" title="Pink"><input type="checkbox"><span class="szc-facet-swatch__color" style="background-color: #e8b4b8;"></span></label>
-                <label class="szc-facet-swatch" title="Mauve"><input type="checkbox"><span class="szc-facet-swatch__color" style="background-color: #915c83;"></span></label>
-              </div>
-            {%- endcapture -%}
-            {% render 'accordion', heading: 'Color', content: demo_color_swatches, open: true %}
-
-            {%- capture demo_sizes -%}
-              <ul class="szc-facets__list" role="list">
-                <li class="szc-facets__item"><label class="szc-facets__label"><input type="checkbox"><span class="szc-facets__text">XS</span></label></li>
-                <li class="szc-facets__item"><label class="szc-facets__label"><input type="checkbox"><span class="szc-facets__text">S</span></label></li>
-                <li class="szc-facets__item"><label class="szc-facets__label"><input type="checkbox"><span class="szc-facets__text">M</span></label></li>
-                <li class="szc-facets__item"><label class="szc-facets__label"><input type="checkbox"><span class="szc-facets__text">L</span></label></li>
-                <li class="szc-facets__item"><label class="szc-facets__label"><input type="checkbox"><span class="szc-facets__text">XL</span></label></li>
-                <li class="szc-facets__item"><label class="szc-facets__label"><input type="checkbox"><span class="szc-facets__text">XXL</span></label></li>
-              </ul>
-            {%- endcapture -%}
-            {% render 'accordion', heading: 'Size', content: demo_sizes, open: true %}
-
-            {%- capture demo_price -%}
-              <div class="szc-facets__price-range">
-                <div class="szc-facets__price-slider">
-                  <div class="szc-facets__price-track"></div>
-                </div>
-                <div class="szc-facets__price-labels">
-                  <span>$0</span>
-                  <span>$200+</span>
-                </div>
-              </div>
-            {%- endcapture -%}
-            {% render 'accordion', heading: 'Price', content: demo_price, open: true %}
-
-            {% render 'accordion', heading: 'Material', content: '<p style="font-size:12px;color:#777;">Cotton, Linen, Silk, Denim, Wool</p>', open: false %}
-            {% render 'accordion', heading: 'Pattern', content: '<p style="font-size:12px;color:#777;">Solid, Striped, Floral, Plaid</p>', open: false %}
-            {% render 'accordion', heading: 'Sleeve Length', content: '<p style="font-size:12px;color:#777;">Short Sleeve, Long Sleeve, Sleeveless</p>', open: false %}
-            {% render 'accordion', heading: 'Fit', content: '<p style="font-size:12px;color:#777;">Regular Fit, Oversized, Slim Fit</p>', open: false %}
-            {% render 'accordion', heading: 'Occasion', content: '<p style="font-size:12px;color:#777;">Casual, Workwear, Evening, Party</p>', open: false %}
           {%- endif -%}
         </div>
       {%- endif -%}
@@ -465,56 +406,120 @@
     border-radius: 3px;
   }
 
-  /* DUAL PRICE SLIDER */
-  .szc-facets__price-range {
-    padding: 8px 0;
+  /* DUAL PRICE SLIDER (MATCHING SHOPIFY THEME STORE ARCHITECTURE) */
+  .szc-price-slider {
+    padding: 10px 0 6px 0;
   }
 
-  .szc-facets__price-slider {
+  .szc-price-slider__range-container {
     position: relative;
-    height: 4px;
-    background-color: #e0e0e0;
-    border-radius: 2px;
-    margin: 12px 0;
+    width: 100%;
+    height: 28px;
+    display: flex;
+    align-items: center;
   }
 
-  .szc-facets__price-track {
+  .szc-price-slider__track {
     position: absolute;
+    width: 100%;
+    height: 5px;
+    background-color: #e2e8f0;
+    border-radius: 5px;
+  }
+
+  /* Neutral when inactive, active color bar ONLY when .is-active */
+  .szc-price-slider__progress {
+    position: absolute;
+    height: 5px;
+    background-color: #1b4947;
+    border-radius: 5px;
+    z-index: 1;
+    opacity: 0;
+    transition: opacity 200ms ease;
+  }
+
+  .szc-price-slider.is-active .szc-price-slider__progress {
+    opacity: 1;
+  }
+
+  .szc-price-slider__input {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
     left: 0;
-    right: 20%;
-    height: 100%;
-    background-color: var(--szc-color-secondary, #d4a373);
-    border-radius: 2px;
+    width: 100%;
+    height: 5px;
+    background: none;
+    pointer-events: none;
+    -webkit-appearance: none;
+    appearance: none;
+    margin: 0;
+    z-index: 2;
   }
 
-  .szc-facets__price-labels {
-    display: flex;
-    justify-content: space-between;
-    font-size: 12px;
-    color: var(--szc-color-text-muted, #666666);
+  /* Range Thumbs */
+  .szc-price-slider__input::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    appearance: none;
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    background: #ffffff;
+    border: 3.5px solid #a0aec0;
+    cursor: pointer;
+    pointer-events: auto;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.12);
+    transition: transform 150ms ease, border-color 200ms ease, box-shadow 150ms ease;
   }
 
-  .szc-facets__price-inputs {
-    display: flex;
-    align-items: center;
-    gap: 8px;
+  .szc-price-slider__input::-moz-range-thumb {
+    appearance: none;
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    background: #ffffff;
+    border: 3.5px solid #a0aec0;
+    cursor: pointer;
+    pointer-events: auto;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.12);
+    transition: transform 150ms ease, border-color 200ms ease, box-shadow 150ms ease;
   }
 
-  .szc-facets__price-field {
-    display: flex;
-    align-items: center;
-    gap: 4px;
-    padding: 4px 8px;
-    border: 1px solid #e0e0e0;
-    border-radius: 4px;
-    font-size: 12px;
+  /* When slider is active, handles get active dark teal border */
+  .szc-price-slider.is-active .szc-price-slider__input::-webkit-slider-thumb {
+    border-color: #1b4947;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
   }
 
-  .szc-facets__price-field input {
-    width: 60px;
-    border: none;
-    outline: none;
-    font-size: 12px;
+  .szc-price-slider.is-active .szc-price-slider__input::-moz-range-thumb {
+    border-color: #1b4947;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
+  }
+
+  .szc-price-slider__input::-webkit-slider-thumb:hover,
+  .szc-price-slider__input::-webkit-slider-thumb:active {
+    transform: scale(1.18);
+    box-shadow: 0 3px 8px rgba(0, 0, 0, 0.25);
+  }
+
+  .szc-price-slider__input::-moz-range-thumb:hover,
+  .szc-price-slider__input::-moz-range-thumb:active {
+    transform: scale(1.18);
+    box-shadow: 0 3px 8px rgba(0, 0, 0, 0.25);
+  }
+
+  .szc-price-slider__label {
+    margin-top: 10px;
+  }
+
+  .szc-price-slider__text {
+    font-size: 14px;
+    font-weight: 500;
+    color: #2d3748;
+  }
+
+  .szc-price-slider__currency {
+    font-weight: 600;
   }
 
   .szc-facets__active-bar {
@@ -563,6 +568,86 @@
 {% endstylesheet %}
 
 {% javascript %}
+  function initPriceSliders() {
+    const sliders = document.querySelectorAll('[data-price-slider]');
+    sliders.forEach(function(slider) {
+      const minInput = slider.querySelector('[data-range-min]');
+      const maxInput = slider.querySelector('[data-range-max]');
+      const progress = slider.querySelector('[data-slider-progress]');
+      const labelDisplay = slider.querySelector('[data-label-display]');
+      const hiddenMin = slider.querySelector('[data-hidden-min]');
+      const hiddenMax = slider.querySelector('[data-hidden-max]');
+
+      if (!minInput || !maxInput) return;
+
+      const maxLimit = parseFloat(slider.getAttribute('data-max-limit')) || parseFloat(minInput.max) || 5000;
+
+      function updateUI() {
+        let minVal = parseFloat(minInput.value) || 0;
+        let maxVal = parseFloat(maxInput.value) || maxLimit;
+
+        if (minVal > maxVal) {
+          if (document.activeElement === minInput) {
+            minInput.value = maxVal;
+            minVal = maxVal;
+          } else {
+            maxInput.value = minVal;
+            maxVal = minVal;
+          }
+        }
+
+        const isFiltered = (minVal > 0) || (maxVal < maxLimit);
+
+        if (isFiltered) {
+          slider.classList.add('is-active');
+        } else {
+          slider.classList.remove('is-active');
+        }
+
+        const pctMin = Math.min(100, Math.max(0, (minVal / maxLimit) * 100));
+        const pctMax = Math.min(100, Math.max(0, 100 - (maxVal / maxLimit) * 100));
+
+        if (progress) {
+          progress.style.left = pctMin + '%';
+          progress.style.right = pctMax + '%';
+        }
+
+        if (labelDisplay) {
+          if (isFiltered) {
+            const curr = slider.querySelector('.szc-price-slider__currency')?.textContent || '$';
+            labelDisplay.innerHTML = `<span class="szc-price-slider__currency">${curr}</span>${minVal} - <span class="szc-price-slider__currency">${curr}</span>${maxVal}`;
+          } else {
+            labelDisplay.textContent = 'Any Price';
+          }
+        }
+
+        if (hiddenMin) hiddenMin.value = minVal > 0 ? minVal : '';
+        if (hiddenMax) hiddenMax.value = maxVal < maxLimit ? maxVal : '';
+      }
+
+      minInput.addEventListener('input', updateUI);
+      maxInput.addEventListener('input', updateUI);
+
+      const form = slider.closest('form');
+      if (form) {
+        minInput.addEventListener('change', function() {
+          form.dispatchEvent(new Event('submit', { bubbles: true, cancelable: true }));
+        });
+        maxInput.addEventListener('change', function() {
+          form.dispatchEvent(new Event('submit', { bubbles: true, cancelable: true }));
+        });
+      }
+
+      updateUI();
+    });
+  }
+
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', initPriceSliders);
+  } else {
+    initPriceSliders();
+  }
+
   if (!customElements.get('facet-filters-form')) {
     customElements.define(
       'facet-filters-form',
@@ -573,10 +658,15 @@
           if (this.form) {
             this.form.addEventListener('input', this.onFormSubmit.bind(this));
             this.form.addEventListener('change', this.onFormSubmit.bind(this));
+            this.form.addEventListener('submit', this.onFormSubmit.bind(this));
           }
+          initPriceSliders();
         }
 
         onFormSubmit(e) {
+          if (e.target && e.target.type === 'range' && e.type === 'input') {
+            return;
+          }
           e.preventDefault();
           const formData = new FormData(this.form);
           const searchParams = new URLSearchParams(formData).toString();

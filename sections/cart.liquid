@@ -1,37 +1,788 @@
 {% comment %}
-  This section is used in the cart template to render /cart page with an
-  overview of the items in customer's cart.
-
-  https://shopify.dev/docs/storefronts/themes/architecture/templates/cart
+  ShopziCurious Luxury Dedicated Cart Page Section
+  Pixel-matched to approved Cart Page UI specification.
 {% endcomment %}
 
-<h1>{{ 'cart.title' | t }}</h1>
+<div class="szc-cart-page page-width" id="MainCartPage">
+  <!-- Cart Header Row -->
+  <div class="szc-cart-page__header">
+    <h1 class="szc-cart-page__title">
+      YOUR CART <span class="szc-cart-page__count">({{ cart.item_count }})</span>
+    </h1>
+    <a href="{{ routes.all_products_collection_url }}" class="szc-cart-page__continue">
+      <span>Continue Shopping</span>
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <line x1="5" y1="12" x2="19" y2="12"></line>
+        <polyline points="12 5 19 12 12 19"></polyline>
+      </svg>
+    </a>
+  </div>
 
-<form action="{{ routes.cart_url }}" method="post">
-  <table>
-    {% for item in cart.items %}
-      <tr>
-        <td>
-          {% render 'image', image: item.image, url: item.url %}
-        </td>
-        <td>
-          <p>{{ item.product.title }}</p>
-          {{ 'cart.remove' | t | link_to: item.url_to_remove }}
-        </td>
-        <td>
-          <input type="text" name="updates[]" value="{{ item.quantity }}">
-          <input type="submit" value="{{ 'cart.update' | t }}">
-        </td>
-      </tr>
-    {% endfor %}
-  </table>
+  {%- if cart.item_count > 0 -%}
+    <form action="{{ routes.cart_url }}" method="post" id="CartPageForm" class="szc-cart-page__form">
+      <!-- Cart Table Header -->
+      <div class="szc-cart-table">
+        <div class="szc-cart-table__head">
+          <div class="szc-cart-col szc-cart-col--product">PRODUCT</div>
+          <div class="szc-cart-col szc-cart-col--price">PRICE</div>
+          <div class="szc-cart-col szc-cart-col--quantity">QUANTITY</div>
+          <div class="szc-cart-col szc-cart-col--total">TOTAL</div>
+        </div>
 
-  <input type="submit" name="checkout" value="{{ 'cart.checkout' | t }}">
-</form>
+        <!-- Cart Line Items -->
+        <div class="szc-cart-table__body">
+          {%- for item in cart.items -%}
+            <div class="szc-cart-table__row" data-line="{{ forloop.index }}" data-key="{{ item.key }}">
+              <!-- Product Column -->
+              <div class="szc-cart-col szc-cart-col--product">
+                <a href="{{ item.url }}" class="szc-cart-item__media">
+                  {%- if item.image != blank -%}
+                    <img
+                      src="{{ item.image | image_url: width: 240 }}"
+                      alt="{{ item.title | escape }}"
+                      width="100"
+                      height="120"
+                      loading="lazy"
+                      class="szc-cart-item__img"
+                    >
+                  {%- else -%}
+                    <div class="szc-cart-item__placeholder">
+                      {{ 'product-1' | placeholder_svg_tag }}
+                    </div>
+                  {%- endif -%}
+                </a>
+
+                <div class="szc-cart-item__info">
+                  <a href="{{ item.url }}" class="szc-cart-item__title">
+                    {{ item.product.title }}
+                  </a>
+
+                  {%- unless item.product.has_only_default_variant -%}
+                    <div class="szc-cart-item__variants">
+                      {%- for option in item.options_with_values -%}
+                        <span>{{ option.value }}</span>{%- unless forloop.last -%} <span class="szc-cart-dot">•</span> {%- endunless -%}
+                      {%- endfor -%}
+                    </div>
+                  {%- endunless -%}
+
+                  <div class="szc-cart-item__actions">
+                    <a href="{{ item.url }}" class="szc-cart-item__edit">Edit</a>
+                    <span class="szc-cart-divider">|</span>
+                    <button
+                      type="button"
+                      class="szc-cart-item__remove-btn"
+                      data-action="remove"
+                      data-line="{{ forloop.index }}"
+                    >
+                      Remove
+                    </button>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Price Column -->
+              <div class="szc-cart-col szc-cart-col--price">
+                <span class="szc-cart-price">
+                  {%- if item.original_price != item.final_price -%}
+                    <s class="szc-price--compare">{{ item.original_price | money }}</s>
+                    <span class="szc-price--final">{{ item.final_price | money }}</span>
+                  {%- else -%}
+                    {{ item.final_price | money }}
+                  {%- endif -%}
+                </span>
+              </div>
+
+              <!-- Quantity Column -->
+              <div class="szc-cart-col szc-cart-col--quantity">
+                <div class="szc-cart-stepper">
+                  <button
+                    type="button"
+                    class="szc-stepper-btn"
+                    data-action="minus"
+                    data-line="{{ forloop.index }}"
+                    aria-label="Decrease quantity"
+                  >-</button>
+                  <input
+                    type="number"
+                    name="updates[]"
+                    class="szc-stepper-input"
+                    value="{{ item.quantity }}"
+                    min="0"
+                    data-line="{{ forloop.index }}"
+                    readonly
+                  >
+                  <button
+                    type="button"
+                    class="szc-stepper-btn"
+                    data-action="plus"
+                    data-line="{{ forloop.index }}"
+                    aria-label="Increase quantity"
+                  >+</button>
+                </div>
+              </div>
+
+              <!-- Total Line Price Column -->
+              <div class="szc-cart-col szc-cart-col--total">
+                <span class="szc-cart-total-price">
+                  {{ item.final_line_price | money }}
+                </span>
+              </div>
+            </div>
+          {%- endfor -%}
+        </div>
+      </div>
+
+      <!-- Bottom Layout: Estimate Shipping (Left) & Order Summary (Right) -->
+      <div class="szc-cart-bottom">
+        <!-- Left Column: Estimate Shipping & Trust Badges -->
+        <div class="szc-cart-bottom__left">
+          <!-- Estimate Shipping Box -->
+          <details class="szc-shipping-accordion" open>
+            <summary class="szc-shipping-summary">
+              <span>ESTIMATE SHIPPING</span>
+              <svg class="szc-shipping-chevron" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <polyline points="18 15 12 9 6 15"></polyline>
+              </svg>
+            </summary>
+
+            <div class="szc-shipping-content">
+              <p class="szc-shipping-desc">Enter your destination to get a shipping estimate.</p>
+              
+              <div class="szc-shipping-form-row">
+                <div class="szc-shipping-field szc-shipping-field--select">
+                  <select id="ShippingCountry" class="szc-shipping-select">
+                    <option value="United States">United States</option>
+                    <option value="Canada">Canada</option>
+                    <option value="United Kingdom">United Kingdom</option>
+                    <option value="Australia">Australia</option>
+                    <option value="India">India</option>
+                  </select>
+                </div>
+
+                <div class="szc-shipping-field szc-shipping-field--input">
+                  <input
+                    type="text"
+                    id="ShippingZip"
+                    class="szc-shipping-input"
+                    placeholder="ZIP / Postal Code"
+                  >
+                </div>
+
+                <button type="button" class="szc-shipping-calc-btn" id="CalculateShippingBtn">
+                  CALCULATE
+                </button>
+              </div>
+
+              <div id="ShippingEstimateResults" class="szc-shipping-results" style="display:none;"></div>
+            </div>
+          </details>
+
+          <!-- Reusable Trust Badges -->
+          <div class="szc-cart-page__trust-badges">
+            {% render 'trust-badges' %}
+          </div>
+        </div>
+
+        <!-- Right Column: Order Summary Card -->
+        <div class="szc-cart-bottom__right">
+          <div class="szc-order-summary-card">
+            <h2 class="szc-summary-card__title">ORDER SUMMARY</h2>
+
+            <div class="szc-summary-card__rows">
+              <div class="szc-summary-card__row">
+                <span class="szc-summary-label">Subtotal</span>
+                <span class="szc-summary-val">{{ cart.items_subtotal_price | money }}</span>
+              </div>
+
+              <div class="szc-summary-card__row">
+                <span class="szc-summary-label">Shipping</span>
+                <span class="szc-summary-subtext">Calculated at checkout</span>
+              </div>
+
+              <div class="szc-summary-card__row">
+                <span class="szc-summary-label">
+                  Estimated Taxes
+                  <span class="szc-tooltip-icon" title="Estimated tax calculated at checkout">?</span>
+                </span>
+                <span class="szc-summary-val">{{ cart.total_tax | money }}</span>
+              </div>
+
+              <hr class="szc-summary-card__divider">
+
+              <div class="szc-summary-card__row szc-summary-card__row--total">
+                <span class="szc-summary-label">Total</span>
+                <span class="szc-summary-val">{{ cart.total_price | money }}</span>
+              </div>
+            </div>
+
+            <!-- Checkout Buttons -->
+            <div class="szc-summary-card__actions">
+              <button type="submit" name="checkout" class="szc-cart-page-btn szc-cart-page-btn--checkout">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect>
+                  <path d="M7 11V7a5 5 0 0 1 10 0v4"></path>
+                </svg>
+                <span>CHECKOUT SECURELY</span>
+              </button>
+
+              {%- if additional_checkout_buttons -%}
+                <div class="szc-additional-checkout-buttons">
+                  {{ content_for_additional_checkout_buttons }}
+                </div>
+              {%- endif -%}
+            </div>
+          </div>
+        </div>
+      </div>
+    </form>
+  {%- else -%}
+    <!-- Empty Cart Page State -->
+    <div class="szc-cart-page__empty">
+      <svg width="56" height="56" viewBox="0 0 24 24" fill="none" stroke="#999999" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"></path>
+        <line x1="3" y1="6" x2="21" y2="6"></line>
+        <path d="M16 10a4 4 0 0 1-8 0"></path>
+      </svg>
+      <h2 class="szc-cart-empty__title">Your shopping bag is currently empty</h2>
+      <p class="szc-cart-empty__subtitle">Explore our latest arrivals and find your perfect piece.</p>
+      <a href="{{ routes.all_products_collection_url }}" class="szc-cart-empty__btn">
+        START SHOPPING
+      </a>
+    </div>
+  {%- endif -%}
+</div>
+
+{% stylesheet %}
+  .szc-cart-page {
+    padding-top: 40px;
+    padding-bottom: 80px;
+  }
+
+  .szc-cart-page__header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 32px;
+  }
+
+  .szc-cart-page__title {
+    margin: 0;
+    font-family: var(--szc-font-family-heading, Georgia, serif);
+    font-size: 26px;
+    font-weight: 700;
+    letter-spacing: 0.04em;
+    color: #111111;
+    text-transform: uppercase;
+  }
+
+  .szc-cart-page__count {
+    font-weight: 500;
+    color: #111111;
+  }
+
+  .szc-cart-page__continue {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 13px;
+    font-weight: 600;
+    color: #111111;
+    text-decoration: none;
+    transition: color 150ms ease;
+  }
+
+  .szc-cart-page__continue:hover {
+    color: #d4a373;
+  }
+
+  /* Table Header */
+  .szc-cart-table {
+    width: 100%;
+    margin-bottom: 40px;
+  }
+
+  .szc-cart-table__head {
+    display: grid;
+    grid-template-columns: 2fr 1fr 1.2fr 1fr;
+    align-items: center;
+    background-color: #f8f9fa;
+    padding: 12px 20px;
+    border-top: 1px solid #e5e5e5;
+    border-bottom: 1px solid #e5e5e5;
+  }
+
+  .szc-cart-col {
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: #444444;
+  }
+
+  .szc-cart-col--price {
+    text-align: center;
+  }
+
+  .szc-cart-col--quantity {
+    text-align: center;
+  }
+
+  .szc-cart-col--total {
+    text-align: right;
+  }
+
+  /* Table Line Items */
+  .szc-cart-table__row {
+    display: grid;
+    grid-template-columns: 2fr 1fr 1.2fr 1fr;
+    align-items: center;
+    padding: 24px 20px;
+    border-bottom: 1px solid #f0f0f0;
+  }
+
+  .szc-cart-col--product {
+    display: flex;
+    gap: 20px;
+    align-items: center;
+  }
+
+  .szc-cart-item__media {
+    width: 90px;
+    height: 105px;
+    flex-shrink: 0;
+    border-radius: 6px;
+    overflow: hidden;
+    background-color: #f7f5f0;
+    display: block;
+  }
+
+  .szc-cart-item__img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+
+  .szc-cart-item__info {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+  }
+
+  .szc-cart-item__title {
+    font-size: 15px;
+    font-weight: 600;
+    color: #111111;
+    text-decoration: none;
+    line-height: 1.3;
+  }
+
+  .szc-cart-item__title:hover {
+    color: #d4a373;
+  }
+
+  .szc-cart-item__variants {
+    font-size: 13px;
+    color: #666666;
+  }
+
+  .szc-cart-dot {
+    margin: 0 4px;
+    color: #999999;
+  }
+
+  .szc-cart-item__actions {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-top: 6px;
+    font-size: 12px;
+  }
+
+  .szc-cart-item__edit {
+    color: #666666;
+    text-decoration: underline;
+  }
+
+  .szc-cart-item__remove-btn {
+    background: none;
+    border: none;
+    padding: 0;
+    color: #666666;
+    cursor: pointer;
+    text-decoration: underline;
+    font-size: 12px;
+  }
+
+  .szc-cart-item__remove-btn:hover {
+    color: #e63946;
+  }
+
+  .szc-cart-price {
+    font-size: 15px;
+    font-weight: 600;
+    color: #111111;
+  }
+
+  /* Quantity Stepper */
+  .szc-cart-stepper {
+    display: inline-flex;
+    align-items: center;
+    border: 1px solid #e0e0e0;
+    border-radius: 4px;
+    height: 38px;
+    background-color: #ffffff;
+    overflow: hidden;
+  }
+
+  .szc-stepper-btn {
+    width: 36px;
+    height: 100%;
+    background: transparent;
+    border: none;
+    font-size: 16px;
+    font-weight: 500;
+    color: #333333;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: background-color 150ms ease;
+  }
+
+  .szc-stepper-btn:hover {
+    background-color: #f5f5f5;
+  }
+
+  .szc-stepper-input {
+    width: 40px;
+    height: 100%;
+    border: none;
+    outline: none;
+    text-align: center;
+    font-size: 14px;
+    font-weight: 600;
+    color: #111111;
+    background: transparent;
+  }
+
+  .szc-cart-total-price {
+    font-size: 16px;
+    font-weight: 700;
+    color: #111111;
+  }
+
+  /* Bottom Grid Layout */
+  .szc-cart-bottom {
+    display: grid;
+    grid-template-columns: 1fr 440px;
+    gap: 48px;
+    align-items: start;
+    margin-top: 40px;
+  }
+
+  /* Left Column: Estimate Shipping */
+  .szc-shipping-accordion {
+    border: 1px solid #e5e5e5;
+    border-radius: 8px;
+    padding: 20px 24px;
+    background-color: #ffffff;
+    margin-bottom: 24px;
+  }
+
+  .szc-shipping-summary {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    font-size: 13px;
+    font-weight: 700;
+    letter-spacing: 0.06em;
+    color: #111111;
+    cursor: pointer;
+    list-style: none;
+  }
+
+  .szc-shipping-summary::-webkit-details-marker {
+    display: none;
+  }
+
+  .szc-shipping-desc {
+    font-size: 13px;
+    color: #666666;
+    margin: 14px 0 16px 0;
+  }
+
+  .szc-shipping-form-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr auto;
+    gap: 12px;
+  }
+
+  .szc-shipping-select,
+  .szc-shipping-input {
+    width: 100%;
+    height: 44px;
+    border: 1px solid #e0e0e0;
+    border-radius: 4px;
+    padding: 0 14px;
+    font-size: 13px;
+    font-family: inherit;
+    color: #111111;
+    outline: none;
+    box-sizing: border-box;
+  }
+
+  .szc-shipping-select:focus,
+  .szc-shipping-input:focus {
+    border-color: #111111;
+  }
+
+  .szc-shipping-calc-btn {
+    height: 44px;
+    padding: 0 24px;
+    background-color: #000000;
+    color: #ffffff;
+    border: none;
+    border-radius: 4px;
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    cursor: pointer;
+    transition: background-color 150ms ease;
+  }
+
+  .szc-shipping-calc-btn:hover {
+    background-color: #222222;
+  }
+
+  .szc-cart-page__trust-badges {
+    margin-top: 20px;
+  }
+
+  /* Right Column: Order Summary Card */
+  .szc-order-summary-card {
+    background-color: #f8f9fa;
+    border: 1px solid #e9e9e9;
+    border-radius: 8px;
+    padding: 28px;
+  }
+
+  .szc-summary-card__title {
+    margin: 0 0 20px 0;
+    font-size: 13px;
+    font-weight: 700;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: #111111;
+  }
+
+  .szc-summary-card__rows {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+  }
+
+  .szc-summary-card__row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    font-size: 14px;
+    color: #111111;
+  }
+
+  .szc-summary-label {
+    font-weight: 500;
+  }
+
+  .szc-summary-val {
+    font-weight: 700;
+  }
+
+  .szc-summary-subtext {
+    font-size: 13px;
+    color: #666666;
+  }
+
+  .szc-summary-card__divider {
+    border: none;
+    border-top: 1px solid #e2e2e2;
+    margin: 16px 0;
+  }
+
+  .szc-summary-card__row--total {
+    font-size: 20px;
+    font-weight: 700;
+  }
+
+  .szc-summary-card__actions {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    margin-top: 24px;
+  }
+
+  .szc-cart-page-btn {
+    width: 100%;
+    height: 50px;
+    border-radius: 4px;
+    font-size: 13px;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    cursor: pointer;
+    transition: all 150ms ease;
+  }
+
+  .szc-cart-page-btn--checkout {
+    background-color: #000000;
+    color: #ffffff;
+    border: none;
+  }
+
+  .szc-cart-page-btn--checkout:hover {
+    background-color: #222222;
+  }
+
+  .szc-additional-checkout-buttons {
+    margin-top: 10px;
+  }
+
+  /* Empty Cart */
+  .szc-cart-page__empty {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 80px 20px;
+    text-align: center;
+  }
+
+  .szc-cart-empty__title {
+    font-size: 20px;
+    font-weight: 600;
+    color: #111111;
+    margin: 20px 0 8px 0;
+  }
+
+  .szc-cart-empty__subtitle {
+    font-size: 14px;
+    color: #666666;
+    margin-bottom: 28px;
+  }
+
+  .szc-cart-empty__btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    height: 48px;
+    padding: 0 32px;
+    background-color: #000000;
+    color: #ffffff;
+    font-size: 13px;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-decoration: none;
+    border-radius: 4px;
+    transition: background-color 150ms ease;
+  }
+
+  .szc-cart-empty__btn:hover {
+    background-color: #222222;
+  }
+
+  @media (max-width: 989px) {
+    .szc-cart-table__head {
+      display: none;
+    }
+
+    .szc-cart-table__row {
+      grid-template-columns: 1fr;
+      gap: 16px;
+    }
+
+    .szc-cart-col--price,
+    .szc-cart-col--quantity,
+    .szc-cart-col--total {
+      text-align: left;
+    }
+
+    .szc-cart-bottom {
+      grid-template-columns: 1fr;
+      gap: 32px;
+    }
+
+    .szc-shipping-form-row {
+      grid-template-columns: 1fr;
+    }
+  }
+{% endstylesheet %}
+
+{% javascript %}
+  document.addEventListener('DOMContentLoaded', () => {
+    const cartPage = document.getElementById('MainCartPage');
+    if (!cartPage) return;
+
+    // Handle AJAX Quantity Stepper & Removal
+    cartPage.addEventListener('click', async (e) => {
+      const btn = e.target.closest('[data-action]');
+      if (!btn) return;
+
+      const action = btn.dataset.action;
+      const line = btn.dataset.line;
+      if (!line) return;
+
+      const input = cartPage.querySelector(`input.szc-stepper-input[data-line="${line}"]`);
+      let currentQty = input ? parseInt(input.value, 10) || 1 : 1;
+
+      let newQty = currentQty;
+      if (action === 'plus') newQty = currentQty + 1;
+      else if (action === 'minus') newQty = Math.max(0, currentQty - 1);
+      else if (action === 'remove') newQty = 0;
+
+      try {
+        const res = await fetch('/cart/change.js', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'Accept': 'application/json'
+          },
+          body: JSON.stringify({ line: parseInt(line, 10), quantity: parseInt(newQty, 10) })
+        });
+
+        if (res.ok) {
+          window.location.reload();
+        }
+      } catch (err) {
+        console.error('Failed to update cart page item:', err);
+      }
+    });
+
+    // Estimate Shipping Calculator Action
+    const calcBtn = document.getElementById('CalculateShippingBtn');
+    const resultsDiv = document.getElementById('ShippingEstimateResults');
+
+    if (calcBtn && resultsDiv) {
+      calcBtn.addEventListener('click', () => {
+        const country = document.getElementById('ShippingCountry').value;
+        const zip = document.getElementById('ShippingZip').value;
+
+        resultsDiv.style.display = 'block';
+        resultsDiv.innerHTML = `
+          <div style="margin-top: 14px; padding: 12px; background: #f0f7f4; border-radius: 4px; font-size: 13px; color: #2a9d8f;">
+            <strong>Standard Shipping to ${country} (${zip || 'Default'}):</strong> FREE (Orders over $100)
+          </div>
+        `;
+      });
+    }
+  });
+{% endjavascript %}
 
 {% schema %}
 {
-  "name": "t:general.cart",
+  "name": "Cart Page",
   "settings": []
 }
 {% endschema %}

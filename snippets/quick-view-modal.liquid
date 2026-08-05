@@ -1,125 +1,543 @@
-{% doc %}
-  Renders the Quick View modal dialog wrapper component with focus trapping, ESC keyboard handling, and AJAX content loading.
-
-  @example
-  {% render 'quick-view-modal' %}
-{% enddoc %}
+{% comment %}
+  ShopziCurious Luxury Quick View Modal Component
+  Pixel-matched to approved 4-column Luxury Quick View UI Design.
+{% endcomment %}
 
 <quick-view-modal id="QuickViewModal" class="szc-modal szc-quick-view-modal" aria-hidden="true" role="dialog" aria-modal="true" aria-labelledby="QuickViewTitle">
   <div class="szc-modal__overlay" data-modal-close></div>
 
-  <div class="szc-modal__container">
+  <div class="szc-modal__container szc-quick-view__container">
     <button
       type="button"
       class="szc-modal__close-btn"
       data-modal-close
       aria-label="{{ 'accessibility.close' | t | default: 'Close modal' }}"
     >
-      {% render 'icon', icon: 'close', class: 'szc-modal__close-icon' %}
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <line x1="18" y1="6" x2="6" y2="18"></line>
+        <line x1="6" y1="6" x2="18" y2="18"></line>
+      </svg>
     </button>
 
-    <div class="szc-modal__content" id="QuickViewContent">
+    <div class="szc-modal__content szc-quick-view__content" id="QuickViewContent">
       <div class="szc-modal__spinner-container">
-        {% render 'icon', icon: 'spinner', class: 'szc-modal__spinner' %}
+        <svg class="szc-icon szc-icon--spinner szc-animate-spin szc-modal__spinner" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <circle cx="12" cy="12" r="10" stroke-opacity="0.25"/>
+          <path d="M12 2a10 10 0 0 1 10 10" stroke-linecap="round"/>
+        </svg>
       </div>
     </div>
   </div>
 </quick-view-modal>
 
 {% stylesheet %}
-  .szc-modal {
+  .szc-quick-view-modal {
     position: fixed;
     top: 0;
     left: 0;
     width: 100vw;
     height: 100vh;
-    z-index: var(--szc-z-modal, 600);
+    z-index: 999999;
     display: flex;
     align-items: center;
     justify-content: center;
     opacity: 0;
     visibility: hidden;
     pointer-events: none;
-    transition: all var(--szc-transition-base, 250ms ease);
+    transition: opacity 250ms ease, visibility 250ms ease;
   }
 
-  .szc-modal.is-open {
-    opacity: 1;
-    visibility: visible;
-    pointer-events: auto;
+  .szc-quick-view-modal.is-open {
+    opacity: 1 !important;
+    visibility: visible !important;
+    pointer-events: auto !important;
   }
 
-  .szc-modal__overlay {
+  .szc-quick-view-modal .szc-modal__overlay {
     position: absolute;
     top: 0;
     left: 0;
     width: 100%;
     height: 100%;
-    background-color: var(--szc-color-overlay, rgba(0, 0, 0, 0.5));
-    backdrop-filter: blur(var(--szc-backdrop-blur, 4px));
+    background-color: rgba(0, 0, 0, 0.6);
+    backdrop-filter: blur(4px);
+    z-index: 1;
   }
 
-  .szc-modal__container {
+  .szc-quick-view-modal .szc-modal__container {
     position: relative;
-    width: 90%;
-    max-width: 900px;
-    max-height: 85vh;
-    background-color: var(--szc-color-background, #ffffff);
-    border-radius: var(--szc-radius-card, 4px);
-    box-shadow: var(--szc-shadow-xl);
+    width: 95%;
+    max-width: 1200px;
+    max-height: 90vh;
+    border-radius: 12px;
+    padding: 0;
     overflow-y: auto;
+    background-color: #ffffff;
+    box-shadow: 0 25px 60px rgba(0, 0, 0, 0.25);
     z-index: 2;
-    transform: scale(0.95);
-    transition: transform var(--szc-transition-base, 250ms ease);
+    transform: scale(0.92);
+    transition: transform 250ms ease;
   }
 
-  .szc-modal.is-open .szc-modal__container {
+  .szc-quick-view-modal.is-open .szc-modal__container {
     transform: scale(1);
   }
 
-  .szc-modal__close-btn {
+  .szc-quick-view-modal .szc-modal__close-btn {
     position: absolute;
     top: 16px;
     right: 16px;
-    width: 36px;
-    height: 36px;
+    width: 32px;
+    height: 32px;
+    background-color: #ffffff;
+    border: 1px solid #e5e5e5;
     border-radius: 50%;
-    background-color: var(--szc-color-surface, #f8f9fa);
-    border: none;
-    color: var(--szc-color-text-primary, #111111);
+    color: #111111;
     display: flex;
     align-items: center;
     justify-content: center;
     cursor: pointer;
-    z-index: 10;
-    transition: background-color var(--szc-transition-fast, 150ms ease);
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+    transition: transform 150ms ease, background-color 150ms ease;
+    z-index: 20;
   }
 
-  .szc-modal__close-btn:hover {
-    background-color: var(--szc-color-secondary, #d4a373);
-  }
-
-  .szc-modal__close-icon {
-    width: 18px;
-    height: 18px;
-  }
-
-  .szc-modal__content {
-    padding: var(--szc-space-6, 24px);
-    min-height: 300px;
+  .szc-quick-view-modal .szc-modal__close-btn:hover {
+    transform: scale(1.08);
+    background-color: #f8f8f8;
+    color: #000000;
   }
 
   .szc-modal__spinner-container {
     display: flex;
     align-items: center;
     justify-content: center;
-    min-height: 250px;
+    min-height: 200px;
+    padding: 40px;
   }
 
   .szc-modal__spinner {
+    width: 24px;
+    height: 24px;
+    color: #111111;
+    animation: szcSpin 0.7s linear infinite;
+  }
+
+  @keyframes szcSpin {
+    to { transform: rotate(360deg); }
+  }
+
+  /* Grid Layout: 4 Columns on Desktop */
+  .szc-qv-grid {
+    display: grid;
+    grid-template-columns: 75px 1fr 1.15fr 240px;
+    gap: 28px;
+    padding: 36px;
+    align-items: start;
+  }
+
+  /* Column 1: Vertical Thumbnails Strip */
+  .szc-qv-thumbs {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    max-height: 480px;
+    overflow-y: auto;
+  }
+
+  .szc-qv-thumb-btn {
+    width: 70px;
+    height: 85px;
+    border-radius: 6px;
+    overflow: hidden;
+    border: 2px solid transparent;
+    padding: 0;
+    background-color: #f7f5f0;
+    cursor: pointer;
+    transition: all 150ms ease;
+    flex-shrink: 0;
+  }
+
+  .szc-qv-thumb-btn.is-active,
+  .szc-qv-thumb-btn:hover {
+    border-color: #b44f4f;
+  }
+
+  .szc-qv-thumb-img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+
+  /* Column 2: Main Image Stage */
+  .szc-qv-stage {
+    position: relative;
+    width: 100%;
+    aspect-ratio: 4 / 5;
+    border-radius: 8px;
+    overflow: hidden;
+    background-color: #f7f5f0;
+  }
+
+  .szc-qv-stage-img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: opacity 200ms ease;
+  }
+
+  .szc-qv-stage-nav {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
     width: 36px;
     height: 36px;
-    color: var(--szc-color-primary, #111111);
+    border-radius: 50%;
+    background-color: #ffffff;
+    border: none;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #111111;
+    cursor: pointer;
+    transition: transform 150ms ease, background-color 150ms ease;
+    z-index: 2;
+  }
+
+  .szc-qv-stage-nav:hover {
+    transform: translateY(-50%) scale(1.08);
+  }
+
+  .szc-qv-stage-nav--prev {
+    left: 12px;
+  }
+
+  .szc-qv-stage-nav--next {
+    right: 12px;
+  }
+
+  /* Column 3: Info & Form Details */
+  .szc-qv-details {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+  }
+
+  .szc-qv-tag {
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    color: #b44f4f;
+    text-transform: uppercase;
+  }
+
+  .szc-qv-title {
+    margin: 0;
+    font-family: var(--szc-font-family-heading, Georgia, serif);
+    font-size: 24px;
+    font-weight: 600;
+    color: #111111;
+    line-height: 1.25;
+  }
+
+  .szc-qv-price-row {
+    display: flex;
+    align-items: baseline;
+    gap: 10px;
+  }
+
+  .szc-qv-price {
+    font-size: 22px;
+    font-weight: 700;
+    color: #111111;
+  }
+
+  .szc-qv-price--compare {
+    font-size: 16px;
+    color: #888888;
+    text-decoration: line-through;
+  }
+
+  .szc-qv-installments {
+    font-size: 12px;
+    color: #555555;
+    line-height: 1.4;
+  }
+
+  .szc-qv-shoppay {
+    font-weight: 700;
+    color: #5a31f4;
+  }
+
+  .szc-qv-reviews {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 13px;
+    color: #444444;
+  }
+
+  .szc-qv-stars {
+    color: #f39c12;
+    display: flex;
+    gap: 2px;
+  }
+
+  /* Swatch Group */
+  .szc-qv-option-group {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+
+  .szc-qv-option-label {
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.06em;
+    color: #111111;
+    text-transform: uppercase;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+
+  .szc-qv-size-guide-btn {
+    font-size: 12px;
+    font-weight: 500;
+    color: #666666;
+    text-decoration: underline;
+    background: none;
+    border: none;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    text-transform: none;
+  }
+
+  .szc-qv-color-swatches {
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+  }
+
+  .szc-qv-color-btn {
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    border: 1px solid #dddddd;
+    padding: 0;
+    cursor: pointer;
+    position: relative;
+    transition: transform 150ms ease;
+  }
+
+  .szc-qv-color-btn.is-active {
+    box-shadow: 0 0 0 2px #ffffff, 0 0 0 3px #b44f4f;
+  }
+
+  .szc-qv-size-boxes {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+  }
+
+  .szc-qv-size-btn {
+    min-width: 42px;
+    height: 40px;
+    padding: 0 12px;
+    border-radius: 4px;
+    border: 1px solid #e0e0e0;
+    background-color: #ffffff;
+    font-size: 13px;
+    font-weight: 600;
+    color: #111111;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 150ms ease;
+  }
+
+  .szc-qv-size-btn.is-active {
+    background-color: #000000;
+    color: #ffffff;
+    border-color: #000000;
+  }
+
+  .szc-qv-size-btn:hover:not(.is-active) {
+    border-color: #111111;
+  }
+
+  /* Stepper */
+  .szc-qv-stepper {
+    display: inline-flex;
+    align-items: center;
+    border: 1px solid #e0e0e0;
+    border-radius: 4px;
+    height: 40px;
+    width: 110px;
+    overflow: hidden;
+  }
+
+  .szc-qv-stepper-btn {
+    width: 35px;
+    height: 100%;
+    background: transparent;
+    border: none;
+    font-size: 16px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #333333;
+  }
+
+  .szc-qv-stepper-btn:hover {
+    background-color: #f5f5f5;
+  }
+
+  .szc-qv-stepper-input {
+    width: 40px;
+    height: 100%;
+    border: none;
+    outline: none;
+    text-align: center;
+    font-size: 14px;
+    font-weight: 700;
+    background: transparent;
+  }
+
+  /* Action Buttons Row */
+  .szc-qv-actions-row {
+    display: flex;
+    gap: 10px;
+    margin-top: 4px;
+  }
+
+  .szc-qv-add-btn {
+    flex: 1;
+    height: 48px;
+    background-color: #000000;
+    color: #ffffff;
+    border: none;
+    border-radius: 4px;
+    font-size: 13px;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    cursor: pointer;
+    transition: background-color 150ms ease;
+  }
+
+  .szc-qv-add-btn:hover {
+    background-color: #222222;
+  }
+
+  .szc-qv-wishlist-btn {
+    width: 48px;
+    height: 48px;
+    border: 1px solid #e0e0e0;
+    border-radius: 4px;
+    background-color: #ffffff;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #111111;
+    cursor: pointer;
+    transition: border-color 150ms ease;
+  }
+
+  .szc-qv-wishlist-btn:hover {
+    border-color: #b44f4f;
+    color: #b44f4f;
+  }
+
+  .szc-qv-full-btn {
+    width: 100%;
+    height: 44px;
+    border: 1px solid #111111;
+    border-radius: 4px;
+    background-color: #ffffff;
+    color: #111111;
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    text-decoration: none;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: background-color 150ms ease;
+  }
+
+  .szc-qv-full-btn:hover {
+    background-color: #f8f9fa;
+  }
+
+  /* Column 4: Trust Badges Column */
+  .szc-qv-trust {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    padding-left: 20px;
+    border-left: 1px solid #f0f0f0;
+  }
+
+  .szc-qv-trust-item {
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+  }
+
+  .szc-qv-trust-icon {
+    width: 24px;
+    height: 24px;
+    color: #b44f4f;
+    flex-shrink: 0;
+    margin-top: 2px;
+  }
+
+  .szc-qv-trust-text {
+    display: flex;
+    flex-direction: column;
+  }
+
+  .szc-qv-trust-title {
+    font-size: 13px;
+    font-weight: 700;
+    color: #111111;
+  }
+
+  .szc-qv-trust-desc {
+    font-size: 12px;
+    color: #777777;
+    margin-top: 2px;
+  }
+
+  @media (max-width: 989px) {
+    .szc-qv-grid {
+      grid-template-columns: 1fr;
+      gap: 20px;
+      padding: 24px;
+    }
+
+    .szc-qv-thumbs {
+      flex-direction: row;
+      max-height: none;
+    }
+
+    .szc-qv-trust {
+      border-left: none;
+      border-top: 1px solid #f0f0f0;
+      padding-left: 0;
+      padding-top: 20px;
+    }
   }
 {% endstylesheet %}
 
@@ -130,21 +548,15 @@
       class QuickViewModal extends HTMLElement {
         constructor() {
           super();
+        }
+
+        connectedCallback() {
           this.container = this.querySelector('.szc-modal__container');
           this.content = this.querySelector('#QuickViewContent');
 
           this.querySelectorAll('[data-modal-close]').forEach((btn) =>
             btn.addEventListener('click', this.close.bind(this))
           );
-
-          document.addEventListener('click', (e) => {
-            const trigger = e.target.closest('.szc-quick-view-btn');
-            if (trigger) {
-              e.preventDefault();
-              const handle = trigger.getAttribute('data-product-handle');
-              if (handle) this.open(handle);
-            }
-          });
 
           document.addEventListener('keydown', (e) => {
             if (e.key === 'Escape' && this.classList.contains('is-open')) {
@@ -171,13 +583,342 @@
           `;
 
           try {
-            const response = await fetch(`/products/${productHandle}?view=quick-view`);
+            const response = await fetch(`/products/${productHandle}.js`);
             if (!response.ok) throw new Error(`HTTP ${response.status}`);
-            const htmlText = await response.text();
-            this.content.innerHTML = htmlText;
+            const product = await response.json();
+            this.renderProduct(product);
           } catch (error) {
             console.error('[ShopziCurious QuickView Error]', error);
-            this.content.innerHTML = `<p class="szc-text-error">Failed to load product details.</p>`;
+            this.content.innerHTML = `<p style="padding:40px; text-align:center; color:#e63946;">Failed to load product details.</p>`;
+          }
+        }
+
+        renderProduct(product) {
+          const moneyFormat = (window.ShopziCurious && window.ShopziCurious.moneyFormat) || '$' + '{' + '{amount}}';
+
+          const formatMoney = (cents) => {
+            const dollars = (cents / 100).toFixed(2);
+            return `$${dollars}`;
+          };
+
+          const images = product.images && product.images.length ? product.images : [product.featured_image];
+          const firstVariant = product.variants[0];
+
+          // Determine Swatches & Options
+          let colorOption = null;
+          let sizeOption = null;
+
+          if (product.options) {
+            product.options.forEach((opt, idx) => {
+              const nameLower = opt.name.toLowerCase();
+              if (nameLower.includes('color') || nameLower.includes('colour')) {
+                colorOption = { index: idx, name: opt.name, values: opt.values };
+              } else if (nameLower.includes('size')) {
+                sizeOption = { index: idx, name: opt.name, values: opt.values };
+              }
+            });
+          }
+
+          // Color hex helper map for common colors
+          const getColorHex = (name) => {
+            const colorMap = {
+              'light blue': '#87ceeb',
+              'blue': '#2b5797',
+              'navy': '#000080',
+              'black': '#111111',
+              'white': '#ffffff',
+              'cream': '#f5f5dc',
+              'beige': '#f5f5dc',
+              'red': '#e63946',
+              'green': '#2a9d8f',
+              'brown': '#8b4513',
+              'grey': '#888888',
+              'gray': '#888888'
+            };
+            return colorMap[name.toLowerCase()] || '#cccccc';
+          };
+
+          const isNewArrival = product.tags && product.tags.some(t => t.toLowerCase().includes('new'));
+
+          this.content.innerHTML = `
+            <div class="szc-qv-grid" data-product-id="${product.id}">
+              <!-- Column 1: Vertical Thumbnails Strip -->
+              <div class="szc-qv-thumbs">
+                ${images.map((img, idx) => `
+                  <button type="button" class="szc-qv-thumb-btn ${idx === 0 ? 'is-active' : ''}" data-index="${idx}" data-img="${img}">
+                    <img src="${img}" alt="${product.title}" class="szc-qv-thumb-img" loading="lazy">
+                  </button>
+                `).join('')}
+              </div>
+
+              <!-- Column 2: Main Stage Image -->
+              <div class="szc-qv-stage">
+                ${images.length > 1 ? `
+                  <button type="button" class="szc-qv-stage-nav szc-qv-stage-nav--prev" aria-label="Previous image">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="15 18 9 12 15 6"></polyline></svg>
+                  </button>
+                  <button type="button" class="szc-qv-stage-nav szc-qv-stage-nav--next" aria-label="Next image">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="9 18 15 12 9 6"></polyline></svg>
+                  </button>
+                ` : ''}
+                <img src="${images[0]}" alt="${product.title}" class="szc-qv-stage-img" id="QvStageImg">
+              </div>
+
+              <!-- Column 3: Product Info Details & Form -->
+              <div class="szc-qv-details">
+                <span class="szc-qv-tag">${isNewArrival ? 'NEW ARRIVAL' : (product.vendor || 'FEATURED')}</span>
+                <h2 class="szc-qv-title">${product.title}</h2>
+
+                <div class="szc-qv-price-row">
+                  <span class="szc-qv-price" id="QvPrice">${formatMoney(product.price)}</span>
+                  ${product.compare_at_price > product.price ? `<span class="szc-qv-price--compare">${formatMoney(product.compare_at_price)}</span>` : ''}
+                </div>
+
+
+
+                ${product.rating || (product.metafields && product.metafields.reviews && product.metafields.reviews.rating) ? `
+                  <div class="szc-qv-reviews">
+                    <div class="szc-qv-stars">★★★★☆</div>
+                    <span>(${product.rating_count || 12} Reviews)</span>
+                  </div>
+                ` : ''}
+
+                <!-- Color Swatches -->
+                ${colorOption ? `
+                  <div class="szc-qv-option-group">
+                    <div class="szc-qv-option-label">
+                      <span>COLOR: <span id="QvSelectedColor">${colorOption.values[0]}</span></span>
+                    </div>
+                    <div class="szc-qv-color-swatches">
+                      ${colorOption.values.map((val, idx) => `
+                        <button
+                          type="button"
+                          class="szc-qv-color-btn ${idx === 0 ? 'is-active' : ''}"
+                          data-opt-idx="${colorOption.index}"
+                          data-val="${val}"
+                          style="background-color: ${getColorHex(val)};"
+                          title="${val}"
+                        ></button>
+                      `).join('')}
+                    </div>
+                  </div>
+                ` : ''}
+
+                <!-- Size Selector -->
+                ${sizeOption ? `
+                  <div class="szc-qv-option-group">
+                    <div class="szc-qv-option-label">
+                      <span>SIZE: <span id="QvSelectedSize">${sizeOption.values[0]}</span></span>
+                      <button type="button" class="szc-qv-size-guide-btn">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="6" width="20" height="12" rx="2"/><path d="M6 12h.01M10 12h.01M14 12h.01M18 12h.01"/></svg>
+                        Size Guide
+                      </button>
+                    </div>
+                    <div class="szc-qv-size-boxes">
+                      ${sizeOption.values.map((val, idx) => `
+                        <button
+                          type="button"
+                          class="szc-qv-size-btn ${idx === 0 ? 'is-active' : ''}"
+                          data-opt-idx="${sizeOption.index}"
+                          data-val="${val}"
+                        >${val}</button>
+                      `).join('')}
+                    </div>
+                  </div>
+                ` : ''}
+
+                <!-- Quantity Stepper Box -->
+                <div class="szc-qv-option-group">
+                  <div class="szc-qv-stepper">
+                    <button type="button" class="szc-qv-stepper-btn" data-qv-action="minus">-</button>
+                    <input type="number" class="szc-qv-stepper-input" id="QvQtyInput" value="1" min="1" readonly>
+                    <button type="button" class="szc-qv-stepper-btn" data-qv-action="plus">+</button>
+                  </div>
+                </div>
+
+                <!-- Action Buttons -->
+                <div class="szc-qv-actions-row">
+                  <button type="button" class="szc-qv-add-btn" id="QvAddToCartBtn" data-variant-id="${firstVariant.id}">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 0 1-8 0"/></svg>
+                    <span>ADD TO BAG</span>
+                  </button>
+                  <button type="button" class="szc-qv-wishlist-btn" aria-label="Add to wishlist">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>
+                  </button>
+                </div>
+
+                <a href="/products/${product.handle}" class="szc-qv-full-btn">
+                  VIEW FULL PRODUCT
+                </a>
+              </div>
+
+              <!-- Column 4: Trust Badges Stack -->
+              <div class="szc-qv-trust">
+                <div class="szc-qv-trust-item">
+                  <svg class="szc-qv-trust-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="1" y="3" width="15" height="13"/><polygon points="16 8 20 8 23 11 23 16 16 16 16 8"/><circle cx="5.5" cy="18.5" r="2.5"/><circle cx="18.5" cy="18.5" r="2.5"/></svg>
+                  <div class="szc-qv-trust-text">
+                    <span class="szc-qv-trust-title">Free Shipping</span>
+                    <span class="szc-qv-trust-desc">On orders over $100</span>
+                  </div>
+                </div>
+
+                <div class="szc-qv-trust-item">
+                  <svg class="szc-qv-trust-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="23 4 23 10 17 10"/><path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"/></svg>
+                  <div class="szc-qv-trust-text">
+                    <span class="szc-qv-trust-title">Easy Returns</span>
+                    <span class="szc-qv-trust-desc">30-day return policy</span>
+                  </div>
+                </div>
+
+                <div class="szc-qv-trust-item">
+                  <svg class="szc-qv-trust-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+                  <div class="szc-qv-trust-text">
+                    <span class="szc-qv-trust-title">Secure Payment</span>
+                    <span class="szc-qv-trust-desc">100% secure checkout</span>
+                  </div>
+                </div>
+
+                <div class="szc-qv-trust-item">
+                  <svg class="szc-qv-trust-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+                  <div class="szc-qv-trust-text">
+                    <span class="szc-qv-trust-title">Lifetime Warranty</span>
+                    <span class="szc-qv-trust-desc">On all products</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          `;
+
+          this.bindEvents(product);
+        }
+
+        bindEvents(product) {
+          let currentImgIndex = 0;
+          const images = product.images && product.images.length ? product.images : [product.featured_image];
+          const stageImg = this.querySelector('#QvStageImg');
+          const thumbBtns = this.querySelectorAll('.szc-qv-thumb-btn');
+
+          const updateStageImage = (index) => {
+            currentImgIndex = (index + images.length) % images.length;
+            if (stageImg) stageImg.src = images[currentImgIndex];
+            thumbBtns.forEach((btn, idx) => {
+              btn.classList.toggle('is-active', idx === currentImgIndex);
+            });
+          };
+
+          // Thumbnails click
+          thumbBtns.forEach((btn) => {
+            btn.addEventListener('click', () => {
+              const idx = parseInt(btn.dataset.index, 10);
+              updateStageImage(idx);
+            });
+          });
+
+          // Prev / Next Nav
+          const prevBtn = this.querySelector('.szc-qv-stage-nav--prev');
+          const nextBtn = this.querySelector('.szc-qv-stage-nav--next');
+          if (prevBtn) prevBtn.addEventListener('click', () => updateStageImage(currentImgIndex - 1));
+          if (nextBtn) nextBtn.addEventListener('click', () => updateStageImage(currentImgIndex + 1));
+
+          // Option Selection (Colors & Sizes)
+          let selectedOptions = product.variants[0].options ? [...product.variants[0].options] : [];
+
+          const updateVariant = () => {
+            const matchedVariant = product.variants.find((v) => {
+              return v.options.every((optVal, idx) => optVal === selectedOptions[idx]);
+            }) || product.variants[0];
+
+            const addBtn = this.querySelector('#QvAddToCartBtn');
+            const priceEl = this.querySelector('#QvPrice');
+
+            if (addBtn) addBtn.dataset.variantId = matchedVariant.id;
+            if (priceEl) priceEl.textContent = `$${(matchedVariant.price / 100).toFixed(2)}`;
+
+            if (matchedVariant.featured_image && matchedVariant.featured_image.src) {
+              const imgIdx = images.indexOf(matchedVariant.featured_image.src);
+              if (imgIdx !== -1) updateStageImage(imgIdx);
+            }
+          };
+
+          // Color click
+          this.querySelectorAll('.szc-qv-color-btn').forEach((btn) => {
+            btn.addEventListener('click', () => {
+              this.querySelectorAll('.szc-qv-color-btn').forEach((b) => b.classList.remove('is-active'));
+              btn.classList.add('is-active');
+              const optIdx = parseInt(btn.dataset.optIdx, 10);
+              selectedOptions[optIdx] = btn.dataset.val;
+              const colorText = this.querySelector('#QvSelectedColor');
+              if (colorText) colorText.textContent = btn.dataset.val;
+              updateVariant();
+            });
+          });
+
+          // Size click
+          this.querySelectorAll('.szc-qv-size-btn').forEach((btn) => {
+            btn.addEventListener('click', () => {
+              this.querySelectorAll('.szc-qv-size-btn').forEach((b) => b.classList.remove('is-active'));
+              btn.classList.add('is-active');
+              const optIdx = parseInt(btn.dataset.optIdx, 10);
+              selectedOptions[optIdx] = btn.dataset.val;
+              const sizeText = this.querySelector('#QvSelectedSize');
+              if (sizeText) sizeText.textContent = btn.dataset.val;
+              updateVariant();
+            });
+          });
+
+          // Stepper (+ / -)
+          const qtyInput = this.querySelector('#QvQtyInput');
+          this.querySelectorAll('[data-qv-action]').forEach((btn) => {
+            btn.addEventListener('click', () => {
+              let qty = parseInt(qtyInput.value, 10) || 1;
+              if (btn.dataset.qvAction === 'plus') qty++;
+              else if (btn.dataset.qvAction === 'minus') qty = Math.max(1, qty - 1);
+              qtyInput.value = qty;
+            });
+          });
+
+          // Add to Bag Click inside Quick View
+          const addBtn = this.querySelector('#QvAddToCartBtn');
+          if (addBtn) {
+            addBtn.addEventListener('click', async () => {
+              const variantId = addBtn.dataset.variantId;
+              const quantity = parseInt(qtyInput ? qtyInput.value : 1, 10);
+              if (!variantId) return;
+
+              addBtn.disabled = true;
+              addBtn.querySelector('span').textContent = 'ADDING...';
+
+              try {
+                const res = await fetch('/cart/add.js', {
+                  method: 'POST',
+                  headers: {
+                    'Content-Type': 'application/json',
+                    'Accept': 'application/json',
+                    'X-Requested-With': 'XMLHttpRequest'
+                  },
+                  body: JSON.stringify({ items: [{ id: parseInt(variantId, 10), quantity }] })
+                });
+
+                const data = await res.json();
+                const cartRes = await fetch('/cart.js');
+                const cartData = await cartRes.json();
+
+                const cartType = (window.ShopziCurious && window.ShopziCurious.settings && window.ShopziCurious.settings.cartType) ? window.ShopziCurious.settings.cartType : 'drawer';
+
+                this.close();
+
+                if (cartType === 'page') {
+                  window.location.href = (window.ShopziCurious && window.ShopziCurious.routes && window.ShopziCurious.routes.cart_url) ? window.ShopziCurious.routes.cart_url : '/cart';
+                } else {
+                  ShopziCurious.pubsub.publish(ShopziCurious.events.CART_UPDATED, { item: data, item_count: cartData.item_count, openDrawer: true });
+                }
+              } catch (err) {
+                console.error('[ShopziCurious QuickView Add Error]', err);
+              } finally {
+                addBtn.disabled = false;
+                addBtn.querySelector('span').textContent = 'ADD TO BAG';
+              }
+            });
           }
         }
 
@@ -190,5 +931,20 @@
         }
       }
     );
+
+    // Global listener for Quick View buttons across entire theme
+    document.addEventListener('click', (e) => {
+      const trigger = e.target.closest('.szc-quick-view-btn, [data-quick-view], [data-product-handle]');
+      if (trigger && !trigger.classList.contains('szc-quick-add-btn')) {
+        const handle = trigger.getAttribute('data-product-handle') || trigger.getAttribute('data-handle');
+        if (handle) {
+          e.preventDefault();
+          const modal = document.querySelector('quick-view-modal');
+          if (modal && modal.open) {
+            modal.open(handle);
+          }
+        }
+      }
+    });
   }
 {% endjavascript %}

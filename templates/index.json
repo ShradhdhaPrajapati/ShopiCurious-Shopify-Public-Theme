@@ -166,6 +166,7 @@
           "type": "category",
           "settings": {
             "collection": "women",
+            "image": "shopify://shop_images/categorycard1.png",
             "title": "WOMEN",
             "button_text": "SHOP NOW"
           }
@@ -174,6 +175,7 @@
           "type": "category",
           "settings": {
             "collection": "men",
+            "image": "shopify://shop_images/Categorycard2.png",
             "title": "MEN",
             "button_text": "SHOP NOW"
           }
@@ -182,6 +184,7 @@
           "type": "category",
           "settings": {
             "collection": "accessories",
+            "image": "shopify://shop_images/Categorycard3.png",
             "title": "ACCESSORIES",
             "button_text": "SHOP NOW"
           }
@@ -190,6 +193,7 @@
           "type": "category",
           "settings": {
             "collection": "shoes",
+            "image": "shopify://shop_images/Categorycard4.png",
             "title": "SHOES",
             "button_text": "SHOP NOW"
           }
@@ -366,7 +370,7 @@
           "type": "instagram_post",
           "settings": {
             "image": "shopify://shop_images/Instapost_1.png",
-            "link": "",
+            "link": "https://www.instagram.com/p/DO0AkqcAc1Q/",
             "caption": ""
           }
         },

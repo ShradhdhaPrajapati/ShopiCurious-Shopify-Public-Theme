@@ -26,43 +26,96 @@
 
       {%- case request.page_type -%}
         {%- when 'product' -%}
-          {%- if collection.url -%}
+          {%- liquid
+            assign primary_col = collection
+            
+            # If no collection in URL context, pick first valid collection from product.collections
+            if primary_col == blank and product.collections.size > 0
+              for col in product.collections
+                unless col.handle == 'all' or col.handle == 'frontpage'
+                  assign primary_col = col
+                  break
+                endunless
+              endfor
+              if primary_col == blank
+                assign primary_col = product.collections.first
+              endif
+            endif
+
+            # Detect department / parent collection (e.g. Women, Men, Kids)
+            assign department_col = blank
+            if product.collections.size > 1
+              for col in product.collections
+                assign h_down = col.handle | downcase
+                if h_down == 'women' or h_down == 'womens' or h_down == 'men' or h_down == 'mens' or h_down == 'kids' or h_down == 'unisex'
+                  if primary_col == blank or col.id != primary_col.id
+                    assign department_col = col
+                    break
+                  endif
+                endif
+              endfor
+            endif
+
+            assign pos = 1
+          -%}
+
+          {%- if department_col != blank -%}
+            {%- assign pos = pos | plus: 1 -%}
             <li class="szc-breadcrumbs__item" itemprop="itemListElement" itemscope itemtype="https://schema.org/ListItem">
-              <a href="{{ collection.url }}" class="szc-breadcrumbs__link" itemprop="item">
-                <span itemprop="name">{{ collection.title }}</span>
+              <a href="{{ department_col.url }}" class="szc-breadcrumbs__link" itemprop="item">
+                <span itemprop="name">{{ department_col.title }}</span>
               </a>
-              <meta itemprop="position" content="2">
+              <meta itemprop="position" content="{{ pos }}">
               <span class="szc-breadcrumbs__separator" aria-hidden="true">/</span>
-            </li>
-            <li class="szc-breadcrumbs__item" itemprop="itemListElement" itemscope itemtype="https://schema.org/ListItem">
-              <span class="szc-breadcrumbs__current" itemprop="name" aria-current="page">{{ product.title }}</span>
-              <meta itemprop="position" content="3">
-            </li>
-          {%- else -%}
-            <li class="szc-breadcrumbs__item" itemprop="itemListElement" itemscope itemtype="https://schema.org/ListItem">
-              <span class="szc-breadcrumbs__current" itemprop="name" aria-current="page">{{ product.title }}</span>
-              <meta itemprop="position" content="2">
             </li>
           {%- endif -%}
 
-        {%- when 'collection' and collection.handle -%}
-          {%- if current_tags -%}
+          {%- if primary_col != blank -%}
+            {%- assign pos = pos | plus: 1 -%}
             <li class="szc-breadcrumbs__item" itemprop="itemListElement" itemscope itemtype="https://schema.org/ListItem">
-              <a href="{{ collection.url }}" class="szc-breadcrumbs__link" itemprop="item">
-                <span itemprop="name">{{ collection.title }}</span>
+              <a href="{{ primary_col.url }}" class="szc-breadcrumbs__link" itemprop="item">
+                <span itemprop="name">{{ primary_col.title }}</span>
               </a>
-              <meta itemprop="position" content="2">
+              <meta itemprop="position" content="{{ pos }}">
               <span class="szc-breadcrumbs__separator" aria-hidden="true">/</span>
             </li>
+          {%- elsif product.type != blank -%}
+            {%- assign pos = pos | plus: 1 -%}
             <li class="szc-breadcrumbs__item" itemprop="itemListElement" itemscope itemtype="https://schema.org/ListItem">
-              <span class="szc-breadcrumbs__current" itemprop="name" aria-current="page">{{ current_tags | join: " + " }}</span>
-              <meta itemprop="position" content="3">
+              <a href="{{ product.type | url_for_type }}" class="szc-breadcrumbs__link" itemprop="item">
+                <span itemprop="name">{{ product.type }}</span>
+              </a>
+              <meta itemprop="position" content="{{ pos }}">
+              <span class="szc-breadcrumbs__separator" aria-hidden="true">/</span>
             </li>
-          {%- else -%}
-            <li class="szc-breadcrumbs__item" itemprop="itemListElement" itemscope itemtype="https://schema.org/ListItem">
-              <span class="szc-breadcrumbs__current" itemprop="name" aria-current="page">{{ collection.title }}</span>
-              <meta itemprop="position" content="2">
-            </li>
+          {%- endif -%}
+
+          {%- assign pos = pos | plus: 1 -%}
+          <li class="szc-breadcrumbs__item" itemprop="itemListElement" itemscope itemtype="https://schema.org/ListItem">
+            <span class="szc-breadcrumbs__current" itemprop="name" aria-current="page">{{ product.title }}</span>
+            <meta itemprop="position" content="{{ pos }}">
+          </li>
+
+        {%- when 'collection' -%}
+          {%- if collection.handle -%}
+            {%- if current_tags -%}
+              <li class="szc-breadcrumbs__item" itemprop="itemListElement" itemscope itemtype="https://schema.org/ListItem">
+                <a href="{{ collection.url }}" class="szc-breadcrumbs__link" itemprop="item">
+                  <span itemprop="name">{{ collection.title }}</span>
+                </a>
+                <meta itemprop="position" content="2">
+                <span class="szc-breadcrumbs__separator" aria-hidden="true">/</span>
+              </li>
+              <li class="szc-breadcrumbs__item" itemprop="itemListElement" itemscope itemtype="https://schema.org/ListItem">
+                <span class="szc-breadcrumbs__current" itemprop="name" aria-current="page">{{ current_tags | join: " + " }}</span>
+                <meta itemprop="position" content="3">
+              </li>
+            {%- else -%}
+              <li class="szc-breadcrumbs__item" itemprop="itemListElement" itemscope itemtype="https://schema.org/ListItem">
+                <span class="szc-breadcrumbs__current" itemprop="name" aria-current="page">{{ collection.title }}</span>
+                <meta itemprop="position" content="2">
+              </li>
+            {%- endif -%}
           {%- endif -%}
 
         {%- when 'blog' -%}
