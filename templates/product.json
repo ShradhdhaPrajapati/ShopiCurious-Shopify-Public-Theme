@@ -35,10 +35,6 @@
           "type": "description",
           "settings": {}
         },
-        "rating": {
-          "type": "rating",
-          "settings": {}
-        },
         "variant_picker": {
           "type": "variant_picker",
           "settings": {}
@@ -97,7 +93,6 @@
         "title",
         "price",
         "description",
-        "rating",
         "variant_picker",
         "quantity_selector",
         "buy_buttons",
@@ -126,7 +121,6 @@
         "columns_mobile": "2",
         "show_secondary_image": true,
         "show_vendor": true,
-        "show_rating": true,
         "show_price": true,
         "show_quick_add": true
       }

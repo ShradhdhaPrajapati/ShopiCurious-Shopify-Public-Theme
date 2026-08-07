@@ -176,6 +176,79 @@
             >{{ cart.note }}</textarea>
           </div>
         </details>
+
+        <!-- Discount Code Collapsible -->
+        <details class="szc-cart-drawer__notes-accordion szc-cart-drawer__discount-accordion" open>
+          <summary class="szc-cart-drawer__notes-summary">
+            <span>DISCOUNT CODE</span>
+            <svg class="szc-cart-drawer__notes-chevron" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <polyline points="6 9 12 15 18 9"></polyline>
+            </svg>
+          </summary>
+          <div class="szc-cart-drawer__notes-content">
+            <div class="szc-discount-box szc-discount-box--drawer">
+              <div class="szc-discount-form-row">
+                <label for="DrawerCartDiscountInput" class="visually-hidden">Discount Code</label>
+                <input
+                  type="text"
+                  id="DrawerCartDiscountInput"
+                  name="discount"
+                  class="szc-discount-input{% if cart.cart_level_discount_applications.size > 0 %} is-applied{% endif %}"
+                  placeholder="Enter discount code"
+                  aria-label="Enter discount code"
+                  aria-describedby="DrawerDiscountStatusMessage"
+                  value="{% if cart.cart_level_discount_applications.size > 0 %}{{ cart.cart_level_discount_applications.first.title }}{% endif %}"
+                  {% if cart.cart_level_discount_applications.size > 0 %}disabled{% endif %}
+                  autocomplete="off"
+                >
+                <button
+                  type="button"
+                  class="szc-discount-apply-btn{% if cart.cart_level_discount_applications.size > 0 %} is-applied{% endif %}"
+                  id="DrawerApplyDiscountBtn"
+                  aria-label="Apply discount code"
+                  {% if cart.cart_level_discount_applications.size > 0 %}disabled{% endif %}
+                >
+                  <span class="szc-btn-text">
+                    {%- if cart.cart_level_discount_applications.size > 0 -%}
+                      ✓ APPLIED
+                    {%- else -%}
+                      APPLY
+                    {%- endif -%}
+                  </span>
+                  <span class="szc-btn-spinner-wrapper" style="display:none;" aria-hidden="true">
+                    <svg class="szc-btn-spinner" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                      <circle cx="12" cy="12" r="10" stroke="currentColor" stroke-opacity="0.2" stroke-width="2.5"></circle>
+                      <path d="M12 2 a 10 10 0 0 1 10 10" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"></path>
+                    </svg>
+                  </span>
+                </button>
+              </div>
+
+              <!-- Applied Discount Tag Pill -->
+              <div id="DrawerDiscountTagsContainer" class="szc-discount-tags">
+                {%- if cart.cart_level_discount_applications.size > 0 -%}
+                  {%- for discount_application in cart.cart_level_discount_applications -%}
+                    <div class="szc-discount-tag" data-discount-title="{{ discount_application.title }}">
+                      <svg class="szc-tag-icon" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M20.59 13.41l-7.17 7.17a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.82z"></path>
+                        <line x1="7" y1="7" x2="7.01" y2="7"></line>
+                      </svg>
+                      <span class="szc-tag-title">{{ discount_application.title }}</span>
+                      <button type="button" class="szc-tag-remove-btn" data-remove-discount aria-label="Remove discount {{ discount_application.title }}">
+                        <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                          <line x1="18" y1="6" x2="6" y2="18"></line>
+                          <line x1="6" y1="6" x2="18" y2="18"></line>
+                        </svg>
+                      </button>
+                    </div>
+                  {%- endfor -%}
+                {%- endif -%}
+              </div>
+
+              <div id="DrawerDiscountStatusMessage" class="szc-discount-status" aria-live="polite" style="display:none;"></div>
+            </div>
+          </div>
+        </details>
       {%- else -%}
         <!-- Empty Cart State -->
         <div class="szc-cart-drawer__empty">
@@ -198,8 +271,54 @@
         <div class="szc-cart-drawer__summary">
           <div class="szc-summary-row">
             <span class="szc-summary-row__label">Subtotal</span>
-            <span class="szc-summary-row__val">{{ cart.items_subtotal_price | money }}</span>
+            <span class="szc-summary-row__val">{{ cart.original_total_price | money }}</span>
           </div>
+
+          {%- if cart.cart_level_discount_applications.size > 0 -%}
+            {%- for discount_application in cart.cart_level_discount_applications -%}
+              <div class="szc-summary-row szc-summary-row--discount">
+                <div class="szc-summary-discount-info" style="display:flex; align-items:center; gap:8px;">
+                  <span class="szc-summary-row__label">Discount</span>
+                  <div class="szc-discount-tag" data-discount-title="{{ discount_application.title }}">
+                    <svg class="szc-tag-icon" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                      <path d="M20.59 13.41l-7.17 7.17a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.82z"></path>
+                      <line x1="7" y1="7" x2="7.01" y2="7"></line>
+                    </svg>
+                    <span class="szc-tag-title">{{ discount_application.title }}</span>
+                    <button type="button" class="szc-tag-remove-btn" data-remove-discount aria-label="Remove discount">
+                      <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                        <line x1="18" y1="6" x2="6" y2="18"></line>
+                        <line x1="6" y1="6" x2="18" y2="18"></line>
+                      </svg>
+                    </button>
+                  </div>
+                </div>
+                <span class="szc-summary-row__val szc-summary-val--discount">-{{ discount_application.total_allocated_amount | money }}</span>
+              </div>
+            {%- endfor -%}
+          {%- elsif cart.total_discount > 0 -%}
+            <div class="szc-summary-row szc-summary-row--discount">
+              <div class="szc-summary-discount-info" style="display:flex; align-items:center; gap:8px;">
+                <span class="szc-summary-row__label">Discount</span>
+                {%- if cart.discount_applications.size > 0 -%}
+                  <div class="szc-discount-tag" data-discount-title="{{ cart.discount_applications.first.title }}">
+                    <svg class="szc-tag-icon" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                      <path d="M20.59 13.41l-7.17 7.17a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.82z"></path>
+                      <line x1="7" y1="7" x2="7.01" y2="7"></line>
+                    </svg>
+                    <span class="szc-tag-title">{{ cart.discount_applications.first.title }}</span>
+                    <button type="button" class="szc-tag-remove-btn" data-remove-discount aria-label="Remove discount">
+                      <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                        <line x1="18" y1="6" x2="6" y2="18"></line>
+                        <line x1="6" y1="6" x2="18" y2="18"></line>
+                      </svg>
+                    </button>
+                  </div>
+                {%- endif -%}
+              </div>
+              <span class="szc-summary-row__val szc-summary-val--discount">-{{ cart.total_discount | money }}</span>
+            </div>
+          {%- endif -%}
 
           <div class="szc-summary-row">
             <span class="szc-summary-row__label">Shipping</span>
@@ -717,6 +836,134 @@
   .szc-cart-btn--checkout:hover {
     background-color: #f8f9fa;
   }
+
+  /* Drawer Discount Box Styles */
+  .szc-discount-box--drawer {
+    margin-top: 8px;
+    margin-bottom: 8px;
+  }
+
+  .szc-discount-form-row {
+    display: flex;
+    gap: 8px;
+  }
+
+  .szc-discount-input {
+    flex: 1;
+    height: 40px;
+    padding: 0 12px;
+    font-size: 13px;
+    border: 1px solid #d0d0d0;
+    border-radius: 4px;
+    background-color: #ffffff;
+    color: #111111;
+    outline: none;
+    transition: border-color 150ms ease, box-shadow 150ms ease;
+  }
+
+  .szc-discount-input:focus {
+    border-color: #111111;
+  }
+
+  .szc-discount-input--error {
+    border-color: #e63946 !important;
+    background-color: #fff5f5;
+  }
+
+  .szc-discount-input:disabled {
+    background-color: #f5f5f5;
+    color: #555555;
+    cursor: not-allowed;
+  }
+
+  .szc-discount-apply-btn {
+    height: 40px;
+    padding: 0 16px;
+    background-color: #111111;
+    color: #ffffff;
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: 0.05em;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    transition: background-color 150ms ease;
+    flex-shrink: 0;
+  }
+
+  .szc-discount-apply-btn:hover:not(:disabled) {
+    background-color: #333333;
+  }
+
+  .szc-discount-apply-btn:disabled {
+    opacity: 0.65;
+    cursor: not-allowed;
+  }
+
+  .szc-discount-apply-btn.is-applied {
+    background-color: #2a9d8f;
+    opacity: 1;
+  }
+
+  .szc-discount-tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-top: 10px;
+  }
+
+  .szc-discount-tag {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 12px;
+    font-weight: 600;
+    color: #111111;
+    background-color: #efefef;
+    border: 1px solid #e0e0e0;
+    padding: 4px 10px;
+    border-radius: 20px;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+  }
+
+  .szc-tag-remove-btn {
+    background: none;
+    border: none;
+    padding: 0;
+    margin: 0 0 0 2px;
+    color: #666666;
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .szc-tag-remove-btn:hover {
+    color: #000000;
+  }
+
+  .szc-discount-status {
+    font-size: 12px;
+    margin-top: 8px;
+    line-height: 1.4;
+  }
+
+  .szc-discount-status--error {
+    color: #e63946;
+  }
+
+  .szc-summary-row--discount {
+    color: #111111;
+  }
+
+  .szc-summary-val--discount {
+    font-weight: 700;
+    color: #111111;
+  }
 {% endstylesheet %}
 
 {% javascript %}
@@ -775,6 +1022,159 @@
             }
           });
 
+          // --- Drawer Discount Code Logic ---
+          const drawerDiscountInput = this.querySelector('#DrawerCartDiscountInput');
+          const drawerApplyBtn = this.querySelector('#DrawerApplyDiscountBtn');
+          const drawerStatusDiv = this.querySelector('#DrawerDiscountStatusMessage');
+
+          if (drawerDiscountInput) {
+            drawerDiscountInput.addEventListener('input', () => {
+              drawerDiscountInput.classList.remove('szc-discount-input--error');
+              drawerDiscountInput.removeAttribute('aria-invalid');
+              if (drawerStatusDiv) {
+                drawerStatusDiv.style.display = 'none';
+                drawerStatusDiv.innerHTML = '';
+              }
+              if (drawerApplyBtn && drawerApplyBtn.classList.contains('is-applied')) {
+                drawerApplyBtn.classList.remove('is-applied');
+                const textSpan = drawerApplyBtn.querySelector('.szc-btn-text');
+                if (textSpan) textSpan.textContent = 'APPLY';
+              }
+            });
+
+            drawerDiscountInput.addEventListener('keydown', (e) => {
+              if (e.key === 'Enter') {
+                e.preventDefault();
+                if (drawerApplyBtn && !drawerApplyBtn.disabled) {
+                  drawerApplyBtn.click();
+                }
+              }
+            });
+          }
+
+          if (drawerApplyBtn) {
+            drawerApplyBtn.addEventListener('click', async (e) => {
+              e.preventDefault();
+              if (window._szcIsApplyingDrawerDiscount) return;
+              window._szcIsApplyingDrawerDiscount = true;
+
+              const input = this.querySelector('#DrawerCartDiscountInput');
+              const status = this.querySelector('#DrawerDiscountStatusMessage');
+              const rawCode = input ? input.value.trim() : '';
+
+              if (status) {
+                status.style.display = 'none';
+                status.innerHTML = '';
+              }
+              if (input) {
+                input.classList.remove('szc-discount-input--error');
+                input.removeAttribute('aria-invalid');
+              }
+
+              if (!rawCode) {
+                if (input) {
+                  input.classList.add('szc-discount-input--error');
+                  input.setAttribute('aria-invalid', 'true');
+                  input.focus();
+                }
+                if (status) {
+                  status.style.display = 'block';
+                  status.className = 'szc-discount-status szc-discount-status--error';
+                  status.textContent = 'Please enter a valid discount code.';
+                }
+                window._szcIsApplyingDrawerDiscount = false;
+                return;
+              }
+
+              drawerApplyBtn.disabled = true;
+              if (input) input.disabled = true;
+              const textSpan = drawerApplyBtn.querySelector('.szc-btn-text');
+              const spinnerWrapper = drawerApplyBtn.querySelector('.szc-btn-spinner-wrapper');
+              if (textSpan) textSpan.style.display = 'none';
+              if (spinnerWrapper) spinnerWrapper.style.display = 'inline-flex';
+
+              try {
+                await fetch(`/discount/${encodeURIComponent(rawCode)}?redirect=/cart`);
+
+                const cartRes = await fetch(`/cart.js?_t=${Date.now()}`, { cache: 'no-store' });
+                const cartData = await cartRes.json();
+                const applications = (cartData && cartData.cart_level_discount_applications) || [];
+
+                if (applications.length > 0 || (cartData && cartData.total_discount > 0)) {
+                  await this.refreshCart(true);
+                  if (window.ShopziCurious && window.ShopziCurious.refreshCartPage) {
+                    await window.ShopziCurious.refreshCartPage();
+                  }
+                  if (window.ShopziCurious && window.ShopziCurious.showToast) {
+                    window.ShopziCurious.showToast('Discount applied successfully.');
+                  }
+                } else {
+                  if (input) {
+                    input.disabled = false;
+                    input.classList.add('szc-discount-input--error');
+                    input.setAttribute('aria-invalid', 'true');
+                    input.focus();
+                  }
+                  if (drawerApplyBtn) {
+                    drawerApplyBtn.disabled = false;
+                    drawerApplyBtn.classList.remove('is-applied');
+                    const newTextSpan = drawerApplyBtn.querySelector('.szc-btn-text');
+                    if (newTextSpan) newTextSpan.textContent = 'APPLY';
+                  }
+                  if (status) {
+                    status.style.display = 'block';
+                    status.className = 'szc-discount-status szc-discount-status--error';
+                    status.textContent = 'Invalid discount code. Please check and try again.';
+                  }
+                }
+              } catch (err) {
+                console.error('Failed to apply drawer discount:', err);
+                if (input) {
+                  input.disabled = false;
+                  input.classList.add('szc-discount-input--error');
+                }
+                if (drawerApplyBtn) drawerApplyBtn.disabled = false;
+                if (status) {
+                  status.style.display = 'block';
+                  status.className = 'szc-discount-status szc-discount-status--error';
+                  status.textContent = 'Invalid discount code. Please check and try again.';
+                }
+              } finally {
+                window._szcIsApplyingDrawerDiscount = false;
+                if (textSpan) textSpan.style.display = 'inline';
+                if (spinnerWrapper) spinnerWrapper.style.display = 'none';
+              }
+            });
+          }
+
+          this.querySelectorAll('[data-remove-discount]').forEach((removeBtn) => {
+            removeBtn.addEventListener('click', async (e) => {
+              e.preventDefault();
+              removeBtn.disabled = true;
+
+              try {
+                await fetch('/cart/update.js', {
+                  method: 'POST',
+                  headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
+                  body: JSON.stringify({ discount: "" })
+                });
+                await fetch('/discount/CLEAR?redirect=/cart');
+                await fetch('/cart?discount=');
+
+                await this.refreshCart(true);
+                if (window.ShopziCurious && window.ShopziCurious.refreshCartPage) {
+                  await window.ShopziCurious.refreshCartPage();
+                }
+
+                if (window.ShopziCurious && window.ShopziCurious.showToast) {
+                  window.ShopziCurious.showToast('Discount removed');
+                }
+              } catch (err) {
+                console.error('Failed to remove discount from drawer:', err);
+              }
+            });
+          });
+
           // Listen for Global Cart Updated events (e.g. Add to Cart)
           if (window.ShopziCurious && window.ShopziCurious.pubsub) {
             window.ShopziCurious.pubsub.subscribe('cart:updated', (data) => {
@@ -785,27 +1185,6 @@
             });
           }
 
-          // Global interception for add to cart form submits
-          document.addEventListener('submit', (e) => {
-            const cartType = (window.ShopziCurious && window.ShopziCurious.settings && window.ShopziCurious.settings.cartType) ? window.ShopziCurious.settings.cartType : 'drawer';
-            if (cartType === 'page') return;
-
-            const form = e.target;
-            if (form && form.action && form.action.includes('/cart/add')) {
-              e.preventDefault();
-              const formData = new FormData(form);
-              fetch('/cart/add.js', {
-                method: 'POST',
-                headers: { 'X-Requested-With': 'XMLHttpRequest' },
-                body: formData
-              })
-              .then(res => res.json())
-              .then(() => {
-                this.refreshCart(true);
-              })
-              .catch(err => console.error('Cart add error:', err));
-            }
-          });
         }
 
         open() {
@@ -832,6 +1211,9 @@
             });
             if (res.ok) {
               this.refreshCart(true);
+              if (window.ShopziCurious && window.ShopziCurious.refreshCartPage) {
+                await window.ShopziCurious.refreshCartPage();
+              }
             }
           } catch (err) {
             console.error('Failed to update cart line:', err);

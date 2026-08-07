@@ -677,6 +677,35 @@
     ]
   },
   {
+    "name": "Wishlist",
+    "settings": [
+      {
+        "type": "checkbox",
+        "id": "enable_wishlist",
+        "label": "Enable Wishlist Feature Across Store",
+        "default": true
+      },
+      {
+        "type": "url",
+        "id": "wishlist_page_url",
+        "label": "Wishlist Page URL",
+        "info": "Path to your wishlist page (e.g. /pages/wishlist)"
+      },
+      {
+        "type": "text",
+        "id": "wishlist_empty_title",
+        "label": "Empty State Title",
+        "default": "Your wishlist is empty"
+      },
+      {
+        "type": "text",
+        "id": "wishlist_empty_text",
+        "label": "Empty State Subtitle",
+        "default": "Looks like you haven't added anything to your wishlist yet."
+      }
+    ]
+  },
+  {
     "name": "Advanced",
     "settings": [
       {

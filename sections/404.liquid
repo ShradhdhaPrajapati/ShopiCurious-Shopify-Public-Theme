@@ -1,23 +1,37 @@
 {% comment %}
-  This section is used in the 404 template to render page shown when customers
-  enter an invalid store URL.
-
-  https://shopify.dev/docs/storefronts/themes/architecture/templates/404
+  This section renders the 404 template, with automatic instant client-side fallback for Wishlist page route.
 {% endcomment %}
 
-<h1>{{ '404.title' | t }}</h1>
+<div id="Standard404View" class="szc-404-container" style="text-align: center; padding: 80px 20px; min-height: 50vh;">
+  <h1 style="font-size: 48px; margin-bottom: 16px;">{{ '404.title' | t | default: '404' }}</h1>
+  <p style="font-size: 16px; color: #666; margin-bottom: 24px;">{{ '404.not_found' | t | default: 'Page not found.' }}</p>
+  <a href="{{ routes.all_products_collection_url }}" class="szc-btn-primary" style="display: inline-block; padding: 12px 24px; background: #111; color: #fff; text-decoration: none; border-radius: 4px;">
+    {{ '404.back_to_shopping' | t | default: 'Back to shopping' }}
+  </a>
+</div>
 
-<p>
-  {{ '404.not_found' | t }}
-</p>
+<div id="WishlistFallbackView" style="display: none;">
+  {% render 'main-wishlist-content' %}
+</div>
 
-<a href="{{ routes.all_products_collection_url }}">
-  {{ '404.back_to_shopping' | t }}
-</a>
+<script>
+  (function() {
+    if (window.location.pathname.toLowerCase().includes('wishlist') || window.location.search.toLowerCase().includes('wishlist')) {
+      const standard404 = document.getElementById('Standard404View');
+      const wishlistFallback = document.getElementById('WishlistFallbackView');
+      if (standard404) standard404.style.display = 'none';
+      if (wishlistFallback) wishlistFallback.style.display = 'block';
+
+      // Update browser tab title from 404 to Wishlist
+      const shopName = {{ shop.name | json }};
+      document.title = "My Wishlist" + (shopName ? " – " + shopName : "");
+    }
+  })();
+</script>
 
 {% schema %}
 {
-  "name": "t:general.404",
+  "name": "404 Page",
   "settings": []
 }
 {% endschema %}

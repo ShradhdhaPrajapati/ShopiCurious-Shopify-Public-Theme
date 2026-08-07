@@ -41,26 +41,32 @@
           throw new Error(responseData.description || 'Could not add item to bag');
         }
 
-        const cartType = (window.ShopziCurious && window.ShopziCurious.settings && window.ShopziCurious.settings.cartType) ? window.ShopziCurious.settings.cartType : 'drawer';
-
-        if (cartType === 'page') {
-          window.location.href = window.ShopziCurious.routes.cart_url || '/cart';
-          return;
-        }
-
         // Fetch updated cart details
         const cartRes = await fetch('/cart.js');
         const cartData = await cartRes.json();
 
-        // Publish Global Cart Update Event
+        if (window.ShopziCurious && window.ShopziCurious.animateFlyToCart) {
+          window.ShopziCurious.animateFlyToCart(this);
+        } else if (window.ShopziCurious && window.ShopziCurious.bounceCartBadge) {
+          window.ShopziCurious.bounceCartBadge();
+        }
+
+        // Publish Global Cart Update Event (DO NOT open drawer or redirect)
         ShopziCurious.pubsub.publish(ShopziCurious.events.CART_UPDATED, {
           item: responseData,
           item_count: cartData.item_count,
-          openDrawer: true,
+          openDrawer: false,
         });
+
+        // Show Toast Notification
+        if (window.ShopziCurious && window.ShopziCurious.showToast) {
+          window.ShopziCurious.showToast('Added to cart');
+        }
       } catch (error) {
         console.error('[ShopziCurious Product Form Error]', error);
-        alert(error.message || 'Error adding item to bag');
+        if (window.ShopziCurious && window.ShopziCurious.showToast) {
+          window.ShopziCurious.showToast(error.message || 'Error adding item to cart', 'error');
+        }
       } finally {
         this.submitButton.classList.remove('szc-btn--loading');
         this.submitButton.removeAttribute('aria-disabled');

@@ -32,7 +32,6 @@
         "columns_mobile": "2",
         "show_secondary_image": true,
         "show_vendor": false,
-        "show_rating": true,
         "show_price": true,
         "show_quick_add": true
       }

@@ -222,7 +222,6 @@
         "products_to_show": 5,
         "columns_desktop": 5,
         "columns_mobile": "2",
-        "show_rating": true,
         "show_price": true,
         "show_view_all": true
       }

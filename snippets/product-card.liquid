@@ -4,11 +4,9 @@
   @param {product} [card_product] - Product Liquid object to display
   @param {string} [title_override] - Title override for demo placeholder
   @param {string} [price_override] - Price override for demo placeholder
-  @param {number} [rating_count] - Review count for demo placeholder
   @param {string} [media_aspect_ratio] - Aspect ratio override ('3/4', '4/5', '1/1', Default: '3/4')
   @param {boolean} [show_secondary_image] - Displays secondary hover image if available
   @param {boolean} [show_vendor] - Displays vendor/brand name if true
-  @param {boolean} [show_rating] - Displays product rating stars if true
   @param {boolean} [show_price] - Displays product price if true
   @param {boolean} [show_quick_add] - Displays quick add to cart button if true
   @param {boolean} [show_quick_view] - Displays quick view modal trigger if true
@@ -16,7 +14,7 @@
   @param {string} [class] - Additional CSS class names
 
   @example
-  {% render 'product-card', card_product: product, show_secondary_image: true, show_rating: true %}
+  {% render 'product-card', card_product: product, show_secondary_image: true %}
 {% enddoc %}
 
 {%- liquid
@@ -33,15 +31,6 @@
   endif
 
   assign show_brand = show_vendor | default: false
-
-  assign display_rating = true
-  if show_rating == false
-    assign display_rating = false
-  elsif show_rating == true
-    assign display_rating = true
-  elsif settings.product_card_show_rating != blank
-    assign display_rating = settings.product_card_show_rating
-  endif
 
   assign display_price = true
   if show_price == false
@@ -83,11 +72,10 @@
 
   assign demo_title = title_override | default: 'Oversized Knit Sweater'
   assign demo_price = price_override | default: '$59.99'
-  assign demo_reviews = rating_count | default: 24
 -%}
 
 {%- if product != blank -%}
-  <product-card class="szc-product-card {{ custom_class }}" data-product-handle="{{ product.handle }}">
+  <product-card class="szc-product-card {{ custom_class }}">
     <div class="szc-product-card__media-container" style="aspect-ratio: {{ aspect_ratio }};">
       <a href="{{ product.url }}" class="szc-product-card__media-link" aria-label="{{ product.title | escape }}">
         {%- if featured_img != blank -%}
@@ -127,18 +115,33 @@
 
       <!-- Wishlist Action Top-Right -->
       <div class="szc-product-card__actions">
-        <button
-          type="button"
-          class="szc-product-card__wishlist-btn"
-          aria-label="{{ 'products.product.wishlist_add' | t | default: 'Add to Wishlist' }}"
-        >
-          {% render 'icon', icon: 'heart', class: 'szc-product-card__wishlist-icon' %}
-        </button>
+        {%- if settings.enable_wishlist != false -%}
+          <button
+            type="button"
+            class="szc-product-card__wishlist-btn"
+            data-wishlist-toggle
+            data-product-handle="{{ product.handle }}"
+            data-product-id="{{ product.selected_or_first_available_variant.id | default: product.id }}"
+            data-product-title="{{ product.title | escape }}"
+            data-product-price="{{ product.price | money }}"
+            data-product-compare-price="{% if product.compare_at_price > product.price %}{{ product.compare_at_price | money }}{% endif %}"
+            data-product-image="{% if featured_img != blank %}{{ featured_img | image_url: width: 600 }}{% elsif product.featured_media != blank %}{{ product.featured_media | image_url: width: 600 }}{% elsif product.featured_image != blank %}{{ product.featured_image | image_url: width: 600 }}{% endif %}"
+            data-product-url="{{ product.url }}"
+            data-product-vendor="{{ product.vendor | escape }}"
+            data-product-available="{{ product.available }}"
+            aria-label="{{ 'products.product.wishlist_add' | t | default: 'Add to Wishlist' }}"
+          >
+            <span class="szc-wishlist-icon-wrap">
+              {% render 'icon', icon: 'heart', class: 'szc-product-card__wishlist-icon' %}
+            </span>
+          </button>
+        {%- endif -%}
         {%- if show_view -%}
           <button
             type="button"
             class="szc-product-card__wishlist-btn szc-quick-view-btn"
             data-product-handle="{{ product.handle }}"
+            data-quick-view-trigger
             aria-label="{{ 'products.product.quick_view' | t | default: 'Quick View' }}"
           >
             {% render 'icon', icon: 'eye', class: 'szc-product-card__wishlist-icon' %}
@@ -185,28 +188,6 @@
       {%- if display_price -%}
         <div class="szc-product-card__price-wrapper">
           {% render 'price', product: product, show_badges: false %}
-        </div>
-      {%- endif -%}
-
-      {%- if display_rating and product.metafields.reviews.rating.value != blank -%}
-        {%- liquid
-          assign rating_val = product.metafields.reviews.rating.value.rating | default: product.metafields.reviews.rating.value
-          assign rating_count_val = product.metafields.reviews.rating_count.value | default: product.metafields.reviews.rating_count
-          assign rating_floor = rating_val | floor
-        -%}
-        <div class="szc-product-card__rating">
-          <div class="szc-product-card__stars" aria-label="{{ rating_val }} out of 5 stars">
-            {%- for i in (1..5) -%}
-              {%- if i <= rating_floor -%}
-                {% render 'icon', icon: 'star', class: 'szc-star-icon szc-star-icon--filled' %}
-              {%- else -%}
-                {% render 'icon', icon: 'star-empty', class: 'szc-star-icon szc-star-icon--empty' %}
-              {%- endif -%}
-            {%- endfor -%}
-          </div>
-          {%- if rating_count_val != blank -%}
-            <span class="szc-product-card__review-count">({{ rating_count_val }})</span>
-          {%- endif -%}
         </div>
       {%- endif -%}
 
@@ -258,16 +239,6 @@
       {%- if display_price -%}
         <div class="szc-product-card__price-wrapper">
           <span class="szc-price__item">{{ demo_price }}</span>
-        </div>
-      {%- endif -%}
-      {%- if display_rating -%}
-        <div class="szc-product-card__rating">
-          <div class="szc-product-card__stars">
-            {%- for i in (1..5) -%}
-              {% render 'icon', icon: 'star', class: 'szc-star-icon szc-star-icon--filled' %}
-            {%- endfor -%}
-          </div>
-          <span class="szc-product-card__review-count">({{ demo_reviews }})</span>
         </div>
       {%- endif -%}
       <!-- List View Add to Cart Button for Demo -->

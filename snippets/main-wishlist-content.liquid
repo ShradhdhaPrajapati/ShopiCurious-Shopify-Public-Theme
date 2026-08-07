@@ -1,0 +1,1199 @@
+{% doc %}
+  Renders the dedicated Wishlist Page content matching Shopify Theme Store standards.
+{% enddoc %}
+
+<div class="szc-wishlist-page" id="MainWishlistPage">
+  <div class="szc-wishlist-container">
+    
+    <!-- 1. Header Title & Main Action Bar -->
+    <div class="szc-wishlist-header">
+      <div class="szc-wishlist-header__left">
+        <h1 class="szc-wishlist-title">
+          My Wishlist <span class="szc-wishlist-title__count" data-wishlist-count="0">(0)</span>
+        </h1>
+        <p class="szc-wishlist-subtitle">Items you love. Don't let them go.</p>
+      </div>
+      <div class="szc-wishlist-header__right" id="WishlistTopActions">
+        <button type="button" class="szc-btn-share-wishlist" id="ShareWishlistBtn">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M4 12v8a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-8"/>
+            <polyline points="16 6 12 2 8 6"/>
+            <line x1="12" y1="2" x2="12" y2="15"/>
+          </svg>
+          <span>Share Wishlist</span>
+        </button>
+        <button type="button" class="szc-btn-move-all" id="MoveAllToBagBtn">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+            <path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"/>
+            <line x1="3" y1="6" x2="21" y2="6"/>
+            <path d="M16 10a4 4 0 0 1-8 0"/>
+          </svg>
+          <span>MOVE ALL TO BAG</span>
+        </button>
+      </div>
+    </div>
+
+    <!-- 2. Controls Toolbar (Select All, Selected Actions, Sort & Layout Switcher) -->
+    <div class="szc-wishlist-toolbar" id="WishlistToolbar" style="display: none;">
+      <div class="szc-wishlist-toolbar__left">
+        <label class="szc-checkbox-label">
+          <input type="checkbox" id="SelectAllWishlistCheckbox" class="szc-checkbox">
+          <span>Select All <span id="SelectAllCount">(0)</span></span>
+        </label>
+        
+        <div class="szc-wishlist-selected-actions" id="SelectedActionsGroup" style="display: none;">
+          <button type="button" class="szc-btn-sm szc-btn-outline" id="MoveSelectedToBagBtn">
+            Move Selected to Bag (<span id="SelectedCountText">0</span>)
+          </button>
+          <button type="button" class="szc-btn-sm szc-btn-text-danger" id="RemoveSelectedBtn">
+            Remove Selected
+          </button>
+        </div>
+
+        <button type="button" class="szc-wishlist-mobile-delete-btn" id="MobileRemoveSelectedBtn" aria-label="Delete selected items">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+            <polyline points="3 6 5 6 21 6"></polyline>
+            <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path>
+            <line x1="10" y1="11" x2="10" y2="17"></line>
+            <line x1="14" y1="11" x2="14" y2="17"></line>
+          </svg>
+        </button>
+      </div>
+
+      <div class="szc-wishlist-toolbar__right">
+        <div class="szc-wishlist-sort">
+          <label for="WishlistSortSelect" class="szc-sort-label">Sort by:</label>
+          <select id="WishlistSortSelect" class="szc-select-sm">
+            <option value="recent">Recently Added</option>
+            <option value="price-low">Price: Low to High</option>
+            <option value="price-high">Price: High to Low</option>
+            <option value="title-az">Name: A-Z</option>
+          </select>
+        </div>
+
+        <div class="szc-wishlist-view-toggle">
+          <button type="button" class="szc-view-btn is-active" data-view-mode="grid" aria-label="Grid View" title="Grid View">
+            <svg class="szc-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+              <rect x="3" y="3" width="7" height="7" rx="1.5"/>
+              <rect x="14" y="3" width="7" height="7" rx="1.5"/>
+              <rect x="14" y="14" width="7" height="7" rx="1.5"/>
+              <rect x="3" y="14" width="7" height="7" rx="1.5"/>
+            </svg>
+          </button>
+          <button type="button" class="szc-view-btn" data-view-mode="list" aria-label="List View" title="List View">
+            <svg class="szc-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+              <line x1="3" y1="6" x2="21" y2="6"/>
+              <line x1="3" y1="12" x2="21" y2="12"/>
+              <line x1="3" y1="18" x2="21" y2="18"/>
+            </svg>
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- 3. Dynamic Wishlist Grid / List Container -->
+    <div class="szc-wishlist-grid" id="WishlistGridContainer"></div>
+
+    <!-- 4. Empty Wishlist State -->
+    <div class="szc-wishlist-empty" id="WishlistEmptyState" style="display: none;">
+      <div class="szc-wishlist-empty__icon-wrap">
+        <svg class="szc-wishlist-empty__icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/>
+        </svg>
+      </div>
+      <h2 class="szc-wishlist-empty__title">{{ settings.wishlist_empty_title | default: "Your wishlist is empty" }}</h2>
+      <p class="szc-wishlist-empty__desc">{{ settings.wishlist_empty_text | default: "Looks like you haven't added anything to your wishlist yet." }}</p>
+      <div class="szc-wishlist-empty__actions">
+        <a href="{{ routes.all_products_collection_url }}" class="szc-btn-empty-primary">
+          START SHOPPING
+        </a>
+        <a href="{{ routes.all_products_collection_url }}" class="szc-link-explore-arrivals">
+          <span>EXPLORE NEW ARRIVALS</span>
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <line x1="5" y1="12" x2="19" y2="12"></line>
+            <polyline points="12 5 19 12 12 19"></polyline>
+          </svg>
+        </a>
+      </div>
+    </div>
+
+    <!-- 5. Fixed Mobile Bottom CTA Bar -->
+    <div class="szc-wishlist-mobile-bottom-bar" id="MobileWishlistBottomBar" style="display: none;">
+      <button type="button" class="szc-btn-move-all-mobile" id="MobileMoveAllToBagBtn">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"/>
+          <line x1="3" y1="6" x2="21" y2="6"/>
+          <path d="M16 10a4 4 0 0 1-8 0"/>
+        </svg>
+        <span id="MobileMoveAllText">MOVE ALL TO BAG (<span data-wishlist-count>0</span>)</span>
+      </button>
+    </div>
+
+  </div>
+</div>
+
+<style>
+  .szc-wishlist-page {
+    padding: 48px 0 80px;
+    background-color: #ffffff;
+    min-height: 60vh;
+  }
+
+  .szc-wishlist-container {
+    max-width: 1400px;
+    margin: 0 auto;
+    padding: 0 24px;
+  }
+
+  .szc-wishlist-header {
+    display: flex;
+    align-items: flex-end;
+    justify-content: space-between;
+    padding-bottom: 20px;
+    border-bottom: 1px solid #eaeaea;
+    margin-bottom: 24px;
+    gap: 16px;
+    flex-wrap: wrap;
+  }
+
+  .szc-wishlist-title {
+    font-size: 32px;
+    font-weight: 500;
+    margin: 0 0 6px 0;
+    color: #111111;
+    letter-spacing: -0.01em;
+  }
+
+  .szc-wishlist-title__count {
+    font-weight: 400;
+    color: #555555;
+    font-size: 26px;
+  }
+
+  .szc-wishlist-subtitle {
+    margin: 0;
+    font-size: 14px;
+    color: #666666;
+  }
+
+  .szc-wishlist-header__right {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+  }
+
+  .szc-btn-share-wishlist {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    background: transparent;
+    border: none;
+    padding: 8px 12px;
+    font-size: 13px;
+    font-weight: 600;
+    color: #111111;
+    cursor: pointer;
+    transition: opacity 150ms ease;
+    border-radius: 4px;
+  }
+
+  .szc-btn-share-wishlist:hover {
+    opacity: 0.7;
+    background-color: #f8f9fa;
+  }
+
+  .szc-btn-move-all {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 10px 20px;
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+    background-color: #111111;
+    border: none;
+    color: #ffffff;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: background-color 150ms ease;
+  }
+
+  .szc-btn-move-all:hover {
+    background-color: #333333;
+  }
+
+  .szc-wishlist-toolbar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 32px;
+    gap: 16px;
+    flex-wrap: wrap;
+    padding: 12px 16px;
+    background-color: #f8f9fa;
+    border-radius: 6px;
+  }
+
+  .szc-wishlist-toolbar__left,
+  .szc-wishlist-toolbar__right {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+  }
+
+  .szc-checkbox-label {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 14px;
+    font-weight: 600;
+    color: #111111;
+    cursor: pointer;
+  }
+
+  .szc-checkbox {
+    width: 18px;
+    height: 18px;
+    accent-color: #111111;
+    cursor: pointer;
+  }
+
+  .szc-wishlist-selected-actions {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .szc-btn-sm {
+    padding: 6px 12px;
+    font-size: 12px;
+    font-weight: 600;
+    border-radius: 4px;
+    cursor: pointer;
+  }
+
+  .szc-btn-outline {
+    background: #ffffff;
+    border: 1px solid #e5e5e5;
+    color: #111111;
+  }
+
+  .szc-btn-text-danger {
+    background: transparent;
+    border: none;
+    color: #e63946;
+    text-decoration: underline;
+  }
+
+  .szc-sort-label {
+    font-size: 13px;
+    color: #757575;
+    margin-right: 4px;
+  }
+
+  .szc-select-sm {
+    padding: 6px 12px;
+    font-size: 13px;
+    border: 1px solid #e5e5e5;
+    border-radius: 4px;
+    background-color: #ffffff;
+    cursor: pointer;
+  }
+
+  .szc-wishlist-view-toggle {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+  }
+
+  .szc-view-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 34px;
+    height: 34px;
+    border: 1px solid #e5e5e5;
+    background-color: #ffffff;
+    border-radius: 4px;
+    cursor: pointer;
+    color: #757575;
+  }
+
+  .szc-view-btn.is-active {
+    background-color: #111111;
+    color: #ffffff;
+    border-color: #111111;
+  }
+
+  .szc-wishlist-grid {
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    gap: 24px;
+  }
+
+  @media (min-width: 769px) {
+    .szc-wishlist-grid.is-list-view {
+      grid-template-columns: 1fr !important;
+      gap: 16px !important;
+    }
+
+    .szc-wishlist-grid.is-list-view .szc-wishlist-card {
+      flex-direction: row !important;
+      align-items: center !important;
+      padding: 16px !important;
+      gap: 20px !important;
+      border-radius: 8px !important;
+    }
+
+    .szc-wishlist-grid.is-list-view .szc-wishlist-card__select {
+      position: static !important;
+      margin-right: 0 !important;
+    }
+
+    .szc-wishlist-grid.is-list-view .szc-wishlist-card__media-wrap {
+      width: 120px !important;
+      min-width: 120px !important;
+      height: 140px !important;
+      aspect-ratio: auto !important;
+      border-radius: 6px !important;
+      overflow: hidden !important;
+      flex-shrink: 0 !important;
+    }
+
+    .szc-wishlist-grid.is-list-view .szc-wishlist-card__content {
+      padding: 0 !important;
+      justify-content: center !important;
+    }
+
+    .szc-wishlist-grid.is-list-view .szc-wishlist-card__title {
+      font-size: 16px !important;
+      margin-bottom: 6px !important;
+      -webkit-line-clamp: 2 !important;
+    }
+
+    .szc-wishlist-grid.is-list-view .szc-wishlist-card__price {
+      font-size: 16px !important;
+      margin-bottom: 6px !important;
+    }
+
+    .szc-wishlist-grid.is-list-view .szc-wishlist-card__variant-meta {
+      margin-bottom: 4px !important;
+    }
+
+    .szc-wishlist-grid.is-list-view .szc-wishlist-card__stock {
+      margin-bottom: 0 !important;
+    }
+
+    .szc-wishlist-grid.is-list-view .szc-wishlist-card__actions {
+      margin-top: 0 !important;
+      margin-left: auto !important;
+      padding: 0 !important;
+      flex-direction: row !important;
+      align-items: center !important;
+      gap: 12px !important;
+      flex-shrink: 0 !important;
+    }
+
+    .szc-wishlist-grid.is-list-view .szc-wishlist-card__add-btn {
+      width: auto !important;
+      min-width: 160px !important;
+      padding: 12px 24px !important;
+    }
+
+    .szc-wishlist-grid.is-list-view .szc-wishlist-card__remove {
+      position: static !important;
+      width: 38px !important;
+      height: 38px !important;
+      border: 1px solid #e5e5e5 !important;
+      background-color: #ffffff !important;
+    }
+  }
+
+  .szc-wishlist-card {
+    position: relative;
+    background-color: #ffffff;
+    border: 1px solid #e5e5e5;
+    border-radius: 8px;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    transition: transform 150ms ease, box-shadow 150ms ease;
+  }
+
+  .szc-wishlist-card:hover {
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.08);
+  }
+
+  .szc-wishlist-card__select {
+    position: absolute;
+    top: 12px;
+    left: 12px;
+    z-index: 5;
+  }
+
+  .szc-wishlist-card__remove {
+    position: absolute;
+    top: 12px;
+    right: 12px;
+    z-index: 5;
+    width: 28px;
+    height: 28px;
+    border-radius: 50%;
+    background-color: rgba(255, 255, 255, 0.9);
+    border: 1px solid #e5e5e5;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    color: #111111;
+    transition: all 150ms ease;
+  }
+
+  .szc-wishlist-card__remove:hover {
+    background-color: #fff;
+    color: #090909;
+    border-color: #777777ab;
+  }
+
+  .szc-wishlist-card__media-wrap {
+    position: relative;
+    width: 100%;
+    aspect-ratio: 3/4;
+    overflow: hidden;
+    background-color: #f8f9fa;
+  }
+
+  .szc-wishlist-card__image {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 250ms ease;
+  }
+
+  .szc-wishlist-card:hover .szc-wishlist-card__image {
+    transform: scale(1.04);
+  }
+
+  .szc-wishlist-card__content {
+    padding: 16px 16px 0;
+    display: flex;
+    flex-direction: column;
+    flex-grow: 1;
+  }
+
+  .szc-wishlist-card__title {
+    font-size: 15px;
+    font-weight: 600;
+    margin: 0 0 6px 0;
+    color: #111111;
+    text-decoration: none;
+    display: -webkit-box;
+    -webkit-line-clamp: 1;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+
+  .szc-wishlist-card__price {
+    font-size: 15px;
+    font-weight: 700;
+    color: #111111;
+    margin-bottom: 6px;
+  }
+
+  .szc-wishlist-card__variant-meta {
+    font-size: 12px;
+    color: #757575;
+    margin-bottom: 8px;
+  }
+
+  .szc-wishlist-card__stock {
+    font-size: 11px;
+    font-weight: 700;
+    color: #2a9d8f;
+    margin-bottom: 16px;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+  }
+
+  .szc-wishlist-card__actions {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-top: auto;
+    padding: 0 8px 8px 8px;
+    flex-direction: row-reverse;
+  }
+
+  .szc-wishlist-card__add-btn {
+    flex-grow: 1;
+    padding: 10px;
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+    background-color: #111111;
+    color: #ffffff;
+    border: 1px solid #111111;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: background-color 150ms ease;
+  }
+
+  .szc-wishlist-card__add-btn:hover {
+    background-color: #333333;
+  }
+
+  .szc-wishlist-card__heart-btn {
+    width: 38px;
+    height: 38px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: 1px solid #e5e5e5;
+    background-color: #ffffff;
+    border-radius: 4px;
+    cursor: pointer;
+  }
+
+  .szc-wishlist-empty {
+    text-align: center;
+    padding: 72px 16px 90px;
+    max-width: 440px;
+    margin: 0 auto;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .szc-wishlist-empty__icon-wrap {
+    margin: 0 auto 20px;
+    color: #111111;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .szc-wishlist-empty__icon {
+    width: 48px;
+    height: 48px;
+  }
+
+  .szc-wishlist-empty__title {
+    font-size: 30px;
+    font-weight: 400;
+    margin: 0 0 12px;
+    color: #111111;
+    letter-spacing: -0.01em;
+  }
+
+  .szc-wishlist-empty__desc {
+    color: #555555;
+    font-size: 15px;
+    line-height: 1.5;
+    margin: 0 auto 28px;
+    max-width: 320px;
+  }
+
+  .szc-wishlist-empty__actions {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 16px;
+    width: 100%;
+  }
+
+  .szc-btn-empty-primary {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    background-color: #111111;
+    color: #ffffff;
+    padding: 14px 40px;
+    font-size: 13px;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    text-decoration: none;
+    border-radius: 6px;
+    transition: background-color 150ms ease;
+    border: none;
+    cursor: pointer;
+  }
+
+  .szc-btn-empty-primary:hover {
+    background-color: #333333;
+    color: #ffffff;
+  }
+
+  .szc-link-explore-arrivals {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: #111111;
+    text-decoration: none;
+    transition: gap 150ms ease, opacity 150ms ease;
+  }
+
+  .szc-link-explore-arrivals:hover {
+    gap: 10px;
+    opacity: 0.8;
+  }
+
+  .szc-wishlist-mobile-delete-btn {
+    display: none;
+  }
+
+  .szc-add-btn-icon-mobile {
+    display: none;
+  }
+
+  @media (max-width: 1200px) {
+    .szc-wishlist-grid { grid-template-columns: repeat(4, 1fr); }
+  }
+  @media (max-width: 990px) {
+    .szc-wishlist-grid { grid-template-columns: repeat(3, 1fr); }
+  }
+  @media (max-width: 768px) {
+    .szc-wishlist-page {
+      padding: 16px 0 90px !important;
+    }
+    .szc-wishlist-container {
+      padding: 0 16px !important;
+    }
+    .szc-wishlist-header {
+      display: none !important;
+    }
+    .szc-wishlist-toolbar {
+      display: flex !important;
+      align-items: center !important;
+      justify-content: space-between !important;
+      padding: 12px 0 !important;
+      margin-bottom: 8px !important;
+      background-color: transparent !important;
+      border-bottom: 1px solid #f0f0f0 !important;
+      border-radius: 0 !important;
+    }
+    .szc-wishlist-toolbar__left {
+      width: 100% !important;
+      justify-content: space-between !important;
+    }
+    .szc-wishlist-toolbar__right {
+      display: none !important;
+    }
+    .szc-wishlist-selected-actions {
+      display: none !important;
+    }
+    .szc-wishlist-mobile-delete-btn {
+      display: inline-flex !important;
+      align-items: center;
+      justify-content: center;
+      width: 36px;
+      height: 36px;
+      border: none;
+      background: transparent;
+      color: #111111;
+      cursor: pointer;
+    }
+
+    /* Mobile Wishlist Row Card matching screenshot */
+    .szc-wishlist-grid {
+      display: flex !important;
+      flex-direction: column !important;
+      gap: 0 !important;
+    }
+
+    .szc-wishlist-card {
+      position: relative;
+      display: flex !important;
+      flex-direction: row !important;
+      align-items: center !important;
+      padding: 14px 0 !important;
+      border: none !important;
+      border-bottom: 1px solid #f0f0f0 !important;
+      border-radius: 0 !important;
+      box-shadow: none !important;
+      gap: 12px !important;
+      background-color: #ffffff !important;
+      min-width: 0 !important;
+      width: 100% !important;
+      box-sizing: border-box !important;
+    }
+
+    .szc-wishlist-card:hover {
+      box-shadow: none !important;
+    }
+
+    .szc-wishlist-card__select {
+      position: static !important;
+      display: flex !important;
+      align-items: center !important;
+      justify-content: center !important;
+      margin: 0 !important;
+      flex-shrink: 0 !important;
+    }
+
+    .szc-wishlist-card__remove {
+      display: none !important;
+    }
+
+    .szc-wishlist-card__media-wrap {
+      width: 72px !important;
+      height: 72px !important;
+      aspect-ratio: 1/1 !important;
+      border-radius: 8px !important;
+      flex-shrink: 0 !important;
+      overflow: hidden !important;
+    }
+
+    .szc-wishlist-card__image {
+      width: 100% !important;
+      height: 100% !important;
+      object-fit: cover !important;
+    }
+
+    .szc-wishlist-card__content {
+      padding: 0 !important;
+      flex: 1 1 auto !important;
+      min-width: 0 !important;
+      display: flex !important;
+      flex-direction: column !important;
+      justify-content: center !important;
+      gap: 2px !important;
+    }
+
+    .szc-wishlist-card__title {
+      font-size: 14px !important;
+      font-weight: 600 !important;
+      margin: 0 !important;
+      color: #111111 !important;
+      line-height: 1.3 !important;
+      white-space: nowrap !important;
+      overflow: hidden !important;
+      text-overflow: ellipsis !important;
+      display: block !important;
+      width: 100% !important;
+    }
+
+    .szc-wishlist-card__price {
+      font-size: 14px !important;
+      font-weight: 700 !important;
+      margin: 0 !important;
+      color: #111111 !important;
+      line-height: 1.2 !important;
+    }
+
+    .szc-wishlist-card__variant-meta {
+      font-size: 12px !important;
+      color: #757575 !important;
+      margin: 0 !important;
+      line-height: 1.2 !important;
+    }
+
+    .szc-wishlist-card__stock {
+      font-size: 11px !important;
+      font-weight: 700 !important;
+      color: #2e7d32 !important;
+      margin: 0 !important;
+      text-transform: none !important;
+      line-height: 1.2 !important;
+    }
+
+    .szc-wishlist-card__actions {
+      position: static !important;
+      margin-top: 0 !important;
+      margin-left: auto !important;
+      display: flex !important;
+      align-items: center !important;
+      gap: 8px !important;
+      flex-shrink: 0 !important;
+      align-self: center !important;
+    }
+
+    .szc-wishlist-card__heart-btn {
+      width: 38px !important;
+      height: 38px !important;
+      border-radius: 6px !important;
+      border: 1px solid #e0e0e0 !important;
+      background-color: #ffffff !important;
+      padding: 0 !important;
+      display: flex !important;
+      align-items: center !important;
+      justify-content: center !important;
+      cursor: pointer !important;
+    }
+
+    .szc-wishlist-card__add-btn {
+      width: 38px !important;
+      height: 38px !important;
+      border-radius: 6px !important;
+      background-color: #111111 !important;
+      color: #ffffff !important;
+      padding: 0 !important;
+      display: flex !important;
+      align-items: center !important;
+      justify-content: center !important;
+      border: none !important;
+      flex-grow: 0 !important;
+      cursor: pointer !important;
+    }
+
+    .szc-add-btn-text-desktop {
+      display: none !important;
+    }
+
+    .szc-add-btn-icon-mobile {
+      display: block !important;
+    }
+
+    /* Fixed Bottom Mobile CTA Bar */
+    .szc-wishlist-mobile-bottom-bar {
+      display: block !important;
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      z-index: 999;
+      background-color: #ffffff;
+      padding: 12px 16px;
+      box-shadow: 0 -4px 20px rgba(0, 0, 0, 0.08);
+      border-top: 1px solid #e5e5e5;
+    }
+
+    .szc-btn-move-all-mobile {
+      width: 100%;
+      height: 48px;
+      background-color: #111111;
+      color: #ffffff;
+      border: none;
+      border-radius: 6px;
+      font-size: 13px;
+      font-weight: 700;
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      cursor: pointer;
+    }
+  }
+</style>
+
+<script>
+  (function initWishlistPageScript() {
+    function setupWishlistPage() {
+      const gridContainer = document.getElementById('WishlistGridContainer');
+      const emptyState = document.getElementById('WishlistEmptyState');
+      const toolbar = document.getElementById('WishlistToolbar');
+      const topActions = document.getElementById('WishlistTopActions');
+      const countHeadings = document.querySelectorAll('[data-wishlist-count]');
+      
+      const selectAllCheckbox = document.getElementById('SelectAllWishlistCheckbox');
+      const selectAllCount = document.getElementById('SelectAllCount');
+      const selectedGroup = document.getElementById('SelectedActionsGroup');
+      const selectedCountText = document.getElementById('SelectedCountText');
+      const moveSelectedBtn = document.getElementById('MoveSelectedToBagBtn');
+      const removeSelectedBtn = document.getElementById('RemoveSelectedBtn');
+      const mobileRemoveSelectedBtn = document.getElementById('MobileRemoveSelectedBtn');
+      const moveAllBtn = document.getElementById('MoveAllToBagBtn');
+      const mobileMoveAllBtn = document.getElementById('MobileMoveAllToBagBtn');
+      const mobileMoveAllText = document.getElementById('MobileMoveAllText');
+      const shareBtn = document.getElementById('ShareWishlistBtn');
+      const sortSelect = document.getElementById('WishlistSortSelect');
+      const viewBtns = document.querySelectorAll('[data-view-mode]');
+
+      let currentView = 'grid';
+      let selectedHandles = new Set();
+
+      function renderWishlist() {
+        if (!window.ShopziCurious || !window.ShopziCurious.wishlist) {
+          setTimeout(renderWishlist, 50);
+          return;
+        }
+
+        let items = window.ShopziCurious.wishlist.get();
+        const count = items.length;
+
+        countHeadings.forEach(el => {
+          if (el.classList.contains('szc-wishlist-title__count')) {
+            el.textContent = `(${count})`;
+          } else {
+            el.textContent = count;
+          }
+        });
+        if (selectAllCount) selectAllCount.textContent = `(${count})`;
+
+        const mobileBottomBar = document.getElementById('MobileWishlistBottomBar');
+
+        if (count === 0) {
+          if (gridContainer) gridContainer.style.display = 'none';
+          if (toolbar) toolbar.style.display = 'none';
+          if (topActions) topActions.style.display = 'none';
+          if (mobileBottomBar) mobileBottomBar.style.display = 'none';
+          if (emptyState) emptyState.style.display = 'block';
+          return;
+        }
+
+        if (emptyState) emptyState.style.display = 'none';
+        if (gridContainer) gridContainer.style.display = 'grid';
+        if (toolbar) toolbar.style.display = 'flex';
+        if (topActions) topActions.style.display = 'flex';
+
+        const sortVal = sortSelect ? sortSelect.value : 'recent';
+        if (sortVal === 'price-low') {
+          items.sort((a, b) => (parseFloat(a.price.replace(/[^0-9.]/g, '')) || 0) - (parseFloat(b.price.replace(/[^0-9.]/g, '')) || 0));
+        } else if (sortVal === 'price-high') {
+          items.sort((a, b) => (parseFloat(b.price.replace(/[^0-9.]/g, '')) || 0) - (parseFloat(a.price.replace(/[^0-9.]/g, '')) || 0));
+        } else if (sortVal === 'title-az') {
+          items.sort((a, b) => a.title.localeCompare(b.title));
+        } else {
+          items.sort((a, b) => (b.addedAt || 0) - (a.addedAt || 0));
+        }
+
+        let html = '';
+        items.forEach(item => {
+          const isChecked = selectedHandles.has(item.handle);
+          html += `
+            <div class="szc-wishlist-card" data-handle="${item.handle}" data-id="${item.id}">
+              <div class="szc-wishlist-card__select">
+                <input type="checkbox" class="szc-checkbox szc-item-checkbox" data-handle="${item.handle}" ${isChecked ? 'checked' : ''}>
+              </div>
+              <button type="button" class="szc-wishlist-card__remove" data-wishlist-remove="${item.handle}" aria-label="Remove item">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+              </button>
+              <a href="${item.url}" class="szc-wishlist-card__media-wrap">
+                <img src="${item.image || 'https://cdn.shopify.com/s/files/1/0533/2089/files/placeholder-images-image_large.png'}" alt="${item.title}" class="szc-wishlist-card__image" loading="lazy">
+              </a>
+              <div class="szc-wishlist-card__content">
+                <a href="${item.url}" class="szc-wishlist-card__title" title="${item.title}">${item.title}</a>
+                <div class="szc-wishlist-card__price">${item.price}</div>
+                <div class="szc-wishlist-card__variant-meta">${item.variantTitle || 'Standard'}</div>
+                <div class="szc-wishlist-card__stock">In Stock</div>
+              </div>
+              <div class="szc-wishlist-card__actions">
+                <button type="button" class="szc-wishlist-card__heart-btn" data-wishlist-toggle data-product-handle="${item.handle}" aria-label="Toggle wishlist">
+                  <svg class="szc-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" style="width:18px;height:18px;color:#111111;display:block;"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>
+                </button>
+                <button type="button" class="szc-wishlist-card__add-btn" data-add-to-bag="${item.id}" aria-label="Add to Bag">
+                  <span class="szc-add-btn-text-desktop">ADD TO BAG</span>
+                  <svg class="szc-add-btn-icon-mobile" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"/>
+                    <line x1="3" y1="6" x2="21" y2="6"/>
+                    <path d="M16 10a4 4 0 0 1-8 0"/>
+                  </svg>
+                </button>
+              </div>
+            </div>
+          `;
+        });
+
+        if (gridContainer) gridContainer.innerHTML = html;
+        updateSelectionState();
+      }
+
+      function updateSelectionState() {
+        if (!gridContainer) return;
+        const allCheckboxes = gridContainer.querySelectorAll('.szc-item-checkbox');
+        const selectedCount = selectedHandles.size;
+        const totalCount = allCheckboxes.length;
+        
+        if (selectedCountText) selectedCountText.textContent = selectedCount;
+        if (selectedGroup) selectedGroup.style.display = selectedCount > 0 ? 'flex' : 'none';
+
+        if (selectAllCheckbox) {
+          selectAllCheckbox.checked = totalCount > 0 && selectedCount === totalCount;
+        }
+
+        if (mobileMoveAllText) {
+          if (selectedCount > 0 && selectedCount < totalCount) {
+            mobileMoveAllText.textContent = `MOVE SELECTED TO BAG (${selectedCount})`;
+          } else {
+            mobileMoveAllText.textContent = `MOVE ALL TO BAG (${totalCount})`;
+          }
+        }
+      }
+
+      window.addEventListener('shopzicurious:wishlist:updated', renderWishlist);
+      if (sortSelect) sortSelect.addEventListener('change', renderWishlist);
+
+      viewBtns.forEach(btn => {
+        btn.addEventListener('click', () => {
+          viewBtns.forEach(b => b.classList.remove('is-active'));
+          btn.classList.add('is-active');
+          currentView = btn.getAttribute('data-view-mode');
+          if (currentView === 'list') {
+            gridContainer.classList.add('is-list-view');
+          } else {
+            gridContainer.classList.remove('is-list-view');
+          }
+        });
+      });
+
+      if (selectAllCheckbox) {
+        selectAllCheckbox.addEventListener('change', (e) => {
+          if (!window.ShopziCurious || !window.ShopziCurious.wishlist) return;
+          const items = window.ShopziCurious.wishlist.get();
+          if (e.target.checked) {
+            items.forEach(i => selectedHandles.add(i.handle));
+          } else {
+            selectedHandles.clear();
+          }
+          renderWishlist();
+        });
+      }
+
+      const removeSelectedItems = () => {
+        if (!window.ShopziCurious || !window.ShopziCurious.wishlist) return;
+        if (selectedHandles.size > 0) {
+          selectedHandles.forEach(handle => {
+            window.ShopziCurious.wishlist.remove(handle);
+          });
+          selectedHandles.clear();
+        } else {
+          // If no specific item selected, remove all
+          const items = window.ShopziCurious.wishlist.get();
+          items.forEach(i => window.ShopziCurious.wishlist.remove(i.handle));
+        }
+        renderWishlist();
+        if (window.ShopziCurious && window.ShopziCurious.showToast) {
+          window.ShopziCurious.showToast('Selected items removed');
+        }
+      };
+
+      if (removeSelectedBtn) removeSelectedBtn.addEventListener('click', removeSelectedItems);
+      if (mobileRemoveSelectedBtn) mobileRemoveSelectedBtn.addEventListener('click', removeSelectedItems);
+
+      const moveSelectedToBag = async (e) => {
+        if (!window.ShopziCurious || !window.ShopziCurious.wishlist) return;
+        const allItems = window.ShopziCurious.wishlist.get();
+        let targetItems = allItems;
+
+        if (selectedHandles.size > 0) {
+          targetItems = allItems.filter(i => selectedHandles.has(i.handle));
+        }
+
+        if (targetItems.length === 0) return;
+
+        // Trigger fly animation
+        if (window.ShopziCurious && window.ShopziCurious.animateFlyToCart) {
+          const firstCard = gridContainer ? gridContainer.querySelector('.szc-wishlist-card') : null;
+          window.ShopziCurious.animateFlyToCart(firstCard || e.target);
+        }
+
+        try {
+          const lineItems = targetItems.map(item => ({ id: item.id || item.handle, quantity: 1 }));
+          const res = await fetch('/cart/add.js', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ items: lineItems })
+          });
+
+          if (res.ok) {
+            if (window.ShopziCurious && window.ShopziCurious.updateCartCount) {
+              await window.ShopziCurious.updateCartCount();
+            }
+            if (window.ShopziCurious && window.ShopziCurious.refreshCartDrawer) {
+              await window.ShopziCurious.refreshCartDrawer(true);
+            } else if (window.ShopziCurious && window.ShopziCurious.showToast) {
+              window.ShopziCurious.showToast('Items added to bag!');
+            }
+          }
+        } catch (err) {
+          console.error('Failed to move items to bag:', err);
+        }
+      };
+
+      if (moveSelectedBtn) moveSelectedBtn.addEventListener('click', moveSelectedToBag);
+      if (moveAllBtn) moveAllBtn.addEventListener('click', moveSelectedToBag);
+      if (mobileMoveAllBtn) mobileMoveAllBtn.addEventListener('click', moveSelectedToBag);
+
+      if (gridContainer) {
+        gridContainer.addEventListener('change', (e) => {
+          const cb = e.target.closest('.szc-item-checkbox');
+          if (cb) {
+            const handle = cb.getAttribute('data-handle');
+            if (cb.checked) {
+              selectedHandles.add(handle);
+            } else {
+              selectedHandles.delete(handle);
+            }
+            updateSelectionState();
+          }
+        });
+
+        gridContainer.addEventListener('click', async (e) => {
+          const removeBtn = e.target.closest('[data-wishlist-remove]');
+          if (removeBtn) {
+            const handle = removeBtn.getAttribute('data-wishlist-remove');
+            selectedHandles.delete(handle);
+            if (window.ShopziCurious && window.ShopziCurious.wishlist) {
+              window.ShopziCurious.wishlist.remove(handle);
+            }
+            renderWishlist();
+            return;
+          }
+
+          const addBtn = e.target.closest('[data-add-to-bag]');
+          if (addBtn) {
+            const variantId = addBtn.getAttribute('data-add-to-bag');
+            const card = addBtn.closest('.szc-wishlist-card');
+            addBtn.disabled = true;
+
+            // Trigger fly animation
+            if (window.ShopziCurious && window.ShopziCurious.animateFlyToCart) {
+              window.ShopziCurious.animateFlyToCart(card || addBtn);
+            }
+
+            try {
+              const res = await fetch('/cart/add.js', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ items: [{ id: variantId, quantity: 1 }] })
+              });
+
+              if (res.ok) {
+                if (window.ShopziCurious && window.ShopziCurious.updateCartCount) {
+                  await window.ShopziCurious.updateCartCount();
+                }
+                if (window.ShopziCurious && window.ShopziCurious.refreshCartDrawer) {
+                  await window.ShopziCurious.refreshCartDrawer(true);
+                } else if (window.ShopziCurious && window.ShopziCurious.showToast) {
+                  window.ShopziCurious.showToast('Item added to bag!');
+                }
+              }
+            } catch (err) {
+              console.error('Failed to add to bag:', err);
+            } finally {
+              addBtn.disabled = false;
+            }
+          }
+        });
+      }
+
+      if (shareBtn) {
+        shareBtn.addEventListener('click', () => {
+          if (navigator.clipboard) {
+            navigator.clipboard.writeText(window.location.href).then(() => {
+              if (window.ShopziCurious && window.ShopziCurious.showToast) {
+                window.ShopziCurious.showToast('Wishlist link copied to clipboard!');
+              }
+            });
+          }
+        });
+      }
+
+      renderWishlist();
+    }
+
+    if (document.readyState === 'loading') {
+      document.addEventListener('DOMContentLoaded', setupWishlistPage);
+    } else {
+      setupWishlistPage();
+    }
+  })();
+</script>

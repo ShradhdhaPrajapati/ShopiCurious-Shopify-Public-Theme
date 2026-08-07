@@ -45,7 +45,6 @@
             show_secondary_image: true,
             show_quick_add: true,
             show_quick_view: true,
-            show_rating: section.settings.show_rating,
             show_price: section.settings.show_price
           %}
         </div>
@@ -53,19 +52,19 @@
     {%- else -%}
       <!-- Demo 5 Items matching approved UI screenshot pixel-for-pixel -->
       <div class="szc-featured-collection__item">
-        {% render 'product-card', card_product: nil, title_override: 'Oversized Knit Sweater', price_override: '$59.99', rating_count: 24, show_rating: section.settings.show_rating, show_price: section.settings.show_price %}
+        {% render 'product-card', card_product: nil, title_override: 'Oversized Knit Sweater', price_override: '$59.99', show_price: section.settings.show_price %}
       </div>
       <div class="szc-featured-collection__item">
-        {% render 'product-card', card_product: nil, title_override: 'Linen Blend Shirt', price_override: '$49.99', rating_count: 18, show_rating: section.settings.show_rating, show_price: section.settings.show_price %}
+        {% render 'product-card', card_product: nil, title_override: 'Linen Blend Shirt', price_override: '$49.99', show_price: section.settings.show_price %}
       </div>
       <div class="szc-featured-collection__item">
-        {% render 'product-card', card_product: nil, title_override: 'Satin Slip Dress', price_override: '$69.99', rating_count: 31, show_rating: section.settings.show_rating, show_price: section.settings.show_price %}
+        {% render 'product-card', card_product: nil, title_override: 'Satin Slip Dress', price_override: '$69.99', show_price: section.settings.show_price %}
       </div>
       <div class="szc-featured-collection__item">
-        {% render 'product-card', card_product: nil, title_override: 'Classic Denim Jacket', price_override: '$78.99', rating_count: 21, show_rating: section.settings.show_rating, show_price: section.settings.show_price %}
+        {% render 'product-card', card_product: nil, title_override: 'Classic Denim Jacket', price_override: '$78.99', show_price: section.settings.show_price %}
       </div>
       <div class="szc-featured-collection__item">
-        {% render 'product-card', card_product: nil, title_override: 'Wide Leg Trousers', price_override: '$54.99', rating_count: 26, show_rating: section.settings.show_rating, show_price: section.settings.show_price %}
+        {% render 'product-card', card_product: nil, title_override: 'Wide Leg Trousers', price_override: '$54.99', show_price: section.settings.show_price %}
       </div>
     {%- endif -%}
   </div>
@@ -82,24 +81,45 @@
   }
 
   .szc-section-header {
-    display: flex;
-    align-items: flex-end;
-    justify-content: space-between;
+    display: flex !important;
+    width: 100% !important;
     margin-bottom: var(--szc-space-8, 32px);
   }
 
+  .szc-section-header--left {
+    flex-direction: row !important;
+    align-items: flex-end !important;
+    justify-content: space-between !important;
+    text-align: left !important;
+    gap: 16px !important;
+  }
+
+  .szc-section-header--left .szc-section-header__text {
+    text-align: left !important;
+  }
+
   .szc-section-header--center {
-    flex-direction: column;
-    align-items: center;
-    text-align: center;
-    gap: 12px;
+    flex-direction: column !important;
+    align-items: center !important;
+    justify-content: center !important;
+    text-align: center !important;
+    gap: 12px !important;
+  }
+
+  .szc-section-header--center .szc-section-header__text {
+    text-align: center !important;
   }
 
   .szc-section-header--right {
-    flex-direction: row-reverse;
-    align-items: flex-end;
-    text-align: right;
-    gap: 12px;
+    flex-direction: row-reverse !important;
+    align-items: flex-end !important;
+    justify-content: space-between !important;
+    text-align: right !important;
+    gap: 16px !important;
+  }
+
+  .szc-section-header--right .szc-section-header__text {
+    text-align: right !important;
   }
 
   .szc-section-header__subtitle {
@@ -132,6 +152,9 @@
     text-decoration: underline;
     text-decoration-color: #d4a373;
     text-underline-offset: 4px;
+    white-space: nowrap;
+    flex-shrink: 0;
+    margin-bottom: 4px;
     transition: color 150ms ease, text-decoration-color 150ms ease;
   }
 
@@ -215,12 +238,6 @@
         { "value": "2", "label": "2 Columns" }
       ],
       "default": "2"
-    },
-    {
-      "type": "checkbox",
-      "id": "show_rating",
-      "default": true,
-      "label": "Show product rating"
     },
     {
       "type": "checkbox",

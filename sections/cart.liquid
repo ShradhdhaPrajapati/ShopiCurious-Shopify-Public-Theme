@@ -132,50 +132,75 @@
         </div>
       </div>
 
-      <!-- Bottom Layout: Estimate Shipping (Left) & Order Summary (Right) -->
+      <!-- Bottom Layout: Discount Code (Left) & Order Summary (Right) -->
       <div class="szc-cart-bottom">
-        <!-- Left Column: Estimate Shipping & Trust Badges -->
+        <!-- Left Column: Discount Code & Trust Badges -->
         <div class="szc-cart-bottom__left">
-          <!-- Estimate Shipping Box -->
-          <details class="szc-shipping-accordion" open>
-            <summary class="szc-shipping-summary">
-              <span>ESTIMATE SHIPPING</span>
-              <svg class="szc-shipping-chevron" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                <polyline points="18 15 12 9 6 15"></polyline>
-              </svg>
-            </summary>
+          <!-- Discount Code Box -->
+          <div class="szc-discount-box">
+            <h3 class="szc-discount-box__title">DISCOUNT CODE</h3>
+            <p class="szc-discount-box__desc">Enter your promotional or discount code below.</p>
 
-            <div class="szc-shipping-content">
-              <p class="szc-shipping-desc">Enter your destination to get a shipping estimate.</p>
-              
-              <div class="szc-shipping-form-row">
-                <div class="szc-shipping-field szc-shipping-field--select">
-                  <select id="ShippingCountry" class="szc-shipping-select">
-                    <option value="United States">United States</option>
-                    <option value="Canada">Canada</option>
-                    <option value="United Kingdom">United Kingdom</option>
-                    <option value="Australia">Australia</option>
-                    <option value="India">India</option>
-                  </select>
-                </div>
-
-                <div class="szc-shipping-field szc-shipping-field--input">
-                  <input
-                    type="text"
-                    id="ShippingZip"
-                    class="szc-shipping-input"
-                    placeholder="ZIP / Postal Code"
-                  >
-                </div>
-
-                <button type="button" class="szc-shipping-calc-btn" id="CalculateShippingBtn">
-                  CALCULATE
-                </button>
-              </div>
-
-              <div id="ShippingEstimateResults" class="szc-shipping-results" style="display:none;"></div>
+            <div class="szc-discount-form-row">
+              <label for="CartDiscountInput" class="visually-hidden">Discount Code</label>
+              <input
+                type="text"
+                id="CartDiscountInput"
+                name="discount"
+                class="szc-discount-input{% if cart.cart_level_discount_applications.size > 0 %} is-applied{% endif %}"
+                placeholder="Enter discount code"
+                aria-label="Enter discount code"
+                aria-describedby="DiscountStatusMessage"
+                value="{% if cart.cart_level_discount_applications.size > 0 %}{{ cart.cart_level_discount_applications.first.title }}{% endif %}"
+                {% if cart.cart_level_discount_applications.size > 0 %}disabled{% endif %}
+                autocomplete="off"
+              >
+              <button
+                type="button"
+                class="szc-discount-apply-btn{% if cart.cart_level_discount_applications.size > 0 %} is-applied{% endif %}"
+                id="ApplyDiscountBtn"
+                aria-label="Apply discount code"
+                {% if cart.cart_level_discount_applications.size > 0 %}disabled{% endif %}
+              >
+                <span class="szc-btn-text">
+                  {%- if cart.cart_level_discount_applications.size > 0 -%}
+                    ✓ APPLIED
+                  {%- else -%}
+                    APPLY
+                  {%- endif -%}
+                </span>
+                <span class="szc-btn-spinner-wrapper" style="display:none;" aria-hidden="true">
+                  <svg class="szc-btn-spinner" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                    <circle cx="12" cy="12" r="10" stroke="currentColor" stroke-opacity="0.2" stroke-width="2.5"></circle>
+                    <path d="M12 2 a 10 10 0 0 1 10 10" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"></path>
+                  </svg>
+                </span>
+              </button>
             </div>
-          </details>
+            
+            <!-- Applied Discount Tag Pill (Matching User Specification) -->
+            <div id="DiscountTagsContainer" class="szc-discount-tags">
+              {%- if cart.cart_level_discount_applications.size > 0 -%}
+                {%- for discount_application in cart.cart_level_discount_applications -%}
+                  <div class="szc-discount-tag" data-discount-title="{{ discount_application.title }}">
+                    <svg class="szc-tag-icon" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                      <path d="M20.59 13.41l-7.17 7.17a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.82z"></path>
+                      <line x1="7" y1="7" x2="7.01" y2="7"></line>
+                    </svg>
+                    <span class="szc-tag-title">{{ discount_application.title }}</span>
+                    <button type="button" class="szc-tag-remove-btn" data-remove-discount aria-label="Remove discount {{ discount_application.title }}">
+                      <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                        <line x1="18" y1="6" x2="6" y2="18"></line>
+                        <line x1="6" y1="6" x2="18" y2="18"></line>
+                      </svg>
+                    </button>
+                  </div>
+                {%- endfor -%}
+              {%- endif -%}
+            </div>
+
+            <div id="DiscountStatusMessage" class="szc-discount-status" aria-live="polite" style="display:none;"></div>
+          </div>
 
           <!-- Reusable Trust Badges -->
           <div class="szc-cart-page__trust-badges">
@@ -191,8 +216,54 @@
             <div class="szc-summary-card__rows">
               <div class="szc-summary-card__row">
                 <span class="szc-summary-label">Subtotal</span>
-                <span class="szc-summary-val">{{ cart.items_subtotal_price | money }}</span>
+                <span class="szc-summary-val">{{ cart.original_total_price | money }}</span>
               </div>
+
+              {%- if cart.cart_level_discount_applications.size > 0 -%}
+                {%- for discount_application in cart.cart_level_discount_applications -%}
+                  <div class="szc-summary-card__row szc-summary-card__row--discount">
+                    <div class="szc-summary-discount-info">
+                      <span class="szc-summary-label">Discount</span>
+                      <div class="szc-summary-discount-tag" data-discount-title="{{ discount_application.title }}">
+                        <svg class="szc-tag-icon" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                          <path d="M20.59 13.41l-7.17 7.17a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.82z"></path>
+                          <line x1="7" y1="7" x2="7.01" y2="7"></line>
+                        </svg>
+                        <span class="szc-tag-title">{{ discount_application.title }}</span>
+                        <button type="button" class="szc-tag-remove-btn" data-remove-discount aria-label="Remove discount">
+                          <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                            <line x1="18" y1="6" x2="6" y2="18"></line>
+                            <line x1="6" y1="6" x2="18" y2="18"></line>
+                          </svg>
+                        </button>
+                      </div>
+                    </div>
+                    <span class="szc-summary-val szc-summary-val--discount">-{{ discount_application.total_allocated_amount | money }}</span>
+                  </div>
+                {%- endfor -%}
+              {%- elsif cart.total_discount > 0 -%}
+                <div class="szc-summary-card__row szc-summary-card__row--discount">
+                  <div class="szc-summary-discount-info">
+                    <span class="szc-summary-label">Discount</span>
+                    {%- if cart.discount_applications.size > 0 -%}
+                      <div class="szc-summary-discount-tag" data-discount-title="{{ cart.discount_applications.first.title }}">
+                        <svg class="szc-tag-icon" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                          <path d="M20.59 13.41l-7.17 7.17a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.82z"></path>
+                          <line x1="7" y1="7" x2="7.01" y2="7"></line>
+                        </svg>
+                        <span class="szc-tag-title">{{ cart.discount_applications.first.title }}</span>
+                        <button type="button" class="szc-tag-remove-btn" data-remove-discount aria-label="Remove discount">
+                          <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                            <line x1="18" y1="6" x2="6" y2="18"></line>
+                            <line x1="6" y1="6" x2="18" y2="18"></line>
+                          </svg>
+                        </button>
+                      </div>
+                    {%- endif -%}
+                  </div>
+                  <span class="szc-summary-val szc-summary-val--discount">-{{ cart.total_discount | money }}</span>
+                </div>
+              {%- endif -%}
 
               <div class="szc-summary-card__row">
                 <span class="szc-summary-label">Shipping</span>
@@ -480,46 +551,50 @@
     margin-top: 40px;
   }
 
-  /* Left Column: Estimate Shipping */
-  .szc-shipping-accordion {
+  /* Visually Hidden Helper for Accessibility */
+  .visually-hidden {
+    position: absolute !important;
+    overflow: hidden;
+    width: 1px;
+    height: 1px;
+    margin: -1px;
+    padding: 0;
+    border: 0;
+    clip: rect(0, 0, 0, 0);
+  }
+
+  /* Left Column: Discount Code Box */
+  .szc-discount-box {
     border: 1px solid #e5e5e5;
     border-radius: 8px;
-    padding: 20px 24px;
+    padding: 24px;
     background-color: #ffffff;
     margin-bottom: 24px;
   }
 
-  .szc-shipping-summary {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
+  .szc-discount-box__title {
+    margin: 0 0 6px 0;
     font-size: 13px;
     font-weight: 700;
     letter-spacing: 0.06em;
+    text-transform: uppercase;
     color: #111111;
-    cursor: pointer;
-    list-style: none;
   }
 
-  .szc-shipping-summary::-webkit-details-marker {
-    display: none;
-  }
-
-  .szc-shipping-desc {
+  .szc-discount-box__desc {
     font-size: 13px;
     color: #666666;
-    margin: 14px 0 16px 0;
+    margin: 0 0 16px 0;
   }
 
-  .szc-shipping-form-row {
-    display: grid;
-    grid-template-columns: 1fr 1fr auto;
-    gap: 12px;
+  .szc-discount-form-row {
+    display: flex;
+    gap: 10px;
+    position: relative;
   }
 
-  .szc-shipping-select,
-  .szc-shipping-input {
-    width: 100%;
+  .szc-discount-input {
+    flex: 1;
     height: 44px;
     border: 1px solid #e0e0e0;
     border-radius: 4px;
@@ -529,16 +604,24 @@
     color: #111111;
     outline: none;
     box-sizing: border-box;
+    transition: border-color 150ms ease, box-shadow 150ms ease, background-color 150ms ease;
   }
 
-  .szc-shipping-select:focus,
-  .szc-shipping-input:focus {
+  .szc-discount-input:focus-visible,
+  .szc-discount-input:focus {
     border-color: #111111;
+    box-shadow: 0 0 0 1px #111111;
   }
 
-  .szc-shipping-calc-btn {
+  .szc-discount-input--error {
+    border-color: #e63946 !important;
+    box-shadow: 0 0 0 1px #e63946 !important;
+    background-color: #fff8f8;
+  }
+
+  .szc-discount-apply-btn {
     height: 44px;
-    padding: 0 24px;
+    padding: 0 22px;
     background-color: #000000;
     color: #ffffff;
     border: none;
@@ -547,11 +630,105 @@
     font-weight: 700;
     letter-spacing: 0.08em;
     cursor: pointer;
-    transition: background-color 150ms ease;
+    transition: background-color 150ms ease, opacity 150ms ease;
+    flex-shrink: 0;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 105px;
   }
 
-  .szc-shipping-calc-btn:hover {
+  .szc-discount-apply-btn:hover:not(:disabled) {
     background-color: #222222;
+  }
+
+  .szc-discount-apply-btn:disabled {
+    opacity: 0.7;
+    cursor: not-allowed;
+  }
+
+  .szc-discount-apply-btn.is-applied {
+    background-color: #333333;
+  }
+
+  /* Spinner animation */
+  @keyframes szc-spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+  }
+
+  .szc-btn-spinner {
+    animation: szc-spin 0.6s linear infinite;
+    display: block;
+  }
+
+  .szc-btn-spinner-wrapper {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .szc-discount-status {
+    margin-top: 14px;
+    padding: 10px 14px;
+    border-radius: 4px;
+    font-size: 13px;
+    line-height: 1.4;
+    transition: all 150ms ease;
+  }
+
+  .szc-discount-status--success {
+    background-color: #f5f5f5;
+    color: #111111;
+    border: 1px solid #e0e0e0;
+  }
+
+  .szc-discount-status--error {
+    background-color: #fdf2f2;
+    color: #e63946;
+    border: 1px solid #ffcdd2;
+  }
+
+  /* Discount Tag Pills (User Image 2 Match) */
+  .szc-discount-tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-top: 12px;
+  }
+
+  .szc-discount-tag {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 4px 10px;
+    background-color: #efefef;
+    border: 1px solid #e0e0e0;
+    border-radius: 20px;
+    font-size: 12px;
+    font-weight: 600;
+    color: #111111;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+  }
+
+  .szc-discount-tag__remove {
+    background: none;
+    border: none;
+    padding: 0;
+    margin: 0 0 0 2px;
+    font-size: 14px;
+    line-height: 1;
+    color: #666666;
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    transition: color 150ms ease;
+  }
+
+  .szc-discount-tag__remove:hover {
+    color: #000000;
   }
 
   .szc-cart-page__trust-badges {
@@ -589,11 +766,66 @@
     color: #111111;
   }
 
+  .szc-summary-discount-info {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    align-items: flex-start;
+  }
+
+  /* Pill Tag matching Image 2 exactly */
+  .szc-summary-discount-tag {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 12px;
+    font-weight: 600;
+    color: #111111;
+    background-color: #efefef;
+    border: 1px solid #e0e0e0;
+    padding: 4px 10px;
+    border-radius: 20px;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    line-height: 1;
+  }
+
+  .szc-tag-icon {
+    color: #555555;
+    flex-shrink: 0;
+  }
+
+  .szc-tag-title {
+    color: #111111;
+  }
+
+  .szc-tag-remove-btn {
+    background: none;
+    border: none;
+    padding: 0;
+    margin: 0 0 0 2px;
+    color: #666666;
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    transition: color 150ms ease;
+  }
+
+  .szc-tag-remove-btn:hover {
+    color: #000000;
+  }
+
   .szc-summary-label {
     font-weight: 500;
   }
 
   .szc-summary-val {
+    font-weight: 700;
+  }
+
+  .szc-summary-val--discount {
+    color: #111111;
     font-weight: 700;
   }
 
@@ -714,8 +946,8 @@
       gap: 32px;
     }
 
-    .szc-shipping-form-row {
-      grid-template-columns: 1fr;
+    .szc-discount-form-row {
+      flex-direction: column;
     }
   }
 {% endstylesheet %}
@@ -725,58 +957,362 @@
     const cartPage = document.getElementById('MainCartPage');
     if (!cartPage) return;
 
-    // Handle AJAX Quantity Stepper & Removal
-    cartPage.addEventListener('click', async (e) => {
-      const btn = e.target.closest('[data-action]');
-      if (!btn) return;
+    // Helper: Reset button state when input changes
+    const resetApplyButtonState = (discountInput, discountBtn, statusDiv) => {
+      if (discountInput) {
+        discountInput.classList.remove('szc-discount-input--error');
+        discountInput.removeAttribute('aria-invalid');
+      }
+      if (discountBtn && discountBtn.classList.contains('is-applied')) {
+        discountBtn.classList.remove('is-applied');
+        const textSpan = discountBtn.querySelector('.szc-btn-text');
+        if (textSpan) textSpan.textContent = 'APPLY';
+      }
+      if (statusDiv && statusDiv.style.display !== 'none') {
+        statusDiv.style.display = 'none';
+        statusDiv.innerHTML = '';
+      }
+    };
 
-      const action = btn.dataset.action;
-      const line = btn.dataset.line;
-      if (!line) return;
-
-      const input = cartPage.querySelector(`input.szc-stepper-input[data-line="${line}"]`);
-      let currentQty = input ? parseInt(input.value, 10) || 1 : 1;
-
-      let newQty = currentQty;
-      if (action === 'plus') newQty = currentQty + 1;
-      else if (action === 'minus') newQty = Math.max(0, currentQty - 1);
-      else if (action === 'remove') newQty = 0;
-
-      try {
-        const res = await fetch('/cart/change.js', {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-            'Accept': 'application/json'
-          },
-          body: JSON.stringify({ line: parseInt(line, 10), quantity: parseInt(newQty, 10) })
-        });
-
-        if (res.ok) {
-          window.location.reload();
-        }
-      } catch (err) {
-        console.error('Failed to update cart page item:', err);
+    // 1. Delegated Event Listener for Input Events (Input change reset)
+    document.addEventListener('input', (e) => {
+      if (e.target && e.target.id === 'CartDiscountInput') {
+        const discountInput = e.target;
+        const parentBox = discountInput.closest('.szc-discount-box');
+        const discountBtn = parentBox ? parentBox.querySelector('#ApplyDiscountBtn') : document.getElementById('ApplyDiscountBtn');
+        const statusDiv = parentBox ? parentBox.querySelector('#DiscountStatusMessage') : document.getElementById('DiscountStatusMessage');
+        
+        resetApplyButtonState(discountInput, discountBtn, statusDiv);
       }
     });
 
-    // Estimate Shipping Calculator Action
-    const calcBtn = document.getElementById('CalculateShippingBtn');
-    const resultsDiv = document.getElementById('ShippingEstimateResults');
+    // 2. Delegated Keydown Listener for Enter Key
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Enter' && e.target && e.target.id === 'CartDiscountInput') {
+        e.preventDefault();
+        const parentBox = e.target.closest('.szc-discount-box');
+        const applyBtn = parentBox ? parentBox.querySelector('#ApplyDiscountBtn') : document.getElementById('ApplyDiscountBtn');
+        if (applyBtn && !applyBtn.disabled) {
+          applyBtn.click();
+        }
+      }
+    });
 
-    if (calcBtn && resultsDiv) {
-      calcBtn.addEventListener('click', () => {
-        const country = document.getElementById('ShippingCountry').value;
-        const zip = document.getElementById('ShippingZip').value;
+    // 3. Delegated Click Listener for Quantity Steppers, Apply Button & Remove Discount Tag
+    document.addEventListener('click', async (e) => {
+      // --- A. Quantity Steppers & Line Item Removal ---
+      const stepperBtn = e.target.closest('[data-action]');
+      if (stepperBtn && cartPage.contains(stepperBtn)) {
+        const action = stepperBtn.dataset.action;
+        const line = stepperBtn.dataset.line;
+        if (line) {
+          const input = cartPage.querySelector(`input.szc-stepper-input[data-line="${line}"]`);
+          let currentQty = input ? parseInt(input.value, 10) || 1 : 1;
+          let newQty = currentQty;
+          if (action === 'plus') newQty = currentQty + 1;
+          else if (action === 'minus') newQty = Math.max(0, currentQty - 1);
+          else if (action === 'remove') newQty = 0;
 
-        resultsDiv.style.display = 'block';
-        resultsDiv.innerHTML = `
-          <div style="margin-top: 14px; padding: 12px; background: #f0f7f4; border-radius: 4px; font-size: 13px; color: #2a9d8f;">
-            <strong>Standard Shipping to ${country} (${zip || 'Default'}):</strong> FREE (Orders over $100)
-          </div>
-        `;
-      });
-    }
+          try {
+            const res = await fetch('/cart/change.js', {
+              method: 'POST',
+              headers: {
+                'Content-Type': 'application/json',
+                'Accept': 'application/json'
+              },
+              body: JSON.stringify({ line: parseInt(line, 10), quantity: parseInt(newQty, 10) })
+            });
+            if (res.ok) {
+              const cartRes = await fetch('/cart.js');
+              const cartData = await cartRes.json();
+              ShopziCurious.pubsub.publish(ShopziCurious.events.CART_UPDATED, { item_count: cartData.item_count, openDrawer: false });
+              if (window.ShopziCurious && window.ShopziCurious.refreshCartPage) {
+                await window.ShopziCurious.refreshCartPage();
+              }
+            }
+          } catch (err) {
+            console.error('Failed to update cart page item:', err);
+          }
+        }
+        return;
+      }
+
+      // --- B. Apply Discount Button ---
+      const applyBtn = e.target.closest('#ApplyDiscountBtn');
+      if (applyBtn) {
+        e.preventDefault();
+
+        // Prevent Race Condition: Guard multiple parallel clicks
+        if (window._szcIsApplyingDiscount) return;
+        window._szcIsApplyingDiscount = true;
+
+        // Abort any previous pending discount fetch
+        if (window._szcDiscountAbortController) {
+          window._szcDiscountAbortController.abort();
+        }
+        window._szcDiscountAbortController = new AbortController();
+        const signal = window._szcDiscountAbortController.signal;
+
+        const parentBox = applyBtn.closest('.szc-discount-box') || document;
+        const discountInput = parentBox.querySelector('#CartDiscountInput');
+        const statusDiv = parentBox.querySelector('#DiscountStatusMessage');
+
+        // Clear previous error messages & styles immediately when starting new application
+        if (statusDiv) {
+          statusDiv.style.display = 'none';
+          statusDiv.innerHTML = '';
+        }
+        if (discountInput) {
+          discountInput.classList.remove('szc-discount-input--error');
+          discountInput.removeAttribute('aria-invalid');
+        }
+
+        const rawCode = discountInput.value.trim();
+
+        // 1. Validation: Empty check
+        if (!rawCode) {
+          discountInput.classList.add('szc-discount-input--error');
+          discountInput.setAttribute('aria-invalid', 'true');
+          if (statusDiv) {
+            statusDiv.style.display = 'block';
+            statusDiv.className = 'szc-discount-status szc-discount-status--error';
+            statusDiv.setAttribute('aria-live', 'assertive');
+            statusDiv.textContent = 'Please enter a valid discount code.';
+          }
+          discountInput.focus();
+          window._szcIsApplyingDiscount = false;
+          return;
+        }
+
+        // 2. Loading State: Set aria-busy, show spinner, disable controls
+        const activeCartPage = document.getElementById('MainCartPage');
+        if (activeCartPage) activeCartPage.setAttribute('aria-busy', 'true');
+
+        applyBtn.disabled = true;
+        discountInput.disabled = true;
+
+        const textSpan = applyBtn.querySelector('.szc-btn-text');
+        const spinnerWrapper = applyBtn.querySelector('.szc-btn-spinner-wrapper');
+        if (textSpan) textSpan.style.display = 'none';
+        if (spinnerWrapper) spinnerWrapper.style.display = 'inline-flex';
+
+        try {
+          // Native Shopify Discount endpoint with Abort Signal
+          await fetch(`/discount/${encodeURIComponent(rawCode)}?redirect=/cart`, { signal });
+
+          // 3. Dynamic Cart Refresh BEFORE evaluating success (Promise resolves strictly after DOM swap)
+          if (window.ShopziCurious && window.ShopziCurious.refreshCartPage) {
+            await window.ShopziCurious.refreshCartPage();
+          }
+
+          // 4. Source of Truth Verification via Official Shopify Cart Data & Newly Rendered DOM
+          const cartRes = await fetch(`/cart.js?_t=${Date.now()}`, { signal, cache: 'no-store' });
+          const cartData = await cartRes.json();
+
+          // Re-query newly rendered DOM elements after refresh
+          const newCartPage = document.getElementById('MainCartPage') || document;
+          const newDiscountInput = newCartPage.querySelector('#CartDiscountInput');
+          const newApplyBtn = newCartPage.querySelector('#ApplyDiscountBtn');
+          const newStatusDiv = newCartPage.querySelector('#DiscountStatusMessage');
+          const hasRenderedTag = !!newCartPage.querySelector('.szc-discount-tag') || !!newCartPage.querySelector('[data-remove-discount]');
+
+          const applications = (cartData && cartData.cart_level_discount_applications) || [];
+          const hasDiscountApplications = hasRenderedTag || applications.length > 0 || (cartData && cartData.total_discount > 0);
+
+          if (hasDiscountApplications) {
+            // SUCCESS STATE: Prestige/Enterprise Style (No inline green text, Toast after refresh, Input disabled)
+            const appliedTitle = applications.length > 0 ? applications[0].title : rawCode.toUpperCase();
+
+            if (newDiscountInput) {
+              newDiscountInput.value = appliedTitle;
+              newDiscountInput.disabled = true;
+              newDiscountInput.classList.add('is-applied');
+              newDiscountInput.classList.remove('szc-discount-input--error');
+              newDiscountInput.removeAttribute('aria-invalid');
+            }
+
+            if (newApplyBtn) {
+              newApplyBtn.disabled = true;
+              newApplyBtn.classList.add('is-applied');
+              const newTextSpan = newApplyBtn.querySelector('.szc-btn-text');
+              if (newTextSpan) newTextSpan.textContent = '✓ APPLIED';
+            }
+
+            // Hide inline success message (Applied tag & Order summary pill serve as visual indicator)
+            if (newStatusDiv) {
+              newStatusDiv.style.display = 'none';
+              newStatusDiv.innerHTML = '';
+            }
+
+            // Show Toast ONLY after section refresh has completed
+            if (window.ShopziCurious && window.ShopziCurious.showToast) {
+              window.ShopziCurious.showToast('Discount applied successfully.');
+            }
+
+            // Focus Management: Focus the Remove Discount button (✕)
+            const removeBtn = newCartPage.querySelector('.szc-tag-remove-btn') || newCartPage.querySelector('[data-remove-discount]');
+            if (removeBtn) {
+              removeBtn.focus();
+            }
+          } else {
+            // ERROR STATE (Shopify rejected the coupon code)
+            if (newDiscountInput) {
+              newDiscountInput.disabled = false;
+              newDiscountInput.classList.remove('is-applied');
+              newDiscountInput.classList.add('szc-discount-input--error');
+              newDiscountInput.setAttribute('aria-invalid', 'true');
+              newDiscountInput.focus();
+            }
+
+            if (newApplyBtn) {
+              newApplyBtn.disabled = false;
+              newApplyBtn.classList.remove('is-applied');
+              const newTextSpan = newApplyBtn.querySelector('.szc-btn-text');
+              if (newTextSpan) newTextSpan.textContent = 'APPLY';
+            }
+
+            if (newStatusDiv) {
+              newStatusDiv.style.display = 'block';
+              newStatusDiv.className = 'szc-discount-status szc-discount-status--error';
+              newStatusDiv.setAttribute('aria-live', 'assertive');
+              newStatusDiv.textContent = 'Invalid discount code. Please check and try again.';
+            }
+          }
+        } catch (err) {
+          if (err.name === 'AbortError') {
+            return; // Silently handle aborted fetch requests
+          }
+          console.error('Failed to apply discount:', err);
+          const newCartPage = document.getElementById('MainCartPage') || document;
+          const newDiscountInput = newCartPage.querySelector('#CartDiscountInput');
+          const newApplyBtn = newCartPage.querySelector('#ApplyDiscountBtn');
+          const newStatusDiv = newCartPage.querySelector('#DiscountStatusMessage');
+
+          if (newDiscountInput) {
+            newDiscountInput.disabled = false;
+            newDiscountInput.classList.remove('is-applied');
+            newDiscountInput.classList.add('szc-discount-input--error');
+            newDiscountInput.setAttribute('aria-invalid', 'true');
+            newDiscountInput.focus();
+          }
+          if (newApplyBtn) {
+            newApplyBtn.disabled = false;
+            newApplyBtn.classList.remove('is-applied');
+            const newTextSpan = newApplyBtn.querySelector('.szc-btn-text');
+            if (newTextSpan) newTextSpan.textContent = 'APPLY';
+          }
+          if (newStatusDiv) {
+            newStatusDiv.style.display = 'block';
+            newStatusDiv.className = 'szc-discount-status szc-discount-status--error';
+            newStatusDiv.setAttribute('aria-live', 'assertive');
+            newStatusDiv.textContent = 'Invalid discount code. Please check and try again.';
+          }
+        } finally {
+          window._szcIsApplyingDiscount = false;
+          const newCartPage = document.getElementById('MainCartPage') || document;
+          if (newCartPage && newCartPage.removeAttribute) newCartPage.removeAttribute('aria-busy');
+
+          const finalApplyBtn = newCartPage.querySelector('#ApplyDiscountBtn') || applyBtn;
+          const finalDiscountInput = newCartPage.querySelector('#CartDiscountInput') || discountInput;
+          const isApplied = finalApplyBtn && finalApplyBtn.classList.contains('is-applied');
+
+          if (finalApplyBtn) {
+            finalApplyBtn.disabled = isApplied;
+            const textSpan = finalApplyBtn.querySelector('.szc-btn-text');
+            const spinnerWrapper = finalApplyBtn.querySelector('.szc-btn-spinner-wrapper');
+            if (textSpan) textSpan.style.display = 'inline';
+            if (spinnerWrapper) spinnerWrapper.style.display = 'none';
+          }
+          if (finalDiscountInput) {
+            finalDiscountInput.disabled = isApplied;
+          }
+        }
+        return;
+      }
+
+      // --- C. Remove Discount Tag Button (`[data-remove-discount]`) ---
+      const removeBtn = e.target.closest('[data-remove-discount]');
+      if (removeBtn) {
+        e.preventDefault();
+        removeBtn.disabled = true;
+
+        // Abort any pending discount requests
+        if (window._szcDiscountAbortController) {
+          window._szcDiscountAbortController.abort();
+        }
+        window._szcDiscountAbortController = new AbortController();
+        const signal = window._szcDiscountAbortController.signal;
+
+        const activeCartPage = document.getElementById('MainCartPage');
+        if (activeCartPage) activeCartPage.setAttribute('aria-busy', 'true');
+
+        try {
+          // 1. Clear discount via official Shopify AJAX Cart API
+          await fetch('/cart/update.js', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
+            body: JSON.stringify({ discount: "" }),
+            signal
+          });
+
+          // 2. Also trigger native Shopify /discount/CLEAR endpoint for session clearance
+          await fetch('/discount/CLEAR?redirect=/cart', { signal });
+          await fetch('/cart?discount=', { signal });
+
+          // 3. Dynamic Section Refresh (Wait until DOM replacement finishes)
+          if (window.ShopziCurious && window.ShopziCurious.refreshCartPage) {
+            await window.ShopziCurious.refreshCartPage();
+          }
+
+          // 4. Complete State Reset on Newly Rendered DOM
+          const newCartPage = document.getElementById('MainCartPage') || document;
+          const newDiscountInput = newCartPage.querySelector('#CartDiscountInput');
+          const newApplyBtn = newCartPage.querySelector('#ApplyDiscountBtn');
+          const newStatusDiv = newCartPage.querySelector('#DiscountStatusMessage');
+          const newTagsContainer = newCartPage.querySelector('#DiscountTagsContainer');
+          const newDiscountSummaryRow = newCartPage.querySelector('.szc-cart-summary__discount-row');
+
+          if (newDiscountInput) {
+            newDiscountInput.value = '';
+            newDiscountInput.disabled = false;
+            newDiscountInput.classList.remove('szc-discount-input--error', 'is-applied');
+            newDiscountInput.removeAttribute('aria-invalid');
+            newDiscountInput.focus();
+          }
+
+          if (newApplyBtn) {
+            newApplyBtn.disabled = false;
+            newApplyBtn.classList.remove('is-applied');
+            const textSpan = newApplyBtn.querySelector('.szc-btn-text');
+            if (textSpan) textSpan.textContent = 'APPLY';
+          }
+
+          if (newTagsContainer) {
+            newTagsContainer.innerHTML = '';
+          }
+
+          if (newDiscountSummaryRow) {
+            newDiscountSummaryRow.remove();
+          }
+
+          if (newStatusDiv) {
+            newStatusDiv.style.display = 'none';
+            newStatusDiv.innerHTML = '';
+          }
+
+          // 5. Show Toast ONLY AFTER Cart Refresh Finishes
+          if (window.ShopziCurious && window.ShopziCurious.showToast) {
+            window.ShopziCurious.showToast('Discount removed');
+          }
+        } catch (err) {
+          if (err.name === 'AbortError') return;
+          console.error('Failed to remove discount:', err);
+        } finally {
+          const newCartPage = document.getElementById('MainCartPage') || document;
+          if (newCartPage && newCartPage.removeAttribute) newCartPage.removeAttribute('aria-busy');
+        }
+      }
+    });
   });
 {% endjavascript %}
 

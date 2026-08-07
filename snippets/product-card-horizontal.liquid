@@ -17,7 +17,7 @@
 -%}
 
 {%- if product != blank -%}
-  <div class="szc-card-horizontal {{ custom_class }}" data-product-handle="{{ product.handle }}">
+  <div class="szc-card-horizontal {{ custom_class }}">
     <a href="{{ product.url }}" class="szc-card-horizontal__media-link" aria-label="{{ product.title | escape }}">
       {%- if featured_img != blank -%}
         {% render 'image',

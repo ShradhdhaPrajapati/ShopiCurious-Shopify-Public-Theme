@@ -458,14 +458,45 @@
     color: #b44f4f;
   }
 
-  .szc-qv-full-btn {
+  .szc-qv-wishlist-btn.is-active {
+    border-color: #e63946;
+    color: #e63946;
+    background-color: #fff5f5;
+  }
+
+  .szc-qv-wishlist-btn.is-active svg {
+    fill: #e63946;
+    stroke: #e63946;
+  }
+
+  .szc-qv-buy-btn {
     width: 100%;
-    height: 44px;
+    height: 46px;
     border: 1px solid #111111;
     border-radius: 4px;
     background-color: #ffffff;
     color: #111111;
-    font-size: 12px;
+    font-size: 13px;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    cursor: pointer;
+    transition: background-color 150ms ease, color 150ms ease;
+  }
+
+  .szc-qv-buy-btn:hover {
+    background-color: #111111;
+    color: #ffffff;
+  }
+
+  .szc-qv-full-btn {
+    width: 100%;
+    height: 44px;
+    border: 1px solid #e0e0e0;
+    border-radius: 4px;
+    background-color: #fcfcfc;
+    color: #555555;
+    font-size: 11px;
     font-weight: 700;
     letter-spacing: 0.08em;
     text-transform: uppercase;
@@ -473,11 +504,13 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    transition: background-color 150ms ease;
+    transition: all 150ms ease;
   }
 
   .szc-qv-full-btn:hover {
-    background-color: #f8f9fa;
+    border-color: #111111;
+    color: #111111;
+    background-color: #ffffff;
   }
 
   /* Column 4: Trust Badges Column */
@@ -604,21 +637,6 @@
           const images = product.images && product.images.length ? product.images : [product.featured_image];
           const firstVariant = product.variants[0];
 
-          // Determine Swatches & Options
-          let colorOption = null;
-          let sizeOption = null;
-
-          if (product.options) {
-            product.options.forEach((opt, idx) => {
-              const nameLower = opt.name.toLowerCase();
-              if (nameLower.includes('color') || nameLower.includes('colour')) {
-                colorOption = { index: idx, name: opt.name, values: opt.values };
-              } else if (nameLower.includes('size')) {
-                sizeOption = { index: idx, name: opt.name, values: opt.values };
-              }
-            });
-          }
-
           // Color hex helper map for common colors
           const getColorHex = (name) => {
             const colorMap = {
@@ -633,12 +651,73 @@
               'green': '#2a9d8f',
               'brown': '#8b4513',
               'grey': '#888888',
-              'gray': '#888888'
+              'gray': '#888888',
+              'pink': '#ffc0cb',
+              'gold': '#ffd700',
+              'olive': '#808000'
             };
             return colorMap[name.toLowerCase()] || '#cccccc';
           };
 
           const isNewArrival = product.tags && product.tags.some(t => t.toLowerCase().includes('new'));
+
+          // Render ALL dynamic product options (filtering out Shopify's default dummy "Title: Default Title")
+          const validOptions = (product.options || []).filter(opt => {
+            const nameLower = opt.name.toLowerCase();
+            if (nameLower === 'title' && opt.values.length === 1 && opt.values[0] === 'Default Title') {
+              return false;
+            }
+            return true;
+          });
+
+          const optionsHtml = validOptions.map((opt, optIdx) => {
+            const nameLower = opt.name.toLowerCase();
+            const isColor = nameLower.includes('color') || nameLower.includes('colour');
+            const isSize = nameLower.includes('size');
+            const selectedVal = (firstVariant.options && firstVariant.options[optIdx]) || opt.values[0] || '';
+
+            return `
+              <div class="szc-qv-option-group" data-option-index="${optIdx}">
+                <div class="szc-qv-option-label">
+                  <span>${opt.name.toUpperCase()}: <span id="QvSelectedOpt_${optIdx}">${selectedVal}</span></span>
+                  ${isSize ? `
+                    <button type="button" class="szc-qv-size-guide-btn">
+                      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="6" width="20" height="12" rx="2"/><path d="M6 12h.01M10 12h.01M14 12h.01M18 12h.01"/></svg>
+                      Size Guide
+                    </button>
+                  ` : ''}
+                </div>
+                <div class="${isColor ? 'szc-qv-color-swatches' : 'szc-qv-size-boxes'}">
+                  ${opt.values.map((val) => {
+                    const isActive = val === selectedVal;
+                    if (isColor) {
+                      return `
+                        <button
+                          type="button"
+                          class="szc-qv-color-btn ${isActive ? 'is-active' : ''}"
+                          data-opt-idx="${optIdx}"
+                          data-val="${val}"
+                          style="background-color: ${getColorHex(val)};"
+                          title="${val}"
+                        ></button>
+                      `;
+                    } else {
+                      return `
+                        <button
+                          type="button"
+                          class="szc-qv-size-btn ${isActive ? 'is-active' : ''}"
+                          data-opt-idx="${optIdx}"
+                          data-val="${val}"
+                        >${val}</button>
+                      `;
+                    }
+                  }).join('')}
+                </div>
+              </div>
+            `;
+          }).join('');
+
+          const hasComparePrice = firstVariant.compare_at_price > firstVariant.price;
 
           this.content.innerHTML = `
             <div class="szc-qv-grid" data-product-id="${product.id}">
@@ -670,62 +749,14 @@
                 <h2 class="szc-qv-title">${product.title}</h2>
 
                 <div class="szc-qv-price-row">
-                  <span class="szc-qv-price" id="QvPrice">${formatMoney(product.price)}</span>
-                  ${product.compare_at_price > product.price ? `<span class="szc-qv-price--compare">${formatMoney(product.compare_at_price)}</span>` : ''}
+                  <span class="szc-qv-price" id="QvPrice">${formatMoney(firstVariant.price)}</span>
+                  <span class="szc-qv-price--compare" id="QvComparePrice" style="display: ${hasComparePrice ? 'inline' : 'none'};">
+                    ${hasComparePrice ? formatMoney(firstVariant.compare_at_price) : ''}
+                  </span>
                 </div>
 
-
-
-                ${product.rating || (product.metafields && product.metafields.reviews && product.metafields.reviews.rating) ? `
-                  <div class="szc-qv-reviews">
-                    <div class="szc-qv-stars">★★★★☆</div>
-                    <span>(${product.rating_count || 12} Reviews)</span>
-                  </div>
-                ` : ''}
-
-                <!-- Color Swatches -->
-                ${colorOption ? `
-                  <div class="szc-qv-option-group">
-                    <div class="szc-qv-option-label">
-                      <span>COLOR: <span id="QvSelectedColor">${colorOption.values[0]}</span></span>
-                    </div>
-                    <div class="szc-qv-color-swatches">
-                      ${colorOption.values.map((val, idx) => `
-                        <button
-                          type="button"
-                          class="szc-qv-color-btn ${idx === 0 ? 'is-active' : ''}"
-                          data-opt-idx="${colorOption.index}"
-                          data-val="${val}"
-                          style="background-color: ${getColorHex(val)};"
-                          title="${val}"
-                        ></button>
-                      `).join('')}
-                    </div>
-                  </div>
-                ` : ''}
-
-                <!-- Size Selector -->
-                ${sizeOption ? `
-                  <div class="szc-qv-option-group">
-                    <div class="szc-qv-option-label">
-                      <span>SIZE: <span id="QvSelectedSize">${sizeOption.values[0]}</span></span>
-                      <button type="button" class="szc-qv-size-guide-btn">
-                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="6" width="20" height="12" rx="2"/><path d="M6 12h.01M10 12h.01M14 12h.01M18 12h.01"/></svg>
-                        Size Guide
-                      </button>
-                    </div>
-                    <div class="szc-qv-size-boxes">
-                      ${sizeOption.values.map((val, idx) => `
-                        <button
-                          type="button"
-                          class="szc-qv-size-btn ${idx === 0 ? 'is-active' : ''}"
-                          data-opt-idx="${sizeOption.index}"
-                          data-val="${val}"
-                        >${val}</button>
-                      `).join('')}
-                    </div>
-                  </div>
-                ` : ''}
+                <!-- Dynamic Options (Color, Size, Fabric, etc.) -->
+                ${optionsHtml}
 
                 <!-- Quantity Stepper Box -->
                 <div class="szc-qv-option-group">
@@ -738,17 +769,21 @@
 
                 <!-- Action Buttons -->
                 <div class="szc-qv-actions-row">
-                  <button type="button" class="szc-qv-add-btn" id="QvAddToCartBtn" data-variant-id="${firstVariant.id}">
+                  <button type="button" class="szc-qv-add-btn" id="QvAddToCartBtn" data-variant-id="${firstVariant.id}" ${firstVariant.available === false ? 'disabled' : ''}>
                     <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 0 1-8 0"/></svg>
-                    <span>ADD TO BAG</span>
+                    <span>${firstVariant.available !== false ? 'ADD TO BAG' : 'SOLD OUT'}</span>
                   </button>
-                  <button type="button" class="szc-qv-wishlist-btn" aria-label="Add to wishlist">
+                  <button type="button" class="szc-qv-wishlist-btn" id="QvWishlistBtn" aria-label="Add to wishlist">
                     <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>
                   </button>
                 </div>
 
+                <button type="button" class="szc-qv-buy-btn" id="QvBuyNowBtn">
+                  BUY IT NOW
+                </button>
+
                 <a href="/products/${product.handle}" class="szc-qv-full-btn">
-                  VIEW FULL PRODUCT
+                  VIEW FULL PRODUCT DETAILS
                 </a>
               </div>
 
@@ -820,8 +855,9 @@
           if (prevBtn) prevBtn.addEventListener('click', () => updateStageImage(currentImgIndex - 1));
           if (nextBtn) nextBtn.addEventListener('click', () => updateStageImage(currentImgIndex + 1));
 
-          // Option Selection (Colors & Sizes)
-          let selectedOptions = product.variants[0].options ? [...product.variants[0].options] : [];
+          // Option Selection (Dynamic ALL Options)
+          const firstVariant = product.variants[0];
+          let selectedOptions = firstVariant.options ? [...firstVariant.options] : [];
 
           const updateVariant = () => {
             const matchedVariant = product.variants.find((v) => {
@@ -830,9 +866,28 @@
 
             const addBtn = this.querySelector('#QvAddToCartBtn');
             const priceEl = this.querySelector('#QvPrice');
+            const comparePriceEl = this.querySelector('#QvComparePrice');
 
-            if (addBtn) addBtn.dataset.variantId = matchedVariant.id;
-            if (priceEl) priceEl.textContent = `$${(matchedVariant.price / 100).toFixed(2)}`;
+            if (addBtn) {
+              addBtn.dataset.variantId = matchedVariant.id;
+              if (matchedVariant.available === false) {
+                addBtn.disabled = true;
+                addBtn.querySelector('span').textContent = 'SOLD OUT';
+              } else {
+                addBtn.disabled = false;
+                addBtn.querySelector('span').textContent = 'ADD TO BAG';
+              }
+            }
+
+            if (priceEl) priceEl.textContent = formatMoney(matchedVariant.price);
+            if (comparePriceEl) {
+              if (matchedVariant.compare_at_price > matchedVariant.price) {
+                comparePriceEl.textContent = formatMoney(matchedVariant.compare_at_price);
+                comparePriceEl.style.display = 'inline';
+              } else {
+                comparePriceEl.style.display = 'none';
+              }
+            }
 
             if (matchedVariant.featured_image && matchedVariant.featured_image.src) {
               const imgIdx = images.indexOf(matchedVariant.featured_image.src);
@@ -840,31 +895,49 @@
             }
           };
 
-          // Color click
-          this.querySelectorAll('.szc-qv-color-btn').forEach((btn) => {
+          // Handle clicks on color swatches and size/option pill buttons
+          this.querySelectorAll('.szc-qv-color-btn, .szc-qv-size-btn').forEach((btn) => {
             btn.addEventListener('click', () => {
-              this.querySelectorAll('.szc-qv-color-btn').forEach((b) => b.classList.remove('is-active'));
+              const optGroup = btn.closest('.szc-qv-option-group');
+              if (optGroup) {
+                optGroup.querySelectorAll('.szc-qv-color-btn, .szc-qv-size-btn').forEach((b) => b.classList.remove('is-active'));
+              }
               btn.classList.add('is-active');
+
               const optIdx = parseInt(btn.dataset.optIdx, 10);
-              selectedOptions[optIdx] = btn.dataset.val;
-              const colorText = this.querySelector('#QvSelectedColor');
-              if (colorText) colorText.textContent = btn.dataset.val;
+              const val = btn.dataset.val;
+              selectedOptions[optIdx] = val;
+
+              const selectedSpan = this.querySelector(`#QvSelectedOpt_${optIdx}`);
+              if (selectedSpan) selectedSpan.textContent = val;
+
               updateVariant();
             });
           });
 
-          // Size click
-          this.querySelectorAll('.szc-qv-size-btn').forEach((btn) => {
-            btn.addEventListener('click', () => {
-              this.querySelectorAll('.szc-qv-size-btn').forEach((b) => b.classList.remove('is-active'));
-              btn.classList.add('is-active');
-              const optIdx = parseInt(btn.dataset.optIdx, 10);
-              selectedOptions[optIdx] = btn.dataset.val;
-              const sizeText = this.querySelector('#QvSelectedSize');
-              if (sizeText) sizeText.textContent = btn.dataset.val;
-              updateVariant();
+          // Wishlist toggle button initialization & click
+          const wishlistBtn = this.querySelector('#QvWishlistBtn');
+          if (wishlistBtn) {
+            const inWishlist = window.ShopziCurious && window.ShopziCurious.wishlist && window.ShopziCurious.wishlist.has(product.handle);
+            wishlistBtn.classList.toggle('is-active', !!inWishlist);
+
+            wishlistBtn.addEventListener('click', () => {
+              if (window.ShopziCurious && window.ShopziCurious.wishlist) {
+                const itemData = {
+                  handle: product.handle,
+                  id: product.id,
+                  title: product.title,
+                  price: formatMoney(firstVariant.price),
+                  image: images[0] || '',
+                  url: `/products/${product.handle}`,
+                  vendor: product.vendor || ''
+                };
+                window.ShopziCurious.wishlist.toggle(itemData);
+                const active = window.ShopziCurious.wishlist.has(product.handle);
+                wishlistBtn.classList.toggle('is-active', active);
+              }
             });
-          });
+          }
 
           // Stepper (+ / -)
           const qtyInput = this.querySelector('#QvQtyInput');
@@ -876,6 +949,36 @@
               qtyInput.value = qty;
             });
           });
+
+          // Buy It Now direct checkout click
+          const buyNowBtn = this.querySelector('#QvBuyNowBtn');
+          if (buyNowBtn) {
+            buyNowBtn.addEventListener('click', async () => {
+              const addBtn = this.querySelector('#QvAddToCartBtn');
+              const variantId = addBtn ? addBtn.dataset.variantId : firstVariant.id;
+              const quantity = parseInt(qtyInput ? qtyInput.value : 1, 10);
+              if (!variantId) return;
+
+              buyNowBtn.disabled = true;
+              buyNowBtn.textContent = 'PROCESSING...';
+
+              try {
+                await fetch('/cart/add.js', {
+                  method: 'POST',
+                  headers: {
+                    'Content-Type': 'application/json',
+                    'Accept': 'application/json',
+                    'X-Requested-With': 'XMLHttpRequest'
+                  },
+                  body: JSON.stringify({ items: [{ id: parseInt(variantId, 10), quantity }] })
+                });
+                window.location.href = '/checkout';
+              } catch (err) {
+                console.error(err);
+                window.location.href = '/checkout';
+              }
+            });
+          }
 
           // Add to Bag Click inside Quick View
           const addBtn = this.querySelector('#QvAddToCartBtn');
@@ -900,20 +1003,34 @@
                 });
 
                 const data = await res.json();
+                if (res.status === 422 || data.status) {
+                  throw new Error(data.description || 'Could not add item to cart');
+                }
+
                 const cartRes = await fetch('/cart.js');
                 const cartData = await cartRes.json();
 
-                const cartType = (window.ShopziCurious && window.ShopziCurious.settings && window.ShopziCurious.settings.cartType) ? window.ShopziCurious.settings.cartType : 'drawer';
+                // Animate Fly to Cart BEFORE closing modal (ensures non-zero width/height)
+                if (window.ShopziCurious && window.ShopziCurious.animateFlyToCart) {
+                  window.ShopziCurious.animateFlyToCart(this);
+                } else if (window.ShopziCurious && window.ShopziCurious.bounceCartBadge) {
+                  window.ShopziCurious.bounceCartBadge();
+                }
 
                 this.close();
 
-                if (cartType === 'page') {
-                  window.location.href = (window.ShopziCurious && window.ShopziCurious.routes && window.ShopziCurious.routes.cart_url) ? window.ShopziCurious.routes.cart_url : '/cart';
-                } else {
-                  ShopziCurious.pubsub.publish(ShopziCurious.events.CART_UPDATED, { item: data, item_count: cartData.item_count, openDrawer: true });
+                // Publish CART_UPDATED event with openDrawer: false (do not redirect or open drawer)
+                ShopziCurious.pubsub.publish(ShopziCurious.events.CART_UPDATED, { item: data, item_count: cartData.item_count, openDrawer: false });
+
+                // Show Toast Notification
+                if (window.ShopziCurious && window.ShopziCurious.showToast) {
+                  window.ShopziCurious.showToast('Added to cart');
                 }
               } catch (err) {
                 console.error('[ShopziCurious QuickView Add Error]', err);
+                if (window.ShopziCurious && window.ShopziCurious.showToast) {
+                  window.ShopziCurious.showToast(err.message || 'Could not add item to cart', 'error');
+                }
               } finally {
                 addBtn.disabled = false;
                 addBtn.querySelector('span').textContent = 'ADD TO BAG';
@@ -932,17 +1049,24 @@
       }
     );
 
-    // Global listener for Quick View buttons across entire theme
+    // Global listener for Quick View triggers ONLY across entire theme
     document.addEventListener('click', (e) => {
-      const trigger = e.target.closest('.szc-quick-view-btn, [data-quick-view], [data-product-handle]');
-      if (trigger && !trigger.classList.contains('szc-quick-add-btn')) {
-        const handle = trigger.getAttribute('data-product-handle') || trigger.getAttribute('data-handle');
-        if (handle) {
-          e.preventDefault();
-          const modal = document.querySelector('quick-view-modal');
-          if (modal && modal.open) {
-            modal.open(handle);
-          }
+      // Must match explicit Quick View trigger element
+      const trigger = e.target.closest('.szc-quick-view-btn, [data-quick-view-trigger], [data-quick-view]');
+      if (!trigger) return;
+
+      // Guard: Never trigger Quick View from Quick Add, Wishlist (non-QV), cart actions, or regular forms
+      if (e.target.closest('.szc-quick-add-btn, [data-quick-add], .szc-product-card__wishlist-btn:not(.szc-quick-view-btn), .szc-cart-drawer, cart-drawer')) {
+        return;
+      }
+
+      const handle = trigger.getAttribute('data-product-handle') || trigger.getAttribute('data-handle') || trigger.getAttribute('data-quick-view');
+      if (handle) {
+        e.preventDefault();
+        e.stopPropagation();
+        const modal = document.querySelector('quick-view-modal');
+        if (modal && modal.open) {
+          modal.open(handle);
         }
       }
     });

@@ -91,6 +91,25 @@
         </a>
       {%- endif -%}
 
+      <!-- Wishlist Icon Link with Dynamic Badge Count -->
+      {%- if settings.enable_wishlist != false -%}
+        {%- assign wishlist_url = settings.wishlist_page_url -%}
+        {%- if wishlist_url == blank or wishlist_url == '#' -%}
+          {%- assign wishlist_url = '/pages/wishlist' -%}
+        {%- endif -%}
+        <a
+          href="{{ wishlist_url }}"
+          class="szc-header__icon-btn szc-wishlist-header-link"
+          aria-label="Wishlist"
+          title="Wishlist"
+        >
+          {% render 'icon', icon: 'heart', class: 'szc-header__icon' %}
+          <span class="szc-header__wishlist-badge" data-wishlist-count="0">
+            0
+          </span>
+        </a>
+      {%- endif -%}
+
       <!-- Cart Icon (Drawer vs Page redirect based on settings.cart_type) -->
       {%- if settings.cart_type == 'page' -%}
         <a
@@ -289,6 +308,34 @@
     color: #ffffff;
     background-color: var(--szc-color-primary, #111111);
     border-radius: 9999px;
+  }
+
+  .szc-header__wishlist-badge {
+    position: absolute;
+    top: 2px;
+    right: 2px;
+    display: none;
+    align-items: center;
+    justify-content: center;
+    min-width: 18px;
+    height: 18px;
+    padding: 0 4px;
+    font-size: 10px;
+    font-weight: 700;
+    color: #ffffff;
+    background-color: var(--szc-color-accent, #e76f51);
+    border-radius: 9999px;
+    transition: transform var(--szc-transition-fast, 150ms ease);
+    z-index: 2;
+  }
+
+  .szc-header__wishlist-badge.is-pop {
+    transform: scale(1.35);
+  }
+
+  /* Ensure strictly only 1 SVG icon renders inside wishlist link */
+  .szc-wishlist-header-link > svg ~ svg {
+    display: none !important;
   }
 
   @media (max-width: 989px) {

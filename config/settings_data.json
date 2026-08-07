@@ -79,6 +79,10 @@
     "enable_lazy_loading": true,
     "enable_animations": true,
     "accessibility_focus_ring": true,
-    "respect_reduced_motion": true
+    "respect_reduced_motion": true,
+    "enable_wishlist": true,
+    "wishlist_page_url": "/pages/wishlist",
+    "wishlist_empty_title": "Your wishlist is empty",
+    "wishlist_empty_text": "Looks like you haven't added anything to your wishlist yet."
   }
 }

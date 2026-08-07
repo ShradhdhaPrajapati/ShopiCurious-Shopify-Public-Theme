@@ -79,7 +79,6 @@
             show_vendor: section.settings.show_vendor,
             show_quick_add: section.settings.show_quick_add,
             show_quick_view: true,
-            show_rating: section.settings.show_rating,
             show_price: section.settings.show_price
           %}
         </div>
@@ -100,7 +99,6 @@
                 show_vendor: section.settings.show_vendor,
                 show_quick_add: section.settings.show_quick_add,
                 show_quick_view: true,
-                show_rating: section.settings.show_rating,
                 show_price: section.settings.show_price
               %}
             </div>
@@ -123,7 +121,6 @@
             {% render 'product-card',
               card_product: nil,
               show_secondary_image: section.settings.show_secondary_image,
-              show_rating: section.settings.show_rating,
               show_price: section.settings.show_price,
               show_quick_add: section.settings.show_quick_add
             %}
@@ -393,12 +390,6 @@
       "id": "show_vendor",
       "default": false,
       "label": "Show vendor"
-    },
-    {
-      "type": "checkbox",
-      "id": "show_rating",
-      "default": true,
-      "label": "Show product rating"
     },
     {
       "type": "checkbox",
