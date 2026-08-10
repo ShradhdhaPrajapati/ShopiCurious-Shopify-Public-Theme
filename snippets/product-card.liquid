@@ -46,6 +46,8 @@
     assign show_secondary = false
   elsif show_secondary_image == true
     assign show_secondary = true
+  elsif settings.show_secondary_image != blank
+    assign show_secondary = settings.show_secondary_image
   elsif settings.product_card_show_secondary_image != blank
     assign show_secondary = settings.product_card_show_secondary_image
   endif
@@ -57,8 +59,6 @@
     assign display_price = false
   elsif show_price == true
     assign display_price = true
-  elsif settings.product_card_show_price != blank
-    assign display_price = settings.product_card_show_price
   endif
 
   assign show_view = true
@@ -66,8 +66,8 @@
     assign show_view = false
   elsif show_quick_view == true
     assign show_view = true
-  elsif settings.product_card_show_quick_view != blank
-    assign show_view = settings.product_card_show_quick_view
+  elsif settings.enable_quick_shop != blank
+    assign show_view = settings.enable_quick_shop
   endif
 
   assign show_add = true
@@ -75,8 +75,6 @@
     assign show_add = false
   elsif show_quick_add == true
     assign show_add = true
-  elsif settings.product_card_show_quick_add != blank
-    assign show_add = settings.product_card_show_quick_add
   endif
 
   assign is_lazy = lazy_load | default: true
@@ -124,18 +122,37 @@
       <div class="szc-product-card__badges">
         {%- if product.available == false -%}
           {% render 'badge', label: 'Sold Out', type: 'sold-out', size: 'sm' %}
-        {%- elsif product.compare_at_price > product.price -%}
+        {%- elsif product.compare_at_price > product.price and settings.show_sale_badge != false -%}
           {%- assign savings = product.compare_at_price | minus: product.price | times: 100.0 | divided_by: product.compare_at_price | round -%}
           {%- assign badge_label = savings | prepend: '-' | append: '%' -%}
           {% render 'badge', label: badge_label, type: 'sale', size: 'sm' %}
-        {%- elsif product.tags contains 'New' or product.tags contains 'new' -%}
-          {% render 'badge', label: 'New', type: 'new', size: 'sm' %}
+        {%- else -%}
+          {%- assign is_new = false -%}
+          {%- if product.tags contains 'New' or product.tags contains 'new' -%}
+            {%- assign is_new = true -%}
+          {%- endif -%}
+          {%- assign is_bestseller = false -%}
+          {%- if product.tags contains 'Bestseller' or product.tags contains 'bestseller' -%}
+            {%- assign is_bestseller = true -%}
+          {%- endif -%}
+          {%- assign is_limited = false -%}
+          {%- if product.tags contains 'Limited' or product.tags contains 'limited' -%}
+            {%- assign is_limited = true -%}
+          {%- endif -%}
+
+          {%- if is_new and settings.show_new_arrival_badge != false -%}
+            {% render 'badge', label: 'New', type: 'new', size: 'sm' %}
+          {%- elsif is_bestseller and settings.show_bestseller_badge != false -%}
+            {% render 'badge', label: 'Best Seller', type: 'bestseller', size: 'sm' %}
+          {%- elsif is_limited and settings.show_limited_badge != false -%}
+            {% render 'badge', label: 'Limited', type: 'limited', size: 'sm' %}
+          {%- endif -%}
         {%- endif -%}
       </div>
 
       <!-- Wishlist Action Top-Right -->
       <div class="szc-product-card__actions">
-        {%- if settings.enable_wishlist != false -%}
+        {%- if settings.enable_wishlist != false and settings.enable_wishlist_button != false -%}
           <button
             type="button"
             class="szc-product-card__wishlist-btn"
@@ -283,9 +300,9 @@
     flex-direction: column;
     position: relative;
     width: 100%;
-    border-radius: 12px;
-    background-color: #ffffff;
-    border: 1px solid #f0f0f0;
+    border-radius: var(--szc-radius-card, 12px);
+    background-color: var(--szc-color-surface, #ffffff);
+    border: 1px solid var(--szc-color-border, #f0f0f0);
     box-shadow: 0 2px 6px rgba(0, 0, 0, 0.02);
     overflow: hidden;
     transition: transform 250ms ease, box-shadow 250ms ease;
@@ -309,7 +326,7 @@
     position: relative;
     width: 100%;
     overflow: hidden;
-    background-color: #f7f5f0;
+    background-color: var(--szc-color-surface-subtle, #f7f5f0);
   }
 
   .szc-product-card__media-link {
@@ -347,7 +364,7 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    background-color: #f0eee9;
+    background-color: var(--szc-color-surface-subtle, #f0eee9);
   }
 
   /* Badges Overlay */
@@ -373,7 +390,7 @@
   }
 
   .szc-product-card__wishlist-btn {
-    background: #ffffff;
+    background: var(--szc-color-surface, #ffffff);
     border: none;
     width: 32px;
     height: 32px;
@@ -382,15 +399,15 @@
     align-items: center;
     justify-content: center;
     cursor: pointer;
-    color: #111111;
+    color: var(--szc-color-text-primary, #111111);
     box-shadow: 0 2px 6px rgba(0, 0, 0, 0.08);
     transition: all 200ms ease;
     padding: 0;
   }
 
   .szc-product-card__wishlist-btn:hover {
-    background: #ffffff;
-    color: #e63946;
+    background: var(--szc-color-surface, #ffffff);
+    color: var(--szc-color-error, #e63946);
     transform: scale(1.08);
   }
 
@@ -428,7 +445,7 @@
     display: flex;
     flex-direction: column;
     gap: 4px;
-    background-color: #ffffff;
+    background-color: var(--szc-color-surface, #ffffff);
   }
 
   .szc-product-card__vendor {
@@ -436,7 +453,7 @@
     font-size: 11px;
     text-transform: uppercase;
     letter-spacing: 0.05em;
-    color: #757575;
+    color: var(--szc-color-text-muted, #757575);
   }
 
   .szc-product-card__title {
@@ -448,7 +465,7 @@
   }
 
   .szc-product-card__title-link {
-    color: #111111;
+    color: var(--szc-color-heading, var(--szc-color-text-primary, #111111));
     text-decoration: none;
     transition: color 150ms ease;
   }
@@ -460,13 +477,13 @@
   .szc-product-card__price-wrapper {
     font-weight: 700;
     font-size: 14px;
-    color: #111111;
+    color: var(--szc-color-text-primary, #111111);
     margin-top: 2px;
   }
 
   .szc-price__item {
     font-weight: 700;
-    color: #111111;
+    color: var(--szc-color-text-primary, #111111);
   }
 
   .szc-product-card__rating {
@@ -488,18 +505,18 @@
   }
 
   .szc-star-icon--filled {
-    color: #f4a261;
-    fill: #f4a261;
+    color: var(--szc-color-warning, #f4a261);
+    fill: var(--szc-color-warning, #f4a261);
   }
 
   .szc-star-icon--empty {
-    color: #e0e0e0;
+    color: var(--szc-color-border, #e0e0e0);
     fill: none;
   }
 
   .szc-product-card__review-count {
     font-size: 12px;
-    color: #888888;
+    color: var(--szc-color-text-muted, #888888);
   }
 
   @media screen and (max-width: 480px) {

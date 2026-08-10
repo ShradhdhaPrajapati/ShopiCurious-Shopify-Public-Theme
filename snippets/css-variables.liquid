@@ -24,6 +24,28 @@
     {{ settings.type_nav_font | font_face: font_display: 'swap' }}
   {% endunless %}
 
+  {%- liquid
+    assign primary_color = settings.color_primary | default: '#111111'
+    assign secondary_color = settings.color_secondary | default: '#D4A373'
+    assign accent_color = settings.color_accent | default: '#E76F51'
+    assign bg_color = settings.color_background | default: '#FFFFFF'
+    assign surface_color = settings.color_surface | default: '#F8F9FA'
+    assign border_color = settings.color_border | default: '#E5E5E5'
+    assign heading_color = settings.color_heading | default: '#111111'
+    assign text_primary_color = settings.color_text_primary | default: '#2B2B2B'
+    assign text_muted_color = settings.color_text_muted | default: '#757575'
+
+    assign primary_rgb = primary_color | color_to_rgb | remove: 'rgb(' | remove: 'rgba(' | remove: ')' | split: ','
+    assign primary_r = primary_rgb[0] | strip
+    assign primary_g = primary_rgb[1] | strip
+    assign primary_b = primary_rgb[2] | strip
+
+    assign secondary_rgb = secondary_color | color_to_rgb | remove: 'rgb(' | remove: 'rgba(' | remove: ')' | split: ','
+    assign secondary_r = secondary_rgb[0] | strip
+    assign secondary_g = secondary_rgb[1] | strip
+    assign secondary_b = secondary_rgb[2] | strip
+  -%}
+
   :root {
     /* Font Families */
     --font-primary--family: {{ settings.type_primary_font.family }}, {{ settings.type_primary_font.fallback_families }};
@@ -36,20 +58,41 @@
 
     --font-nav--family: {{ settings.type_nav_font.family }}, {{ settings.type_nav_font.fallback_families }};
 
+    --szc-font-family-body: var(--font-primary--family);
+    --szc-font-family-heading: var(--font-heading--family);
+
     --szc-font-size-base: {{ settings.base_font_size | default: 16 }}px;
     --szc-heading-scale: {{ settings.heading_scale | default: 100 | divided_by: 100.0 }};
 
     /* Dynamic Fashion Color Palette */
-    --szc-color-primary: {{ settings.color_primary | default: '#111111' }};
-    --szc-color-secondary: {{ settings.color_secondary | default: '#D4A373' }};
-    --szc-color-accent: {{ settings.color_accent | default: '#E76F51' }};
-    --szc-color-background: {{ settings.color_background | default: '#FFFFFF' }};
-    --szc-color-surface: {{ settings.color_surface | default: '#F8F9FA' }};
-    --szc-color-border: {{ settings.color_border | default: '#E5E5E5' }};
+    --szc-color-primary: {{ primary_color }};
+    --szc-color-primary-light: {{ primary_color | color_lighten: 15 }};
+    --szc-color-primary-dark: {{ primary_color | color_darken: 15 }};
+    --szc-color-primary-rgb: {{ primary_r }}, {{ primary_g }}, {{ primary_b }};
 
-    --szc-color-heading: {{ settings.color_heading | default: '#111111' }};
-    --szc-color-text-primary: {{ settings.color_text_primary | default: '#2B2B2B' }};
-    --szc-color-text-muted: {{ settings.color_text_muted | default: '#757575' }};
+    --szc-color-secondary: {{ secondary_color }};
+    --szc-color-secondary-light: {{ secondary_color | color_lighten: 15 }};
+    --szc-color-secondary-dark: {{ secondary_color | color_darken: 15 }};
+    --szc-color-secondary-rgb: {{ secondary_r }}, {{ secondary_g }}, {{ secondary_b }};
+
+    --szc-color-accent: {{ accent_color }};
+    --szc-color-accent-light: {{ accent_color | color_lighten: 15 }};
+    --szc-color-accent-dark: {{ accent_color | color_darken: 15 }};
+
+    --szc-color-background: {{ bg_color }};
+    --szc-color-surface: {{ surface_color }};
+    --szc-color-surface-subtle: {{ surface_color | color_darken: 3 }};
+    --szc-color-surface-elevated: {{ bg_color }};
+
+    --szc-color-heading: {{ heading_color }};
+    --szc-color-text-primary: {{ text_primary_color }};
+    --szc-color-text-secondary: {{ text_muted_color }};
+    --szc-color-text-muted: {{ text_muted_color }};
+    --szc-color-text-inverse: {{ bg_color }};
+
+    --szc-color-border: {{ border_color }};
+    --szc-color-border-subtle: {{ border_color | color_lighten: 5 }};
+    --szc-color-border-strong: {{ border_color | color_darken: 10 }};
 
     --szc-color-success: {{ settings.color_success | default: '#2A9D8F' }};
     --szc-color-warning: {{ settings.color_warning | default: '#E9C46A' }};
@@ -67,7 +110,25 @@
     --szc-radius-button: {{ settings.button_corner_radius | default: 2 }}px;
     --szc-radius-card: {{ settings.card_corner_radius | default: 4 }}px;
 
-    /* Component Heights & Dimensions */
+    /* Component Heights & Styles */
     --szc-button-height: {{ settings.button_height | default: '48px' }};
   }
+
+  {% if settings.accessibility_focus_ring != false %}
+    *:focus-visible {
+      outline: 2px solid var(--szc-color-secondary, #d4a373) !important;
+      outline-offset: 2px !important;
+    }
+  {% endif %}
+
+  {% if settings.respect_reduced_motion != false %}
+    @media (prefers-reduced-motion: reduce) {
+      *, ::before, ::after {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+        scroll-behavior: auto !important;
+      }
+    }
+  {% endif %}
 {% endstyle %}

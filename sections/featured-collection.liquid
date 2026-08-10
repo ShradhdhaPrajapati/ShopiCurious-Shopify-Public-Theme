@@ -155,7 +155,7 @@
     font-weight: 600;
     text-transform: uppercase;
     letter-spacing: 0.12em;
-    color: #666666;
+    color: var(--szc-color-text-muted, #666666);
     margin-bottom: 6px;
   }
 
@@ -164,7 +164,7 @@
     font-family: var(--szc-font-family-heading, Georgia, 'Playfair Display', serif);
     font-size: clamp(24px, 3vw, 34px);
     font-weight: 500;
-    color: #111111;
+    color: var(--szc-color-heading, #111111);
     line-height: 1.2;
   }
 
@@ -174,9 +174,9 @@
     font-weight: 600;
     letter-spacing: 0.12em;
     text-transform: uppercase;
-    color: #555555;
+    color: var(--szc-color-text-muted, #555555);
     text-decoration: underline;
-    text-decoration-color: #d4a373;
+    text-decoration-color: var(--szc-color-secondary, #d4a373);
     text-underline-offset: 4px;
     white-space: nowrap;
     flex-shrink: 0;
@@ -185,8 +185,8 @@
   }
 
   .szc-section-header__view-all:hover {
-    color: #111111;
-    text-decoration-color: #111111;
+    color: var(--szc-color-heading, #111111);
+    text-decoration-color: var(--szc-color-heading, #111111);
   }
 
   .szc-featured-collection__grid {

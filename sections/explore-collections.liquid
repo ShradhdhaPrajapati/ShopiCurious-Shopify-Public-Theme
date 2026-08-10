@@ -179,7 +179,7 @@
     font-weight: 600;
     text-transform: uppercase;
     letter-spacing: 0.12em;
-    color: #666666;
+    color: var(--szc-color-text-muted, #666666);
     margin-bottom: 6px;
   }
 
@@ -188,7 +188,7 @@
     font-family: var(--szc-font-family-heading, Georgia, 'Playfair Display', serif);
     font-size: clamp(24px, 3vw, 34px);
     font-weight: 500;
-    color: #111111;
+    color: var(--szc-color-heading, #111111);
     line-height: 1.2;
   }
 
@@ -211,10 +211,10 @@
     display: flex;
     flex-direction: column;
     width: 100%;
-    border-radius: 14px;
+    border-radius: var(--szc-radius-card, 14px);
     overflow: hidden;
     text-decoration: none;
-    background-color: #f7f4ee;
+    background-color: var(--szc-color-surface, #f7f4ee);
     box-shadow: 0 2px 8px rgba(0, 0, 0, 0.03);
     transition: transform 300ms ease, box-shadow 300ms ease;
   }
@@ -250,8 +250,8 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    background-color: #eee9df;
-    color: #a8a090;
+    background-color: var(--szc-color-surface-subtle, #eee9df);
+    color: var(--szc-color-text-muted, #a8a090);
   }
 
   /* Bottom Frosted Glass Overlay */
@@ -278,7 +278,7 @@
     font-family: var(--szc-font-family-body, sans-serif);
     font-size: 14px;
     font-weight: 700;
-    color: #111111;
+    color: var(--szc-color-heading, #111111);
     line-height: 1.3;
   }
 
@@ -286,7 +286,7 @@
     margin: 3px 0 0 0;
     font-family: var(--szc-font-family-body, sans-serif);
     font-size: 11px;
-    color: #666666;
+    color: var(--szc-color-text-muted, #666666);
     line-height: 1.3;
   }
 {% endstylesheet %}

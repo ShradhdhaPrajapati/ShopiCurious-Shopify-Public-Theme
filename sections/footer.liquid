@@ -14,7 +14,9 @@
               <!-- Brand Logo / Title -->
               <div class="szc-footer__brand-header">
                 {%- if block.settings.logo != blank -%}
-                  {% render 'image', image: block.settings.logo, aspect_ratio: 'auto', class: 'szc-footer__logo-img' %}
+                  <div class="szc-footer__logo-wrapper" style="--footer-logo-width: {{ block.settings.logo_width | default: 160 }}px;">
+                    {% render 'image', image: block.settings.logo, aspect_ratio: 'auto', class: 'szc-footer__logo-img', width: block.settings.logo_width %}
+                  </div>
                 {%- else -%}
                   <span class="szc-footer__brand-title">LUMIÈRE</span>
                   <span class="szc-footer__brand-sub">FINE FASHION</span>
@@ -31,95 +33,98 @@
               <!-- Social Media Icons Row -->
               {%- if block.settings.show_socials -%}
                 <div class="szc-footer__socials">
-                  {%- if settings.social_instagram_link != blank or true -%}
+                  {%- if block.settings.show_instagram != false -%}
+                    {%- assign insta_link = block.settings.instagram_link | default: settings.social_instagram_link | default: '#' -%}
                     <a
-                      href="{{ settings.social_instagram_link | default: 'https://instagram.com' }}"
+                      href="{{ insta_link }}"
                       target="_blank"
                       rel="noopener noreferrer"
                       class="szc-footer__social-link"
                       aria-label="Instagram"
                     >
-                      <svg
-                        class="szc-social-icon"
-                        viewBox="0 0 24 24"
-                        fill="none"
-                        stroke="currentColor"
-                        stroke-width="1.8"
-                        stroke-linecap="round"
-                        stroke-linejoin="round"
-                        aria-hidden="true"
-                      >
-                        <rect x="2" y="2" width="20" height="20" rx="5" ry="5"/><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"/><line x1="17.5" y1="6.5" x2="17.51" y2="6.5"/>
-                      </svg>
+                      {%- if block.settings.instagram_icon != blank -%}
+                        {{ block.settings.instagram_icon | image_url: width: 40 | image_tag: width: 18, height: 18, class: 'szc-footer-custom-social-img', loading: 'lazy' }}
+                      {%- else -%}
+                        <svg class="szc-social-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                          <rect x="2" y="2" width="20" height="20" rx="5" ry="5"/><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"/><line x1="17.5" y1="6.5" x2="17.51" y2="6.5"/>
+                        </svg>
+                      {%- endif -%}
                     </a>
                   {%- endif -%}
 
-                  {%- if settings.social_facebook_link != blank or true -%}
+                  {%- if block.settings.show_facebook != false -%}
+                    {%- assign fb_link = block.settings.facebook_link | default: settings.social_facebook_link | default: '#' -%}
                     <a
-                      href="{{ settings.social_facebook_link | default: 'https://facebook.com' }}"
+                      href="{{ fb_link }}"
                       target="_blank"
                       rel="noopener noreferrer"
                       class="szc-footer__social-link"
                       aria-label="Facebook"
                     >
-                      <svg
-                        class="szc-social-icon"
-                        viewBox="0 0 24 24"
-                        fill="none"
-                        stroke="currentColor"
-                        stroke-width="1.8"
-                        stroke-linecap="round"
-                        stroke-linejoin="round"
-                        aria-hidden="true"
-                      >
-                        <path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z"/>
-                      </svg>
+                      {%- if block.settings.facebook_icon != blank -%}
+                        {{ block.settings.facebook_icon | image_url: width: 40 | image_tag: width: 18, height: 18, class: 'szc-footer-custom-social-img', loading: 'lazy' }}
+                      {%- else -%}
+                        <svg class="szc-social-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                          <path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z"/>
+                        </svg>
+                      {%- endif -%}
                     </a>
                   {%- endif -%}
 
-                  {%- if settings.social_pinterest_link != blank or true -%}
+                  {%- if block.settings.show_pinterest != false -%}
+                    {%- assign pin_link = block.settings.pinterest_link | default: settings.social_pinterest_link | default: '#' -%}
                     <a
-                      href="{{ settings.social_pinterest_link | default: 'https://pinterest.com' }}"
+                      href="{{ pin_link }}"
                       target="_blank"
                       rel="noopener noreferrer"
                       class="szc-footer__social-link"
                       aria-label="Pinterest"
                     >
-                      <svg
-                        class="szc-social-icon"
-                        viewBox="0 0 24 24"
-                        fill="none"
-                        stroke="currentColor"
-                        stroke-width="1.8"
-                        stroke-linecap="round"
-                        stroke-linejoin="round"
-                        aria-hidden="true"
-                      >
-                        <path d="M12 2C6.48 2 2 6.48 2 12c0 4.17 2.56 7.74 6.19 9.21-.09-.79-.17-2.01.03-2.87.19-.8 1.22-5.17 1.22-5.17s-.31-.63-.31-1.56c0-1.46.85-2.55 1.9-2.55.9 0 1.33.67 1.33 1.48 0 .9-.57 2.25-.87 3.5-.25 1.05.52 1.91 1.56 1.91 1.87 0 3.31-1.97 3.31-4.82 0-2.52-1.81-4.28-4.39-4.28-2.99 0-4.75 2.24-4.75 4.56 0 .9.35 1.87.79 2.4.09.11.1.2.07.31-.08.32-.25 1.03-.29 1.17-.05.21-.18.26-.41.16-1.53-.71-2.48-2.94-2.48-4.73 0-3.85 2.8-7.39 8.07-7.39 4.24 0 7.54 3.02 7.54 7.06 0 4.21-2.65 7.6-6.33 7.6-1.24 0-2.4-.64-2.8-1.4l-.76 2.91c-.28 1.07-1.03 2.41-1.54 3.23A10.007 10.007 0 0 0 12 22c5.52 0 10-4.48 10-10S17.52 2 12 2z"/>
-                      </svg>
+                      {%- if block.settings.pinterest_icon != blank -%}
+                        {{ block.settings.pinterest_icon | image_url: width: 40 | image_tag: width: 18, height: 18, class: 'szc-footer-custom-social-img', loading: 'lazy' }}
+                      {%- else -%}
+                        <svg class="szc-social-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                          <path d="M12 2C6.48 2 2 6.48 2 12c0 4.17 2.56 7.74 6.19 9.21-.09-.79-.17-2.01.03-2.87.19-.8 1.22-5.17 1.22-5.17s-.31-.63-.31-1.56c0-1.46.85-2.55 1.9-2.55.9 0 1.33.67 1.33 1.48 0 .9-.57 2.25-.87 3.5-.25 1.05.52 1.91 1.56 1.91 1.87 0 3.31-1.97 3.31-4.82 0-2.52-1.81-4.28-4.39-4.28-2.99 0-4.75 2.24-4.75 4.56 0 .9.35 1.87.79 2.4.09.11.1.2.07.31-.08.32-.25 1.03-.29 1.17-.05.21-.18.26-.41.16-1.53-.71-2.48-2.94-2.48-4.73 0-3.85 2.8-7.39 8.07-7.39 4.24 0 7.54 3.02 7.54 7.06 0 4.21-2.65 7.6-6.33 7.6-1.24 0-2.4-.64-2.8-1.4l-.76 2.91c-.28 1.07-1.03 2.41-1.54 3.23A10.007 10.007 0 0 0 12 22c5.52 0 10-4.48 10-10S17.52 2 12 2z"/>
+                        </svg>
+                      {%- endif -%}
                     </a>
                   {%- endif -%}
 
-                  {%- if settings.social_youtube_link != blank or true -%}
+                  {%- if block.settings.show_youtube != false -%}
+                    {%- assign yt_link = block.settings.youtube_link | default: settings.social_youtube_link | default: '#' -%}
                     <a
-                      href="{{ settings.social_youtube_link | default: 'https://youtube.com' }}"
+                      href="{{ yt_link }}"
                       target="_blank"
                       rel="noopener noreferrer"
                       class="szc-footer__social-link"
                       aria-label="YouTube"
                     >
-                      <svg
-                        class="szc-social-icon"
-                        viewBox="0 0 24 24"
-                        fill="none"
-                        stroke="currentColor"
-                        stroke-width="1.8"
-                        stroke-linecap="round"
-                        stroke-linejoin="round"
-                        aria-hidden="true"
-                      >
-                        <path d="M22.54 6.42a2.78 2.78 0 0 0-1.94-2C18.88 4 12 4 12 4s-6.88 0-8.6.46a2.78 2.78 0 0 0-1.94 2A29 29 0 0 0 1 11.75a29 29 0 0 0 .46 5.33A2.78 2.78 0 0 0 3.4 19c1.72.46 8.6.46 8.6.46s6.88 0 8.6-.46a2.78 2.78 0 0 0 1.94-2 29 29 0 0 0 .46-5.25 29 29 0 0 0-.46-5.33z"/><polygon points="9.75 15.02 15.5 11.75 9.75 8.48 9.75 15.02"/>
-                      </svg>
+                      {%- if block.settings.youtube_icon != blank -%}
+                        {{ block.settings.youtube_icon | image_url: width: 40 | image_tag: width: 18, height: 18, class: 'szc-footer-custom-social-img', loading: 'lazy' }}
+                      {%- else -%}
+                        <svg class="szc-social-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                          <path d="M22.54 6.42a2.78 2.78 0 0 0-1.94-2C18.88 4 12 4 12 4s-6.88 0-8.6.46a2.78 2.78 0 0 0-1.94 2A29 29 0 0 0 1 11.75a29 29 0 0 0 .46 5.33A2.78 2.78 0 0 0 3.4 19c1.72.46 8.6.46 8.6.46s6.88 0 8.6-.46a2.78 2.78 0 0 0 1.94-2 29 29 0 0 0 .46-5.25 29 29 0 0 0-.46-5.33z"/><polygon points="9.75 15.02 15.5 11.75 9.75 8.48 9.75 15.02"/>
+                        </svg>
+                      {%- endif -%}
+                    </a>
+                  {%- endif -%}
+
+                  {%- if block.settings.show_twitter -%}
+                    {%- assign tw_link = block.settings.twitter_link | default: settings.social_twitter_link | default: '#' -%}
+                    <a
+                      href="{{ tw_link }}"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      class="szc-footer__social-link"
+                      aria-label="X / Twitter"
+                    >
+                      {%- if block.settings.twitter_icon != blank -%}
+                        {{ block.settings.twitter_icon | image_url: width: 40 | image_tag: width: 18, height: 18, class: 'szc-footer-custom-social-img', loading: 'lazy' }}
+                      {%- else -%}
+                        <svg class="szc-social-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                          <path d="M23 3a10.9 10.9 0 0 1-3.14 1.53 4.48 4.48 0 0 0-7.86 3v1A10.66 10.66 0 0 1 3 4s-4 9 5 13a11.64 11.64 0 0 1-7 2c9 5 20 0 20-11.5a4.5 4.5 0 0 0-.08-.83A7.72 7.72 0 0 0 23 3z"/>
+                        </svg>
+                      {%- endif -%}
                     </a>
                   {%- endif -%}
                 </div>
@@ -209,29 +214,171 @@
     <div class="szc-footer__bottom-inner page-width">
       <div class="szc-footer__copyright">
         &copy; {{ 'now' | date: '%Y' }}
-        {{ section.settings.copyright_text | default: 'Lumière Fine Fashion, All Rights Reserved.' }}
+        {%- if section.settings.copyright_text != blank -%}
+          {{ section.settings.copyright_text }}
+        {%- else -%}
+          {{ shop.name }}, All Rights Reserved.
+        {%- endif -%}
       </div>
 
       {%- if section.settings.show_payment_icons -%}
         <div class="szc-footer__payment-types">
-          {%- if shop.enabled_payment_types.size > 0 -%}
-            {%- for type in shop.enabled_payment_types -%}
-              <span class="szc-footer__payment-icon">
-                {{ type | payment_type_svg_tag: class: 'szc-payment-svg' }}
-              </span>
-            {%- endfor -%}
-          {%- else -%}
-            <!-- Payment Icons matching UI Screenshot -->
-            <span class="szc-payment-badge szc-payment-badge--visa">VISA</span>
-            <span class="szc-payment-badge szc-payment-badge--mc">
-              <span class="szc-mc-circle szc-mc-red"></span>
-              <span class="szc-mc-circle szc-mc-yellow"></span>
-            </span>
-            <span class="szc-payment-badge szc-payment-badge--amex">AMEX</span>
-            <span class="szc-payment-badge szc-payment-badge--paypal">PayPal</span>
-            <span class="szc-payment-badge szc-payment-badge--apple"> Pay</span>
-            <span class="szc-payment-badge szc-payment-badge--gpay">G Pay</span>
-          {%- endif -%}
+
+            {%- if section.settings.show_visa != false -%}
+              {%- if section.settings.visa_link != blank -%}
+                <a href="{{ section.settings.visa_link }}" target="_blank" rel="noopener noreferrer" class="szc-footer__payment-link" aria-label="Visa">
+              {%- else -%}
+                <span class="szc-footer__payment-icon" title="Visa">
+              {%- endif -%}
+
+              {%- if section.settings.visa_icon != blank -%}
+                {{ section.settings.visa_icon | image_url: width: 120 | image_tag: height: 24, class: 'szc-payment-custom-img', loading: 'lazy' }}
+              {%- else -%}
+                {{ 'visa' | payment_type_svg_tag: class: 'szc-payment-svg' }}
+              {%- endif -%}
+
+              {%- if section.settings.visa_link != blank -%}
+                </a>
+              {%- else -%}
+                </span>
+              {%- endif -%}
+            {%- endif -%}
+
+            {%- if section.settings.show_mastercard != false -%}
+              {%- if section.settings.mastercard_link != blank -%}
+                <a href="{{ section.settings.mastercard_link }}" target="_blank" rel="noopener noreferrer" class="szc-footer__payment-link" aria-label="Mastercard">
+              {%- else -%}
+                <span class="szc-footer__payment-icon" title="Mastercard">
+              {%- endif -%}
+
+              {%- if section.settings.mastercard_icon != blank -%}
+                {{ section.settings.mastercard_icon | image_url: width: 120 | image_tag: height: 24, class: 'szc-payment-custom-img', loading: 'lazy' }}
+              {%- else -%}
+                {{ 'master' | payment_type_svg_tag: class: 'szc-payment-svg' }}
+              {%- endif -%}
+
+              {%- if section.settings.mastercard_link != blank -%}
+                </a>
+              {%- else -%}
+                </span>
+              {%- endif -%}
+            {%- endif -%}
+
+            {%- if section.settings.show_amex != false -%}
+              {%- if section.settings.amex_link != blank -%}
+                <a href="{{ section.settings.amex_link }}" target="_blank" rel="noopener noreferrer" class="szc-footer__payment-link" aria-label="American Express">
+              {%- else -%}
+                <span class="szc-footer__payment-icon" title="American Express">
+              {%- endif -%}
+
+              {%- if section.settings.amex_icon != blank -%}
+                {{ section.settings.amex_icon | image_url: width: 120 | image_tag: height: 24, class: 'szc-payment-custom-img', loading: 'lazy' }}
+              {%- else -%}
+                {{ 'american_express' | payment_type_svg_tag: class: 'szc-payment-svg' }}
+              {%- endif -%}
+
+              {%- if section.settings.amex_link != blank -%}
+                </a>
+              {%- else -%}
+                </span>
+              {%- endif -%}
+            {%- endif -%}
+
+            {%- if section.settings.show_paypal != false -%}
+              {%- if section.settings.paypal_link != blank -%}
+                <a href="{{ section.settings.paypal_link }}" target="_blank" rel="noopener noreferrer" class="szc-footer__payment-link" aria-label="PayPal">
+              {%- else -%}
+                <span class="szc-footer__payment-icon" title="PayPal">
+              {%- endif -%}
+
+              {%- if section.settings.paypal_icon != blank -%}
+                {{ section.settings.paypal_icon | image_url: width: 120 | image_tag: height: 24, class: 'szc-payment-custom-img', loading: 'lazy' }}
+              {%- else -%}
+                {{ 'paypal' | payment_type_svg_tag: class: 'szc-payment-svg' }}
+              {%- endif -%}
+
+              {%- if section.settings.paypal_link != blank -%}
+                </a>
+              {%- else -%}
+                </span>
+              {%- endif -%}
+            {%- endif -%}
+
+            {%- if section.settings.show_apple_pay != false -%}
+              {%- if section.settings.apple_pay_link != blank -%}
+                <a href="{{ section.settings.apple_pay_link }}" target="_blank" rel="noopener noreferrer" class="szc-footer__payment-link" aria-label="Apple Pay">
+              {%- else -%}
+                <span class="szc-footer__payment-icon" title="Apple Pay">
+              {%- endif -%}
+
+              {%- if section.settings.apple_pay_icon != blank -%}
+                {{ section.settings.apple_pay_icon | image_url: width: 120 | image_tag: height: 24, class: 'szc-payment-custom-img', loading: 'lazy' }}
+              {%- else -%}
+                {{ 'apple_pay' | payment_type_svg_tag: class: 'szc-payment-svg' }}
+              {%- endif -%}
+
+              {%- if section.settings.apple_pay_link != blank -%}
+                </a>
+              {%- else -%}
+                </span>
+              {%- endif -%}
+            {%- endif -%}
+
+            {%- if section.settings.show_google_pay != false -%}
+              {%- if section.settings.google_pay_link != blank -%}
+                <a href="{{ section.settings.google_pay_link }}" target="_blank" rel="noopener noreferrer" class="szc-footer__payment-link" aria-label="Google Pay">
+              {%- else -%}
+                <span class="szc-footer__payment-icon" title="Google Pay">
+              {%- endif -%}
+
+              {%- if section.settings.google_pay_icon != blank -%}
+                {{ section.settings.google_pay_icon | image_url: width: 120 | image_tag: height: 24, class: 'szc-payment-custom-img', loading: 'lazy' }}
+              {%- else -%}
+                {{ 'google_pay' | payment_type_svg_tag: class: 'szc-payment-svg' }}
+              {%- endif -%}
+
+              {%- if section.settings.google_pay_link != blank -%}
+                </a>
+              {%- else -%}
+                </span>
+              {%- endif -%}
+            {%- endif -%}
+
+            {%- if section.settings.show_discover -%}
+              {%- if section.settings.discover_link != blank -%}
+                <a href="{{ section.settings.discover_link }}" target="_blank" rel="noopener noreferrer" class="szc-footer__payment-link" aria-label="Discover">
+              {%- else -%}
+                <span class="szc-footer__payment-icon" title="Discover">
+              {%- endif -%}
+
+              {%- if section.settings.discover_icon != blank -%}
+                {{ section.settings.discover_icon | image_url: width: 120 | image_tag: height: 24, class: 'szc-payment-custom-img', loading: 'lazy' }}
+              {%- else -%}
+                {{ 'discover' | payment_type_svg_tag: class: 'szc-payment-svg' }}
+              {%- endif -%}
+
+              {%- if section.settings.discover_link != blank -%}
+                </a>
+              {%- else -%}
+                </span>
+              {%- endif -%}
+            {%- endif -%}
+
+            {%- if section.settings.custom_payment_image != blank -%}
+              {%- if section.settings.custom_payment_link != blank -%}
+                <a href="{{ section.settings.custom_payment_link }}" target="_blank" rel="noopener noreferrer" class="szc-footer__payment-link" aria-label="Custom Payment Method">
+              {%- else -%}
+                <span class="szc-footer__payment-icon">
+              {%- endif -%}
+
+              {{ section.settings.custom_payment_image | image_url: width: 120 | image_tag: height: 24, class: 'szc-payment-custom-img', loading: 'lazy' }}
+
+              {%- if section.settings.custom_payment_link != blank -%}
+                </a>
+              {%- else -%}
+                </span>
+              {%- endif -%}
+            {%- endif -%}
         </div>
       {%- endif -%}
     </div>
@@ -240,9 +387,9 @@
 
 {% stylesheet %}
   .szc-footer {
-    background-color: #f7f4ee;
-    color: #111111;
-    border-top: 1px solid #eae5db;
+    background-color: var(--szc-color-surface, #f7f4ee);
+    color: var(--szc-color-text-primary, #111111);
+    border-top: 1px solid var(--szc-color-border, #eae5db);
     padding-top: var(--szc-space-12, 48px);
     margin-top: 0;
     font-family: var(--szc-font-family-body, sans-serif);
@@ -281,12 +428,32 @@
     flex-direction: column;
   }
 
+  .szc-footer__logo-wrapper {
+    max-width: var(--footer-logo-width, 160px);
+    width: 100%;
+    display: block;
+    margin-bottom: 4px;
+  }
+
+  .szc-footer__logo-wrapper .szc-image-wrapper {
+    background-color: transparent !important;
+    width: 100% !important;
+    max-width: var(--footer-logo-width, 160px) !important;
+  }
+
+  .szc-footer__logo-img {
+    max-width: 100%;
+    height: auto;
+    object-fit: contain;
+    background-color: transparent !important;
+  }
+
   .szc-footer__brand-title {
     font-family: var(--szc-font-family-serif, 'Playfair Display', Georgia, serif);
     font-size: 22px;
     font-weight: 700;
     letter-spacing: 0.08em;
-    color: #111111;
+    color: var(--szc-color-heading, #111111);
     line-height: 1.1;
   }
 
@@ -295,13 +462,13 @@
     font-size: 9px;
     font-weight: 600;
     letter-spacing: 0.22em;
-    color: #666666;
+    color: var(--szc-color-text-muted, #666666);
     margin-top: 3px;
   }
 
   .szc-footer__brand-bio {
     font-size: 13px;
-    color: #555555;
+    color: var(--szc-color-text-primary, #555555);
     line-height: 1.5;
     margin: 16px 0 20px 0;
     max-width: 260px;
@@ -318,18 +485,25 @@
     display: inline-flex;
     align-items: center;
     justify-content: center;
-    color: #222222;
+    color: var(--szc-color-text-primary, #222222);
     transition: color 200ms ease, transform 200ms ease;
   }
 
   .szc-footer__social-link:hover {
-    color: #d4a373;
+    color: var(--szc-color-secondary, #d4a373);
     transform: translateY(-2px);
   }
 
   .szc-social-icon {
     width: 18px;
     height: 18px;
+  }
+
+  .szc-footer-custom-social-img {
+    width: 18px;
+    height: 18px;
+    object-fit: contain;
+    display: block;
   }
 
   /* Menu Columns */
@@ -340,7 +514,7 @@
     font-weight: 700;
     text-transform: uppercase;
     letter-spacing: 0.14em;
-    color: #111111;
+    color: var(--szc-color-heading, #111111);
   }
 
   .szc-footer__menu-list {
@@ -353,20 +527,20 @@
   }
 
   .szc-footer__menu-link {
-    color: #555555;
+    color: var(--szc-color-text-muted, #555555);
     font-size: 13px;
     text-decoration: none;
     transition: color 150ms ease;
   }
 
   .szc-footer__menu-link:hover {
-    color: #111111;
+    color: var(--szc-color-secondary, #111111);
   }
 
   /* Newsletter Column */
   .szc-footer__newsletter-subtext {
     font-size: 13px;
-    color: #555555;
+    color: var(--szc-color-text-muted, #555555);
     line-height: 1.4;
     margin: 0 0 var(--szc-space-4, 16px) 0;
   }
@@ -386,9 +560,9 @@
     padding: 0 14px;
     font-family: var(--szc-font-family-body, sans-serif);
     font-size: 13px;
-    color: #111111;
-    background-color: #ffffff;
-    border: 1px solid #e0dad0;
+    color: var(--szc-color-text-primary, #111111);
+    background-color: var(--szc-color-background, #ffffff);
+    border: 1px solid var(--szc-color-border, #e0dad0);
     border-right: none;
     border-radius: 6px 0 0 6px;
     outline: none;
@@ -397,7 +571,7 @@
   }
 
   .szc-footer__newsletter-input:focus {
-    border-color: #d4a373;
+    border-color: var(--szc-color-secondary, #d4a373);
   }
 
   .szc-footer__newsletter-btn {
@@ -408,8 +582,8 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    background-color: #e5c197;
-    color: #ffffff;
+    background-color: var(--szc-color-primary, #e5c197);
+    color: var(--szc-color-text-inverse, #ffffff);
     border: none;
     border-radius: 0 6px 6px 0;
     cursor: pointer;
@@ -418,7 +592,7 @@
   }
 
   .szc-footer__newsletter-btn:hover {
-    background-color: #d4a373;
+    background-color: var(--szc-color-secondary, #d4a373);
   }
 
   .szc-arrow-icon {
@@ -428,15 +602,15 @@
 
   .szc-footer__newsletter-success {
     font-size: 12px;
-    color: #2a9d8f;
+    color: var(--szc-color-success, #2a9d8f);
     margin-top: 8px;
   }
 
   /* Footer Bottom Bar */
   .szc-footer__bottom {
-    border-top: 1px solid #eae5db;
+    border-top: 1px solid var(--szc-color-border, #eae5db);
     padding: var(--szc-space-6, 24px) 0;
-    background-color: #f7f4ee;
+    background-color: var(--szc-color-surface, #f7f4ee);
   }
 
   .szc-footer__bottom-inner {
@@ -450,11 +624,11 @@
     padding-left: var(--szc-space-6, 24px);
     padding-right: var(--szc-space-6, 24px);
     font-size: 12px;
-    color: #666666;
+    color: var(--szc-color-text-muted, #666666);
   }
 
   .szc-footer__copyright {
-    color: #666666;
+    color: var(--szc-color-text-muted, #666666);
   }
 
   .szc-footer__payment-types {
@@ -467,6 +641,26 @@
   .szc-footer__payment-icon {
     display: inline-flex;
     align-items: center;
+  }
+
+  .szc-footer__payment-link {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    text-decoration: none;
+    transition: opacity 0.2s ease, transform 0.2s ease;
+  }
+
+  .szc-footer__payment-link:hover {
+    opacity: 0.8;
+    transform: translateY(-1px);
+  }
+
+  .szc-payment-custom-img {
+    height: 24px;
+    width: auto;
+    object-fit: contain;
+    display: block;
   }
 
   /* Payment Badges Fallback UI matching screenshot */
@@ -544,14 +738,172 @@
     {
       "type": "text",
       "id": "copyright_text",
-      "default": "Lumière Fine Fashion, All Rights Reserved.",
-      "label": "Copyright text"
+      "label": "Copyright Text (Leave blank for shop name default)",
+      "default": "ShopziCurious Fine Fashion, All Rights Reserved."
+    },
+    {
+      "type": "header",
+      "content": "Payment Icons"
     },
     {
       "type": "checkbox",
       "id": "show_payment_icons",
       "default": true,
-      "label": "Show payment icons"
+      "label": "Show Payment Icons"
+    },
+    {
+      "type": "header",
+      "content": "Visa"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_visa",
+      "default": true,
+      "label": "Show Visa Icon"
+    },
+    {
+      "type": "image_picker",
+      "id": "visa_icon",
+      "label": "Custom Visa Icon Image"
+    },
+    {
+      "type": "url",
+      "id": "visa_link",
+      "label": "Visa Link"
+    },
+    {
+      "type": "header",
+      "content": "Mastercard"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_mastercard",
+      "default": true,
+      "label": "Show Mastercard Icon"
+    },
+    {
+      "type": "image_picker",
+      "id": "mastercard_icon",
+      "label": "Custom Mastercard Icon Image"
+    },
+    {
+      "type": "url",
+      "id": "mastercard_link",
+      "label": "Mastercard Link"
+    },
+    {
+      "type": "header",
+      "content": "American Express"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_amex",
+      "default": true,
+      "label": "Show American Express Icon"
+    },
+    {
+      "type": "image_picker",
+      "id": "amex_icon",
+      "label": "Custom American Express Icon Image"
+    },
+    {
+      "type": "url",
+      "id": "amex_link",
+      "label": "American Express Link"
+    },
+    {
+      "type": "header",
+      "content": "PayPal"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_paypal",
+      "default": true,
+      "label": "Show PayPal Icon"
+    },
+    {
+      "type": "image_picker",
+      "id": "paypal_icon",
+      "label": "Custom PayPal Icon Image"
+    },
+    {
+      "type": "url",
+      "id": "paypal_link",
+      "label": "PayPal Link"
+    },
+    {
+      "type": "header",
+      "content": "Apple Pay"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_apple_pay",
+      "default": true,
+      "label": "Show Apple Pay Icon"
+    },
+    {
+      "type": "image_picker",
+      "id": "apple_pay_icon",
+      "label": "Custom Apple Pay Icon Image"
+    },
+    {
+      "type": "url",
+      "id": "apple_pay_link",
+      "label": "Apple Pay Link"
+    },
+    {
+      "type": "header",
+      "content": "Google Pay"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_google_pay",
+      "default": true,
+      "label": "Show Google Pay Icon"
+    },
+    {
+      "type": "image_picker",
+      "id": "google_pay_icon",
+      "label": "Custom Google Pay Icon Image"
+    },
+    {
+      "type": "url",
+      "id": "google_pay_link",
+      "label": "Google Pay Link"
+    },
+    {
+      "type": "header",
+      "content": "Discover"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_discover",
+      "default": false,
+      "label": "Show Discover Icon"
+    },
+    {
+      "type": "image_picker",
+      "id": "discover_icon",
+      "label": "Custom Discover Icon Image"
+    },
+    {
+      "type": "url",
+      "id": "discover_link",
+      "label": "Discover Link"
+    },
+    {
+      "type": "header",
+      "content": "Custom Additional Payment Icon"
+    },
+    {
+      "type": "image_picker",
+      "id": "custom_payment_image",
+      "label": "Custom Payment Icon Image"
+    },
+    {
+      "type": "url",
+      "id": "custom_payment_link",
+      "label": "Custom Payment Link"
     }
   ],
   "blocks": [
@@ -566,6 +918,16 @@
           "label": "Custom Logo Image"
         },
         {
+          "type": "range",
+          "id": "logo_width",
+          "min": 50,
+          "max": 300,
+          "step": 10,
+          "unit": "px",
+          "label": "Logo width",
+          "default": 160
+        },
+        {
           "type": "text",
           "id": "bio",
           "default": "Timeless fashion, thoughtfully designed to celebrate life, love and you.",
@@ -575,7 +937,107 @@
           "type": "checkbox",
           "id": "show_socials",
           "default": true,
-          "label": "Show Social Media Icons"
+          "label": "Show Social Media Section"
+        },
+        {
+          "type": "header",
+          "content": "Instagram"
+        },
+        {
+          "type": "checkbox",
+          "id": "show_instagram",
+          "default": true,
+          "label": "Show Instagram"
+        },
+        {
+          "type": "image_picker",
+          "id": "instagram_icon",
+          "label": "Custom Instagram Icon"
+        },
+        {
+          "type": "url",
+          "id": "instagram_link",
+          "label": "Instagram Link"
+        },
+        {
+          "type": "header",
+          "content": "Facebook"
+        },
+        {
+          "type": "checkbox",
+          "id": "show_facebook",
+          "default": true,
+          "label": "Show Facebook"
+        },
+        {
+          "type": "image_picker",
+          "id": "facebook_icon",
+          "label": "Custom Facebook Icon"
+        },
+        {
+          "type": "url",
+          "id": "facebook_link",
+          "label": "Facebook Link"
+        },
+        {
+          "type": "header",
+          "content": "Pinterest"
+        },
+        {
+          "type": "checkbox",
+          "id": "show_pinterest",
+          "default": true,
+          "label": "Show Pinterest"
+        },
+        {
+          "type": "image_picker",
+          "id": "pinterest_icon",
+          "label": "Custom Pinterest Icon"
+        },
+        {
+          "type": "url",
+          "id": "pinterest_link",
+          "label": "Pinterest Link"
+        },
+        {
+          "type": "header",
+          "content": "YouTube"
+        },
+        {
+          "type": "checkbox",
+          "id": "show_youtube",
+          "default": true,
+          "label": "Show YouTube"
+        },
+        {
+          "type": "image_picker",
+          "id": "youtube_icon",
+          "label": "Custom YouTube Icon"
+        },
+        {
+          "type": "url",
+          "id": "youtube_link",
+          "label": "YouTube Link"
+        },
+        {
+          "type": "header",
+          "content": "X / Twitter"
+        },
+        {
+          "type": "checkbox",
+          "id": "show_twitter",
+          "default": false,
+          "label": "Show X / Twitter"
+        },
+        {
+          "type": "image_picker",
+          "id": "twitter_icon",
+          "label": "Custom X / Twitter Icon"
+        },
+        {
+          "type": "url",
+          "id": "twitter_link",
+          "label": "X / Twitter Link"
         }
       ]
     },

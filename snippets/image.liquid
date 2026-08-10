@@ -22,6 +22,9 @@
   assign img_url_val = url
   assign wrapper_class = class | default: ''
   assign loading_attr = loading | default: 'lazy'
+  if settings.enable_lazy_loading == false
+    assign loading_attr = 'eager'
+  endif
   assign fetchpriority_attr = fetchpriority | default: 'auto'
   assign alt_text = alt | default: img.alt | default: shop.name | escape
   assign img_width = width | default: 2000

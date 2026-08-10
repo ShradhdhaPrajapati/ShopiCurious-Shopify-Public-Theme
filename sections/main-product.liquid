@@ -560,8 +560,13 @@
                     class="szc-share-btn szc-share-btn--copy"
                     title="Copy link"
                     aria-label="Copy link"
-                    onclick="navigator.clipboard.writeText('{{ shop.url | append: product.url }}'); alert('Product link copied to clipboard!');"
+                    onclick="
+                      navigator.clipboard.writeText('{{ shop.url | append: product.url }}');
+                      const tt = this.querySelector('.szc-share-tooltip');
+                      if (tt) { tt.classList.add('is-active'); setTimeout(() => tt.classList.remove('is-active'), 2000); }
+                    "
                   >
+                    <span class="szc-share-tooltip">Copied!</span>
                     {%- if block.settings.copy_icon != blank -%}
                       {{ block.settings.copy_icon | image_url: width: 40 | image_tag: width: 18, height: 18, class: 'szc-share-custom-img', loading: 'lazy' }}
                     {%- else -%}
@@ -647,59 +652,61 @@
   {%- endif -%}
 
   <!-- 5. Sticky Add To Cart Bottom Bar -->
-  <div class="szc-sticky-atc-bar" data-sticky-atc-bar>
-    <div class="szc-sticky-atc-bar__container page-width">
-      <div class="szc-sticky-atc-bar__product">
-        <div class="szc-sticky-atc-bar__img-wrap">
-          {%- if featured_media != blank -%}
-            {{ featured_media.preview_image | image_url: width: 120 | image_tag: class: 'szc-sticky-atc-bar__img', data-sticky-img: '' }}
-          {%- else -%}
-            {{ 'product-1' | placeholder_svg_tag: 'szc-sticky-atc-bar__img' }}
-          {%- endif -%}
-        </div>
-        <div class="szc-sticky-atc-bar__info">
-          <h4 class="szc-sticky-atc-bar__title">{{ product.title }}</h4>
-          <div class="szc-sticky-atc-bar__price-wrap" data-sticky-price-wrap>
-            <div class="szc-sticky-atc-bar__price" data-sticky-price>
-              <span class="szc-price__item--sale">{{ current_variant.price | money }}</span>
-              <s class="szc-price__item--regular" {% if current_variant.compare_at_price <= current_variant.price %}style="display:none;"{% endif %}>
-                {{ current_variant.compare_at_price | money }}
-              </s>
+  {%- if settings.enable_sticky_add_to_cart != false -%}
+    <div class="szc-sticky-atc-bar" data-sticky-atc-bar>
+      <div class="szc-sticky-atc-bar__container page-width">
+        <div class="szc-sticky-atc-bar__product">
+          <div class="szc-sticky-atc-bar__img-wrap">
+            {%- if featured_media != blank -%}
+              {{ featured_media.preview_image | image_url: width: 120 | image_tag: class: 'szc-sticky-atc-bar__img', data-sticky-img: '' }}
+            {%- else -%}
+              {{ 'product-1' | placeholder_svg_tag: 'szc-sticky-atc-bar__img' }}
+            {%- endif -%}
+          </div>
+          <div class="szc-sticky-atc-bar__info">
+            <h4 class="szc-sticky-atc-bar__title">{{ product.title }}</h4>
+            <div class="szc-sticky-atc-bar__price-wrap" data-sticky-price-wrap>
+              <div class="szc-sticky-atc-bar__price" data-sticky-price>
+                <span class="szc-price__item--sale">{{ current_variant.price | money }}</span>
+                <s class="szc-price__item--regular" {% if current_variant.compare_at_price <= current_variant.price %}style="display:none;"{% endif %}>
+                  {{ current_variant.compare_at_price | money }}
+                </s>
+              </div>
             </div>
           </div>
         </div>
-      </div>
-      <div class="szc-sticky-atc-bar__actions">
-        <button
-          type="button"
-          class="szc-button szc-button--outline szc-sticky-buy-now-btn"
-          data-sticky-buy-now-btn
-          data-buy-now-btn
-          {% if current_variant.available == false %}
-            disabled
-          {% endif %}
-        >
-          <span class="szc-btn-text">BUY IT NOW</span>
-        </button>
-        <button
-          type="button"
-          class="szc-button szc-button--primary szc-sticky-atc-btn"
-          data-sticky-atc-btn
-          {% if current_variant.available == false %}
-            disabled
-          {% endif %}
-        >
-          <span class="szc-btn-text">
-            {%- if current_variant.available -%}
-              ADD TO BAG
-            {%- else -%}
-              SOLD OUT
-            {%- endif -%}
-          </span>
-        </button>
+        <div class="szc-sticky-atc-bar__actions">
+          <button
+            type="button"
+            class="szc-button szc-button--outline szc-sticky-buy-now-btn"
+            data-sticky-buy-now-btn
+            data-buy-now-btn
+            {% if current_variant.available == false %}
+              disabled
+            {% endif %}
+          >
+            <span class="szc-btn-text">BUY IT NOW</span>
+          </button>
+          <button
+            type="button"
+            class="szc-button szc-button--primary szc-sticky-atc-btn"
+            data-sticky-atc-btn
+            {% if current_variant.available == false %}
+              disabled
+            {% endif %}
+          >
+            <span class="szc-btn-text">
+              {%- if current_variant.available -%}
+                ADD TO BAG
+              {%- else -%}
+                SOLD OUT
+              {%- endif -%}
+            </span>
+          </button>
+        </div>
       </div>
     </div>
-  </div>
+  {%- endif -%}
 
   <!-- 6. Shopify Style Native Zoom Modal Lightbox (Crystal Clear Ultra High-Res + Top-to-Bottom Scrollable) -->
   <div class="szc-zoom-modal" id="ProductZoomModal" aria-hidden="true" data-zoom-modal>
@@ -1938,6 +1945,46 @@
     height: 18px;
     object-fit: contain;
     display: block;
+  }
+
+  .szc-share-btn--copy {
+    position: relative;
+  }
+
+  .szc-share-tooltip {
+    position: absolute;
+    bottom: calc(100% + 6px);
+    left: 50%;
+    transform: translateX(-50%) translateY(4px);
+    background-color: #111111;
+    color: #ffffff;
+    font-size: 10px;
+    font-weight: 600;
+    padding: 3px 8px;
+    border-radius: 4px;
+    white-space: nowrap;
+    opacity: 0;
+    visibility: hidden;
+    transition: all 0.2s ease;
+    pointer-events: none;
+    z-index: 10;
+  }
+
+  .szc-share-tooltip::after {
+    content: '';
+    position: absolute;
+    top: 100%;
+    left: 50%;
+    transform: translateX(-50%);
+    border-width: 4px;
+    border-style: solid;
+    border-color: #111111 transparent transparent transparent;
+  }
+
+  .szc-share-tooltip.is-active {
+    opacity: 1;
+    visibility: visible;
+    transform: translateX(-50%) translateY(0);
   }
 {% endstylesheet %}
 

@@ -8,7 +8,8 @@
 {% enddoc %}
 
 {%- liquid
-  assign free_shipping_threshold = settings.free_shipping_threshold | default: 10000
+  assign free_shipping_threshold_dollars = settings.free_shipping_threshold | default: 100
+  assign free_shipping_threshold = free_shipping_threshold_dollars | times: 100
   assign cart_total = cart.total_price
   assign amount_left = free_shipping_threshold | minus: cart_total
 
@@ -47,7 +48,7 @@
     </div>
 
     <!-- Free Shipping Progress Bar -->
-    {%- if free_shipping_threshold > 0 -%}
+    {%- if settings.enable_free_shipping_bar != false and free_shipping_threshold > 0 -%}
       <div class="szc-cart-drawer__shipping-bar">
         <div class="szc-cart-drawer__shipping-text">
           {%- if free_shipping_reached -%}
@@ -161,21 +162,23 @@
         </div>
 
         <!-- Order Notes Collapsible -->
-        <details class="szc-cart-drawer__notes-accordion">
-          <summary class="szc-cart-drawer__notes-summary">
-            <span>ORDER NOTES</span>
-            <svg class="szc-cart-drawer__notes-chevron" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-              <polyline points="6 9 12 15 18 9"></polyline>
-            </svg>
-          </summary>
-          <div class="szc-cart-drawer__notes-content">
-            <textarea
-              name="note"
-              class="szc-cart-drawer__note-input"
-              placeholder="Add a note about your order"
-            >{{ cart.note }}</textarea>
-          </div>
-        </details>
+        {%- if settings.enable_cart_notes != false -%}
+          <details class="szc-cart-drawer__notes-accordion">
+            <summary class="szc-cart-drawer__notes-summary">
+              <span>ORDER NOTES</span>
+              <svg class="szc-cart-drawer__notes-chevron" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <polyline points="6 9 12 15 18 9"></polyline>
+              </svg>
+            </summary>
+            <div class="szc-cart-drawer__notes-content">
+              <textarea
+                name="note"
+                class="szc-cart-drawer__note-input"
+                placeholder="Add a note about your order"
+              >{{ cart.note }}</textarea>
+            </div>
+          </details>
+        {%- endif -%}
 
         <!-- Discount Code Collapsible -->
         <details class="szc-cart-drawer__notes-accordion szc-cart-drawer__discount-accordion" open>
@@ -403,7 +406,7 @@
     width: 100%;
     max-width: 430px;
     height: 100%;
-    background-color: #ffffff;
+    background-color: var(--szc-color-surface, #ffffff);
     box-shadow: -4px 0 24px rgba(0, 0, 0, 0.12);
     display: flex;
     flex-direction: column;
@@ -422,7 +425,7 @@
     align-items: center;
     justify-content: space-between;
     padding: 20px 24px 16px 24px;
-    background-color: #ffffff;
+    background-color: var(--szc-color-surface, #ffffff);
   }
 
   .szc-drawer__title {
@@ -431,20 +434,20 @@
     font-size: 17px;
     font-weight: 700;
     letter-spacing: 0.04em;
-    color: #111111;
+    color: var(--szc-color-heading, #111111);
     text-transform: uppercase;
   }
 
   .szc-drawer__count {
     font-weight: 500;
-    color: #111111;
+    color: var(--szc-color-heading, #111111);
   }
 
   .szc-drawer__close-btn {
     background: transparent;
     border: none;
     cursor: pointer;
-    color: #111111;
+    color: var(--szc-color-heading, #111111);
     padding: 4px;
     display: flex;
     align-items: center;
@@ -459,12 +462,12 @@
   /* Shipping Progress Bar */
   .szc-cart-drawer__shipping-bar {
     padding: 10px 24px 16px 24px;
-    background-color: #ffffff;
+    background-color: var(--szc-color-surface, #ffffff);
   }
 
   .szc-cart-drawer__shipping-text {
     font-size: 13px;
-    color: #111111;
+    color: var(--szc-color-text-primary, #111111);
     text-align: center;
     margin-bottom: 10px;
   }
@@ -730,8 +733,8 @@
   /* Footer Summary & CTAs */
   .szc-drawer__footer {
     padding: 18px 24px 20px 24px;
-    border-top: 1px solid #e5e5e5;
-    background-color: #ffffff;
+    border-top: 1px solid var(--szc-color-border, #e5e5e5);
+    background-color: var(--szc-color-surface, #ffffff);
   }
 
   .szc-cart-drawer__summary {
@@ -745,7 +748,7 @@
     align-items: center;
     justify-content: space-between;
     font-size: 13px;
-    color: #111111;
+    color: var(--szc-color-text-primary, #111111);
   }
 
   .szc-summary-row__label {
@@ -758,7 +761,7 @@
 
   .szc-summary-row__subtext {
     font-size: 12px;
-    color: #666666;
+    color: var(--szc-color-text-muted, #666666);
   }
 
   .szc-tooltip-icon {
@@ -768,8 +771,8 @@
     width: 15px;
     height: 15px;
     border-radius: 50%;
-    background-color: #e5e5e5;
-    color: #666666;
+    background-color: var(--szc-color-surface-subtle, #e5e5e5);
+    color: var(--szc-color-text-muted, #666666);
     font-size: 10px;
     font-weight: 700;
     margin-left: 4px;
@@ -778,14 +781,14 @@
 
   .szc-cart-drawer__divider {
     border: none;
-    border-top: 1px solid #e5e5e5;
+    border-top: 1px solid var(--szc-color-border, #e5e5e5);
     margin: 10px 0;
   }
 
   .szc-summary-row--total {
     font-size: 18px;
     font-weight: 700;
-    color: #111111;
+    color: var(--szc-color-heading, #111111);
   }
 
   .szc-summary-row--total .szc-summary-row__label {
@@ -802,7 +805,7 @@
   .szc-cart-btn {
     width: 100%;
     height: 48px;
-    border-radius: 6px;
+    border-radius: var(--szc-radius-button, 6px);
     font-size: 13px;
     font-weight: 700;
     letter-spacing: 0.08em;
@@ -817,24 +820,24 @@
   }
 
   .szc-cart-btn--view {
-    background-color: #000000;
-    color: #ffffff;
+    background-color: var(--szc-color-primary, #000000);
+    color: var(--szc-color-text-inverse, #ffffff);
     border: none;
   }
 
   .szc-cart-btn--view:hover {
-    background-color: #222222;
+    background-color: var(--szc-color-primary-hover, var(--szc-color-secondary, #222222));
   }
 
   .szc-cart-btn--checkout {
-    background-color: #ffffff;
-    color: #000000;
-    border: 1px solid #000000;
+    background-color: var(--szc-color-surface, #ffffff);
+    color: var(--szc-color-text-primary, #000000);
+    border: 1px solid var(--szc-color-primary, #000000);
     gap: 8px;
   }
 
   .szc-cart-btn--checkout:hover {
-    background-color: #f8f9fa;
+    background-color: var(--szc-color-surface-subtle, #f8f9fa);
   }
 
   /* Drawer Discount Box Styles */

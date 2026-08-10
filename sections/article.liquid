@@ -6,6 +6,24 @@
 <article class="szc-article-page page-width">
   {% render 'breadcrumbs' %}
 
+  {%- liquid
+    assign show_author = section.settings.show_author
+    if show_author == blank
+      assign show_author = settings.show_article_author
+    endif
+
+    assign show_date = section.settings.show_date
+    if show_date == blank
+      assign show_date = settings.show_article_date
+    endif
+
+    assign show_reading_time = settings.show_reading_time
+    if show_reading_time != false
+      assign words = article.content | strip_html | split: ' ' | size
+      assign reading_minutes = words | divided_by: 200 | at_least: 1
+    endif
+  -%}
+
   <header class="szc-article-header">
     <div class="szc-article-header__meta">
       <span class="szc-article-header__tag">
@@ -15,13 +33,19 @@
           FASHION
         {%- endif -%}
       </span>
-      <span class="szc-article-header__dot">•</span>
-      <time datetime="{{ article.published_at | date: '%Y-%m-%d' }}" class="szc-article-header__date">
-        {{ article.published_at | date: "%B %d, %Y" }}
-      </time>
-      {%- if article.author != blank -%}
+      {%- if show_date != false -%}
+        <span class="szc-article-header__dot">•</span>
+        <time datetime="{{ article.published_at | date: '%Y-%m-%d' }}" class="szc-article-header__date">
+          {{ article.published_at | date: "%B %d, %Y" }}
+        </time>
+      {%- endif -%}
+      {%- if show_author != false and article.author != blank -%}
         <span class="szc-article-header__dot">•</span>
         <span class="szc-article-header__author">By {{ article.author }}</span>
+      {%- endif -%}
+      {%- if show_reading_time != false and reading_minutes > 0 -%}
+        <span class="szc-article-header__dot">•</span>
+        <span class="szc-article-header__reading-time">{{ reading_minutes }} min read</span>
       {%- endif -%}
     </div>
 

@@ -27,7 +27,6 @@
     {%- endif -%}
 
     {%- render 'meta-tags' -%}
-    {%- render 'css-variables' -%}
 
     {{ 'variables.css' | asset_url | stylesheet_tag }}
     {{ 'base.css' | asset_url | stylesheet_tag }}
@@ -41,13 +40,30 @@
     {{ 'animations.css' | asset_url | stylesheet_tag }}
     {{ 'responsive.css' | asset_url | stylesheet_tag }}
 
+    {%- render 'css-variables' -%}
+
     {{ content_for_header }}
+
+    {%- if settings.custom_css != blank -%}
+      <style id="ShopziCuriousCustomCSS">
+        {{ settings.custom_css }}
+      </style>
+    {%- endif -%}
+
+    {%- if settings.tracking_head_code != blank -%}
+      {{ settings.tracking_head_code }}
+    {%- endif -%}
 
     <script>
       document.documentElement.className = document.documentElement.className.replace('no-js', 'js');
       window.ShopziCurious = window.ShopziCurious || {};
       window.ShopziCurious.settings = {
-        cartType: {{ settings.cart_type | default: 'drawer' | json }}
+        cartType: {{ settings.cart_type | default: 'drawer' | json }},
+        enablePredictiveSearch: {{ settings.enable_predictive_search | default: true | json }},
+        enableAnimations: {{ settings.enable_animations | default: true | json }},
+        enableFreeShippingBar: {{ settings.enable_free_shipping_bar | default: true | json }},
+        freeShippingThreshold: {{ settings.free_shipping_threshold | default: 100 | json }},
+        enableWishlist: {{ settings.enable_wishlist | default: true | json }}
       };
       window.ShopziCurious.routes = {
         cart_add_url: '{{ routes.cart_add_url }}',

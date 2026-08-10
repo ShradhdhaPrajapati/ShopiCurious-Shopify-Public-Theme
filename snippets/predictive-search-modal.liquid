@@ -117,11 +117,22 @@
 
       <!-- 3-Column Desktop / Vertical Stack Mobile Search Results -->
       <div id="PredictiveSearchResults" class="szc-search-results-grid">
-        <!-- SECTION 1: SUGGESTIONS (Hidden initially when input is empty) -->
-        <div class="szc-search-col szc-search-col--suggestions" id="ColSuggestions" style="display: none;">
-          <h4 class="szc-search-col__title" id="ColTitleSuggestions">SUGGESTIONS</h4>
+        <!-- SECTION 1: SUGGESTIONS / TRENDING KEYWORDS -->
+        <div class="szc-search-col szc-search-col--suggestions" id="ColSuggestions">
+          <h4 class="szc-search-col__title" id="ColTitleSuggestions">TRENDING SEARCHES</h4>
           <ul class="szc-suggestions-list" id="SearchSuggestionsList">
-            <!-- Dynamically populated ONLY when user types -->
+            {%- assign trending_keywords = settings.search_trending_keywords | default: 'Dresses, Jackets, Denim, Linen, Coats' | split: ',' -%}
+            {%- for keyword in trending_keywords -%}
+              {%- assign clean_kw = keyword | strip -%}
+              {%- if clean_kw != blank -%}
+                <li>
+                  <a href="{{ routes.search_url }}?q={{ clean_kw | url_encode }}" class="szc-suggestion-link">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
+                    <span>{{ clean_kw }}</span>
+                  </a>
+                </li>
+              {%- endif -%}
+            {%- endfor -%}
           </ul>
         </div>
 

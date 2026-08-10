@@ -18,14 +18,14 @@
 │  [warning]: HardcodedRoutes                                                  │
 │  Use routes object {{ routes.root_url }} instead of hardcoding /             │
 │                                                                              │
-│  149  <li><a href="/" class="szc-footer__menu-link">Home</a></li>            │
+│  154  <li><a href="/" class="szc-footer__menu-link">Home</a></li>            │
 │                                                                              │
 │                                                                              │
 │  [warning]: HardcodedRoutes                                                  │
 │  Use routes object {{ routes.all_products_collection_url }} instead of       │
 │  hardcoding /collections/all                                                 │
 │                                                                              │
-│  150  <li><a href="/collections/all"                                         │
+│  155  <li><a href="/collections/all"                                         │
 │  class="szc-footer__menu-link">Catalog</a></li>                              │
 │                                                                              │
 ╰──────────────────────────────────────────────────────────────────────────────╯
@@ -766,46 +766,10 @@
 
 ╭─ info ───────────────────────────────────────────────────────────────────────╮
 │                                                                              │
-│  snippets/product-card-horizontal.liquid                                     │
-│                                                                              │
-│                                                                              │
-│  [warning]: OrphanedSnippet                                                  │
-│  This snippet is not referenced by any other files                           │
-│                                                                              │
-│  1  {% doc %}                                                                │
-│                                                                              │
-╰──────────────────────────────────────────────────────────────────────────────╯
-
-╭─ info ───────────────────────────────────────────────────────────────────────╮
-│                                                                              │
-│  snippets/social-sharing.liquid                                              │
-│                                                                              │
-│                                                                              │
-│  [warning]: OrphanedSnippet                                                  │
-│  This snippet is not referenced by any other files                           │
-│                                                                              │
-│  1  {% doc %}                                                                │
-│                                                                              │
-╰──────────────────────────────────────────────────────────────────────────────╯
-
-╭─ info ───────────────────────────────────────────────────────────────────────╮
-│                                                                              │
-│  snippets/swatch.liquid                                                      │
-│                                                                              │
-│                                                                              │
-│  [warning]: UnusedAssign                                                     │
-│  The variable 'color_handle' is assigned but not used                        │
-│                                                                              │
-│  23  assign color_handle = value | handleize                                 │
-│                                                                              │
-╰──────────────────────────────────────────────────────────────────────────────╯
-
-╭─ info ───────────────────────────────────────────────────────────────────────╮
-│                                                                              │
 │  Theme Check Summary.                                                        │
 │                                                                              │
-│  91 files inspected with 110 total offenses found across 12 files.           │
-│  110 warnings.                                                               │
+│  88 files inspected with 107 total offenses found across 9 files.            │
+│  107 warnings.                                                               │
 │                                                                              │
 ╰──────────────────────────────────────────────────────────────────────────────╯
 

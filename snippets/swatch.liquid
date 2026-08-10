@@ -20,7 +20,6 @@
   assign is_disabled = disabled | default: false
   assign input_id = id | default: 'swatch-' | append: input_name | handleize | append: '-' | append: value | handleize
 
-  assign color_handle = value | handleize
   assign color_bg_style = ''
 
   if swatch_type == 'color'

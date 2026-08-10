@@ -7,51 +7,8 @@
 
 :root {
   /* ==========================================================================
-     1. COLOR SYSTEM (Tailored Luxury & Modern Harmonious Palette)
+     1. COLOR SYSTEM (Managed dynamically via Theme Settings in css-variables.liquid)
      ========================================================================== */
-  --szc-color-primary: #121212;
-  --szc-color-primary-light: #2c2c2c;
-  --szc-color-primary-dark: #000000;
-  --szc-color-primary-rgb: 18, 18, 18;
-
-  --szc-color-secondary: #c5a059;
-  --szc-color-secondary-light: #d6b87b;
-  --szc-color-secondary-dark: #a8823b;
-  --szc-color-secondary-rgb: 197, 160, 89;
-
-  --szc-color-accent: #e76f51;
-  --szc-color-accent-light: #f4a261;
-  --szc-color-accent-dark: #d64a27;
-
-  /* Neutral & Background Tones */
-  --szc-color-background: #ffffff;
-  --szc-color-surface: #faf9f6;
-  --szc-color-surface-subtle: #f4f3ef;
-  --szc-color-surface-elevated: #ffffff;
-
-  /* Text Colors */
-  --szc-color-text-primary: #1a1a1a;
-  --szc-color-text-secondary: #666666;
-  --szc-color-text-muted: #8c8c8c;
-  --szc-color-text-inverse: #ffffff;
-
-  /* Border & Divider Colors */
-  --szc-color-border: #e5e5e5;
-  --szc-color-border-subtle: #f0f0f0;
-  --szc-color-border-strong: #cccccc;
-
-  /* Status Colors */
-  --szc-color-success: #2a9d8f;
-  --szc-color-success-bg: #e6f4f1;
-  --szc-color-warning: #e9c46a;
-  --szc-color-warning-bg: #fdf8eb;
-  --szc-color-error: #e63946;
-  --szc-color-error-bg: #fde8ea;
-  --szc-color-info: #3a86ff;
-  --szc-color-info-bg: #eaf2ff;
-
-  /* Overlay & Glassmorphism */
-  --szc-color-overlay: rgba(0, 0, 0, 0.5);
   --szc-color-overlay-light: rgba(0, 0, 0, 0.2);
   --szc-backdrop-blur: 12px;
 
