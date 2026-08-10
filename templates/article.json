@@ -12,9 +12,14 @@
     "main": {
       "type": "article",
       "settings": {}
+    },
+    "recent_blog_posts": {
+      "type": "recent-blog-posts",
+      "settings": {}
     }
   },
   "order": [
-    "main"
+    "main",
+    "recent_blog_posts"
   ]
 }

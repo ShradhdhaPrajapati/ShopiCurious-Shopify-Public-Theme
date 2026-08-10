@@ -1,12 +1,20 @@
 {%- liquid
-  assign main_menu = section.settings.menu | default: 'main-menu'
+  assign menu_setting = section.settings.menu
+  assign main_menu_links = nil
+  if menu_setting != blank and menu_setting.links != blank
+    assign main_menu_links = menu_setting.links
+  elsif linklists[menu_setting] != blank and linklists[menu_setting].links != blank
+    assign main_menu_links = linklists[menu_setting].links
+  elsif linklists['main-menu'] != blank
+    assign main_menu_links = linklists['main-menu'].links
+  endif
   assign logo_width = section.settings.logo_width | default: 140
   assign is_sticky = section.settings.enable_sticky_header
 -%}
 
 <sticky-header class="szc-header-wrapper {% if is_sticky %}is-sticky{% endif %}">
   <header class="szc-header page-width">
-    <!-- Mobile Hamburger Toggle -->
+    <!-- Mobile Hamburger Toggle Button -->
     <button
       type="button"
       class="szc-header__icon-btn szc-header__mobile-toggle mobile-only"
@@ -34,42 +42,99 @@
       </a>
     </div>
 
-    <!-- Desktop Navigation Menu -->
+    <!-- Desktop Navigation Menu with Theme Store Grade Mega Menu Engine -->
     <nav class="szc-header__inline-menu desktop-only" aria-label="{{ 'sections.header.menu' | t | default: 'Main Navigation' }}">
       <ul class="szc-header__menu-list" role="list">
-        {%- for link in linklists[main_menu].links -%}
-          <li class="szc-header__menu-item {% if link.links != blank %}has-dropdown{% endif %}">
+        {%- for link in main_menu_links -%}
+          {%- liquid
+            assign nav_link_handle = link.handle | default: ''
+            assign nav_link_title_handle = link.title | handleize
+            assign nav_link_title_down = link.title | downcase | strip
+            assign mega_block = null
+            for block in section.blocks
+              if block.type == 'mega_menu'
+                assign block_title = block.settings.menu_item_title | default: ''
+                assign block_handle = block_title | handleize
+                assign block_title_down = block_title | downcase | strip
+                if block_handle != blank
+                  if block_handle == nav_link_handle or block_handle == nav_link_title_handle or block_title_down == nav_link_title_down
+                    assign mega_block = block
+                    break
+                  endif
+                endif
+              endif
+            endfor
+
+            if mega_block != null
+              assign display_type = 'mega'
+            elsif link.links != blank
+              assign display_type = 'dropdown'
+            else
+              assign display_type = 'simple'
+            endif
+          -%}
+
+          <li class="szc-header__menu-item {% if display_type == 'mega' %}has-mega-menu{% elsif display_type == 'dropdown' %}has-dropdown{% endif %}" {{ mega_block.shopify_attributes }}>
             <a
               href="{{ link.url }}"
               class="szc-header__menu-link {% if link.child_active or link.active %}is-active{% endif %}"
-              {% if link.links != blank %}aria-expanded="false"{% endif %}
+              {% if display_type != 'simple' %}aria-expanded="false" aria-haspopup="true"{% endif %}
             >
               <span>{{ link.title }}</span>
-              {%- if link.links != blank -%}
+              {%- if display_type != 'simple' -%}
                 {% render 'icon', icon: 'chevron-down', class: 'szc-header__menu-chevron' %}
               {%- endif -%}
             </a>
 
-            {%- if link.links != blank -%}
-              <ul class="szc-header__dropdown" role="list">
-                {%- for childlink in link.links -%}
-                  <li class="szc-header__dropdown-item">
-                    <a
-                      href="{{ childlink.url }}"
-                      class="szc-header__dropdown-link {% if childlink.active %}is-active{% endif %}"
-                    >
-                      {{ childlink.title }}
-                    </a>
-                  </li>
-                {%- endfor -%}
-              </ul>
+            <!-- DYNAMIC MEGA MENU PANEL (PURE SCHEMAS & THEME EDITOR DRIVEN) -->
+            {%- if display_type == 'mega' and mega_block != null -%}
+              {% render 'mega-menu', link: link, mega_block: mega_block, section: section %}
             {%- endif -%}
+
+            <!-- STANDARD DROPDOWN (If Menu Type is Dropdown) -->
+            {%- if display_type == 'dropdown' -%}
+              {%- liquid
+                assign dropdown_links = link.links
+                if dropdown_links == blank and mega_block != null
+                  if mega_block.settings.categories_menu != blank
+                    assign cat_m = mega_block.settings.categories_menu
+                    if cat_m.links != blank
+                      assign dropdown_links = cat_m.links
+                    elsif linklists[cat_m] != blank and linklists[cat_m].links != blank
+                      assign dropdown_links = linklists[cat_m].links
+                    endif
+                  elsif mega_block.settings.occasions_menu != blank
+                    assign occ_m = mega_block.settings.occasions_menu
+                    if occ_m.links != blank
+                      assign dropdown_links = occ_m.links
+                    elsif linklists[occ_m] != blank and linklists[occ_m].links != blank
+                      assign dropdown_links = linklists[occ_m].links
+                    endif
+                  endif
+                endif
+              -%}
+              {%- if dropdown_links != blank and dropdown_links.size > 0 -%}
+                <ul class="szc-header__dropdown" role="list">
+                  {%- for childlink in dropdown_links -%}
+                    <li class="szc-header__dropdown-item">
+                      <a
+                        href="{{ childlink.url }}"
+                        class="szc-header__dropdown-link {% if childlink.active %}is-active{% endif %}"
+                      >
+                        {{ childlink.title }}
+                      </a>
+                    </li>
+                  {%- endfor -%}
+                </ul>
+              {%- endif -%}
+            {%- endif -%}
+
           </li>
         {%- endfor -%}
       </ul>
     </nav>
 
-    <!-- Header Actions (Search, Account, Cart) -->
+    <!-- Header Actions (Search, Account, Wishlist, Cart) -->
     <div class="szc-header__icons">
       <!-- Search Trigger -->
       <button
@@ -91,7 +156,7 @@
         </a>
       {%- endif -%}
 
-      <!-- Wishlist Icon Link with Dynamic Badge Count -->
+      <!-- Wishlist Icon Link -->
       {%- if settings.enable_wishlist != false -%}
         {%- assign wishlist_url = settings.wishlist_page_url -%}
         {%- if wishlist_url == blank or wishlist_url == '#' -%}
@@ -110,7 +175,7 @@
         </a>
       {%- endif -%}
 
-      <!-- Cart Icon (Drawer vs Page redirect based on settings.cart_type) -->
+      <!-- Cart Icon -->
       {%- if settings.cart_type == 'page' -%}
         <a
           href="{{ routes.cart_url }}"
@@ -136,9 +201,17 @@
       {%- endif -%}
     </div>
   </header>
+
+  <!-- DYNAMIC MOBILE NAVIGATION DRAWER -->
+  {% render 'mobile-drawer', main_menu_links: main_menu_links, section: section %}
 </sticky-header>
 
 {% stylesheet %}
+  sticky-header {
+    display: block;
+    width: 100%;
+  }
+
   .szc-header-wrapper {
     display: block;
     width: 100%;
@@ -148,10 +221,26 @@
     z-index: var(--szc-z-header, 300);
   }
 
+  sticky-header.is-sticky,
   .szc-header-wrapper.is-sticky {
     position: sticky;
     top: 0;
-    transition: transform var(--szc-transition-base, 250ms ease);
+    z-index: 1000;
+    background-color: var(--szc-color-background, #ffffff);
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.08);
+    transition: transform var(--szc-transition-base, 250ms ease), box-shadow 200ms ease;
+  }
+
+  sticky-header.is-sticky.is-scrolled,
+  .szc-header-wrapper.is-sticky.is-scrolled {
+    box-shadow: 0 6px 24px rgba(0, 0, 0, 0.12);
+  }
+
+  .shopify-section-group-header-group:has(.is-sticky),
+  [id*="shopify-section-"][id*="header"]:has(.is-sticky) {
+    position: sticky;
+    top: 0;
+    z-index: 1000;
   }
 
   .szc-header {
@@ -162,6 +251,7 @@
     padding: 0 var(--szc-space-6, 24px);
     max-width: var(--szc-page-max-width, 1400px);
     margin: 0 auto;
+    position: relative;
   }
 
   .szc-header__logo-link {
@@ -201,7 +291,7 @@
     display: inline-flex;
     align-items: center;
     gap: 4px;
-    padding: 10px 0;
+    padding: 24px 0;
     font-family: var(--szc-font-family-body);
     font-size: var(--szc-font-size-sm, 14px);
     font-weight: 600;
@@ -213,7 +303,8 @@
   }
 
   .szc-header__menu-link:hover,
-  .szc-header__menu-link.is-active {
+  .szc-header__menu-link.is-active,
+  .szc-header__menu-item.is-hovered .szc-header__menu-link {
     color: var(--szc-color-secondary, #d4a373);
   }
 
@@ -222,7 +313,7 @@
     height: 12px;
   }
 
-  /* Dropdown Menu */
+  /* Standard Dropdown Menu */
   .szc-header__dropdown {
     position: absolute;
     top: 100%;
@@ -236,11 +327,14 @@
     list-style: none;
     opacity: 0;
     visibility: hidden;
-    transform: translateY(10px);
-    transition: all var(--szc-transition-fast, 150ms ease);
+    transform: translateY(6px);
+    transition: opacity 200ms ease, transform 200ms ease, visibility 200ms ease;
+    z-index: 400;
   }
 
-  .szc-header__menu-item:hover .szc-header__dropdown {
+  .szc-header__menu-item:hover .szc-header__dropdown,
+  .szc-header__menu-item.is-hovered .szc-header__dropdown,
+  .szc-header__menu-item:focus-within .szc-header__dropdown {
     opacity: 1;
     visibility: visible;
     transform: translateY(0);
@@ -258,6 +352,403 @@
   .szc-header__dropdown-link:hover {
     background-color: var(--szc-color-surface, #f8f9fa);
     color: var(--szc-color-secondary, #d4a373);
+  }
+
+  /* ==========================================================================
+     💎 THEME STORE 10/10 ULTRA-LUXURY MEGA MENU PANEL (Prestige & Impact Level)
+     ========================================================================== */
+  .szc-header__menu-item.has-mega-menu {
+    position: static;
+  }
+
+  .szc-mega-menu {
+    position: absolute;
+    top: 100%;
+    left: 0;
+    right: 0;
+    width: 100%;
+    background: #ffffff;
+    border-top: 1px solid #eeeeee;
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.12);
+    opacity: 0;
+    visibility: hidden;
+    transform: translateY(6px);
+    transition: opacity 200ms ease, transform 200ms ease, visibility 200ms ease;
+    z-index: 500;
+  }
+
+  .szc-header__menu-item.is-hovered .szc-mega-menu,
+  .szc-header__menu-item:focus-within .szc-mega-menu {
+    opacity: 1;
+    visibility: visible;
+    transform: translateY(0);
+  }
+
+  .szc-mega-menu__container {
+    max-width: 1400px;
+    margin: 0 auto;
+    padding: 24px var(--szc-space-6, 24px) 0 var(--szc-space-6, 24px);
+  }
+
+  /* CSS AUTO GRID LAYOUT: Auto Resizing & Stretching */
+  .szc-mega-menu__grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(170px, 1fr));
+    gap: 28px;
+    align-items: start;
+    padding-bottom: 24px;
+  }
+
+  .szc-mega-col--banner {
+    grid-column: span 1;
+  }
+
+  .szc-mega-col {
+    display: flex;
+    flex-direction: column;
+  }
+
+  .szc-mega-col__title {
+    font-size: 12px;
+    font-weight: 800;
+    letter-spacing: 0.08em;
+    color: #111111;
+    text-transform: uppercase;
+    margin: 0 0 16px 0;
+  }
+
+  /* COLUMN 1: LEFT PROMO BANNER */
+  .szc-mega-banner-card {
+    position: relative;
+    height: 100%;
+    min-height: 280px;
+    border-radius: 8px;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+    padding: 24px;
+    background: #f4efea;
+  }
+
+  .szc-mega-banner-img-wrap {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 1;
+  }
+
+  .szc-mega-banner-img-wrap img,
+  .szc-mega-banner-img-wrap svg.szc-placeholder-svg {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+
+  .szc-mega-banner-content {
+    position: relative;
+    z-index: 2;
+    background: linear-gradient(to top, rgba(0,0,0,0.65) 0%, rgba(0,0,0,0) 100%);
+    margin: -24px;
+    padding: 28px 24px 24px 24px;
+    color: #ffffff;
+  }
+
+  .szc-mega-banner-sub {
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 0.12em;
+    color: #d4a373;
+    text-transform: uppercase;
+    display: block;
+    margin-bottom: 4px;
+  }
+
+  .szc-mega-banner-title {
+    font-family: var(--szc-font-family-heading, serif);
+    font-size: 20px;
+    font-weight: 700;
+    line-height: 1.2;
+    margin: 0 0 6px 0;
+    color: #ffffff;
+  }
+
+  .szc-mega-banner-desc {
+    font-size: 12px;
+    color: rgba(255, 255, 255, 0.85);
+    margin: 0 0 16px 0;
+  }
+
+  .szc-mega-banner-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 10px 18px;
+    background: #000000;
+    color: #ffffff;
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-decoration: none;
+    border-radius: 4px;
+    transition: background 150ms ease;
+  }
+
+  .szc-mega-banner-btn:hover {
+    background: #333333;
+  }
+
+  /* COLUMN 2: CATEGORIES (Auto-fetched) */
+  .szc-mega-categories-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+  }
+
+  .szc-mega-cat-link {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    text-decoration: none;
+    color: #333333;
+    transition: color 150ms ease;
+  }
+
+  .szc-mega-cat-link:hover {
+    color: #c86d51;
+  }
+
+  .szc-mega-cat-icon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 28px;
+    height: 28px;
+    color: #111111;
+  }
+
+  .szc-mega-cat-name {
+    font-size: 13.5px;
+    font-weight: 600;
+  }
+
+  .szc-mega-subcategories-list {
+    list-style: none;
+    padding: 6px 0 0 40px;
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+  }
+
+  .szc-mega-subcat-link {
+    font-size: 12.5px;
+    color: #666666;
+    text-decoration: none;
+    transition: color 150ms ease;
+  }
+
+  .szc-mega-subcat-link:hover {
+    color: #111111;
+  }
+
+  .szc-mobile-drawer__grandchild-menu {
+    list-style: none;
+    padding: 4px 0 4px 16px;
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+  }
+
+  /* COLUMN 3: OCCASIONS */
+  .szc-mega-links-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+  }
+
+  .szc-mega-simple-link {
+    font-size: 13.5px;
+    font-weight: 500;
+    color: #444444;
+    text-decoration: none;
+    transition: color 150ms ease;
+  }
+
+  .szc-mega-simple-link:hover {
+    color: #111111;
+    font-weight: 600;
+  }
+
+  /* COLUMN 4: NEW ARRIVALS (Mini Products) */
+  .szc-mega-products-list {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+  }
+
+  .szc-mega-product-item {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    text-decoration: none;
+    transition: transform 150ms ease;
+  }
+
+  .szc-mega-product-item:hover {
+    transform: translateX(3px);
+  }
+
+  .szc-mega-prod-thumb {
+    width: 48px;
+    height: 58px;
+    border-radius: 6px;
+    overflow: hidden;
+    background: #f4f4f4;
+    flex-shrink: 0;
+  }
+
+  .szc-mega-prod-thumb img,
+  .szc-mega-prod-thumb svg.szc-placeholder-svg {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+
+  .szc-mega-prod-info {
+    display: flex;
+    flex-direction: column;
+  }
+
+  .szc-mega-prod-title {
+    font-size: 13px;
+    font-weight: 600;
+    color: #111111;
+    margin: 0 0 2px 0;
+    line-height: 1.3;
+  }
+
+  .szc-mega-prod-price {
+    font-size: 12.5px;
+    font-weight: 700;
+    color: #111111;
+  }
+
+  /* COLUMNS 5 & 6: PROMO CARDS */
+  .szc-mega-promo-card-wrap {
+    text-decoration: none;
+    display: block;
+    height: 100%;
+  }
+
+  .szc-mega-promo-card {
+    display: flex;
+    flex-direction: column;
+    border-radius: 8px;
+    overflow: hidden;
+    background: #f9f9f9;
+    height: 100%;
+  }
+
+  .szc-mega-card-img-wrap {
+    width: 100%;
+    height: 150px;
+    overflow: hidden;
+  }
+
+  .szc-mega-card-img-wrap img,
+  .szc-mega-card-img-wrap svg.szc-placeholder-svg {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 300ms ease;
+  }
+
+  .szc-mega-promo-card-wrap:hover .szc-mega-card-img-wrap img,
+  .szc-mega-promo-card-wrap:hover .szc-mega-card-img-wrap svg.szc-placeholder-svg {
+    transform: scale(1.05);
+  }
+
+  .szc-mega-card-content {
+    padding: 14px;
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+  }
+
+  .szc-mega-card-heading {
+    font-family: var(--szc-font-family-heading, serif);
+    font-size: 15px;
+    font-weight: 700;
+    color: #111111;
+    margin: 0 0 2px 0;
+  }
+
+  .szc-mega-card-desc {
+    font-size: 12px;
+    color: #666666;
+    margin: 0 0 10px 0;
+  }
+
+  .szc-mega-card-link {
+    font-size: 10.5px;
+    font-weight: 800;
+    letter-spacing: 0.08em;
+    color: #111111;
+    text-transform: uppercase;
+    margin-top: auto;
+    transition: color 150ms ease;
+  }
+
+  .szc-mega-promo-card-wrap:hover .szc-mega-card-link {
+    color: #c86d51;
+  }
+
+  /* BOTTOM USP / TRUST BANNER (Dynamic Grid) */
+  .szc-mega-trust-bar {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 20px;
+    padding: 16px 20px;
+    border-top: 1px solid #eeeeee;
+    background: #fcfbf9;
+    margin: 0 -24px;
+  }
+
+  .szc-mega-trust-item {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+
+  .szc-trust-icon {
+    color: #c86d51;
+    flex-shrink: 0;
+  }
+
+  .szc-trust-text {
+    display: flex;
+    flex-direction: column;
+  }
+
+  .szc-trust-title {
+    font-size: 12.5px;
+    font-weight: 700;
+    color: #111111;
+  }
+
+  .szc-trust-sub {
+    font-size: 11px;
+    color: #777777;
   }
 
   /* Header Action Icons */
@@ -333,9 +824,391 @@
     transform: scale(1.35);
   }
 
-  /* Ensure strictly only 1 SVG icon renders inside wishlist link */
   .szc-wishlist-header-link > svg ~ svg {
     display: none !important;
+  }
+
+  /* Mobile Menu Drawer Styling */
+  .szc-mobile-drawer {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    z-index: 99999;
+    visibility: hidden;
+    pointer-events: none;
+    transition: visibility 300ms ease;
+  }
+
+  .szc-mobile-drawer.is-open {
+    visibility: visible;
+    pointer-events: auto;
+  }
+
+  .szc-mobile-drawer__overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.45);
+    backdrop-filter: blur(4px);
+    opacity: 0;
+    transition: opacity 300ms ease;
+  }
+
+  .szc-mobile-drawer.is-open .szc-mobile-drawer__overlay {
+    opacity: 1;
+  }
+
+  .szc-mobile-drawer__panel {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 85%;
+    max-width: 380px;
+    height: 100%;
+    background: #ffffff;
+    display: flex;
+    flex-direction: column;
+    transform: translateX(-100%);
+    transition: transform 300ms cubic-bezier(0.16, 1, 0.3, 1);
+    box-shadow: 4px 0 24px rgba(0, 0, 0, 0.15);
+    z-index: 2;
+  }
+
+  .szc-mobile-drawer.is-open .szc-mobile-drawer__panel {
+    transform: translateX(0);
+  }
+
+  .szc-mobile-drawer__header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 16px 20px;
+    border-bottom: 1px solid #eeeeee;
+  }
+
+  .szc-mobile-drawer__title {
+    font-family: var(--szc-font-family-heading, serif);
+    font-size: 15px;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    color: #111111;
+  }
+
+  .szc-mobile-drawer__close-btn {
+    background: transparent;
+    border: none;
+    cursor: pointer;
+    padding: 6px;
+    color: #111111;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+    transition: background-color 150ms ease;
+  }
+
+  .szc-mobile-drawer__close-btn:hover {
+    background-color: #f5f5f5;
+  }
+
+  .szc-mobile-drawer__body {
+    flex: 1;
+    overflow-y: auto;
+    padding: 16px 20px;
+  }
+
+  .szc-mobile-drawer__menu-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+  }
+
+  .szc-mobile-drawer__menu-item {
+    border-bottom: 1px solid #f5f5f5;
+  }
+
+  .szc-mobile-drawer__link-wrap {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 6px 0;
+  }
+
+  .szc-mobile-drawer__link {
+    display: block;
+    padding: 8px 0;
+    font-size: 15px;
+    font-weight: 700;
+    color: #111111;
+    text-decoration: none;
+    text-transform: uppercase;
+    letter-spacing: 0.03em;
+    transition: color 150ms ease;
+  }
+
+  .szc-mobile-drawer__link.is-sale-link {
+    color: #d9381e !important;
+  }
+
+  .szc-mobile-drawer__accordion-toggle {
+    background: transparent;
+    border: none;
+    padding: 6px;
+    cursor: pointer;
+    color: #111111;
+    transition: transform 200ms ease;
+    display: flex;
+    align-items: center;
+  }
+
+  .szc-mobile-drawer__chevron {
+    width: 14px;
+    height: 14px;
+  }
+
+  .szc-mobile-drawer__accordion-toggle.is-active {
+    transform: rotate(180deg);
+  }
+
+  .szc-mobile-drawer__sub-menu {
+    padding: 8px 0 16px 12px;
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    border-top: 1px solid #f9f9f9;
+  }
+
+  /* Responsive Mega Menu Schema Section Styling */
+  .szc-mob-section {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+
+  .szc-mob-section-title {
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: #888888;
+    margin: 0 0 4px 0;
+  }
+
+  .szc-mob-links-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+
+  .szc-mob-link {
+    font-size: 14px;
+    font-weight: 600;
+    color: #222222;
+    text-decoration: none;
+    display: block;
+    transition: color 150ms ease;
+  }
+
+  .szc-mob-link:hover {
+    color: #c86d51;
+  }
+
+  .szc-mob-sublinks-list {
+    list-style: none;
+    padding: 4px 0 0 12px;
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+  }
+
+  .szc-mob-sublink {
+    font-size: 13px;
+    font-weight: 400;
+    color: #666666;
+    text-decoration: none;
+    display: block;
+  }
+
+  /* Responsive Products Grid */
+  .szc-mob-products-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 10px;
+  }
+
+  .szc-mob-product-item {
+    display: flex;
+    flex-direction: column;
+    text-decoration: none;
+    color: #111111;
+    background: #fafafa;
+    border-radius: 8px;
+    overflow: hidden;
+    padding: 8px;
+  }
+
+  .szc-mob-prod-thumb {
+    width: 100%;
+    aspect-ratio: 1;
+    border-radius: 6px;
+    overflow: hidden;
+    background: #f0f0f0;
+    margin-bottom: 6px;
+  }
+
+  .szc-mob-prod-thumb img,
+  .szc-mob-prod-thumb svg {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+
+  .szc-mob-prod-title {
+    font-size: 12px;
+    font-weight: 600;
+    line-height: 1.2;
+    margin-bottom: 2px;
+  }
+
+  .szc-mob-prod-price {
+    font-size: 11px;
+    font-weight: 700;
+    color: #555555;
+  }
+
+  /* Responsive Promo Card & Banner */
+  .szc-mob-promo-card {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 10px;
+    background: #f9f8f6;
+    border-radius: 8px;
+    text-decoration: none;
+    color: #111111;
+  }
+
+  .szc-mob-promo-img {
+    width: 50px;
+    height: 50px;
+    border-radius: 6px;
+    overflow: hidden;
+    flex-shrink: 0;
+  }
+
+  .szc-mob-promo-img img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+
+  .szc-mob-promo-text {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+  }
+
+  .szc-mob-promo-sub {
+    font-size: 13px;
+    font-weight: 700;
+  }
+
+  .szc-mob-promo-link-btn {
+    font-size: 11px;
+    font-weight: 600;
+    color: #c86d51;
+    text-transform: uppercase;
+  }
+
+  .szc-mob-banner-card {
+    position: relative;
+    border-radius: 10px;
+    overflow: hidden;
+    background: #111111;
+    color: #ffffff;
+    padding: 16px;
+  }
+
+  .szc-mob-banner-img {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    opacity: 0.4;
+  }
+
+  .szc-mob-banner-img img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+
+  .szc-mob-banner-content {
+    position: relative;
+    z-index: 2;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 4px;
+  }
+
+  .szc-mob-banner-sub {
+    font-size: 10px;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    opacity: 0.8;
+  }
+
+  .szc-mob-banner-title {
+    font-family: var(--szc-font-family-heading, serif);
+    font-size: 16px;
+    font-weight: 700;
+    margin: 0;
+  }
+
+  .szc-mob-banner-btn {
+    display: inline-block;
+    margin-top: 6px;
+    padding: 6px 14px;
+    background: #ffffff;
+    color: #111111;
+    font-size: 10px;
+    font-weight: 700;
+    border-radius: 4px;
+    text-decoration: none;
+    text-transform: uppercase;
+  }
+
+  .szc-mobile-drawer__footer {
+    padding: 16px 20px;
+    border-top: 1px solid #eeeeee;
+    background: #fafafa;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+  }
+
+  .szc-mobile-drawer__footer-link {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-size: 13.5px;
+    font-weight: 600;
+    color: #333333;
+    text-decoration: none;
   }
 
   @media (max-width: 989px) {
@@ -352,17 +1225,105 @@
 {% endstylesheet %}
 
 {% javascript %}
-  if (!customElements.get('sticky-header')) {
-    customElements.define(
-      'sticky-header',
-      class StickyHeader extends HTMLElement {
-        constructor() {
-          super();
-          this.header = this.querySelector('header');
+
+  document.addEventListener('DOMContentLoaded', function() {
+    const menuItems = document.querySelectorAll('.szc-header__menu-item.has-mega-menu, .szc-header__menu-item.has-dropdown');
+    menuItems.forEach(item => {
+      let timer = null;
+
+      item.addEventListener('mouseenter', () => {
+        clearTimeout(timer);
+        menuItems.forEach(other => {
+          if (other !== item) other.classList.remove('is-hovered');
+        });
+        item.classList.add('is-hovered');
+        const toggle = item.querySelector('.szc-header__menu-link');
+        if (toggle) toggle.setAttribute('aria-expanded', 'true');
+      });
+
+      item.addEventListener('mouseleave', () => {
+        timer = setTimeout(() => {
+          item.classList.remove('is-hovered');
+          const toggle = item.querySelector('.szc-header__menu-link');
+          if (toggle) toggle.setAttribute('aria-expanded', 'false');
+        }, 180);
+      });
+
+      item.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape') {
+          item.classList.remove('is-hovered');
+          const toggle = item.querySelector('.szc-header__menu-link');
+          if (toggle) {
+            toggle.setAttribute('aria-expanded', 'false');
+            toggle.focus();
+          }
         }
+      });
+    });
+
+    const triggerBtns = document.querySelectorAll('[data-mobile-menu-trigger]');
+    const drawer = document.getElementById('MobileMenuDrawer');
+    const closeBtns = document.querySelectorAll('[data-mobile-menu-close]');
+
+    if (drawer && triggerBtns.length > 0) {
+      function openDrawer() {
+        drawer.classList.add('is-open');
+        drawer.setAttribute('aria-hidden', 'false');
+        document.body.style.overflow = 'hidden';
       }
-    );
-  }
+
+      function closeDrawer() {
+        drawer.classList.remove('is-open');
+        drawer.setAttribute('aria-hidden', 'true');
+        document.body.style.overflow = '';
+      }
+
+      triggerBtns.forEach(btn => btn.addEventListener('click', openDrawer));
+      closeBtns.forEach(btn => btn.addEventListener('click', closeDrawer));
+
+      const accordions = drawer.querySelectorAll('.szc-mobile-drawer__accordion-toggle');
+      const menuItems = drawer.querySelectorAll('[data-mobile-tab-trigger]');
+      const tabContents = drawer.querySelectorAll('[data-mobile-tab-content]');
+
+      menuItems.forEach(item => {
+        item.addEventListener('click', function(e) {
+          const tabTarget = this.getAttribute('data-mobile-tab-trigger');
+          if (tabTarget) {
+            menuItems.forEach(mi => mi.classList.remove('is-active'));
+            this.classList.add('is-active');
+
+            tabContents.forEach(content => {
+              if (content.getAttribute('data-mobile-tab-content') === tabTarget) {
+                content.classList.add('is-active');
+              } else {
+                content.classList.remove('is-active');
+              }
+            });
+          }
+        });
+      });
+
+      accordions.forEach(toggle => {
+        toggle.addEventListener('click', function(e) {
+          e.stopPropagation();
+          const menuItem = this.closest('.szc-mobile-drawer__menu-item');
+          const subMenu = menuItem ? menuItem.querySelector('.szc-mobile-drawer__sub-menu') : null;
+          if (subMenu) {
+            const isOpen = subMenu.style.display !== 'none';
+            subMenu.style.display = isOpen ? 'none' : 'flex';
+            this.classList.toggle('is-active', !isOpen);
+            this.setAttribute('aria-expanded', !isOpen);
+          }
+        });
+      });
+
+      document.addEventListener('keydown', function(e) {
+        if (e.key === 'Escape' && drawer.classList.contains('is-open')) {
+          closeDrawer();
+        }
+      });
+    }
+  });
 {% endjavascript %}
 
 {% schema %}
@@ -395,6 +1356,262 @@
       "id": "enable_sticky_header",
       "default": true,
       "label": "Enable sticky header"
+    }
+  ],
+  "blocks": [
+    {
+      "type": "mega_menu",
+      "name": "Mega Menu Block",
+      "settings": [
+        {
+          "type": "text",
+          "id": "menu_item_title",
+          "label": "Target Menu Item (e.g. Clothing)",
+          "info": "Matches link handle automatically"
+        },
+        {
+          "type": "select",
+          "id": "menu_type",
+          "label": "Menu Display Type",
+          "options": [
+            { "value": "mega", "label": "Full Mega Menu" }
+          ],
+          "default": "mega"
+        },
+        {
+          "type": "header",
+          "content": "1. Left Promo Banner"
+        },
+        {
+          "type": "checkbox",
+          "id": "show_banner",
+          "label": "Show left promo banner",
+          "default": true
+        },
+        {
+          "type": "image_picker",
+          "id": "banner_image",
+          "label": "Banner image"
+        },
+        {
+          "type": "text",
+          "id": "banner_subtitle",
+          "label": "Subtitle"
+        },
+        {
+          "type": "text",
+          "id": "banner_heading",
+          "label": "Heading"
+        },
+        {
+          "type": "text",
+          "id": "banner_description",
+          "label": "Description"
+        },
+        {
+          "type": "text",
+          "id": "banner_button_label",
+          "label": "Button label"
+        },
+        {
+          "type": "url",
+          "id": "banner_button_link",
+          "label": "Button link"
+        },
+        {
+          "type": "header",
+          "content": "2. Categories"
+        },
+        {
+          "type": "checkbox",
+          "id": "show_categories",
+          "label": "Show categories",
+          "default": true
+        },
+        {
+          "type": "text",
+          "id": "category_title",
+          "label": "Column title"
+        },
+        {
+          "type": "link_list",
+          "id": "categories_menu",
+          "label": "Categories menu (Optional override)"
+        },
+        {
+          "type": "header",
+          "content": "3. Occasion Column"
+        },
+        {
+          "type": "checkbox",
+          "id": "show_occasions",
+          "label": "Show occasion column",
+          "default": true
+        },
+        {
+          "type": "text",
+          "id": "occasions_title",
+          "label": "Column title"
+        },
+        {
+          "type": "link_list",
+          "id": "occasions_menu",
+          "label": "Occasion menu"
+        },
+        {
+          "type": "header",
+          "content": "4. Products / New Arrivals"
+        },
+        {
+          "type": "checkbox",
+          "id": "show_new_arrivals",
+          "label": "Show products column",
+          "default": true
+        },
+        {
+          "type": "text",
+          "id": "new_arrivals_title",
+          "label": "Column title"
+        },
+        {
+          "type": "collection",
+          "id": "new_arrivals_collection",
+          "label": "Collection"
+        },
+        {
+          "type": "range",
+          "id": "products_to_show",
+          "min": 2,
+          "max": 8,
+          "step": 1,
+          "default": 4,
+          "label": "Products to show"
+        },
+        {
+          "type": "header",
+          "content": "5. Featured Promo Card 1"
+        },
+        {
+          "type": "checkbox",
+          "id": "show_card_1",
+          "label": "Show promo card 1",
+          "default": true
+        },
+        {
+          "type": "text",
+          "id": "card_1_title",
+          "label": "Card title"
+        },
+        {
+          "type": "image_picker",
+          "id": "card_1_image",
+          "label": "Card image"
+        },
+        {
+          "type": "text",
+          "id": "card_1_subheading",
+          "label": "Subheading"
+        },
+        {
+          "type": "text",
+          "id": "card_1_description",
+          "label": "Description"
+        },
+        {
+          "type": "text",
+          "id": "card_1_button_label",
+          "label": "Link text"
+        },
+        {
+          "type": "url",
+          "id": "card_1_button_link",
+          "label": "Entire card link"
+        },
+        {
+          "type": "header",
+          "content": "6. Featured Promo Card 2"
+        },
+        {
+          "type": "checkbox",
+          "id": "show_card_2",
+          "label": "Show promo card 2",
+          "default": true
+        },
+        {
+          "type": "text",
+          "id": "card_2_title",
+          "label": "Card title"
+        },
+        {
+          "type": "image_picker",
+          "id": "card_2_image",
+          "label": "Card image"
+        },
+        {
+          "type": "text",
+          "id": "card_2_subheading",
+          "label": "Subheading"
+        },
+        {
+          "type": "text",
+          "id": "card_2_description",
+          "label": "Description"
+        },
+        {
+          "type": "text",
+          "id": "card_2_button_label",
+          "label": "Link text"
+        },
+        {
+          "type": "url",
+          "id": "card_2_button_link",
+          "label": "Entire card link"
+        },
+        {
+          "type": "header",
+          "content": "7. Bottom Trust / USP Bar"
+        },
+        {
+          "type": "checkbox",
+          "id": "show_trust_bar",
+          "label": "Show bottom trust bar",
+          "default": true
+        }
+      ]
+    },
+    {
+      "type": "usp_item",
+      "name": "Trust / USP Item",
+      "settings": [
+        {
+          "type": "select",
+          "id": "icon",
+          "label": "Icon",
+          "options": [
+            { "value": "secure", "label": "Secure Lock" },
+            { "value": "quality", "label": "Certified Quality" },
+            { "value": "returns", "label": "Easy Returns" },
+            { "value": "support", "label": "24/7 Support" },
+            { "value": "shipping", "label": "Free Shipping" }
+          ],
+          "default": "secure"
+        },
+        {
+          "type": "text",
+          "id": "title",
+          "label": "Title"
+        },
+        {
+          "type": "text",
+          "id": "subtitle",
+          "label": "Subtitle"
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "Header"
     }
   ]
 }

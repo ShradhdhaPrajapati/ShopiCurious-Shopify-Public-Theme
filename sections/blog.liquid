@@ -1,35 +1,1034 @@
 {% comment %}
-  This section is used in the blog template to render the blog page listing all
-  articles within a blog.
-
-  https://shopify.dev/docs/storefronts/themes/architecture/templates/blog
+  ShopziCurious - Luxury Fashion Blog Listing Section
+  Features a responsive two-column layout:
+  - Left Sidebar: Our Journal header, Search articles, Categories filter, Recent posts.
+  - Right Content: Results summary, 3-column article grid, pagination, Newsletter "Stay in the Loop", and Fallback/Empty state.
 {% endcomment %}
 
-<h1>{{ blog.title }}</h1>
+{%- liquid
+  assign articles_per_page = section.settings.articles_per_page | default: 9
+  assign show_sidebar = section.settings.show_sidebar
+  assign show_search = section.settings.show_search
+  assign show_categories = section.settings.show_categories
+  assign show_recent_posts = section.settings.show_recent_posts
+  assign show_newsletter = section.settings.show_newsletter
+  assign show_excerpt = section.settings.show_excerpt
+  assign show_date = section.settings.show_date
+  assign show_read_time = section.settings.show_read_time
+  assign journal_heading = section.settings.journal_heading | default: 'OUR JOURNAL'
+  assign journal_subtitle = section.settings.journal_subtitle | default: 'Style tips, fashion trends, and inspiration to elevate your everyday.'
 
-{% paginate blog.articles by 5 %}
-  {% for article in blog.articles %}
-    <div>
-      {% if article.image %}
-        {{ article.image | image_url: width: 1000 | image_tag }}
-      {% endif %}
-      <h2>
-        {{ article.title | link_to: article.url }}
-      </h2>
-      {% assign date = article.published_at | time_tag: format: 'date' %}
-      <p>{{ 'blog.article_metadata_html' | t: date: date, author: article.author }}</p>
-      <p>{{ article.excerpt }}</p>
-    </div>
-  {% endfor %}
+  assign blog_search_q = ''
+  if canonical_url contains 'q='
+    assign blog_search_q = canonical_url | split: 'q=' | last | split: '&' | first | url_decode | strip
+  endif
+  assign search_query_dc = blog_search_q | downcase
 
-  {%- if paginate.pages > 1 -%}
-    {{- paginate | default_pagination -}}
-  {%- endif -%}
-{% endpaginate %}
+  assign blog_sort_by = 'latest'
+  if canonical_url contains 'sort_by=oldest'
+    assign blog_sort_by = 'oldest'
+  endif
+-%}
+
+<div class="szc-blog-page page-width">
+  {% render 'breadcrumbs' %}
+
+  <div class="szc-blog-layout{% unless show_sidebar %} szc-blog-layout--no-sidebar{% endunless %}">
+    {%- if show_sidebar -%}
+      <!-- LEFT SIDEBAR -->
+      <aside class="szc-blog-sidebar">
+        <!-- Journal Header -->
+        <div class="szc-blog-sidebar__header">
+          <h1 class="szc-blog-sidebar__heading">{{ journal_heading }}</h1>
+          {%- if journal_subtitle != blank -%}
+            <p class="szc-blog-sidebar__subtitle">{{ journal_subtitle }}</p>
+          {%- endif -%}
+        </div>
+
+        <!-- Search Articles -->
+        {%- if show_search -%}
+          <div class="szc-blog-sidebar__widget szc-blog-sidebar__search">
+            <label for="BlogSearch-{{ section.id }}" class="szc-blog-sidebar__title">SEARCH ARTICLES</label>
+            <form action="{{ blog.url }}" method="get" role="search" class="szc-blog-search-form">
+              <div class="szc-blog-search-input-wrap">
+                <input
+                  id="BlogSearch-{{ section.id }}"
+                  type="search"
+                  name="q"
+                  value="{{ blog_search_q | escape }}"
+                  placeholder="Search articles..."
+                  aria-label="Search articles"
+                  class="szc-blog-search-input"
+                >
+                <button type="submit" class="szc-blog-search-btn" aria-label="Search">
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <circle cx="11" cy="11" r="8"></circle>
+                    <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+                  </svg>
+                </button>
+              </div>
+            </form>
+          </div>
+        {%- endif -%}
+
+        <!-- Categories / Tags Filter -->
+        {%- if show_categories -%}
+          <div class="szc-blog-sidebar__widget">
+            <h3 class="szc-blog-sidebar__title">CATEGORIES</h3>
+            <ul class="szc-blog-categories" role="list">
+              <li class="szc-blog-category__item">
+                <a
+                  href="{{ blog.url }}"
+                  class="szc-blog-category__link{% if current_tags == blank %} is-active{% endif %}"
+                >
+                  All
+                </a>
+              </li>
+
+              {%- if blog.all_tags.size > 0 -%}
+                {%- for tag in blog.all_tags -%}
+                  {%- assign is_active = false -%}
+                  {%- if current_tags contains tag -%}
+                    {%- assign is_active = true -%}
+                  {%- else -%}
+                    {%- assign tag_handle = tag | handle -%}
+                    {%- for current_tag in current_tags -%}
+                      {%- assign current_tag_handle = current_tag | handle -%}
+                      {%- if current_tag_handle == tag_handle -%}
+                        {%- assign is_active = true -%}
+                        {%- break -%}
+                      {%- endif -%}
+                    {%- endfor -%}
+                  {%- endif -%}
+
+                  <li class="szc-blog-category__item">
+                    <a
+                      href="{{ blog.url }}/tagged/{{ tag | handle }}"
+                      class="szc-blog-category__link{% if is_active %} is-active{% endif %}"
+                    >
+                      {{ tag }}
+                    </a>
+                  </li>
+                {%- endfor -%}
+              {%- else -%}
+                {%- comment -%} Fallback Category Pills for Preview / Clean Setup {%- endcomment -%}
+                {%- assign fallback_tags = "Fashion, Style Guide, Trends, Sustainability, Behind The Scenes, Lookbook" | split: ", " -%}
+                {%- for ftag in fallback_tags -%}
+                  <li class="szc-blog-category__item">
+                    <a href="{{ blog.url }}" class="szc-blog-category__link">
+                      {{ ftag }}
+                    </a>
+                  </li>
+                {%- endfor -%}
+              {%- endif -%}
+            </ul>
+          </div>
+        {%- endif -%}
+
+        <!-- Recent Posts Widget -->
+        {%- if show_recent_posts -%}
+          <div class="szc-blog-sidebar__widget">
+            <h3 class="szc-blog-sidebar__title">RECENT POSTS</h3>
+            <div class="szc-blog-recent-list">
+              {%- assign recent_articles = blog.articles | sort: 'published_at' | reverse | slice: 0, 5 -%}
+              {%- if recent_articles.size > 0 -%}
+                {%- for r_article in recent_articles -%}
+                  <a href="{{ r_article.url }}" class="szc-blog-recent-item">
+                    <div class="szc-blog-recent-item__img-wrap">
+                      {%- if r_article.image -%}
+                        {{ r_article.image | image_url: width: 120, height: 120 | image_tag: class: 'szc-blog-recent-item__img', loading: 'lazy' }}
+                      {%- else -%}
+                        <div class="szc-blog-placeholder-small">
+                          {{ 'lifestyle-1' | placeholder_svg_tag }}
+                        </div>
+                      {%- endif -%}
+                    </div>
+                    <div class="szc-blog-recent-item__info">
+                      <h4 class="szc-blog-recent-item__title">{{ r_article.title | truncate: 45 }}</h4>
+                      <time datetime="{{ r_article.published_at | date: '%Y-%m-%d' }}" class="szc-blog-recent-item__date">
+                        {{ r_article.published_at | date: "%b %d, %Y" }}
+                      </time>
+                    </div>
+                  </a>
+                {%- endfor -%}
+              {%- elsif request.design_mode -%}
+                {%- comment -%} Theme Editor Recent Posts Demo Preview {%- endcomment -%}
+                {%- for i in (1..3) -%}
+                  <div class="szc-blog-recent-item">
+                    <div class="szc-blog-recent-item__img-wrap">
+                      <div class="szc-blog-placeholder-small">
+                        {{ 'lifestyle-1' | placeholder_svg_tag }}
+                      </div>
+                    </div>
+                    <div class="szc-blog-recent-item__info">
+                      <h4 class="szc-blog-recent-item__title">Timeless Wardrobe Essentials {{ i }}</h4>
+                      <span class="szc-blog-recent-item__date">May 10, 2024</span>
+                    </div>
+                  </div>
+                {%- endfor -%}
+              {%- else -%}
+                <p class="szc-blog-sidebar__empty">No recent posts available.</p>
+              {%- endif -%}
+            </div>
+          </div>
+        {%- endif -%}
+      </aside>
+    {%- endif -%}
+
+    <!-- RIGHT CONTENT AREA -->
+    <main class="szc-blog-content">
+      {%- paginate blog.articles by articles_per_page -%}
+        {%- liquid
+          assign display_articles = blog.articles
+          if blog_sort_by == 'oldest'
+            assign display_articles = blog.articles | reverse
+          endif
+
+          assign matching_articles_count = 0
+          for article in display_articles
+            assign t_dc = article.title | downcase
+            assign e_dc = article.excerpt | downcase
+            assign c_dc = article.content | downcase
+            assign tags_dc = article.tags | join: ' ' | downcase
+            if blog_search_q == blank or t_dc contains search_query_dc or e_dc contains search_query_dc or c_dc contains search_query_dc or tags_dc contains search_query_dc
+              assign matching_articles_count = matching_articles_count | plus: 1
+            endif
+          endfor
+        -%}
+
+        <!-- Top Toolbar (Results Summary & Sorting) -->
+        <div class="szc-blog-toolbar">
+          <div class="szc-blog-toolbar__count">
+            {%- if blog_search_q != blank -%}
+              Showing {{ matching_articles_count }} result{% if matching_articles_count != 1 %}s{% endif %} for "{{ blog_search_q }}"
+            {%- elsif blog.articles_count > 0 -%}
+              {%- assign start_num = paginate.current_offset | plus: 1 -%}
+              {%- assign end_num = paginate.current_offset | plus: paginate.page_size -%}
+              {%- if end_num > paginate.items -%}
+                {%- assign end_num = paginate.items -%}
+              {%- endif -%}
+              Showing {{ start_num }}–{{ end_num }} of {{ paginate.items }} results
+            {%- else -%}
+              Showing 0 results
+            {%- endif -%}
+          </div>
+
+          <div class="szc-blog-toolbar__sort">
+            <span class="szc-blog-sort-label">Sort by:</span>
+            <select class="szc-blog-sort-select" aria-label="Sort articles">
+              <option value="latest" {% if blog_sort_by == 'latest' %}selected{% endif %}>Latest</option>
+              <option value="oldest" {% if blog_sort_by == 'oldest' %}selected{% endif %}>Oldest</option>
+            </select>
+          </div>
+        </div>
+
+        <!-- Article Grid -->
+        {%- if blog.articles.size > 0 and matching_articles_count > 0 -%}
+          <div class="szc-blog-grid">
+            {%- for article in display_articles -%}
+              {%- assign t_dc = article.title | downcase -%}
+              {%- assign e_dc = article.excerpt | downcase -%}
+              {%- assign c_dc = article.content | downcase -%}
+              {%- assign tags_dc = article.tags | join: ' ' | downcase -%}
+              {%- if blog_search_q == blank or t_dc contains search_query_dc or e_dc contains search_query_dc or c_dc contains search_query_dc or tags_dc contains search_query_dc -%}
+                {% render 'article-card',
+                  article: article,
+                  show_excerpt: show_excerpt,
+                  show_date: show_date,
+                  show_read_time: show_read_time
+                %}
+              {%- endif -%}
+            {%- endfor -%}
+          </div>
+
+          <!-- Pagination -->
+          {%- if paginate.pages > 1 -%}
+            {% render 'pagination',
+              paginate: paginate,
+              pagination_type: section.settings.pagination_type,
+              item_type: 'articles'
+            %}
+          {%- endif -%}
+        {%- elsif blog_search_q != blank -%}
+          <div class="szc-blog-empty">
+            <h2 class="szc-blog-empty__title">No matching articles found</h2>
+            <p class="szc-blog-empty__subtitle">We couldn't find any articles matching "{{ blog_search_q }}". Try another search or browse all articles.</p>
+            <div class="szc-blog-empty__actions">
+              <a href="{{ blog.url }}" class="szc-btn szc-btn--primary">View All Articles</a>
+            </div>
+          </div>
+        {%- elsif request.design_mode -%}
+          {%- comment -%} Theme Editor Demo Grid Preview when Store has no Articles {%- endcomment -%}
+          <div class="szc-blog-grid">
+            {%- for i in (1..6) -%}
+              <article class="szc-article-card">
+                <div class="szc-article-card__link-wrap">
+                  <div class="szc-article-card__media">
+                    <div class="szc-article-card__placeholder">
+                      {{ 'lifestyle-2' | placeholder_svg_tag: 'szc-placeholder-svg' }}
+                    </div>
+                  </div>
+                  <div class="szc-article-card__content">
+                    <span class="szc-article-card__tag">FASHION</span>
+                    <h2 class="szc-article-card__title">5 Timeless Pieces Every Wardrobe Needs</h2>
+                    <p class="szc-article-card__excerpt">Build a wardrobe that lasts with high quality, versatile essentials designed for everyday elegance...</p>
+                    <div class="szc-article-card__meta">
+                      <span class="szc-article-card__date">May 10, 2024</span>
+                      <span class="szc-article-card__dot">•</span>
+                      <span class="szc-article-card__read-time">5 min read</span>
+                    </div>
+                  </div>
+                </div>
+              </article>
+            {%- endfor -%}
+          </div>
+        {%- else -%}
+          <!-- Empty State -->
+          <div class="szc-blog-empty">
+            <svg class="szc-blog-empty__icon" width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"></path>
+              <path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"></path>
+            </svg>
+            <h3 class="szc-blog-empty__title">No articles yet</h3>
+            <p class="szc-blog-empty__desc">Check back soon for new stories, style guides, and fashion inspiration.</p>
+            <a href="{{ routes.root_url }}" class="szc-button szc-button--primary szc-blog-empty__btn">
+              BACK TO HOME
+            </a>
+          </div>
+        {%- endif -%}
+      {%- endpaginate -%}
+
+      <!-- NEWSLETTER / STAY IN THE LOOP -->
+      {%- if show_newsletter -%}
+        <div class="szc-blog-newsletter">
+          <div class="szc-blog-newsletter__inner">
+            <div class="szc-blog-newsletter__icon-wrap">
+              <svg class="szc-blog-newsletter__icon" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+                <rect x="2" y="4" width="20" height="16" rx="2"></rect>
+                <path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"></path>
+              </svg>
+            </div>
+
+            <h3 class="szc-blog-newsletter__title">{{ section.settings.newsletter_title | default: 'Stay in the Loop' }}</h3>
+            <p class="szc-blog-newsletter__desc">{{ section.settings.newsletter_subtitle | default: 'Subscribe to get style tips, new arrivals, and exclusive offers.' }}</p>
+
+            {% form 'customer', class: 'szc-blog-newsletter__form' %}
+              <input type="hidden" name="contact[tags]" value="newsletter">
+              <div class="szc-blog-newsletter__input-group">
+                <input
+                  type="email"
+                  name="contact[email]"
+                  class="szc-blog-newsletter__input"
+                  placeholder="Enter your email address"
+                  aria-label="Enter your email address"
+                  required
+                >
+                <button type="submit" class="szc-blog-newsletter__submit">
+                  SUBSCRIBE
+                </button>
+              </div>
+              {%- if form.posted_successfully? -%}
+                <p class="szc-blog-newsletter__success">Thanks for subscribing to our journal!</p>
+              {%- endif -%}
+            {% endform %}
+          </div>
+        </div>
+      {%- endif -%}
+    </main>
+  </div>
+</div>
+
+{% stylesheet %}
+  /* ==========================================================================
+     BLOG LISTING STYLES (ShopziCurious Luxury Fashion UI)
+     ========================================================================== */
+
+  .szc-blog-page {
+    padding-top: 16px;
+    padding-bottom: 64px;
+    max-width: 1360px;
+    margin: 0 auto;
+    padding-left: 24px;
+    padding-right: 24px;
+  }
+
+  /* Two Column Layout */
+  .szc-blog-layout {
+    display: grid;
+    grid-template-columns: 280px 1fr;
+    gap: 48px;
+    margin-top: 24px;
+    align-items: start;
+  }
+
+  .szc-blog-layout--no-sidebar {
+    grid-template-columns: 1fr;
+  }
+
+  /* Left Sidebar & Vertical Divider */
+  .szc-blog-sidebar {
+    padding-right: 36px;
+    border-right: 1px solid #eaeaea;
+    display: flex;
+    flex-direction: column;
+    gap: 36px;
+  }
+
+  .szc-blog-sidebar__heading {
+    font-family: var(--szc-font-family-heading, Georgia, serif);
+    font-size: 28px;
+    font-weight: 500;
+    color: #111111;
+    margin: 0 0 8px 0;
+    letter-spacing: -0.01em;
+  }
+
+  .szc-blog-sidebar__subtitle {
+    font-family: var(--szc-font-family-body, sans-serif);
+    font-size: 13px;
+    color: #666666;
+    line-height: 1.5;
+    margin: 0;
+  }
+
+  .szc-blog-sidebar__title {
+    display: block;
+    font-family: var(--szc-font-family-body, sans-serif);
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: #111111;
+    margin-bottom: 14px;
+  }
+
+  /* Search Widget */
+  .szc-blog-search-input-wrap {
+    position: relative;
+    display: flex;
+    align-items: center;
+  }
+
+  .szc-blog-search-input {
+    width: 100%;
+    height: 42px;
+    padding: 0 36px 0 14px;
+    font-size: 13px;
+    color: #111111;
+    background-color: #ffffff;
+    border: 1px solid #dddddd;
+    border-radius: 4px;
+    outline: none;
+    transition: border-color 150ms ease;
+  }
+
+  .szc-blog-search-input:focus {
+    border-color: #111111;
+  }
+
+  .szc-blog-search-btn {
+    position: absolute;
+    right: 10px;
+    background: none;
+    border: none;
+    color: #666666;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 4px;
+  }
+
+  .szc-blog-search-btn:hover {
+    color: #111111;
+  }
+
+  /* Categories List */
+  .szc-blog-categories {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+  }
+
+  .szc-blog-category__link {
+    display: block;
+    padding: 8px 12px;
+    font-size: 13px;
+    color: #444444;
+    text-decoration: none;
+    border-radius: 4px;
+    transition: background-color 150ms ease, color 150ms ease;
+  }
+
+  .szc-blog-category__link:hover {
+    background-color: #f7f7f7;
+    color: #111111;
+  }
+
+  .szc-blog-category__link.is-active {
+    background-color: #f4f3ef;
+    color: #111111;
+    font-weight: 600;
+  }
+
+  /* Recent Posts Widget */
+  .szc-blog-recent-list {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+  }
+
+  .szc-blog-recent-item {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    text-decoration: none;
+    color: inherit;
+    transition: opacity 150ms ease;
+  }
+
+  .szc-blog-recent-item:hover {
+    opacity: 0.8;
+  }
+
+  .szc-blog-recent-item__img-wrap {
+    width: 54px;
+    height: 54px;
+    border-radius: 6px;
+    overflow: hidden;
+    flex-shrink: 0;
+    background-color: #f2f2f2;
+  }
+
+  .szc-blog-recent-item__img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+  }
+
+  .szc-blog-placeholder-small {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: #eee;
+    color: #aaa;
+  }
+
+  .szc-blog-recent-item__info {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    min-width: 0;
+  }
+
+  .szc-blog-recent-item__title {
+    font-size: 13px;
+    font-weight: 500;
+    color: #111111;
+    margin: 0;
+    line-height: 1.35;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  .szc-blog-recent-item__date {
+    font-size: 11px;
+    color: #777777;
+  }
+
+  /* Right Content Toolbar */
+  .szc-blog-toolbar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 24px;
+    padding-bottom: 14px;
+    border-bottom: 1px solid #f0f0f0;
+  }
+
+  .szc-blog-toolbar__count {
+    font-size: 13px;
+    color: #666666;
+  }
+
+  .szc-blog-toolbar__sort {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .szc-blog-sort-label {
+    font-size: 13px;
+    color: #666666;
+  }
+
+  .szc-blog-sort-select {
+    padding: 6px 12px;
+    font-size: 12px;
+    font-weight: 500;
+    color: #111111;
+    background-color: #ffffff;
+    border: 1px solid #e0e0e0;
+    border-radius: 4px;
+    outline: none;
+    cursor: pointer;
+  }
+
+  /* Article Cards Grid */
+  .szc-blog-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 28px;
+  }
+
+  .szc-article-card {
+    background-color: #ffffff;
+    border: 1px solid #ebebeb;
+    border-radius: 8px;
+    overflow: hidden;
+    transition: transform 200ms ease, box-shadow 200ms ease;
+  }
+
+  .szc-article-card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 10px 24px rgba(0, 0, 0, 0.05);
+  }
+
+  .szc-article-card__link-wrap {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    text-decoration: none;
+    color: inherit;
+  }
+
+  .szc-article-card__media {
+    position: relative;
+    width: 100%;
+    aspect-ratio: 16 / 10;
+    overflow: hidden;
+    background-color: #f7f7f7;
+  }
+
+  .szc-article-card__img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+    transition: transform 500ms ease;
+  }
+
+  .szc-article-card:hover .szc-article-card__img {
+    transform: scale(1.04);
+  }
+
+  .szc-article-card__placeholder {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: #f4f4f4;
+    color: #bbbbbb;
+  }
+
+  .szc-article-card__content {
+    padding: 20px 18px;
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+  }
+
+  .szc-article-card__tag {
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 0.12em;
+    color: #997b53;
+    margin-bottom: 8px;
+    text-transform: uppercase;
+  }
+
+  .szc-article-card__title {
+    font-family: var(--szc-font-family-heading, Georgia, serif);
+    font-size: 17px;
+    font-weight: 500;
+    color: #111111;
+    margin: 0 0 10px 0;
+    line-height: 1.35;
+  }
+
+  .szc-article-card__excerpt {
+    font-size: 13px;
+    color: #666666;
+    line-height: 1.5;
+    margin: 0 0 16px 0;
+    flex: 1;
+  }
+
+  .szc-article-card__meta {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 11px;
+    color: #888888;
+    margin-top: auto;
+    padding-top: 12px;
+    border-top: 1px solid #f5f5f5;
+  }
+
+  .szc-article-card__dot {
+    color: #cccccc;
+  }
+
+  /* Pagination */
+  .szc-blog-pagination {
+    margin-top: 48px;
+    display: flex;
+    justify-content: center;
+  }
+
+  .szc-blog-pagination__list {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    list-style: none;
+    margin: 0;
+    padding: 0;
+  }
+
+  .szc-blog-pagination__btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 36px;
+    height: 36px;
+    padding: 0 8px;
+    font-size: 13px;
+    font-weight: 500;
+    color: #333333;
+    text-decoration: none;
+    border: 1px solid #e0e0e0;
+    border-radius: 4px;
+    background-color: #ffffff;
+    transition: all 150ms ease;
+  }
+
+  .szc-blog-pagination__btn:hover:not(.is-active):not(.is-disabled) {
+    border-color: #111111;
+    color: #111111;
+  }
+
+  .szc-blog-pagination__btn.is-active {
+    background-color: #111111;
+    color: #ffffff;
+    border-color: #111111;
+  }
+
+  .szc-blog-pagination__btn.is-disabled {
+    opacity: 0.4;
+    cursor: not-allowed;
+  }
+
+  /* Newsletter Box at Bottom of Blog */
+  .szc-blog-newsletter {
+    margin-top: 64px;
+    padding: 48px 32px;
+    background-color: #f7f4ee;
+    border-radius: 16px;
+    text-align: center;
+  }
+
+  .szc-blog-newsletter__inner {
+    max-width: 520px;
+    margin: 0 auto;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .szc-blog-newsletter__icon-wrap {
+    width: 52px;
+    height: 52px;
+    border-radius: 50%;
+    background-color: #ffffff;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #111111;
+    margin-bottom: 16px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.04);
+  }
+
+  .szc-blog-newsletter__title {
+    font-family: var(--szc-font-family-heading, Georgia, serif);
+    font-size: 24px;
+    font-weight: 500;
+    color: #111111;
+    margin: 0 0 8px 0;
+  }
+
+  .szc-blog-newsletter__desc {
+    font-size: 13px;
+    color: #666666;
+    margin: 0 0 24px 0;
+    line-height: 1.5;
+  }
+
+  .szc-blog-newsletter__form {
+    width: 100%;
+  }
+
+  .szc-blog-newsletter__input-group {
+    display: flex;
+    width: 100%;
+    gap: 8px;
+  }
+
+  .szc-blog-newsletter__input {
+    flex: 1;
+    height: 46px;
+    padding: 0 16px;
+    font-size: 13px;
+    color: #111111;
+    background-color: #ffffff;
+    border: 1px solid #e0dad0;
+    border-radius: 6px;
+    outline: none;
+  }
+
+  .szc-blog-newsletter__input:focus {
+    border-color: #111111;
+  }
+
+  .szc-blog-newsletter__submit {
+    height: 46px;
+    padding: 0 24px;
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    color: #ffffff;
+    background-color: #111111;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: background-color 150ms ease;
+    white-space: nowrap;
+  }
+
+  .szc-blog-newsletter__submit:hover {
+    background-color: #333333;
+  }
+
+  .szc-blog-newsletter__success {
+    font-size: 13px;
+    color: #2e7d32;
+    margin-top: 12px;
+  }
+
+  /* Empty State */
+  .szc-blog-empty {
+    text-align: center;
+    padding: 64px 24px;
+    background-color: #f9f9f9;
+    border-radius: 12px;
+    margin-bottom: 48px;
+  }
+
+  .szc-blog-empty__icon {
+    color: #888888;
+    margin-bottom: 16px;
+  }
+
+  .szc-blog-empty__title {
+    font-family: var(--szc-font-family-heading, Georgia, serif);
+    font-size: 22px;
+    margin: 0 0 8px 0;
+    color: #111111;
+  }
+
+  .szc-blog-empty__desc {
+    font-size: 14px;
+    color: #666666;
+    margin: 0 0 24px 0;
+  }
+
+  .szc-blog-empty__btn {
+    display: inline-flex;
+    align-items: center;
+    height: 44px;
+    padding: 0 24px;
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-decoration: none;
+  }
+
+  /* Responsive Media Queries */
+  @media (max-width: 1024px) {
+    .szc-blog-layout {
+      grid-template-columns: 240px 1fr;
+      gap: 32px;
+    }
+    .szc-blog-grid {
+      grid-template-columns: repeat(2, 1fr);
+      gap: 20px;
+    }
+  }
+
+  @media (max-width: 768px) {
+    .szc-blog-layout {
+      grid-template-columns: 1fr;
+      gap: 36px;
+    }
+    .szc-blog-sidebar {
+      padding-right: 0;
+      border-right: none;
+      border-bottom: 1px solid #eaeaea;
+      padding-bottom: 32px;
+    }
+    .szc-blog-grid {
+      grid-template-columns: 1fr;
+    }
+    .szc-blog-newsletter__input-group {
+      flex-direction: column;
+    }
+    .szc-blog-newsletter__submit {
+      width: 100%;
+    }
+  }
+{% endstylesheet %}
 
 {% schema %}
 {
-  "name": "t:general.blog",
-  "settings": []
+  "name": "Blog Listing",
+  "tag": "section",
+  "class": "section-blog-listing",
+  "settings": [
+    {
+      "type": "range",
+      "id": "articles_per_page",
+      "min": 3,
+      "max": 24,
+      "step": 3,
+      "label": "Articles per page",
+      "default": 9
+    },
+    {
+      "type": "select",
+      "id": "pagination_type",
+      "label": "Pagination Mode",
+      "options": [
+        { "value": "numbers", "label": "Numbered Pagination (1, 2, 3...)" },
+        { "value": "infinite_scroll", "label": "Infinite Scroll (Auto load on scroll)" },
+        { "value": "load_more", "label": "Load More Button" }
+      ],
+      "default": "numbers"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_sidebar",
+      "label": "Show left sidebar",
+      "default": true
+    },
+    {
+      "type": "checkbox",
+      "id": "show_search",
+      "label": "Show article search",
+      "default": true
+    },
+    {
+      "type": "checkbox",
+      "id": "show_categories",
+      "label": "Show categories/tags filter",
+      "default": true
+    },
+    {
+      "type": "checkbox",
+      "id": "show_recent_posts",
+      "label": "Show recent posts widget",
+      "default": true
+    },
+    {
+      "type": "checkbox",
+      "id": "show_newsletter",
+      "label": "Show 'Stay in the Loop' newsletter section",
+      "default": true
+    },
+    {
+      "type": "checkbox",
+      "id": "show_excerpt",
+      "label": "Show article excerpt",
+      "default": true
+    },
+    {
+      "type": "checkbox",
+      "id": "show_date",
+      "label": "Show article published date",
+      "default": true
+    },
+    {
+      "type": "checkbox",
+      "id": "show_read_time",
+      "label": "Show estimated reading time",
+      "default": true
+    },
+    {
+      "type": "header",
+      "content": "Sidebar Text"
+    },
+    {
+      "type": "text",
+      "id": "journal_heading",
+      "label": "Journal heading",
+      "default": "OUR JOURNAL"
+    },
+    {
+      "type": "textarea",
+      "id": "journal_subtitle",
+      "label": "Journal subtitle",
+      "default": "Style tips, fashion trends, and inspiration to elevate your everyday."
+    },
+    {
+      "type": "header",
+      "content": "Newsletter Settings"
+    },
+    {
+      "type": "text",
+      "id": "newsletter_title",
+      "label": "Newsletter heading",
+      "default": "Stay in the Loop"
+    },
+    {
+      "type": "textarea",
+      "id": "newsletter_subtitle",
+      "label": "Newsletter subtitle",
+      "default": "Subscribe to get style tips, new arrivals, and exclusive offers."
+    }
+  ]
 }
 {% endschema %}
+
+{% javascript %}
+  document.addEventListener('DOMContentLoaded', function() {
+    const sortSelects = document.querySelectorAll('.szc-blog-sort-select');
+    sortSelects.forEach(function(select) {
+      select.addEventListener('change', function() {
+        const url = new URL(window.location.href);
+        if (this.value === 'oldest') {
+          url.searchParams.set('sort_by', 'oldest');
+        } else {
+          url.searchParams.delete('sort_by');
+        }
+        window.location.href = url.toString();
+      });
+    });
+  });
+{% endjavascript %}
+

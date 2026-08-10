@@ -1,0 +1,266 @@
+{%- comment -%}
+  Renders recently viewed blog articles stored in LocalStorage.
+{%- endcomment -%}
+
+<div class="szc-recent-blog-posts page-width" id="RecentBlogPosts-{{ section.id }}" style="display: none;">
+  {%- if section.settings.heading != blank or section.settings.subtitle != blank -%}
+    <div class="szc-recent-blog-posts__header">
+      {%- if section.settings.subtitle != blank -%}
+        <span class="szc-recent-blog-posts__subtitle">{{ section.settings.subtitle }}</span>
+      {%- endif -%}
+      {%- if section.settings.heading != blank -%}
+        <h2 class="szc-recent-blog-posts__title">{{ section.settings.heading }}</h2>
+      {%- endif -%}
+    </div>
+  {%- endif -%}
+
+  <div class="szc-recent-blog-posts__grid" id="RecentBlogPostsGrid-{{ section.id }}" style="--desktop-cols: {{ section.settings.columns_desktop }};"></div>
+</div>
+
+<template id="RecentBlogPostCardTemplate-{{ section.id }}">
+  <article class="szc-article-card">
+    <a href="#" class="szc-article-card__link-wrap">
+      <div class="szc-article-card__media">
+        <img alt="" class="szc-article-card__img" loading="lazy" width="400" height="267">
+      </div>
+      <div class="szc-article-card__content">
+        <div class="szc-article-card__meta">
+          <span class="szc-article-card__tag">BLOG</span>
+          <span class="szc-article-card__dot">•</span>
+          <time class="szc-article-card__date"></time>
+        </div>
+        <h3 class="szc-article-card__title"></h3>
+        <p class="szc-article-card__excerpt"></p>
+        <span class="szc-article-card__read-more">READ MORE →</span>
+      </div>
+    </a>
+  </article>
+</template>
+
+{%- if request.design_mode -%}
+  {%- liquid
+    assign preview_blog = blogs['news']
+    if preview_blog == blank or preview_blog.articles_count == 0
+      for b in blogs
+        if blogs[b].articles_count > 0
+          assign preview_blog = blogs[b]
+          break
+        endif
+      endfor
+    endif
+  -%}
+  <script type="application/json" id="EditorPreviewArticles-{{ section.id }}">
+    [
+      {%- if preview_blog and preview_blog.articles.size > 0 -%}
+        {%- for art in preview_blog.articles limit: 6 -%}
+          {
+            "id": {{ art.id | json }},
+            "title": {{ art.title | json }},
+            "url": {{ art.url | json }},
+            "image": {% if art.image %}{{ art.image | image_url: width: 600 | json }}{% else %}""{% endif %},
+            "published_at": {{ art.published_at | date: "%b %d, %Y" | json }},
+            "tag": {% if art.tags.size > 0 %}{{ art.tags.first | upcase | json }}{% else %}"NEWS"{% endif %},
+            "excerpt": {{ art.excerpt_or_content | strip_html | truncate: 120 | json }}
+          }{% unless forloop.last %},{% endunless %}
+        {%- endfor -%}
+      {%- endif -%}
+    ]
+  </script>
+{%- endif -%}
+
+<script>
+  (function() {
+    function initRecentBlogPosts() {
+      try {
+        var isDesignMode = {% if request.design_mode %}true{% else %}false{% endif %};
+        var storageKey = 'szc_recently_viewed_articles';
+        var history = [];
+        try {
+          history = JSON.parse(localStorage.getItem(storageKey)) || [];
+        } catch (e) {
+          history = [];
+        }
+        var maxItems = {{ section.settings.articles_to_show | default: 4 }};
+
+        var container = document.getElementById('RecentBlogPosts-{{ section.id }}');
+        var grid = document.getElementById('RecentBlogPostsGrid-{{ section.id }}');
+        var template = document.getElementById('RecentBlogPostCardTemplate-{{ section.id }}');
+
+        if (!grid || !container || !template) return;
+
+        var itemsToShow = [];
+        if (history && history.length > 0) {
+          itemsToShow = history;
+        } else if (isDesignMode) {
+          var previewEl = document.getElementById('EditorPreviewArticles-{{ section.id }}');
+          if (previewEl) {
+            try {
+              itemsToShow = JSON.parse(previewEl.textContent) || [];
+            } catch (e) {
+              itemsToShow = [];
+            }
+          }
+        }
+
+        if (!itemsToShow || itemsToShow.length === 0) {
+          container.style.display = 'none';
+          return;
+        }
+
+        itemsToShow = itemsToShow.slice(0, maxItems);
+        grid.innerHTML = '';
+
+        itemsToShow.forEach(function(article) {
+          var clone = template.content.cloneNode(true);
+          var link = clone.querySelector('a');
+          var img = clone.querySelector('img');
+          var tag = clone.querySelector('.szc-article-card__tag');
+          var dot = clone.querySelector('.szc-article-card__dot');
+          var date = clone.querySelector('.szc-article-card__date');
+          var title = clone.querySelector('.szc-article-card__title');
+          var excerpt = clone.querySelector('.szc-article-card__excerpt');
+
+          if (link) link.href = article.url || '#';
+          if (img) {
+            if (article.image) {
+              img.src = article.image;
+              img.alt = article.title || '';
+            } else {
+              var placeholder = document.createElement('div');
+              placeholder.className = 'szc-article-card__placeholder';
+              placeholder.innerHTML = '<span>No Image</span>';
+              img.parentNode.replaceChild(placeholder, img);
+            }
+          }
+          if (tag) tag.textContent = article.tag || 'BLOG';
+          if (date) {
+            if (article.published_at) {
+              date.textContent = article.published_at;
+            } else {
+              if (dot) dot.remove();
+              date.remove();
+            }
+          }
+          if (title) title.textContent = article.title || '';
+          if (excerpt) {
+            if (article.excerpt) {
+              excerpt.textContent = article.excerpt;
+            } else {
+              excerpt.remove();
+            }
+          }
+
+          grid.appendChild(clone);
+        });
+
+        container.style.display = 'block';
+      } catch (err) {
+        console.warn('Recent blog posts rendering error:', err);
+      }
+    }
+
+    initRecentBlogPosts();
+
+    document.addEventListener('shopify:section:load', function(e) {
+      if (e.detail && e.detail.sectionId === '{{ section.id }}') {
+        initRecentBlogPosts();
+      }
+    });
+  })();
+</script>
+
+{% stylesheet %}
+  .szc-recent-blog-posts {
+    padding-top: 2rem;
+    padding-bottom: 2rem;
+  }
+
+  .szc-recent-blog-posts__header {
+    text-align: center;
+    margin-bottom: 40px;
+  }
+
+  .szc-recent-blog-posts__subtitle {
+    display: block;
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: #999999;
+    margin-bottom: 8px;
+  }
+
+  .szc-recent-blog-posts__title {
+    font-family: var(--szc-font-family-heading, Georgia, serif);
+    font-size: 28px;
+    font-weight: 500;
+    color: #111111;
+    margin: 0;
+    letter-spacing: -0.01em;
+  }
+
+  .szc-recent-blog-posts__grid {
+    display: grid;
+    grid-template-columns: repeat(var(--desktop-cols, 3), 1fr);
+    gap: 32px;
+  }
+
+  @media (max-width: 990px) {
+    .szc-recent-blog-posts__grid {
+      grid-template-columns: repeat(2, 1fr);
+      gap: 24px;
+    }
+  }
+
+  @media (max-width: 576px) {
+    .szc-recent-blog-posts__grid {
+      grid-template-columns: 1fr;
+      gap: 20px;
+    }
+  }
+{% endstylesheet %}
+
+{% schema %}
+{
+  "name": "Recent Blog Posts",
+  "tag": "section",
+  "class": "section-recent-blog-posts",
+  "settings": [
+    {
+      "type": "text",
+      "id": "heading",
+      "label": "Heading",
+      "default": "Recently Viewed Articles"
+    },
+    {
+      "type": "text",
+      "id": "subtitle",
+      "label": "Subtitle",
+      "default": "Articles you've recently read"
+    },
+    {
+      "type": "range",
+      "id": "articles_to_show",
+      "min": 2,
+      "max": 6,
+      "step": 1,
+      "label": "Maximum articles to show",
+      "default": 4
+    },
+    {
+      "type": "range",
+      "id": "columns_desktop",
+      "min": 2,
+      "max": 4,
+      "step": 1,
+      "label": "Desktop grid columns",
+      "default": 3
+    }
+  ],
+  "presets": [
+    {
+      "name": "Recent Blog Posts"
+    }
+  ]
+}
+{% endschema %}

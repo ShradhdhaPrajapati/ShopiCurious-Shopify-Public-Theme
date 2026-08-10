@@ -65,6 +65,7 @@
     </script>
 
     <script src="{{ 'global.js' | asset_url }}" defer="defer"></script>
+    <script src="{{ 'header.js' | asset_url }}" defer="defer"></script>
     <script src="{{ 'wishlist.js' | asset_url }}" defer="defer"></script>
     <script src="{{ 'helpers.js' | asset_url }}" defer="defer"></script>
     <script src="{{ 'animations.js' | asset_url }}" defer="defer"></script>
@@ -83,9 +84,10 @@
 
     {% sections 'footer-group' %}
 
-    <!-- Global Cart Drawer & Quick View Modals -->
+    <!-- Global Cart Drawer, Quick View & Predictive Search Modals -->
     {% render 'cart-drawer' %}
     {% render 'quick-view-modal' %}
+    {% render 'predictive-search-modal' %}
 
     <div id="ShopziCuriousToastContainer" class="szc-toast-container" aria-live="polite"></div>
   </body>

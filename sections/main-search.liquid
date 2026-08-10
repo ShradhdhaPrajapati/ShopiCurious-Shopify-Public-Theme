@@ -2,143 +2,503 @@
   assign per_page = section.settings.products_per_page | default: 16
   assign cols_desktop = section.settings.columns_desktop | default: 4
   assign cols_mobile = section.settings.columns_mobile | default: '2'
+  assign pag_type = section.settings.pagination_type
+  if pag_type == blank
+    assign pag_type = 'numbers'
+  endif
 -%}
 
 <div class="szc-main-search page-width" style="--cols-desktop: {{ cols_desktop }}; --cols-mobile: {{ cols_mobile }};">
   {% render 'breadcrumbs' %}
 
-  <!-- Search Header & Input -->
-  <div class="szc-main-search__header">
-    <h1 class="szc-main-search__title">
-      {%- if search.performed -%}
-        {{ 'templates.search.title' | t | default: 'Search Results' }}
-      {%- else -%}
-        {{ 'general.search.search' | t | default: 'Search Our Store' }}
-      {%- endif -%}
-    </h1>
-
-    <form action="{{ routes.search_url }}" method="get" role="search" class="szc-main-search__form">
-      <div class="szc-main-search__field">
+  <!-- Top Search Bar Form with Dynamic Predictive Auto-Suggestions -->
+  <div class="szc-main-search__top-bar">
+    <form action="{{ routes.search_url }}" method="get" role="search" class="szc-main-search__top-form">
+      <div class="szc-main-search__input-wrapper">
         <input
           type="search"
           name="q"
+          id="SearchPageInput"
+          data-predictive-search-url="{{ routes.predictive_search_url }}"
           value="{{ search.terms | escape }}"
           placeholder="{{ 'general.search.search' | t | default: 'Search for products...' }}"
           class="szc-main-search__input"
-          aria-label="{{ 'general.search.search' | t | default: 'Search' }}"
+          aria-label="Search"
+          autocomplete="off"
         >
-        <button type="submit" class="szc-button szc-button--primary szc-main-search__btn">
-          {% render 'icon', icon: 'search', class: 'szc-button__icon' %}
-          <span>{{ 'general.search.search' | t | default: 'Search' }}</span>
+        <button type="button" class="szc-main-search__clear-btn" id="SearchPageClearBtn" aria-label="Clear Search">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <line x1="18" y1="6" x2="6" y2="18"></line>
+            <line x1="6" y1="6" x2="18" y2="18"></line>
+          </svg>
         </button>
+
+        <!-- Dynamic Auto Suggestions Dropdown (Desktop & Mobile Main Search Page) -->
+        <div class="szc-page-search-suggestions" id="SearchPageSuggestions" style="display: none;">
+          <ul class="szc-page-suggestions-list" id="SearchPageSuggestionsList"></ul>
+          <div class="szc-page-products-list" id="SearchPageProductsList"></div>
+        </div>
       </div>
     </form>
 
-    {%- if search.performed -%}
-      <p class="szc-main-search__status">
-        {%- if search.results_count > 0 -%}
-          {{ 'templates.search.results_with_count_and_term' | t: terms: search.terms, count: search.results_count | default: search.results_count | append: ' results found for "' | append: search.terms | append: '"' }}
-        {%- else -%}
-          {{ 'templates.search.no_results' | t: terms: search.terms | default: 'No results found for "' | append: search.terms | append: '". Try another term.' }}
-        {%- endif -%}
-      </p>
-    {%- endif -%}
+    <!-- Right Controls: Sort By Dropdown -->
+    <div class="szc-main-search__controls">    
+      <div class="szc-main-search__sort">
+        <label for="SearchSortSelect" class="szc-sort-label">Sort by:</label>
+        <select id="SearchSortSelect" class="szc-sort-select">
+          <option value="relevance" selected>Relevance</option>
+          <option value="price-ascending">Price: Low to High</option>
+          <option value="price-descending">Price: High to Low</option>
+          <option value="created-descending">Newest</option>
+        </select>
+      </div>
+    </div>
   </div>
 
-  <!-- Faceted Filters -->
-  {%- if search.performed and search.results_count > 0 -%}
-    {%- if section.settings.enable_filtering or section.settings.enable_sorting -%}
-      <div class="szc-main-search__facets-wrapper">
+  <!-- Search Results Body with Left Sidebar Filters + Right Grid -->
+  <div class="szc-main-search__layout">
+    
+    <!-- LEFT SIDEBAR: FILTERS -->
+    <aside class="szc-main-search__sidebar">
+      <div class="szc-search-filters">
+        <h3 class="szc-filters__title">FILTERS</h3>
+
+        <!-- Render Facet Filters -->
         {% render 'facets',
           results: search,
           enable_filtering: section.settings.enable_filtering,
-          enable_sorting: section.settings.enable_sorting
+          enable_sorting: false
         %}
       </div>
-    {%- endif -%}
+    </aside>
 
-    <!-- Results Grid -->
-    {%- paginate search.results by per_page -%}
-      <div class="szc-main-search__content">
+    <!-- RIGHT MAIN CONTENT: RESULTS GRID -->
+    <main class="szc-main-search__results">
+      <div class="szc-search-results-header">
+        <h2 class="szc-search-results-title">
+          {%- if search.performed and search.terms != blank -%}
+            RESULTS FOR "{{ search.terms | upcase }}"
+          {%- else -%}
+            SEARCH RESULTS
+          {%- endif -%}
+        </h2>
+        <span class="szc-search-results-count">
+          {%- if search.performed -%}
+            {{ search.results_count }} results found
+          {%- else -%}
+            0 results found
+          {%- endif -%}
+        </span>
+      </div>
+
+      {%- if search.performed and search.results_count > 0 -%}
+        {%- paginate search.results by per_page -%}
+          <div class="szc-main-search__grid" id="SearchResultsGrid">
+            {%- for item in search.results -%}
+              {%- if item.object_type == 'product' -%}
+                <div class="szc-main-search__item szc-animate-fade-up">
+                  {% render 'product-card',
+                    card_product: item,
+                    show_secondary_image: true,
+                    show_quick_add: true,
+                    show_quick_view: true
+                  %}
+                </div>
+              {%- elsif item.object_type == 'article' -%}
+                <div class="szc-main-search__item szc-animate-fade-up">
+                  {% render 'article-card', article: item %}
+                </div>
+              {%- endif -%}
+            {%- endfor -%}
+          </div>
+
+          {%- if paginate.pages > 1 -%}
+            {% render 'pagination', paginate: paginate, anchor: '#SearchResultsGrid', pagination_type: pag_type %}
+          {%- endif -%}
+        {%- endpaginate -%}
+      {%- else -%}
+        <!-- Fallback Grid if empty search or 0 results -->
         <div class="szc-main-search__grid" id="SearchResultsGrid">
-          {%- for item in search.results -%}
-            {%- if item.object_type == 'product' -%}
-              <div class="szc-main-search__item szc-animate-fade-up">
-                {% render 'product-card',
-                  card_product: item,
-                  show_secondary_image: true,
-                  show_quick_add: true,
-                  show_quick_view: true
-                %}
-              </div>
-            {%- endif -%}
+          {%- for product in collections['all'].products limit: 4 -%}
+            <div class="szc-main-search__item szc-animate-fade-up">
+              {% render 'product-card',
+                card_product: product,
+                show_secondary_image: true,
+                show_quick_add: true,
+                show_quick_view: true
+              %}
+            </div>
           {%- endfor -%}
         </div>
+      {%- endif -%}
+    </main>
 
-        {%- if paginate.pages > 1 -%}
-          {% render 'pagination', paginate: paginate, anchor: '#SearchResultsGrid' %}
-        {%- endif -%}
-      </div>
-    {%- endpaginate -%}
-  {%- endif -%}
+  </div>
 </div>
 
 {% stylesheet %}
   .szc-main-search {
-    padding-top: var(--szc-space-4, 16px);
-    padding-bottom: var(--szc-space-12, 48px);
-    max-width: var(--szc-page-max-width, 1400px);
+    padding-top: 24px;
+    padding-bottom: 60px;
+    max-width: 1400px;
     margin: 0 auto;
   }
 
-  .szc-main-search__header {
-    max-width: 680px;
-    margin: 0 auto var(--szc-space-8, 32px) auto;
-    text-align: center;
-  }
-
-  .szc-main-search__title {
-    margin: 0 0 var(--szc-space-4, 16px) 0;
-    font-family: var(--szc-font-family-heading);
-    font-size: clamp(28px, 4vw, 40px);
-    font-weight: 700;
-  }
-
-  .szc-main-search__field {
+  /* Top Bar Form & Controls */
+  .szc-main-search__top-bar {
     display: flex;
-    gap: 8px;
+    align-items: center;
+    justify-content: space-between;
+    gap: 20px;
+    margin-bottom: 28px;
+  }
+
+  .szc-main-search__top-form {
+    flex: 1;
+    max-width: 600px;
+  }
+
+  .szc-main-search__input-wrapper {
+    position: relative;
+    display: flex;
+    align-items: center;
   }
 
   .szc-main-search__input {
-    flex: 1;
-    height: 48px;
-    padding: 0 16px;
+    width: 100%;
+    height: 44px;
+    padding: 0 40px 0 16px;
     font-family: var(--szc-font-family-body);
-    font-size: 15px;
-    border: 1px solid var(--szc-color-border, #e5e5e5);
-    border-radius: var(--szc-radius-button, 2px);
-    background-color: var(--szc-color-surface, #f8f9fa);
+    font-size: 14.5px;
+    border: 1px solid #e0e0e0;
+    border-radius: 6px;
+    background-color: #ffffff;
+    -webkit-appearance: none;
+    appearance: none;
+    outline: none;
+    transition: border-color 150ms ease, box-shadow 150ms ease;
   }
 
-  .szc-main-search__status {
-    margin-top: 16px;
-    font-size: var(--szc-font-size-sm, 14px);
-    color: var(--szc-color-text-secondary, #666666);
+  .szc-main-search__input:focus {
+    border-color: #111111;
+    box-shadow: 0 0 0 1px #111111;
+  }
+
+  .szc-main-search__input::-webkit-search-cancel-button,
+  .szc-main-search__input::-webkit-search-decoration,
+  .szc-main-search__input::-webkit-search-results-button,
+  .szc-main-search__input::-webkit-search-results-decoration {
+    -webkit-appearance: none !important;
+    appearance: none !important;
+    display: none !important;
+  }
+
+  .szc-main-search__clear-btn {
+    position: absolute;
+    right: 12px;
+    background: transparent;
+    border: none;
+    color: #666666;
+    cursor: pointer;
+    padding: 4px;
+    display: none;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+    transition: color 150ms ease, background-color 150ms ease;
+  }
+
+  .szc-main-search__clear-btn:hover {
+    color: #000000;
+    background-color: #e5e5e5;
+  }
+
+  /* Dynamic Auto Suggestions Popover (Search Page) */
+  .szc-page-search-suggestions {
+    position: absolute;
+    top: calc(100% + 6px);
+    left: 0;
+    right: 0;
+    background: #ffffff;
+    border: 1px solid #e5e5e5;
+    border-radius: 8px;
+    box-shadow: 0 12px 32px rgba(0, 0, 0, 0.12);
+    z-index: 999;
+    padding: 14px 16px;
+    max-height: 360px;
+    overflow-y: auto;
+  }
+
+  .szc-page-suggestions-list {
+    list-style: none;
+    padding: 0;
+    margin: 0 0 10px 0;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+
+  .szc-page-suggestion-item a {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    color: #333333;
+    font-size: 13.5px;
+    font-weight: 500;
+    text-decoration: none;
+    padding: 4px 6px;
+    border-radius: 4px;
+    transition: background 150ms ease;
+  }
+
+  .szc-page-suggestion-item a:hover {
+    background: #f5f5f5;
+    color: #000000;
+  }
+
+  .szc-page-products-list {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    border-top: 1px solid #eeeeee;
+    padding-top: 10px;
+  }
+
+  .szc-page-product-card {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    text-decoration: none;
+    padding: 6px;
+    border-radius: 6px;
+    transition: background 150ms ease;
+  }
+
+  .szc-page-product-card:hover {
+    background: #fafafa;
+  }
+
+  .szc-page-product-thumb {
+    width: 48px;
+    height: 58px;
+    border-radius: 6px;
+    overflow: hidden;
+    background: #f4f4f4;
+    flex-shrink: 0;
+  }
+
+  .szc-page-product-thumb img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+
+  .szc-page-product-info {
+    display: flex;
+    flex-direction: column;
+  }
+
+  .szc-page-product-title {
+    font-size: 13.5px;
+    font-weight: 600;
+    color: #111111;
+    margin: 0 0 2px 0;
+  }
+
+  .szc-page-product-price {
+    font-size: 13px;
+    font-weight: 700;
+    color: #111111;
+  }
+
+  .szc-main-search__controls {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+  }
+
+  .szc-main-search__sort {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .szc-sort-label {
+    font-size: 13px;
+    color: #555555;
+    font-weight: 500;
+  }
+
+  .szc-sort-select {
+    padding: 8px 12px;
+    font-size: 13.5px;
+    border: 1px solid #e0e0e0;
+    border-radius: 6px;
+    background: #ffffff;
+    color: #111111;
+    font-weight: 500;
+    outline: none;
+    cursor: pointer;
+  }
+
+  /* Search Page Layout Grid */
+  .szc-main-search__layout {
+    display: grid;
+    grid-template-columns: 240px 1fr;
+    gap: 36px;
+  }
+
+  /* Left Sidebar Filters */
+  .szc-filters__title {
+    font-size: 13px;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: #111111;
+    margin: 0 0 18px 0;
+    padding-bottom: 8px;
+    border-bottom: 1px solid #e5e5e5;
+  }
+
+  /* Right Main Content Header */
+  .szc-search-results-header {
+    margin-bottom: 24px;
+  }
+
+  .szc-search-results-title {
+    font-family: var(--szc-font-family-heading, serif);
+    font-size: 20px;
+    font-weight: 700;
+    letter-spacing: 0.04em;
+    color: #111111;
+    margin: 0 0 4px 0;
+  }
+
+  .szc-search-results-count {
+    font-size: 13px;
+    color: #777777;
   }
 
   .szc-main-search__grid {
     display: grid;
-    grid-template-columns: repeat(var(--cols-mobile, 2), 1fr);
-    gap: var(--szc-space-4, 16px);
+    grid-template-columns: repeat(var(--cols-desktop, 4), 1fr);
+    gap: 24px;
   }
 
-  @media (min-width: 750px) {
+  @media (max-width: 991px) {
+    .szc-main-search__top-bar {
+      flex-direction: column;
+      align-items: stretch;
+    }
+
+    .szc-main-search__top-form {
+      max-width: none;
+    }
+
+    .szc-main-search__layout {
+      grid-template-columns: 1fr;
+    }
+
     .szc-main-search__grid {
-      grid-template-columns: repeat(var(--cols-desktop, 4), 1fr);
-      gap: var(--szc-space-6, 24px);
+      grid-template-columns: repeat(var(--cols-mobile, 2), 1fr);
+      gap: 16px;
     }
   }
 {% endstylesheet %}
+
+{% javascript %}
+  document.addEventListener('DOMContentLoaded', function() {
+    const input = document.getElementById('SearchPageInput');
+    const clearBtn = document.getElementById('SearchPageClearBtn');
+    const pageSuggestions = document.getElementById('SearchPageSuggestions');
+    const pageSuggestionsList = document.getElementById('SearchPageSuggestionsList');
+    const pageProductsList = document.getElementById('SearchPageProductsList');
+    let pageDebounce = null;
+
+    if (input && clearBtn) {
+      function toggleClear() {
+        if (input.value.trim().length > 0) {
+          clearBtn.style.display = 'flex';
+        } else {
+          clearBtn.style.display = 'none';
+        }
+      }
+      toggleClear();
+      input.addEventListener('input', toggleClear);
+      clearBtn.addEventListener('click', function() {
+        input.value = '';
+        input.focus();
+        toggleClear();
+        if (pageSuggestions) pageSuggestions.style.display = 'none';
+      });
+    }
+
+    // Dynamic Predictive Auto-Suggestions on Search Page Input
+    if (input && pageSuggestions) {
+      input.addEventListener('input', function() {
+        const query = input.value.trim();
+        if (query.length < 2) {
+          pageSuggestions.style.display = 'none';
+          return;
+        }
+
+        clearTimeout(pageDebounce);
+        pageDebounce = setTimeout(() => {
+          const predictUrl = input.getAttribute('data-predictive-search-url') || '/search/suggest';
+          fetch(`${predictUrl}.json?q=${encodeURIComponent(query)}&resources[type]=product,query&resources[limit]=4`)
+            .then(res => res.json())
+            .then(data => {
+              if (data && data.resources && data.resources.results) {
+                const queries = data.resources.results.queries || [];
+                const products = data.resources.results.products || [];
+
+                let sugHTML = '';
+                if (queries.length > 0) {
+                  queries.forEach(q => {
+                    sugHTML += `<li class="szc-page-suggestion-item"><a href="${q.url}"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>${q.text}</a></li>`;
+                  });
+                }
+                if (pageSuggestionsList) pageSuggestionsList.innerHTML = sugHTML;
+
+                let prodHTML = '';
+                if (products.length > 0) {
+                  products.forEach(p => {
+                    const priceFormatted = p.price ? (p.price.includes('$') ? p.price : '$' + parseFloat(p.price).toFixed(2)) : '';
+                    const imgSrc = p.image || p.featured_image || '';
+                    const imgTag = imgSrc ? `<img src="${imgSrc}" alt="${p.title}">` : '';
+                    prodHTML += `
+                      <a href="${p.url}" class="szc-page-product-card">
+                        <div class="szc-page-product-thumb">${imgTag}</div>
+                        <div class="szc-page-product-info">
+                          <div class="szc-page-product-title">${p.title}</div>
+                          <div class="szc-page-product-price">${priceFormatted}</div>
+                        </div>
+                      </a>`;
+                  });
+                }
+                if (pageProductsList) pageProductsList.innerHTML = prodHTML;
+
+                if (queries.length > 0 || products.length > 0) {
+                  pageSuggestions.style.display = 'block';
+                } else {
+                  pageSuggestions.style.display = 'none';
+                }
+              }
+            })
+            .catch(() => {
+              pageSuggestions.style.display = 'none';
+            });
+        }, 200);
+      });
+
+      document.addEventListener('click', function(e) {
+        if (!input.contains(e.target) && !pageSuggestions.contains(e.target)) {
+          pageSuggestions.style.display = 'none';
+        }
+      });
+    }
+  });
+{% endjavascript %}
 
 {% schema %}
 {
@@ -173,6 +533,17 @@
         { "value": "2", "label": "2" }
       ],
       "default": "2"
+    },
+    {
+      "type": "select",
+      "id": "pagination_type",
+      "label": "Pagination Mode",
+      "options": [
+        { "value": "numbers", "label": "Numbered Pagination (1, 2, 3...)" },
+        { "value": "infinite_scroll", "label": "Infinite Scroll (Auto load on scroll)" },
+        { "value": "load_more", "label": "Load More Button" }
+      ],
+      "default": "numbers"
     },
     {
       "type": "checkbox",

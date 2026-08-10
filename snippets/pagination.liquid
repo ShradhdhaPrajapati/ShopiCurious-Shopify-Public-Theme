@@ -1,84 +1,158 @@
 {% doc %}
-  Renders page navigation controls (Previous, Page Numbers, Next) for paginated collections and blogs.
+  Renders page navigation controls (Numbered 1-2-3-4, Infinite Scroll, or Load More) for paginated collections & search.
 
   @param {paginate} paginate - Shopify Liquid paginate object
-  @param {string} [anchor] - Optional anchor string (e.g., '#ProductGrid') to preserve scroll position
+  @param {string} [anchor] - Optional anchor string (e.g., '#ProductGrid')
   @param {string} [class] - Additional CSS class names
+  @param {string} [pagination_type] - 'numbers', 'infinite_scroll', or 'load_more'
 
   @example
-  {% render 'pagination', paginate: paginate, anchor: '#ProductGrid' %}
+  {% render 'pagination', paginate: paginate, anchor: '#ProductGrid', pagination_type: section.settings.pagination_type %}
 {% enddoc %}
 
 {%- liquid
   assign anchor_suffix = anchor | default: ''
   assign custom_class = class | default: ''
+  assign type = pagination_type
+  if type == blank and section != blank and section.settings != blank
+    assign type = section.settings.pagination_type
+  endif
+  if type == blank
+    assign type = 'numbers'
+  endif
+
+  assign item_label = item_type | default: ''
+  if item_label == blank
+    if template.name == 'blog' or request.page_type == 'blog'
+      assign item_label = 'articles'
+    else
+      assign item_label = 'products'
+    endif
+  endif
+  assign item_label_up = item_label | upcase
 -%}
 
-{%- if paginate.parts.size > 0 -%}
-  <nav class="szc-pagination {{ custom_class }}" role="navigation" aria-label="{{ 'general.pagination.label' | t | default: 'Pagination' }}">
-    <ul class="szc-pagination__list" role="list">
-      {%- if paginate.previous -%}
-        <li class="szc-pagination__item">
-          <a
-            href="{{ paginate.previous.url }}{{ anchor_suffix }}"
-            class="szc-pagination__link szc-pagination__link--prev"
-            aria-label="{{ 'general.pagination.previous' | t | default: 'Previous page' }}"
-          >
-            {% render 'icon', icon: 'chevron-left', class: 'szc-pagination__icon' %}
-            <span class="visually-hidden">{{ 'general.pagination.previous' | t | default: 'Previous' }}</span>
-          </a>
-        </li>
-      {%- endif -%}
+{%- if paginate.pages > 1 -%}
+  <div
+    class="szc-pagination-wrapper szc-pagination-wrapper--{{ type }} {{ custom_class }}"
+    data-pagination-type="{{ type }}"
+    data-item-label="{{ item_label }}"
+    data-current-page="{{ paginate.current_page }}"
+    data-total-pages="{{ paginate.pages }}"
+    data-next-url="{{ paginate.next.url }}"
+  >
+    {%- case type -%}
+      {%- when 'infinite_scroll' -%}
+        {%- if paginate.next -%}
+          <div class="szc-infinite-scroll-trigger" data-infinite-trigger>
+            <div class="szc-pagination-spinner">
+              <svg class="szc-spinner-icon" viewBox="0 0 50 50">
+                <circle class="path" cx="25" cy="25" r="20" fill="none" stroke-width="4"></circle>
+              </svg>
+              <span>Loading more {{ item_label }}...</span>
+            </div>
+          </div>
+        {%- else -%}
+          <div class="szc-pagination-end-message">
+            <span>YOU'VE VIEWED ALL {{ item_label_up }}</span>
+          </div>
+        {%- endif -%}
 
-      {%- for part in paginate.parts -%}
-        <li class="szc-pagination__item">
-          {%- if part.is_link -%}
-            <a
-              href="{{ part.url }}{{ anchor_suffix }}"
-              class="szc-pagination__link"
-              aria-label="{{ 'general.pagination.page' | t: number: part.title | default: 'Page ' | append: part.title }}"
-            >
-              {{- part.title -}}
-            </a>
-          {%- else -%}
-            {%- if part.title == paginate.current_page -%}
-              <span
-                class="szc-pagination__link is-current"
-                aria-current="page"
-                aria-label="{{ 'general.pagination.page' | t: number: part.title | default: 'Page ' | append: part.title }}"
-              >
-                {{- part.title -}}
-              </span>
-            {%- else -%}
-              <span class="szc-pagination__ellipsis">&hellip;</span>
+      {%- when 'load_more' -%}
+        {%- if paginate.next -%}
+          <div class="szc-load-more-container">
+            <button type="button" class="szc-load-more-btn" data-load-more-btn aria-label="Load more {{ item_label }}">
+              <span class="szc-load-more-btn__text">LOAD MORE {{ item_label_up }}</span>
+              <div class="szc-load-more-btn__spinner" style="display: none;">
+                <svg class="szc-spinner-icon" viewBox="0 0 50 50">
+                  <circle class="path" cx="25" cy="25" r="20" fill="none" stroke-width="4"></circle>
+                </svg>
+                <span>LOADING...</span>
+              </div>
+            </button>
+          </div>
+        {%- else -%}
+          <div class="szc-pagination-end-message">
+            <span>ALL {{ item_label_up }} LOADED</span>
+          </div>
+        {%- endif -%}
+
+      {%- else -%}
+        <!-- Standard 'numbers' mode -->
+        <nav class="szc-pagination" role="navigation" aria-label="{{ 'general.pagination.label' | t | default: 'Pagination' }}">
+          <ul class="szc-pagination__list" role="list">
+            {%- if paginate.previous -%}
+              <li class="szc-pagination__item">
+                <a
+                  href="{{ paginate.previous.url }}{{ anchor_suffix }}"
+                  class="szc-pagination__link szc-pagination__link--prev"
+                  aria-label="{{ 'general.pagination.previous' | t | default: 'Previous page' }}"
+                >
+                  {% render 'icon', icon: 'chevron-left', class: 'szc-pagination__icon' %}
+                  <span class="visually-hidden">{{ 'general.pagination.previous' | t | default: 'Previous' }}</span>
+                </a>
+              </li>
             {%- endif -%}
-          {%- endif -%}
-        </li>
-      {%- endfor -%}
 
-      {%- if paginate.next -%}
-        <li class="szc-pagination__item">
-          <a
-            href="{{ paginate.next.url }}{{ anchor_suffix }}"
-            class="szc-pagination__link szc-pagination__link--next"
-            aria-label="{{ 'general.pagination.next' | t | default: 'Next page' }}"
-          >
-            {% render 'icon', icon: 'chevron-right', class: 'szc-pagination__icon' %}
-            <span class="visually-hidden">{{ 'general.pagination.next' | t | default: 'Next' }}</span>
-          </a>
-        </li>
-      {%- endif -%}
-    </ul>
-  </nav>
+            {%- for part in paginate.parts -%}
+              <li class="szc-pagination__item">
+                {%- if part.is_link -%}
+                  <a
+                    href="{{ part.url }}{{ anchor_suffix }}"
+                    class="szc-pagination__link"
+                    aria-label="{{ 'general.pagination.page' | t: number: part.title | default: 'Page ' | append: part.title }}"
+                  >
+                    {{- part.title -}}
+                  </a>
+                {%- else -%}
+                  {%- if part.title == paginate.current_page -%}
+                    <span
+                      class="szc-pagination__link is-current"
+                      aria-current="page"
+                      aria-label="{{ 'general.pagination.page' | t: number: part.title | default: 'Page ' | append: part.title }}"
+                    >
+                      {{- part.title -}}
+                    </span>
+                  {%- else -%}
+                    <span class="szc-pagination__ellipsis">&hellip;</span>
+                  {%- endif -%}
+                {%- endif -%}
+              </li>
+            {%- endfor -%}
+
+            {%- if paginate.next -%}
+              <li class="szc-pagination__item">
+                <a
+                  href="{{ paginate.next.url }}{{ anchor_suffix }}"
+                  class="szc-pagination__link szc-pagination__link--next"
+                  aria-label="{{ 'general.pagination.next' | t | default: 'Next page' }}"
+                >
+                  {% render 'icon', icon: 'chevron-right', class: 'szc-pagination__icon' %}
+                  <span class="visually-hidden">{{ 'general.pagination.next' | t | default: 'Next' }}</span>
+                </a>
+              </li>
+            {%- endif -%}
+          </ul>
+        </nav>
+    {%- endcase -%}
+  </div>
 {%- endif -%}
 
 {% stylesheet %}
+  .szc-pagination-wrapper {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    margin-top: 36px;
+    margin-bottom: 36px;
+  }
+
+  /* Numbered Pagination */
   .szc-pagination {
     display: flex;
     justify-content: center;
     align-items: center;
-    margin-top: 32px;
-    margin-bottom: 32px;
     width: 100%;
   }
 
@@ -165,23 +239,250 @@
     flex-shrink: 0;
   }
 
-  /* Responsive for mobile screens 300px to 470px */
+  /* Load More Mode Styling */
+  .szc-load-more-container {
+    display: flex;
+    justify-content: center;
+    width: 100%;
+  }
+
+  .szc-load-more-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    padding: 14px 40px;
+    font-family: inherit;
+    font-size: 13px;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: #ffffff;
+    background-color: #111111;
+    border: 1px solid #111111;
+    border-radius: 50px;
+    cursor: pointer;
+    transition: all 250ms cubic-bezier(0.16, 1, 0.3, 1);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  }
+
+  .szc-load-more-btn:hover {
+    background-color: #333333;
+    border-color: #333333;
+    transform: translateY(-2px);
+    box-shadow: 0 6px 18px rgba(0, 0, 0, 0.18);
+  }
+
+  .szc-load-more-btn:active {
+    transform: translateY(0);
+  }
+
+  .szc-load-more-btn__spinner {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  /* Infinite Scroll Mode Styling */
+  .szc-infinite-scroll-trigger {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 20px 0;
+    width: 100%;
+  }
+
+  .szc-pagination-spinner {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    font-size: 13px;
+    font-weight: 600;
+    color: #666666;
+    letter-spacing: 0.03em;
+  }
+
+  .szc-spinner-icon {
+    animation: szc-spin 1s linear infinite;
+    width: 24px;
+    height: 24px;
+  }
+
+  .szc-spinner-icon .path {
+    stroke: #111111;
+    stroke-linecap: round;
+    animation: szc-dash 1.5s ease-in-out infinite;
+  }
+
+  @keyframes szc-spin {
+    100% { transform: rotate(360deg); }
+  }
+
+  @keyframes szc-dash {
+    0% {
+      stroke-dasharray: 1, 150;
+      stroke-dashoffset: 0;
+    }
+    50% {
+      stroke-dasharray: 90, 150;
+      stroke-dashoffset: -35;
+    }
+    100% {
+      stroke-dasharray: 90, 150;
+      stroke-dashoffset: -124;
+    }
+  }
+
+  .szc-pagination-end-message {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 8px 24px;
+    font-size: 12px;
+    font-weight: 600;
+    color: #888888;
+    background-color: #f7f6f4;
+    border-radius: 30px;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+  }
+
   @media screen and (max-width: 470px) {
-    .szc-pagination {
+    .szc-pagination-wrapper {
       margin-top: 24px;
       margin-bottom: 24px;
     }
-
-    .szc-pagination__list {
-      gap: 4px;
-    }
-
-    .szc-pagination__link {
-      min-width: 32px;
-      height: 32px;
-      padding: 0 6px;
-      font-size: 12px;
-      border-radius: 6px;
+    .szc-load-more-btn {
+      width: 100%;
+      padding: 12px 20px;
     }
   }
 {% endstylesheet %}
+
+{% javascript %}
+  (function() {
+    function initPaginationManager() {
+      const wrappers = document.querySelectorAll('.szc-pagination-wrapper');
+
+      wrappers.forEach(function(wrapper) {
+        if (wrapper.dataset.paginationInitialized) return;
+        wrapper.dataset.paginationInitialized = 'true';
+
+        const type = wrapper.getAttribute('data-pagination-type');
+        if (type === 'numbers') return;
+
+        let nextUrl = wrapper.getAttribute('data-next-url');
+        let isLoading = false;
+
+        async function loadNextProducts() {
+          if (!nextUrl || isLoading) return;
+          isLoading = true;
+
+          const loadBtn = wrapper.querySelector('[data-load-more-btn]');
+          const btnText = wrapper.querySelector('.szc-load-more-btn__text');
+          const btnSpinner = wrapper.querySelector('.szc-load-more-btn__spinner');
+
+          if (btnText && btnSpinner) {
+            btnText.style.display = 'none';
+            btnSpinner.style.display = 'inline-flex';
+          }
+
+          try {
+            const response = await fetch(nextUrl);
+            const text = await response.text();
+            const parser = new DOMParser();
+            const doc = parser.parseFromString(text, 'text/html');
+
+            const productGrid = document.querySelector('#ProductGrid, #SearchResultsGrid, .szc-product-grid, .szc-main-search__grid, .szc-blog-grid');
+            const newGridItems = doc.querySelectorAll('#ProductGrid .szc-product-grid__item, #SearchResultsGrid .szc-main-search__item, .szc-product-grid > .szc-product-grid__item, .szc-main-search__grid > .szc-main-search__item, .szc-main-search__grid > div, .szc-blog-grid > article, .szc-blog-grid > .szc-article-card');
+
+            if (productGrid && newGridItems.length > 0) {
+              newGridItems.forEach(function(item) {
+                item.classList.add('szc-animate-fade-up');
+                productGrid.appendChild(item);
+              });
+            }
+
+            const newWrapper = doc.querySelector('.szc-pagination-wrapper');
+
+            if (newWrapper && newWrapper.getAttribute('data-next-url')) {
+              nextUrl = newWrapper.getAttribute('data-next-url');
+              wrapper.setAttribute('data-next-url', nextUrl);
+              isLoading = false;
+
+              if (btnText && btnSpinner) {
+                btnText.style.display = 'inline';
+                btnSpinner.style.display = 'none';
+              }
+
+              // For Infinite Scroll, re-observe if observer active
+              if (type === 'infinite_scroll' && window.szcInfiniteObserver) {
+                const trigger = wrapper.querySelector('[data-infinite-trigger]');
+                if (trigger) window.szcInfiniteObserver.observe(trigger);
+              }
+            } else {
+              // End of pages reached
+              nextUrl = null;
+              const itemLabel = (wrapper.getAttribute('data-item-label') || 'products').toUpperCase();
+              wrapper.innerHTML = `
+                <div class="szc-pagination-end-message">
+                  <span>YOU'VE VIEWED ALL ${itemLabel}</span>
+                </div>
+              `;
+            }
+
+            // Push URL state without refreshing page
+            if (window.history && window.history.replaceState) {
+              window.history.replaceState({}, '', nextUrl || window.location.href);
+            }
+
+            // Dispatch event for other components
+            window.dispatchEvent(new CustomEvent('szc:products-loaded'));
+
+          } catch(err) {
+            console.error('[ShopziCurious Pagination Error]', err);
+            isLoading = false;
+            if (btnText && btnSpinner) {
+              btnText.style.display = 'inline';
+              btnSpinner.style.display = 'none';
+            }
+          }
+        }
+
+        if (type === 'load_more') {
+          const btn = wrapper.querySelector('[data-load-more-btn]');
+          if (btn) {
+            btn.addEventListener('click', function(e) {
+              e.preventDefault();
+              loadNextProducts();
+            });
+          }
+        } else if (type === 'infinite_scroll') {
+          const trigger = wrapper.querySelector('[data-infinite-trigger]');
+          if (trigger && 'IntersectionObserver' in window) {
+            const observer = new IntersectionObserver(function(entries) {
+              entries.forEach(function(entry) {
+                if (entry.isIntersecting && !isLoading) {
+                  observer.unobserve(entry.target);
+                  loadNextProducts();
+                }
+              });
+            }, { rootMargin: '300px 0px' });
+
+            observer.observe(trigger);
+            window.szcInfiniteObserver = observer;
+          }
+        }
+      });
+    }
+
+    if (document.readyState === 'loading') {
+      document.addEventListener('DOMContentLoaded', initPaginationManager);
+    } else {
+      initPaginationManager();
+    }
+
+    document.addEventListener('shopify:section:load', initPaginationManager);
+  })();
+{% endjavascript %}

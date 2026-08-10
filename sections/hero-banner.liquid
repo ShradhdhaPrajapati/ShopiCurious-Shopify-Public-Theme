@@ -29,11 +29,34 @@
               assign hero_img_mobile = block.settings.image_mobile | default: hero_img
               assign align_class = 'szc-hero-banner__content--align-' | append: block.settings.content_alignment
               assign overlay_op = block.settings.overlay_opacity | default: section.settings.overlay_opacity
+
+              assign sub_size = block.settings.subheading_font_size | default: 14
+              assign sub_weight = block.settings.subheading_font_weight | default: '700'
+              assign sub_color = block.settings.subheading_color
+
+              assign head_size = block.settings.heading_font_size | default: 64
+              assign head_weight = block.settings.heading_font_weight | default: '700'
+              assign head_color = block.settings.heading_color
+
+              assign text_size = block.settings.text_font_size | default: 16
+              assign text_weight = block.settings.text_font_weight | default: '400'
+              assign text_color = block.settings.text_color
             -%}
             <div
               class="szc-hero-banner__slide {% if forloop.first %}is-active{% endif %}"
               data-slide-index="{{ forloop.index0 }}"
-              style="--szc-overlay-opacity: {{ overlay_op | divided_by: 100.0 }};"
+              style="
+                --szc-overlay-opacity: {{ overlay_op | divided_by: 100.0 }};
+                --szc-subheading-size: {{ sub_size }}px;
+                --szc-subheading-weight: {{ sub_weight }};
+                {% if sub_color != blank and sub_color != 'rgba(0,0,0,0)' %}--szc-subheading-color: {{ sub_color }};{% endif %}
+                --szc-heading-size: {{ head_size }}px;
+                --szc-heading-weight: {{ head_weight }};
+                {% if head_color != blank and head_color != 'rgba(0,0,0,0)' %}--szc-heading-color: {{ head_color }};{% endif %}
+                --szc-text-size: {{ text_size }}px;
+                --szc-text-weight: {{ text_weight }};
+                {% if text_color != blank and text_color != 'rgba(0,0,0,0)' %}--szc-text-color: {{ text_color }};{% endif %}
+              "
               {{ block.shopify_attributes }}
             >
               <div class="szc-hero-banner__media">
@@ -115,11 +138,34 @@
         assign hero_img = section.settings.image
         assign hero_img_mobile = section.settings.image_mobile | default: hero_img
         assign align_class = 'szc-hero-banner__content--align-' | append: section.settings.content_alignment
+
+        assign sub_size = section.settings.subheading_font_size | default: 14
+        assign sub_weight = section.settings.subheading_font_weight | default: '700'
+        assign sub_color = section.settings.subheading_color
+
+        assign head_size = section.settings.heading_font_size | default: 64
+        assign head_weight = section.settings.heading_font_weight | default: '700'
+        assign head_color = section.settings.heading_color
+
+        assign text_size = section.settings.text_font_size | default: 16
+        assign text_weight = section.settings.text_font_weight | default: '400'
+        assign text_color = section.settings.text_color
       -%}
       <div
         class="szc-hero-banner__slide is-active"
         data-slide-index="0"
-        style="--szc-overlay-opacity: {{ section.settings.overlay_opacity | divided_by: 100.0 }};"
+        style="
+          --szc-overlay-opacity: {{ section.settings.overlay_opacity | divided_by: 100.0 }};
+          --szc-subheading-size: {{ sub_size }}px;
+          --szc-subheading-weight: {{ sub_weight }};
+          {% if sub_color != blank and sub_color != 'rgba(0,0,0,0)' %}--szc-subheading-color: {{ sub_color }};{% endif %}
+          --szc-heading-size: {{ head_size }}px;
+          --szc-heading-weight: {{ head_weight }};
+          {% if head_color != blank and head_color != 'rgba(0,0,0,0)' %}--szc-heading-color: {{ head_color }};{% endif %}
+          --szc-text-size: {{ text_size }}px;
+          --szc-text-weight: {{ text_weight }};
+          {% if text_color != blank and text_color != 'rgba(0,0,0,0)' %}--szc-text-color: {{ text_color }};{% endif %}
+        "
       >
         <div class="szc-hero-banner__media">
           {%- if hero_img != blank -%}
@@ -333,21 +379,25 @@
 
   .szc-hero-banner__subheading {
     font-family: var(--szc-font-family-body);
-    font-weight: 700;
+    font-weight: var(--szc-subheading-weight, 700);
+    font-size: var(--szc-subheading-size, 14px);
     text-transform: uppercase;
     letter-spacing: var(--szc-letter-spacing-uppercase, 0.15em);
-    color: var(--szc-color-secondary, #d4a373);
+    color: var(--szc-subheading-color, var(--szc-color-secondary, #d4a373));
   }
 
   .szc-hero-banner__heading {
     font-family: var(--szc-font-family-heading);
-    font-weight: 700;
-    color: #ffffff;
+    font-weight: var(--szc-heading-weight, 700);
+    font-size: var(--szc-heading-size, 64px);
+    color: var(--szc-heading-color, #ffffff);
   }
 
   .szc-hero-banner__text {
     font-family: var(--szc-font-family-body);
-    color: rgba(255, 255, 255, 0.9);
+    font-weight: var(--szc-text-weight, 400);
+    font-size: var(--szc-text-size, 16px);
+    color: var(--szc-text-color, rgba(255, 255, 255, 0.9));
   }
 
   .szc-hero-banner__buttons {
@@ -483,18 +533,18 @@
     }
 
     .szc-hero-banner__subheading {
-      font-size: 14px;
+      font-size: var(--szc-subheading-size, 14px);
       margin-bottom: 12px;
     }
 
     .szc-hero-banner__heading {
-      font-size: 64px;
+      font-size: var(--szc-heading-size, 64px);
       line-height: 1.1;
       margin: 0 0 16px 0;
     }
 
     .szc-hero-banner__text {
-      font-size: 16px;
+      font-size: var(--szc-text-size, 16px);
       line-height: 1.6;
       margin-bottom: 24px;
     }
@@ -555,18 +605,18 @@
     }
 
     .szc-hero-banner__subheading {
-      font-size: 13px;
+      font-size: max(12px, calc(var(--szc-subheading-size, 14px) * 0.9));
       margin-bottom: 10px;
     }
 
     .szc-hero-banner__heading {
-      font-size: 42px;
+      font-size: max(28px, calc(var(--szc-heading-size, 64px) * 0.7));
       line-height: 1.12;
       margin: 0 0 14px 0;
     }
 
     .szc-hero-banner__text {
-      font-size: 15px;
+      font-size: max(14px, calc(var(--szc-text-size, 16px) * 0.95));
       line-height: 1.5;
       margin-bottom: 20px;
     }
@@ -644,19 +694,19 @@
     }
 
     .szc-hero-banner__subheading {
-      font-size: 11px;
+      font-size: max(11px, calc(var(--szc-subheading-size, 14px) * 0.85));
       letter-spacing: 0.12em;
       margin-bottom: 6px;
     }
 
     .szc-hero-banner__heading {
-      font-size: clamp(22px, 6vw, 32px);
+      font-size: clamp(22px, 6vw, max(24px, calc(var(--szc-heading-size, 64px) * 0.55)));
       line-height: 1.15;
       margin: 0 0 8px 0;
     }
 
     .szc-hero-banner__text {
-      font-size: 13px;
+      font-size: max(13px, calc(var(--szc-text-size, 16px) * 0.85));
       line-height: 1.4;
       margin-bottom: 16px;
     }
@@ -875,10 +925,47 @@
       "default": 5
     },
     {
+      "type": "header",
+      "content": "Subheading Settings"
+    },
+    {
       "type": "text",
       "id": "subheading",
       "default": "Autumn / Winter Collection",
       "label": "Default subheading"
+    },
+    {
+      "type": "range",
+      "id": "subheading_font_size",
+      "min": 10,
+      "max": 36,
+      "step": 1,
+      "unit": "px",
+      "label": "Subheading font size",
+      "default": 14
+    },
+    {
+      "type": "select",
+      "id": "subheading_font_weight",
+      "label": "Subheading font weight",
+      "options": [
+        { "value": "400", "label": "Normal (400)" },
+        { "value": "500", "label": "Medium (500)" },
+        { "value": "600", "label": "Semi Bold (600)" },
+        { "value": "700", "label": "Bold (700)" },
+        { "value": "800", "label": "Extra Bold (800)" }
+      ],
+      "default": "700"
+    },
+    {
+      "type": "color",
+      "id": "subheading_color",
+      "label": "Subheading text color",
+      "default": "#d4a373"
+    },
+    {
+      "type": "header",
+      "content": "Heading Settings"
     },
     {
       "type": "text",
@@ -887,10 +974,76 @@
       "label": "Default heading"
     },
     {
+      "type": "range",
+      "id": "heading_font_size",
+      "min": 24,
+      "max": 100,
+      "step": 2,
+      "unit": "px",
+      "label": "Heading font size",
+      "default": 64
+    },
+    {
+      "type": "select",
+      "id": "heading_font_weight",
+      "label": "Heading font weight",
+      "options": [
+        { "value": "400", "label": "Normal (400)" },
+        { "value": "500", "label": "Medium (500)" },
+        { "value": "600", "label": "Semi Bold (600)" },
+        { "value": "700", "label": "Bold (700)" },
+        { "value": "800", "label": "Extra Bold (800)" },
+        { "value": "900", "label": "Black (900)" }
+      ],
+      "default": "700"
+    },
+    {
+      "type": "color",
+      "id": "heading_color",
+      "label": "Heading text color",
+      "default": "#ffffff"
+    },
+    {
+      "type": "header",
+      "content": "Body Text Settings"
+    },
+    {
       "type": "richtext",
       "id": "text",
       "default": "<p>Discover curated luxury fashion pieces designed to elevate your everyday capsule wardrobe.</p>",
       "label": "Default body text"
+    },
+    {
+      "type": "range",
+      "id": "text_font_size",
+      "min": 12,
+      "max": 32,
+      "step": 1,
+      "unit": "px",
+      "label": "Body text font size",
+      "default": 16
+    },
+    {
+      "type": "select",
+      "id": "text_font_weight",
+      "label": "Body text font weight",
+      "options": [
+        { "value": "300", "label": "Light (300)" },
+        { "value": "400", "label": "Normal (400)" },
+        { "value": "500", "label": "Medium (500)" },
+        { "value": "600", "label": "Semi Bold (600)" }
+      ],
+      "default": "400"
+    },
+    {
+      "type": "color",
+      "id": "text_color",
+      "label": "Body text color",
+      "default": "#ffffff"
+    },
+    {
+      "type": "header",
+      "content": "Alignment & Buttons"
     },
     {
       "type": "select",
@@ -915,6 +1068,29 @@
       "label": "Default primary button link"
     },
     {
+      "type": "select",
+      "id": "button_1_style",
+      "label": "Primary button style",
+      "options": [
+        { "value": "primary", "label": "Solid Primary" },
+        { "value": "secondary", "label": "Solid Secondary" },
+        { "value": "outline", "label": "Outline" },
+        { "value": "pill", "label": "Rounded Pill" }
+      ],
+      "default": "primary"
+    },
+    {
+      "type": "select",
+      "id": "button_1_size",
+      "label": "Primary button size",
+      "options": [
+        { "value": "sm", "label": "Small" },
+        { "value": "md", "label": "Medium" },
+        { "value": "lg", "label": "Large" }
+      ],
+      "default": "md"
+    },
+    {
       "type": "text",
       "id": "button_label_2",
       "default": "Explore Lookbook",
@@ -924,6 +1100,35 @@
       "type": "url",
       "id": "button_link_2",
       "label": "Default secondary button link"
+    },
+    {
+      "type": "select",
+      "id": "button_2_style",
+      "label": "Secondary button style",
+      "options": [
+        { "value": "primary", "label": "Solid Primary" },
+        { "value": "secondary", "label": "Solid Secondary" },
+        { "value": "outline", "label": "Outline" },
+        { "value": "pill", "label": "Rounded Pill" }
+      ],
+      "default": "outline"
+    },
+    {
+      "type": "select",
+      "id": "button_2_size",
+      "label": "Secondary button size",
+      "options": [
+        { "value": "sm", "label": "Small" },
+        { "value": "md", "label": "Medium" },
+        { "value": "lg", "label": "Large" }
+      ],
+      "default": "md"
+    },
+    {
+      "type": "checkbox",
+      "id": "hide_button_2_mobile",
+      "label": "Hide Secondary button on mobile",
+      "default": true
     },
     {
       "type": "header",
@@ -997,10 +1202,47 @@
           "default": 30
         },
         {
+          "type": "header",
+          "content": "Subheading Settings"
+        },
+        {
           "type": "text",
           "id": "subheading",
           "default": "New Arrivals",
           "label": "Subheading"
+        },
+        {
+          "type": "range",
+          "id": "subheading_font_size",
+          "min": 10,
+          "max": 36,
+          "step": 1,
+          "unit": "px",
+          "label": "Subheading font size",
+          "default": 14
+        },
+        {
+          "type": "select",
+          "id": "subheading_font_weight",
+          "label": "Subheading font weight",
+          "options": [
+            { "value": "400", "label": "Normal (400)" },
+            { "value": "500", "label": "Medium (500)" },
+            { "value": "600", "label": "Semi Bold (600)" },
+            { "value": "700", "label": "Bold (700)" },
+            { "value": "800", "label": "Extra Bold (800)" }
+          ],
+          "default": "700"
+        },
+        {
+          "type": "color",
+          "id": "subheading_color",
+          "label": "Subheading text color",
+          "default": "#d4a373"
+        },
+        {
+          "type": "header",
+          "content": "Heading Settings"
         },
         {
           "type": "text",
@@ -1009,10 +1251,76 @@
           "label": "Heading"
         },
         {
+          "type": "range",
+          "id": "heading_font_size",
+          "min": 24,
+          "max": 100,
+          "step": 2,
+          "unit": "px",
+          "label": "Heading font size",
+          "default": 64
+        },
+        {
+          "type": "select",
+          "id": "heading_font_weight",
+          "label": "Heading font weight",
+          "options": [
+            { "value": "400", "label": "Normal (400)" },
+            { "value": "500", "label": "Medium (500)" },
+            { "value": "600", "label": "Semi Bold (600)" },
+            { "value": "700", "label": "Bold (700)" },
+            { "value": "800", "label": "Extra Bold (800)" },
+            { "value": "900", "label": "Black (900)" }
+          ],
+          "default": "700"
+        },
+        {
+          "type": "color",
+          "id": "heading_color",
+          "label": "Heading text color",
+          "default": "#ffffff"
+        },
+        {
+          "type": "header",
+          "content": "Body Text Settings"
+        },
+        {
           "type": "richtext",
           "id": "text",
           "default": "<p>Explore our latest seasonal arrivals crafted with premium fabrics.</p>",
           "label": "Body text"
+        },
+        {
+          "type": "range",
+          "id": "text_font_size",
+          "min": 12,
+          "max": 32,
+          "step": 1,
+          "unit": "px",
+          "label": "Body text font size",
+          "default": 16
+        },
+        {
+          "type": "select",
+          "id": "text_font_weight",
+          "label": "Body text font weight",
+          "options": [
+            { "value": "300", "label": "Light (300)" },
+            { "value": "400", "label": "Normal (400)" },
+            { "value": "500", "label": "Medium (500)" },
+            { "value": "600", "label": "Semi Bold (600)" }
+          ],
+          "default": "400"
+        },
+        {
+          "type": "color",
+          "id": "text_color",
+          "label": "Body text color",
+          "default": "#ffffff"
+        },
+        {
+          "type": "header",
+          "content": "Alignment & Buttons"
         },
         {
           "type": "select",
@@ -1042,6 +1350,7 @@
           "label": "Primary button style",
           "options": [
             { "value": "primary", "label": "Solid Primary" },
+            { "value": "secondary", "label": "Solid Secondary" },
             { "value": "outline", "label": "Outline" },
             { "value": "pill", "label": "Rounded Pill" }
           ],
@@ -1075,6 +1384,7 @@
           "label": "Secondary button style",
           "options": [
             { "value": "primary", "label": "Solid Primary" },
+            { "value": "secondary", "label": "Solid Secondary" },
             { "value": "outline", "label": "Outline" },
             { "value": "pill", "label": "Rounded Pill" }
           ],

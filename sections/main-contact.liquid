@@ -1,0 +1,261 @@
+{% comment %}
+  Renders the dedicated Contact Us Page section with full schema customization and toggle options.
+{% endcomment %}
+
+{% render 'main-contact-content', section: section %}
+
+{% schema %}
+{
+  "name": "Contact Page",
+  "tag": "section",
+  "class": "section-main-contact",
+  "settings": [
+    {
+      "type": "header",
+      "content": "Hero Banner Settings"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_hero",
+      "label": "Show Hero Banner",
+      "default": true
+    },
+    {
+      "type": "text",
+      "id": "hero_title",
+      "default": "Contact Us",
+      "label": "Hero Title"
+    },
+    {
+      "type": "textarea",
+      "id": "hero_desc",
+      "default": "We're here to help! Reach out to us and our team will get back to you as soon as possible.",
+      "label": "Hero Description"
+    },
+    {
+      "type": "image_picker",
+      "id": "hero_image",
+      "label": "Hero Image"
+    },
+    {
+      "type": "header",
+      "content": "Contact Info Cards"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_cards",
+      "label": "Show Contact Cards",
+      "default": true
+    },
+    {
+      "type": "text",
+      "id": "card_1_title",
+      "default": "Customer Support",
+      "label": "Card 1 Title"
+    },
+    {
+      "type": "text",
+      "id": "card_1_schedule",
+      "default": "Mon - Fri: 9AM - 6PM (EST)",
+      "label": "Card 1 Hours"
+    },
+    {
+      "type": "text",
+      "id": "card_1_email",
+      "default": "support@example.com",
+      "label": "Card 1 Email"
+    },
+    {
+      "type": "text",
+      "id": "card_2_title",
+      "default": "Call Us",
+      "label": "Card 2 Title"
+    },
+    {
+      "type": "text",
+      "id": "card_2_phone",
+      "default": "+1 (800) 123-4567",
+      "label": "Card 2 Phone"
+    },
+    {
+      "type": "text",
+      "id": "card_2_schedule",
+      "default": "Mon - Fri: 9AM - 6PM (EST)",
+      "label": "Card 2 Hours"
+    },
+    {
+      "type": "text",
+      "id": "card_3_title",
+      "default": "Visit Us",
+      "label": "Card 3 Title"
+    },
+    {
+      "type": "text",
+      "id": "card_3_addr1",
+      "default": "123 Fashion Street,",
+      "label": "Card 3 Address Line 1"
+    },
+    {
+      "type": "text",
+      "id": "card_3_addr2",
+      "default": "New York, NY 10001, USA",
+      "label": "Card 3 Address Line 2"
+    },
+    {
+      "type": "text",
+      "id": "card_4_title",
+      "default": "Live Chat",
+      "label": "Card 4 Title"
+    },
+    {
+      "type": "text",
+      "id": "card_4_desc",
+      "default": "Chat with our team for quick assistance",
+      "label": "Card 4 Description"
+    },
+    {
+      "type": "header",
+      "content": "Contact Form Settings"
+    },
+    {
+      "type": "text",
+      "id": "form_title",
+      "default": "Send Us a Message",
+      "label": "Form Heading"
+    },
+    {
+      "type": "text",
+      "id": "form_btn_label",
+      "default": "SEND MESSAGE",
+      "label": "Submit Button Label"
+    },
+    {
+      "type": "header",
+      "content": "Store Location & Map"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_map",
+      "label": "Show Location Card",
+      "default": true
+    },
+    {
+      "type": "text",
+      "id": "map_title",
+      "default": "Find Us",
+      "label": "Map Section Heading"
+    },
+    {
+      "type": "image_picker",
+      "id": "map_image",
+      "label": "Map Static Image"
+    },
+    {
+      "type": "html",
+      "id": "map_iframe",
+      "label": "Google Maps Iframe HTML / Embed Code",
+      "info": "Paste the <iframe> embed code from Google Maps. Overrides map image."
+    },
+    {
+      "type": "text",
+      "id": "store_name",
+      "default": "Flagship Store",
+      "label": "Store Name"
+    },
+    {
+      "type": "textarea",
+      "id": "store_address",
+      "default": "123 Commerce St, Suite 100, City, Country",
+      "label": "Store Address"
+    },
+    {
+      "type": "text",
+      "id": "store_hours",
+      "default": "Open - Closes 8:00 PM",
+      "label": "Store Hours"
+    },
+    {
+      "type": "url",
+      "id": "directions_link",
+      "label": "Directions Link URL"
+    },
+    {
+      "type": "text",
+      "id": "directions_label",
+      "default": "GET DIRECTIONS",
+      "label": "Directions Link Label"
+    },
+    {
+      "type": "header",
+      "content": "Frequently Asked Questions"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_faq",
+      "label": "Show FAQ Section",
+      "default": true
+    },
+    {
+      "type": "text",
+      "id": "faq_title",
+      "default": "Frequently Asked Questions",
+      "label": "FAQ Heading"
+    }
+  ],
+  "blocks": [
+    {
+      "type": "faq_item",
+      "name": "FAQ Accordion Item",
+      "settings": [
+        {
+          "type": "text",
+          "id": "question",
+          "default": "What is your return policy?",
+          "label": "Question"
+        },
+        {
+          "type": "textarea",
+          "id": "answer",
+          "default": "We offer a 30-day hassle-free return policy for all unworn items in original packaging.",
+          "label": "Answer"
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "Contact Page",
+      "blocks": [
+        {
+          "type": "faq_item",
+          "settings": {
+            "question": "What is your return policy?",
+            "answer": "We offer a 30-day hassle-free return policy for all unworn items in original packaging."
+          }
+        },
+        {
+          "type": "faq_item",
+          "settings": {
+            "question": "How long does shipping take?",
+            "answer": "Standard domestic shipping takes 3-5 business days. Express shipping takes 1-2 business days."
+          }
+        },
+        {
+          "type": "faq_item",
+          "settings": {
+            "question": "How can I track my order?",
+            "answer": "Once your order ships, you will receive a confirmation email with a real-time tracking link."
+          }
+        },
+        {
+          "type": "faq_item",
+          "settings": {
+            "question": "Do you offer international shipping?",
+            "answer": "Yes, we ship worldwide! International shipping rates and delivery times are calculated at checkout."
+          }
+        }
+      ]
+    }
+  ]
+}
+{% endschema %}

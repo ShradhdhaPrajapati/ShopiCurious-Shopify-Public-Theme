@@ -1,5 +1,5 @@
 {% comment %}
-  This section renders the 404 template, with automatic instant client-side fallback for Wishlist page route.
+  This section renders the 404 template, with automatic instant client-side fallback for Wishlist, Contact, and About Us page routes.
 {% endcomment %}
 
 <div id="Standard404View" class="szc-404-container" style="text-align: center; padding: 80px 20px; min-height: 50vh;">
@@ -14,17 +14,44 @@
   {% render 'main-wishlist-content' %}
 </div>
 
+<div id="ContactFallbackView" style="display: none;">
+  {% render 'main-contact-content' %}
+</div>
+
+<div id="AboutFallbackView" style="display: none;">
+  {% render 'main-about-content' %}
+</div>
+
 <script>
   (function() {
-    if (window.location.pathname.toLowerCase().includes('wishlist') || window.location.search.toLowerCase().includes('wishlist')) {
-      const standard404 = document.getElementById('Standard404View');
-      const wishlistFallback = document.getElementById('WishlistFallbackView');
-      if (standard404) standard404.style.display = 'none';
-      if (wishlistFallback) wishlistFallback.style.display = 'block';
+    const path = window.location.pathname.toLowerCase();
 
-      // Update browser tab title from 404 to Wishlist
+    function activateFallback(elementId, title) {
+      const standard404 = document.getElementById('Standard404View');
+      const targetView = document.getElementById(elementId);
+      if (standard404) standard404.style.display = 'none';
+      if (targetView) targetView.style.display = 'block';
+
       const shopName = {{ shop.name | json }};
-      document.title = "My Wishlist" + (shopName ? " – " + shopName : "");
+      document.title = title + (shopName ? " – " + shopName : "");
+    }
+
+    // Path matching takes strict precedence over query string parameters
+    if (path.includes('contact')) {
+      activateFallback('ContactFallbackView', 'Contact Us');
+    } else if (path.includes('wishlist')) {
+      activateFallback('WishlistFallbackView', 'My Wishlist');
+    } else if (path.includes('about')) {
+      activateFallback('AboutFallbackView', 'About Us');
+    } else {
+      const search = window.location.search.toLowerCase();
+      if (search.includes('view=contact')) {
+        activateFallback('ContactFallbackView', 'Contact Us');
+      } else if (search.includes('view=wishlist')) {
+        activateFallback('WishlistFallbackView', 'My Wishlist');
+      } else if (search.includes('view=about')) {
+        activateFallback('AboutFallbackView', 'About Us');
+      }
     }
   })();
 </script>

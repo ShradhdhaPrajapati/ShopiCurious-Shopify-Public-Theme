@@ -367,7 +367,7 @@
             </div>
 
             {%- if paginate.pages > 1 -%}
-              {% render 'pagination', paginate: paginate, anchor: '#ProductGrid' %}
+              {% render 'pagination', paginate: paginate, anchor: '#ProductGrid', pagination_type: section.settings.pagination_type %}
             {%- endif -%}
           {%- else -%}
             <!-- CLEAN EMPTY STATE (ONLY WHEN ZERO PRODUCTS ARE RETURNED) -->
@@ -1724,6 +1724,21 @@
       "id": "enable_sorting",
       "label": "Enable sorting",
       "default": true
+    },
+    {
+      "type": "header",
+      "content": "Pagination Settings"
+    },
+    {
+      "type": "select",
+      "id": "pagination_type",
+      "label": "Pagination Mode",
+      "options": [
+        { "value": "numbers", "label": "Numbered Pagination (1, 2, 3...)" },
+        { "value": "infinite_scroll", "label": "Infinite Scroll (Auto load on scroll)" },
+        { "value": "load_more", "label": "Load More Button" }
+      ],
+      "default": "numbers"
     },
     {
       "type": "header",

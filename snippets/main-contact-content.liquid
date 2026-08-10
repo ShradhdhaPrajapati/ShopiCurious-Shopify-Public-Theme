@@ -1,0 +1,767 @@
+{% doc %}
+  Renders the Contact Us page content matching luxury design system with full-width hero background banner, overlapping contact cards, contact form, store location map (image or dynamic iframe code), and FAQ accordions.
+{% enddoc %}
+
+{%- assign show_hero = true -%}
+{%- if section.settings.show_hero == false -%}
+  {%- assign show_hero = false -%}
+{%- endif -%}
+
+{%- assign show_cards = true -%}
+{%- if section.settings.show_cards == false -%}
+  {%- assign show_cards = false -%}
+{%- endif -%}
+
+{%- assign show_map = true -%}
+{%- if section.settings.show_map == false -%}
+  {%- assign show_map = false -%}
+{%- endif -%}
+
+{%- assign show_faq = true -%}
+{%- if section.settings.show_faq == false -%}
+  {%- assign show_faq = false -%}
+{%- endif -%}
+
+<div class="szc-contact-page-wrapper">
+
+  <!-- 1. Full-Width Hero Section -->
+  {%- if show_hero -%}
+    {%- if section.settings.hero_image != blank -%}
+      {%- assign hero_bg_url = section.settings.hero_image | image_url: width: 2000 -%}
+      <div class="szc-contact-hero-banner" style="--hero-bg-img: url('{{ hero_bg_url }}');">
+    {%- else -%}
+      <div class="szc-contact-hero-banner szc-contact-hero-banner--placeholder">
+    {%- endif -%}
+      <div class="szc-contact-container">
+        
+        <!-- Breadcrumbs inside Hero Banner -->
+        <nav class="szc-contact-breadcrumbs" aria-label="Breadcrumb">
+          <a href="{{ routes.root_url }}">Home</a>
+          <span class="szc-breadcrumb-sep">&gt;</span>
+          <span class="szc-breadcrumb-current">Contact Us</span>
+        </nav>
+
+        <div class="szc-contact-hero__content">
+          <h1 class="szc-contact-hero__title">{{ section.settings.hero_title | default: "Contact Us" }}</h1>
+          <p class="szc-contact-hero__desc">
+            {{ section.settings.hero_desc | default: "We're here to help! Reach out to us and our team will get back to you as soon as possible." }}
+          </p>
+        </div>
+
+      </div>
+    </div>
+  {%- endif -%}
+
+  <div class="szc-contact-container">
+
+    <!-- 2. Contact Info Cards (4 Column Grid Overlapping Banner) -->
+    {%- if show_cards -%}
+      <div class="szc-contact-cards-grid">
+        
+        <!-- Card 1: Customer Support -->
+        <div class="szc-contact-card">
+          <div class="szc-contact-card__icon-wrap">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round" class="szc-contact-icon">
+              <path d="M3 18v-6a9 9 0 0 1 18 0v6"/>
+              <path d="M21 19a2 2 0 0 1-2 2h-1a2 2 0 0 1-2-2v-3a2 2 0 0 1 2-2h3zM3 19a2 2 0 0 0 2 2h1a2 2 0 0 0 2-2v-3a2 2 0 0 0-2-2H3z"/>
+            </svg>
+          </div>
+          <h3 class="szc-contact-card__title">{{ section.settings.card_1_title | default: "Customer Support" }}</h3>
+          <p class="szc-contact-card__subtitle">{{ section.settings.card_1_schedule | default: "Mon - Fri: 9AM - 6PM" }}</p>
+          <a href="mailto:{{ section.settings.card_1_email | default: 'support@example.com' }}" class="szc-contact-card__link">
+            {{ section.settings.card_1_email | default: "support@example.com" }}
+          </a>
+        </div>
+
+        <!-- Card 2: Call Us -->
+        <div class="szc-contact-card">
+          <div class="szc-contact-card__icon-wrap">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round" class="szc-contact-icon">
+              <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/>
+            </svg>
+          </div>
+          <h3 class="szc-contact-card__title">{{ section.settings.card_2_title | default: "Call Us" }}</h3>
+          <p class="szc-contact-card__value">{{ section.settings.card_2_phone | default: "+1 (800) 123-4567" }}</p>
+          <p class="szc-contact-card__subtitle">{{ section.settings.card_2_schedule | default: "Mon - Fri: 9AM - 6PM" }}</p>
+        </div>
+
+        <!-- Card 3: Visit Us -->
+        <div class="szc-contact-card">
+          <div class="szc-contact-card__icon-wrap">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round" class="szc-contact-icon">
+              <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/>
+              <circle cx="12" cy="10" r="3"/>
+            </svg>
+          </div>
+          <h3 class="szc-contact-card__title">{{ section.settings.card_3_title | default: "Visit Us" }}</h3>
+          <p class="szc-contact-card__subtitle">{{ section.settings.card_3_addr1 | default: "123 Commerce St," }}</p>
+          <p class="szc-contact-card__subtitle">{{ section.settings.card_3_addr2 | default: "Suite 100, City, Country" }}</p>
+        </div>
+
+        <!-- Card 4: Live Chat -->
+        <div class="szc-contact-card">
+          <div class="szc-contact-card__icon-wrap">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round" class="szc-contact-icon">
+              <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/>
+            </svg>
+          </div>
+          <h3 class="szc-contact-card__title">{{ section.settings.card_4_title | default: "Live Chat" }}</h3>
+          <p class="szc-contact-card__subtitle">{{ section.settings.card_4_desc | default: "Chat with our team for quick assistance" }}</p>
+        </div>
+
+      </div>
+    {%- endif -%}
+
+    <!-- 3. Main 2-Column Section (Form + Location Map) -->
+    <div class="szc-contact-main-grid">
+
+      <!-- Left Column: Contact Form Box -->
+      <div class="szc-contact-box szc-contact-form-box">
+        <h2 class="szc-contact-box__title">{{ section.settings.form_title | default: "Send Us a Message" }}</h2>
+
+        {%- form 'contact', id: 'ContactForm', class: 'szc-contact-form' -%}
+          <input type="hidden" name="contact[tags]" value="contact, website-inquiry">
+          <input type="hidden" name="contact[accepts_marketing]" value="true">
+
+
+          {%- if form.posted_successfully? -%}
+            <div class="szc-contact-alert szc-contact-alert--success">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg>
+              <span>Thank you for reaching out! Your message has been sent successfully. We will reply shortly.</span>
+            </div>
+          {%- endif -%}
+
+          {%- if form.errors -%}
+            <div class="szc-contact-alert szc-contact-alert--error">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+              <span>{{ form.errors | default_errors }}</span>
+            </div>
+          {%- endif -%}
+
+          <div class="szc-form-group">
+            <label for="ContactFormName" class="szc-form-label">Your Name</label>
+            <input type="text" id="ContactFormName" name="contact[name]" class="szc-form-input" placeholder="Enter your name" value="{% if form.name %}{{ form.name }}{% elsif customer %}{{ customer.name }}{% endif %}" required>
+          </div>
+
+          <div class="szc-form-group">
+            <label for="ContactFormEmail" class="szc-form-label">Email Address</label>
+            <input type="email" id="ContactFormEmail" name="contact[email]" class="szc-form-input" placeholder="Enter your email" value="{% if form.email %}{{ form.email }}{% elsif customer %}{{ customer.email }}{% endif %}" required spellcheck="false" autocomplete="email">
+          </div>
+
+          <div class="szc-form-group">
+            <label for="ContactFormSubject" class="szc-form-label">Subject</label>
+            <input type="text" id="ContactFormSubject" name="contact[Subject]" class="szc-form-input" placeholder="How can we help you?">
+          </div>
+
+          <div class="szc-form-group">
+            <label for="ContactFormMessage" class="szc-form-label">Message</label>
+            <textarea id="ContactFormMessage" name="contact[body]" rows="5" class="szc-form-textarea" placeholder="Type your message here..." required>{% if form.body %}{{ form.body }}{% endif %}</textarea>
+          </div>
+
+          <button type="submit" class="szc-btn-contact-submit">
+            <span>{{ section.settings.form_btn_label | default: "SEND MESSAGE" }}</span>
+          </button>
+        {%- endform -%}
+      </div>
+
+      <!-- Right Column: Location / Find Us Box -->
+      {%- if show_map -%}
+        <div class="szc-contact-box szc-contact-map-box">
+          <h2 class="szc-contact-box__title">{{ section.settings.map_title | default: "Find Us" }}</h2>
+
+          <div class="szc-contact-map-wrapper">
+            {%- if section.settings.map_iframe != blank -%}
+              <div class="szc-contact-map-iframe-container">
+                {{ section.settings.map_iframe }}
+              </div>
+            {%- elsif section.settings.map_image != blank -%}
+              {% render 'image', image: section.settings.map_image, loading: 'lazy', class: 'szc-contact-map-img' %}
+            {%- else -%}
+              <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d193595.25280006548!2d-74.11976373070776!3d40.69766374859258!2m4!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m3!1s0x89c24fa5d33f083b%3A0xc80b8f06e177fe62!2sNew%20York%2C%20NY%2C%20USA!5e0!3m2!1sen!2s!4v1680000000000!5m2!1sen!2s" width="100%" height="240" style="border:0; width:100%; height:240px;" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>
+            {%- endif -%}
+          </div>
+
+          <div class="szc-contact-store-info">
+            <h3 class="szc-store-name">{{ section.settings.store_name | default: "Flagship Store" }}</h3>
+            <p class="szc-store-address">{{ section.settings.store_address | default: "123 Commerce St, Suite 100, City, Country" }}</p>
+
+            <div class="szc-store-hours">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                <circle cx="12" cy="12" r="10"/>
+                <polyline points="12 6 12 12 16 14"/>
+              </svg>
+              <span>{{ section.settings.store_hours | default: "Open - Closes 8:00 PM" }}</span>
+            </div>
+
+            <div class="szc-store-directions-wrap">
+              {%- assign dir_url = section.settings.directions_link | default: "https://maps.google.com" -%}
+              <a href="{{ dir_url }}" target="_blank" rel="noopener" class="szc-link-directions">
+                <span>{{ section.settings.directions_label | default: "GET DIRECTIONS" }}</span>
+              </a>
+            </div>
+          </div>
+        </div>
+      {%- endif -%}
+
+    </div>
+
+    <!-- 4. Frequently Asked Questions (FAQ Accordion Grid) -->
+    {%- if show_faq -%}
+      <div class="szc-contact-faq-box">
+        <h2 class="szc-contact-faq__title">{{ section.settings.faq_title | default: "Frequently Asked Questions" }}</h2>
+
+        <div class="szc-contact-faq-grid">
+          {%- if section.blocks.size > 0 -%}
+            {%- for block in section.blocks -%}
+              <div class="szc-faq-item" {{ block.shopify_attributes }}>
+                <button type="button" class="szc-faq-question" aria-expanded="false">
+                  <span>{{ block.settings.question }}</span>
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="szc-faq-chevron"><polyline points="6 9 12 15 18 9"/></svg>
+                </button>
+                <div class="szc-faq-answer">
+                  <p>{{ block.settings.answer }}</p>
+                </div>
+              </div>
+            {%- endfor -%}
+          {%- else -%}
+            <!-- Default Built-in FAQs -->
+            <div class="szc-faq-item">
+              <button type="button" class="szc-faq-question" aria-expanded="false">
+                <span>What is your return policy?</span>
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="szc-faq-chevron"><polyline points="6 9 12 15 18 9"/></svg>
+              </button>
+              <div class="szc-faq-answer">
+                <p>We offer a 30-day hassle-free return policy for all unworn items in original packaging with tags intact.</p>
+              </div>
+            </div>
+
+            <div class="szc-faq-item">
+              <button type="button" class="szc-faq-question" aria-expanded="false">
+                <span>How can I track my order?</span>
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="szc-faq-chevron"><polyline points="6 9 12 15 18 9"/></svg>
+              </button>
+              <div class="szc-faq-answer">
+                <p>Once your order ships, you will receive an email confirmation with a direct link to track your shipment in real-time.</p>
+              </div>
+            </div>
+
+            <div class="szc-faq-item">
+              <button type="button" class="szc-faq-question" aria-expanded="false">
+                <span>How long does shipping take?</span>
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="szc-faq-chevron"><polyline points="6 9 12 15 18 9"/></svg>
+              </button>
+              <div class="szc-faq-answer">
+                <p>Standard domestic delivery takes 3 to 5 business days. Express delivery options are available at checkout.</p>
+              </div>
+            </div>
+
+            <div class="szc-faq-item">
+              <button type="button" class="szc-faq-question" aria-expanded="false">
+                <span>Do you offer international shipping?</span>
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="szc-faq-chevron"><polyline points="6 9 12 15 18 9"/></svg>
+              </button>
+              <div class="szc-faq-answer">
+                <p>Yes, we ship globally! International shipping fees and duties will be calculated transparently at checkout.</p>
+              </div>
+            </div>
+          {%- endif -%}
+        </div>
+      </div>
+    {%- endif -%}
+
+  </div>
+</div>
+
+<style>
+  .szc-contact-page-wrapper {
+    background-color: #faf9f6;
+    padding-bottom: 80px;
+    font-family: inherit;
+    color: #111111;
+  }
+
+  .szc-contact-container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 24px;
+  }
+
+  /* 1. Full-Width Hero Section */
+  .szc-contact-hero-banner {
+    position: relative;
+    width: 100%;
+    min-height: 420px;
+    background-image: var(--hero-bg-img);
+    background-size: cover;
+    background-position: center right;
+    background-repeat: no-repeat;
+    background-color: #f5efe6;
+    padding: 70px 0 110px;
+    box-sizing: border-box;
+  }
+
+  .szc-contact-hero-banner--placeholder {
+    background: linear-gradient(135deg, #1c1917 0%, #292524 50%, #44403c 100%);
+    color: #ffffff;
+  }
+
+  .szc-contact-hero-banner--placeholder .szc-contact-breadcrumbs,
+  .szc-contact-hero-banner--placeholder .szc-contact-breadcrumbs a,
+  .szc-contact-hero-banner--placeholder .szc-breadcrumb-current,
+  .szc-contact-hero-banner--placeholder .szc-contact-hero__title,
+  .szc-contact-hero-banner--placeholder .szc-contact-hero__desc {
+    color: #ffffff;
+  }
+
+  .szc-contact-hero-banner::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(90deg, rgba(245, 239, 230, 0.95) 0%, rgba(245, 239, 230, 0.85) 45%, rgba(245, 239, 230, 0.1) 100%);
+    z-index: 1;
+    pointer-events: none;
+  }
+
+  .szc-contact-hero-banner--placeholder::before {
+    background: linear-gradient(90deg, rgba(28, 25, 23, 0.92) 0%, rgba(28, 25, 23, 0.75) 50%, rgba(28, 25, 23, 0.2) 100%);
+  }
+
+  .szc-contact-hero-banner .szc-contact-container {
+    position: relative;
+    z-index: 2;
+  }
+
+  /* Breadcrumbs */
+  .szc-contact-breadcrumbs {
+    font-size: 13px;
+    color: #666666;
+    margin-bottom: 32px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .szc-contact-breadcrumbs a {
+    color: #444444;
+    text-decoration: none;
+    transition: color 150ms ease;
+  }
+
+  .szc-contact-breadcrumbs a:hover {
+    color: #000000;
+  }
+
+  .szc-breadcrumb-sep {
+    font-size: 11px;
+    color: #999999;
+  }
+
+  .szc-breadcrumb-current {
+    font-weight: 600;
+    color: #111111;
+  }
+
+  .szc-contact-hero__content {
+    max-width: 480px;
+  }
+
+  .szc-contact-hero__title {
+    font-family: var(--szc-font-family-heading, Georgia, 'Playfair Display', serif);
+    font-size: 48px;
+    font-weight: 500;
+    line-height: 1.15;
+    margin: 0 0 16px;
+    color: #111111;
+    letter-spacing: -0.01em;
+  }
+
+  .szc-contact-hero__desc {
+    font-size: 15px;
+    line-height: 1.6;
+    color: #4a4a4a;
+    margin: 0;
+  }
+
+  /* 2. Info Cards Grid (Overlapping Banner) */
+  .szc-contact-cards-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 20px;
+    margin-top: -18px;
+    margin-bottom: 32px;
+    position: relative;
+    z-index: 3;
+  }
+
+  .szc-contact-card {
+    background-color: #ffffff;
+    border: 1px solid #eee8df;
+    border-radius: 16px;
+    padding: 28px 20px;
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.04);
+    transition: transform 200ms ease, box-shadow 200ms ease;
+  }
+
+  .szc-contact-card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 12px 32px rgba(0,0,0,0.07);
+  }
+
+  .szc-contact-card__icon-wrap {
+    width: 48px;
+    height: 48px;
+    border-radius: 50%;
+    background-color: #fdf8f2;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 16px;
+    color: #c88344;
+  }
+
+  .szc-contact-icon {
+    width: 24px;
+    height: 24px;
+  }
+
+  .szc-contact-card__title {
+    font-size: 15px;
+    font-weight: 700;
+    margin: 0 0 6px;
+    color: #111111;
+  }
+
+  .szc-contact-card__subtitle,
+  .szc-contact-card__value {
+    font-size: 12px;
+    color: #666666;
+    margin: 0 0 4px;
+    line-height: 1.4;
+  }
+
+  .szc-contact-card__value {
+    font-weight: 600;
+    color: #222222;
+  }
+
+  .szc-contact-card__link {
+    font-size: 12px;
+    color: #444444;
+    text-decoration: none;
+    transition: color 150ms ease;
+    word-break: break-all;
+  }
+
+  .szc-contact-card__link:hover {
+    color: #000000;
+    text-decoration: underline;
+  }
+
+  /* 3. Main 2-Column Grid */
+  .szc-contact-main-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 24px;
+    margin-bottom: 32px;
+  }
+
+  .szc-contact-box {
+    background-color: #ffffff;
+    border: 1px solid #eee8df;
+    border-radius: 20px;
+    padding: 36px 36px 40px;
+    box-shadow: 0 2px 12px rgba(0,0,0,0.02);
+  }
+
+  .szc-contact-box__title {
+    font-size: 20px;
+    font-weight: 700;
+    margin: 0 0 24px;
+    color: #111111;
+    letter-spacing: -0.01em;
+  }
+
+  /* Form Controls */
+  .szc-form-group {
+    margin-bottom: 18px;
+  }
+
+  .szc-form-label {
+    display: block;
+    font-size: 12px;
+    font-weight: 600;
+    color: #444444;
+    margin-bottom: 6px;
+  }
+
+  .szc-form-input,
+  .szc-form-textarea {
+    width: 100%;
+    padding: 12px 16px;
+    font-size: 13px;
+    border: 1px solid #e2ded7;
+    border-radius: 8px;
+    background-color: #faf9f6;
+    color: #111111;
+    outline: none;
+    transition: border-color 150ms ease, background-color 150ms ease;
+    box-sizing: border-box;
+  }
+
+  .szc-form-input:focus,
+  .szc-form-textarea:focus {
+    border-color: #111111;
+    background-color: #ffffff;
+  }
+
+  .szc-btn-contact-submit {
+    width: 100%;
+    padding: 16px;
+    background-color: #111111;
+    color: #ffffff;
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    margin-top: 8px;
+    transition: background-color 150ms ease, transform 150ms ease;
+  }
+
+  .szc-btn-contact-submit:hover {
+    background-color: #000000;
+    transform: translateY(-1px);
+  }
+
+  /* Alerts */
+  .szc-contact-alert {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 12px 16px;
+    border-radius: 8px;
+    font-size: 13px;
+    margin-bottom: 20px;
+  }
+
+  .szc-contact-alert--success {
+    background-color: #f0fdf4;
+    border: 1px solid #bbf7d0;
+    color: #166534;
+  }
+
+  .szc-contact-alert--error {
+    background-color: #fef2f2;
+    border: 1px solid #fecaca;
+    color: #991b1b;
+  }
+
+  /* Map & Location Box */
+  .szc-contact-map-wrapper {
+    width: 100%;
+    border-radius: 12px;
+    overflow: hidden;
+    margin-bottom: 24px;
+    background-color: #f5efe6;
+    min-height: 240px;
+    position: relative;
+  }
+
+  .szc-contact-map-iframe-container,
+  .szc-contact-map-wrapper iframe {
+    width: 100% !important;
+    height: 240px !important;
+    border: 0 !important;
+    display: block;
+  }
+
+  .szc-contact-map-img {
+    width: 100%;
+    height: 240px;
+    object-fit: cover;
+    display: block;
+  }
+
+  .szc-store-name {
+    font-size: 15px;
+    font-weight: 700;
+    margin: 0 0 6px;
+    color: #111111;
+  }
+
+  .szc-store-address {
+    font-size: 13px;
+    color: #666666;
+    margin: 0 0 16px;
+    line-height: 1.5;
+  }
+
+  .szc-store-hours {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 13px;
+    color: #444444;
+    margin-bottom: 24px;
+  }
+
+  .szc-store-directions-wrap {
+    border-top: 1px solid #eee8df;
+    padding-top: 20px;
+  }
+
+  .szc-link-directions {
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: #111111;
+    text-decoration: none;
+    transition: opacity 150ms ease;
+  }
+
+  .szc-link-directions:hover {
+    opacity: 0.7;
+  }
+
+  /* 4. FAQ Accordion Grid Section */
+  .szc-contact-faq-box {
+    background-color: #ffffff;
+    border: 1px solid #eee8df;
+    border-radius: 20px;
+    padding: 36px 36px 40px;
+    box-shadow: 0 2px 12px rgba(0,0,0,0.02);
+  }
+
+  .szc-contact-faq__title {
+    font-size: 20px;
+    font-weight: 700;
+    margin: 0 0 24px;
+    color: #111111;
+  }
+
+  .szc-contact-faq-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px 24px;
+  }
+
+  .szc-faq-item {
+    border: 1px solid #e8e4dc;
+    border-radius: 10px;
+    overflow: hidden;
+    background-color: #ffffff;
+    transition: border-color 150ms ease;
+  }
+
+  .szc-faq-item:hover {
+    border-color: #d0cabb;
+  }
+
+  .szc-faq-question {
+    width: 100%;
+    padding: 16px 20px;
+    background: none;
+    border: none;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    font-size: 13px;
+    font-weight: 600;
+    color: #111111;
+    cursor: pointer;
+    text-align: left;
+  }
+
+  .szc-faq-chevron {
+    transition: transform 200ms ease;
+    flex-shrink: 0;
+  }
+
+  .szc-faq-item.is-active .szc-faq-chevron {
+    transform: rotate(180deg);
+  }
+
+  .szc-faq-answer {
+    max-height: 0;
+    overflow: hidden;
+    transition: max-height 250ms ease, padding 250ms ease;
+    padding: 0 20px;
+    font-size: 13px;
+    line-height: 1.6;
+    color: #555555;
+    background-color: #faf9f6;
+  }
+
+  .szc-faq-item.is-active .szc-faq-answer {
+    max-height: 200px;
+    padding: 0 20px 16px;
+  }
+
+  /* Responsive Media Queries */
+  @media (max-width: 991px) {
+    .szc-contact-hero-banner {
+      min-height: 360px;
+      padding-bottom: 90px;
+    }
+
+    .szc-contact-hero__title {
+      font-size: 38px;
+    }
+
+    .szc-contact-cards-grid {
+      grid-template-columns: repeat(2, 1fr);
+      margin-top: -50px;
+    }
+
+    .szc-contact-main-grid {
+      grid-template-columns: 1fr;
+    }
+
+    .szc-contact-faq-grid {
+      grid-template-columns: 1fr;
+    }
+  }
+
+  @media (max-width: 576px) {
+    .szc-contact-hero-banner {
+      min-height: 320px;
+      padding-bottom: 80px;
+    }
+
+    .szc-contact-cards-grid {
+      grid-template-columns: 1fr;
+      margin-top: -40px;
+    }
+
+    .szc-contact-hero__title {
+      font-size: 32px;
+    }
+
+    .szc-contact-box {
+      padding: 24px 20px;
+    }
+  }
+</style>
+
+<script>
+  document.addEventListener('DOMContentLoaded', function() {
+    const faqButtons = document.querySelectorAll('.szc-faq-question');
+    faqButtons.forEach(btn => {
+      btn.addEventListener('click', function() {
+        const item = this.closest('.szc-faq-item');
+        const isActive = item.classList.contains('is-active');
+        
+        item.classList.toggle('is-active');
+        this.setAttribute('aria-expanded', !isActive);
+      });
+    });
+  });
+</script>

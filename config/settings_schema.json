@@ -533,6 +533,88 @@
         "id": "show_fit_info",
         "label": "Show Sizing & Fit Recommendation Bar (e.g. Runs True to Size)",
         "default": true
+      },
+      {
+        "type": "header",
+        "content": "Product & Quick View Trust Badges"
+      },
+      {
+        "type": "text",
+        "id": "trust_badge_1_title",
+        "label": "Trust Badge 1 Title",
+        "default": "Free Shipping"
+      },
+      {
+        "type": "text",
+        "id": "trust_badge_1_subtext",
+        "label": "Trust Badge 1 Subtext",
+        "default": "On orders over $100"
+      },
+      {
+        "type": "select",
+        "id": "trust_badge_1_icon",
+        "label": "Trust Badge 1 Icon",
+        "options": [
+          { "value": "shipping", "label": "Shipping Truck" },
+          { "value": "returns", "label": "Easy Returns Arrow" },
+          { "value": "secure", "label": "Secure Lock" },
+          { "value": "shield", "label": "Shield Warranty" },
+          { "value": "star", "label": "Star Quality" },
+          { "value": "support", "label": "24/7 Support" }
+        ],
+        "default": "shipping"
+      },
+      {
+        "type": "text",
+        "id": "trust_badge_2_title",
+        "label": "Trust Badge 2 Title",
+        "default": "Easy Returns"
+      },
+      {
+        "type": "text",
+        "id": "trust_badge_2_subtext",
+        "label": "Trust Badge 2 Subtext",
+        "default": "30-day return policy"
+      },
+      {
+        "type": "select",
+        "id": "trust_badge_2_icon",
+        "label": "Trust Badge 2 Icon",
+        "options": [
+          { "value": "shipping", "label": "Shipping Truck" },
+          { "value": "returns", "label": "Easy Returns Arrow" },
+          { "value": "secure", "label": "Secure Lock" },
+          { "value": "shield", "label": "Shield Warranty" },
+          { "value": "star", "label": "Star Quality" },
+          { "value": "support", "label": "24/7 Support" }
+        ],
+        "default": "returns"
+      },
+      {
+        "type": "text",
+        "id": "trust_badge_3_title",
+        "label": "Trust Badge 3 Title",
+        "default": "Secure Payment"
+      },
+      {
+        "type": "text",
+        "id": "trust_badge_3_subtext",
+        "label": "Trust Badge 3 Subtext",
+        "default": "100% secure checkout"
+      },
+      {
+        "type": "select",
+        "id": "trust_badge_3_icon",
+        "label": "Trust Badge 3 Icon",
+        "options": [
+          { "value": "shipping", "label": "Shipping Truck" },
+          { "value": "returns", "label": "Easy Returns Arrow" },
+          { "value": "secure", "label": "Secure Lock" },
+          { "value": "shield", "label": "Shield Warranty" },
+          { "value": "star", "label": "Star Quality" },
+          { "value": "support", "label": "24/7 Support" }
+        ],
+        "default": "secure"
       }
     ]
   },

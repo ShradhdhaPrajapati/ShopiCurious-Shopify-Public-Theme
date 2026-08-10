@@ -1,0 +1,811 @@
+╭─ info ───────────────────────────────────────────────────────────────────────╮
+│                                                                              │
+│  sections/blog.liquid                                                        │
+│                                                                              │
+│                                                                              │
+│  [warning]: UnrecognizedRenderSnippetArguments                               │
+│  Unknown argument 'item_type' in render tag for snippet 'pagination'.        │
+│                                                                              │
+│  249  item_type: 'articles'                                                  │
+│                                                                              │
+╰──────────────────────────────────────────────────────────────────────────────╯
+
+╭─ info ───────────────────────────────────────────────────────────────────────╮
+│                                                                              │
+│  sections/footer.liquid                                                      │
+│                                                                              │
+│                                                                              │
+│  [warning]: HardcodedRoutes                                                  │
+│  Use routes object {{ routes.root_url }} instead of hardcoding /             │
+│                                                                              │
+│  149  <li><a href="/" class="szc-footer__menu-link">Home</a></li>            │
+│                                                                              │
+│                                                                              │
+│  [warning]: HardcodedRoutes                                                  │
+│  Use routes object {{ routes.all_products_collection_url }} instead of       │
+│  hardcoding /collections/all                                                 │
+│                                                                              │
+│  150  <li><a href="/collections/all"                                         │
+│  class="szc-footer__menu-link">Catalog</a></li>                              │
+│                                                                              │
+╰──────────────────────────────────────────────────────────────────────────────╯
+
+╭─ info ───────────────────────────────────────────────────────────────────────╮
+│                                                                              │
+│  snippets/cart-item.liquid                                                   │
+│                                                                              │
+│                                                                              │
+│  [warning]: OrphanedSnippet                                                  │
+│  This snippet is not referenced by any other files                           │
+│                                                                              │
+│  1  {% doc %}                                                                │
+│                                                                              │
+╰──────────────────────────────────────────────────────────────────────────────╯
+
+╭─ info ───────────────────────────────────────────────────────────────────────╮
+│                                                                              │
+│  snippets/facets.liquid                                                      │
+│                                                                              │
+│                                                                              │
+│  [warning]: UnusedDocParam                                                   │
+│  The parameter 'enable_sorting' is defined but not used in this file.        │
+│                                                                              │
+│  6  @param {boolean} [enable_sorting] - Toggles sort dropdown rendering      │
+│  (Default: false)                                                            │
+│                                                                              │
+│                                                                              │
+│  [warning]: UnusedAssign                                                     │
+│  The variable 'sort_by' is assigned but not used                             │
+│                                                                              │
+│  14  assign sort_by = results.sort_by | default: results.default_sort_by     │
+│                                                                              │
+╰──────────────────────────────────────────────────────────────────────────────╯
+
+╭─ info ───────────────────────────────────────────────────────────────────────╮
+│                                                                              │
+│  snippets/icon-button.liquid                                                 │
+│                                                                              │
+│                                                                              │
+│  [warning]: OrphanedSnippet                                                  │
+│  This snippet is not referenced by any other files                           │
+│                                                                              │
+│  1  {% doc %}                                                                │
+│                                                                              │
+╰──────────────────────────────────────────────────────────────────────────────╯
+
+╭─ info ───────────────────────────────────────────────────────────────────────╮
+│                                                                              │
+│  snippets/main-about-content.liquid                                          │
+│                                                                              │
+│                                                                              │
+│  [warning]: UnclosedHTMLElement                                              │
+│  Opening tag does not have a matching closing tag for condition              │
+│  `section['settings'],['hero_image'] != ` in LiquidBranch 'LiquidBranch'     │
+│                                                                              │
+│  31  <div class="szc-about-hero-banner" style="--hero-bg-img: url('{{        │
+│  hero_bg_url }}');">                                                         │
+│                                                                              │
+│                                                                              │
+│  [warning]: UnclosedHTMLElement                                              │
+│  Opening tag does not have a matching closing tag for condition              │
+│  `-section['settings'],['hero_image'] != ` in LiquidBranch 'LiquidBranch'    │
+│                                                                              │
+│  33  <div class="szc-about-hero-banner szc-about-hero-banner--placeholder">  │
+│                                                                              │
+│                                                                              │
+│                                                                              │
+│  [warning]: UnclosedHTMLElement                                              │
+│  Closing tag does not have a matching opening tag for condition `show_hero`  │
+│   in HtmlElement 'div'                                                       │
+│                                                                              │
+│  57  </div>                                                                  │
+│                                                                              │
+│                                                                              │
+│  [warning]: UndefinedObject                                                  │
+│  Unknown object 'section' used.                                              │
+│                                                                              │
+│  6  {%- if section.settings.show_hero == false -%}                           │
+│                                                                              │
+│                                                                              │
+│  [warning]: UndefinedObject                                                  │
+│  Unknown object 'section' used.                                              │
+│                                                                              │
+│  11  {%- if section.settings.show_values == false -%}                        │
+│                                                                              │
+│                                                                              │
+│  [warning]: UndefinedObject                                                  │
+│  Unknown object 'section' used.                                              │
+│                                                                              │
+│  16  {%- if section.settings.show_story == false -%}                         │
+│                                                                              │
+│                                                                              │
+│  [warning]: UndefinedObject                                                  │
+│  Unknown object 'section' used.                                              │
+│                                                                              │
+│  21  {%- if section.settings.show_journey == false -%}                       │
+│                                                                              │
+│                                                                              │
+│  [warning]: UndefinedObject                                                  │
+│  Unknown object 'section' used.                                              │
+│                                                                              │
+│  30  {%- assign hero_bg_url = section.settings.hero_image | image_url:       │
+│  width: 2000 -%}                                                             │
+│                                                                              │
+│                                                                              │
+│  [warning]: UndefinedObject                                                  │
+│  Unknown object 'section' used.                                              │
+│                                                                              │
+│  29  {%- if section.settings.hero_image != blank -%}                         │
+│                                                                              │
+│                                                                              │
+│  [warning]: UndefinedObject                                                  │
+│  Unknown object 'section' used.                                              │
+│                                                                              │
+│  45  <h1 class="szc-about-hero__title">{{ section.settings.hero_title |      │
+│  default: "About Us" }}</h1>                                                 │
+│                                                                              │
+│                                                                              │
+│  [warning]: UndefinedObject                                                  │
+│  Unknown object 'section' used.                                              │
+│                                                                              │
+│  46  <p class="szc-about-hero__tagline">{{ section.settings.hero_tagline |   │
+│  default: "Timeless style. Thoughtful design. Created for every moment."     │
+│  }}</p>                                                                      │
+│                                                                              │
+│                                                                              │
+│  [warning]: UndefinedObject                                                  │
+│  Unknown object 'section' used.                                              │
+│                                                                              │
+│  48  {{ section.settings.hero_desc | default: "We believe fashion is more    │
+│  than just what you wear—it's how you express yourself. Our collections are  │
+│   crafted with care, inspired by elegance, and designed to empower." }}      │
+│                                                                              │
+│                                                                              │
+│  [warning]: UndefinedObject                                                  │
+│  Unknown object 'section' used.                                              │
+│                                                                              │
+│  52  <span>{{ section.settings.hero_btn_label | default: "OUR STORY"         │
+│  }}</span>                                                                   │
+│                                                                              │
+│                                                                              │
+│  [warning]: UndefinedObject                                                  │
+│  Unknown object 'section' used.                                              │
+│                                                                              │
+│  51  <a href="{{ section.settings.hero_btn_link | default:                   │
+│  '#OurStorySection' }}" class="szc-btn-about-hero">                          │
+│                                                                              │
+│                                                                              │
+│  [warning]: UndefinedObject                                                  │
+│  Unknown object 'section' used.                                              │
+│                                                                              │
+│  73  <h3 class="szc-about-val-card__title">{{ section.settings.val_1_title   │
+│  | default: "Timeless Design" }}</h3>                                        │
+│                                                                              │
+│                                                                              │
+│  [warning]: UndefinedObject                                                  │
+│  Unknown object 'section' used.                                              │
+│                                                                              │
+│  74  <p class="szc-about-val-card__desc">{{ section.settings.val_1_desc |    │
+│  default: "Styles that never go out of fashion" }}</p>                       │
+│                                                                              │
+│                                                                              │
+│  [warning]: UndefinedObject                                                  │
+│  Unknown object 'section' used.                                              │
+│                                                                              │
+│  85  <h3 class="szc-about-val-card__title">{{ section.settings.val_2_title   │
+│  | default: "Quality You Can Trust" }}</h3>                                  │
+│                                                                              │
+│                                                                              │
+│  [warning]: UndefinedObject                                                  │
+│  Unknown object 'section' used.                                              │
+│                                                                              │
+│  86  <p class="szc-about-val-card__desc">{{ section.settings.val_2_desc |    │
+│  default: "Premium materials, perfect finish" }}</p>                         │
+│                                                                              │
+│                                                                              │
+│  [warning]: UndefinedObject                                                  │
+│  Unknown object 'section' used.                                              │
+│                                                                              │
+│  97  <h3 class="szc-about-val-card__title">{{ section.settings.val_3_title   │
+│  | default: "Sustainable Approach" }}</h3>                                   │
+│                                                                              │
+│                                                                              │
+│  [warning]: UndefinedObject                                                  │
+│  Unknown object 'section' used.                                              │
+│                                                                              │
+│  98  <p class="szc-about-val-card__desc">{{ section.settings.val_3_desc |    │
+│  default: "Thoughtful choices for a better planet" }}</p>                    │
+│                                                                              │
+│                                                                              │
+│  [warning]: UndefinedObject                                                  │
+│  Unknown object 'section' used.                                              │
+│                                                                              │
+│  110  <h3 class="szc-about-val-card__title">{{ section.settings.val_4_title  │
+│   | default: "Customer First" }}</h3>                                        │
+│                                                                              │
+│                                                                              │
+│  [warning]: UndefinedObject                                                  │
+│  Unknown object 'section' used.                                              │
+│                                                                              │
+│  111  <p class="szc-about-val-card__desc">{{ section.settings.val_4_desc |   │
+│  default: "Your satisfaction is our priority" }}</p>                         │
+│                                                                              │
+│                                                                              │
+│  [warning]: UndefinedObject                                                  │
+│  Unknown object 'section' used.                                              │
+│                                                                              │
+│  126  {% render 'image', image: section.settings.story_img_1, loading:       │
+│  'lazy', class: 'szc-collage-img' %}                                         │
+│                                                                              │
+│                                                                              │
+│  [warning]: UndefinedObject                                                  │
+│  Unknown object 'section' used.                                              │
+│                                                                              │
+│  125  {%- if section.settings.story_img_1 != blank -%}                       │
+│                                                                              │
+│                                                                              │
+│  [warning]: UndefinedObject                                                  │
+│  Unknown object 'section' used.                                              │
+│                                                                              │
+│  133  {% render 'image', image: section.settings.story_img_2, loading:       │
+│  'lazy', class: 'szc-collage-img' %}                                         │
+│                                                                              │
+│                                                                              │
+│  [warning]: UndefinedObject                                                  │
+│  Unknown object 'section' used.                                              │
+│                                                                              │
+│  132  {%- if section.settings.story_img_2 != blank -%}                       │
+│                                                                              │
+│                                                                              │
+│  [warning]: UndefinedObject                                                  │
+│  Unknown object 'section' used.                                              │
+│                                                                              │
+│  140  {% render 'image', image: section.settings.story_img_3, loading:       │
+│  'lazy', class: 'szc-collage-img' %}                                         │
+│                                                                              │
+│                                                                              │
+│  [warning]: UndefinedObject                                                  │
+│  Unknown object 'section' used.                                              │
+│                                                                              │
+│  139  {%- if section.settings.story_img_3 != blank -%}                       │
+│                                                                              │
+│                                                                              │
+│  [warning]: UndefinedObject                                                  │
+│  Unknown object 'section' used.                                              │
+│                                                                              │
+│  147  {% render 'image', image: section.settings.story_img_4, loading:       │
+│  'lazy', class: 'szc-collage-img' %}                                         │
+│                                                                              │
+│                                                                              │
+│  [warning]: UndefinedObject                                                  │
+│  Unknown object 'section' used.                                              │
+│                                                                              │
+│  146  {%- if section.settings.story_img_4 != blank -%}                       │
+│                                                                              │
+│                                                                              │
+│  [warning]: UndefinedObject                                                  │
+│  Unknown object 'section' used.                                              │
+│                                                                              │
+│  156  <h2 class="szc-about-story__title">{{ section.settings.story_title |   │
+│  default: "Our Story" }}</h2>                                                │
+│                                                                              │
+│                                                                              │
+│  [warning]: UndefinedObject                                                  │
+│  Unknown object 'section' used.                                              │
+│                                                                              │
+│  159  {{ section.settings.story_p1 | default: "Founded with a simple         │
+│  mission—to create fashion that blends timeless elegance with everyday       │
+│  comfort. What began as a small idea has grown into a brand trusted by       │
+│  thousands of customers worldwide." }}                                       │
+│                                                                              │
+│                                                                              │
+│  [warning]: UndefinedObject                                                  │
+│  Unknown object 'section' used.                                              │
+│                                                                              │
+│  163  {{ section.settings.story_p2 | default: "We collaborate with skilled   │
+│  artisans and use high-quality materials to create pieces that are made to   │
+│  last and loved for years to come." }}                                       │
+│                                                                              │
+│                                                                              │
+│  [warning]: UndefinedObject                                                  │
+│  Unknown object 'section' used.                                              │
+│                                                                              │
+│  169  <div class="szc-stat-value">{{ section.settings.stat_1_num | default:  │
+│   "20K+" }}</div>                                                            │
+│                                                                              │
+│                                                                              │
+│  [warning]: UndefinedObject                                                  │
+│  Unknown object 'section' used.                                              │
+│                                                                              │
+│  170  <div class="szc-stat-label">{{ section.settings.stat_1_label |         │
+│  default: "Happy Customers" }}</div>                                         │
+│                                                                              │
+│                                                                              │
+│  [warning]: UndefinedObject                                                  │
+│  Unknown object 'section' used.                                              │
+│                                                                              │
+│  176  <span class="szc-stat-value">{{ section.settings.stat_2_num |          │
+│  default: "150+" }}</span>                                                   │
+│                                                                              │
+│                                                                              │
+│  [warning]: UndefinedObject                                                  │
+│  Unknown object 'section' used.                                              │
+│                                                                              │
+│  178  <div class="szc-stat-label">{{ section.settings.stat_2_label |         │
+│  default: "Premium Products" }}</div>                                        │
+│                                                                              │
+│                                                                              │
+│  [warning]: UndefinedObject                                                  │
+│  Unknown object 'section' used.                                              │
+│                                                                              │
+│  184  <span class="szc-stat-value">{{ section.settings.stat_3_num |          │
+│  default: "50+" }}</span>                                                    │
+│                                                                              │
+│                                                                              │
+│  [warning]: UndefinedObject                                                  │
+│  Unknown object 'section' used.                                              │
+│                                                                              │
+│  186  <div class="szc-stat-label">{{ section.settings.stat_3_label |         │
+│  default: "Countries Served" }}</div>                                        │
+│                                                                              │
+│                                                                              │
+│  [warning]: UndefinedObject                                                  │
+│  Unknown object 'section' used.                                              │
+│                                                                              │
+│  199  <h2 class="szc-about-journey__title">{{                                │
+│  section.settings.journey_title | default: "Our Journey" }}</h2>             │
+│                                                                              │
+│                                                                              │
+│  [warning]: UndefinedObject                                                  │
+│  Unknown object 'section' used.                                              │
+│                                                                              │
+│  203  {%- for block in section.blocks -%}                                    │
+│                                                                              │
+│                                                                              │
+│  [warning]: UndefinedObject                                                  │
+│  Unknown object 'section' used.                                              │
+│                                                                              │
+│  202  {%- if section.blocks.size > 0 -%}                                     │
+│                                                                              │
+╰──────────────────────────────────────────────────────────────────────────────╯
+
+╭─ info ───────────────────────────────────────────────────────────────────────╮
+│                                                                              │
+│  snippets/main-contact-content.liquid                                        │
+│                                                                              │
+│                                                                              │
+│  [warning]: UnclosedHTMLElement                                              │
+│  Opening tag does not have a matching closing tag for condition              │
+│  `section['settings'],['hero_image'] != ` in LiquidBranch 'LiquidBranch'     │
+│                                                                              │
+│  31  <div class="szc-contact-hero-banner" style="--hero-bg-img: url('{{      │
+│  hero_bg_url }}');">                                                         │
+│                                                                              │
+│                                                                              │
+│  [warning]: UnclosedHTMLElement                                              │
+│  Opening tag does not have a matching closing tag for condition              │
+│  `-section['settings'],['hero_image'] != ` in LiquidBranch 'LiquidBranch'    │
+│                                                                              │
+│  33  <div class="szc-contact-hero-banner                                     │
+│  szc-contact-hero-banner--placeholder">                                      │
+│                                                                              │
+│                                                                              │
+│  [warning]: UnclosedHTMLElement                                              │
+│  Closing tag does not have a matching opening tag for condition `show_hero`  │
+│   in HtmlElement 'div'                                                       │
+│                                                                              │
+│  52  </div>                                                                  │
+│                                                                              │
+│                                                                              │
+│  [warning]: UndefinedObject                                                  │
+│  Unknown object 'section' used.                                              │
+│                                                                              │
+│  6  {%- if section.settings.show_hero == false -%}                           │
+│                                                                              │
+│                                                                              │
+│  [warning]: UndefinedObject                                                  │
+│  Unknown object 'section' used.                                              │
+│                                                                              │
+│  11  {%- if section.settings.show_cards == false -%}                         │
+│                                                                              │
+│                                                                              │
+│  [warning]: UndefinedObject                                                  │
+│  Unknown object 'section' used.                                              │
+│                                                                              │
+│  16  {%- if section.settings.show_map == false -%}                           │
+│                                                                              │
+│                                                                              │
+│  [warning]: UndefinedObject                                                  │
+│  Unknown object 'section' used.                                              │
+│                                                                              │
+│  21  {%- if section.settings.show_faq == false -%}                           │
+│                                                                              │
+│                                                                              │
+│  [warning]: UndefinedObject                                                  │
+│  Unknown object 'section' used.                                              │
+│                                                                              │
+│  30  {%- assign hero_bg_url = section.settings.hero_image | image_url:       │
+│  width: 2000 -%}                                                             │
+│                                                                              │
+│                                                                              │
+│  [warning]: UndefinedObject                                                  │
+│  Unknown object 'section' used.                                              │
+│                                                                              │
+│  29  {%- if section.settings.hero_image != blank -%}                         │
+│                                                                              │
+│                                                                              │
+│  [warning]: UndefinedObject                                                  │
+│  Unknown object 'section' used.                                              │
+│                                                                              │
+│  45  <h1 class="szc-contact-hero__title">{{ section.settings.hero_title |    │
+│  default: "Contact Us" }}</h1>                                               │
+│                                                                              │
+│                                                                              │
+│  [warning]: UndefinedObject                                                  │
+│  Unknown object 'section' used.                                              │
+│                                                                              │
+│  47  {{ section.settings.hero_desc | default: "We're here to help! Reach     │
+│  out to us and our team will get back to you as soon as possible." }}        │
+│                                                                              │
+│                                                                              │
+│  [warning]: UndefinedObject                                                  │
+│  Unknown object 'section' used.                                              │
+│                                                                              │
+│  69  <h3 class="szc-contact-card__title">{{ section.settings.card_1_title |  │
+│   default: "Customer Support" }}</h3>                                        │
+│                                                                              │
+│                                                                              │
+│  [warning]: UndefinedObject                                                  │
+│  Unknown object 'section' used.                                              │
+│                                                                              │
+│  70  <p class="szc-contact-card__subtitle">{{                                │
+│  section.settings.card_1_schedule | default: "Mon - Fri: 9AM - 6PM" }}</p>   │
+│                                                                              │
+│                                                                              │
+│  [warning]: UndefinedObject                                                  │
+│  Unknown object 'section' used.                                              │
+│                                                                              │
+│  72  {{ section.settings.card_1_email | default: "support@example.com" }}    │
+│                                                                              │
+│                                                                              │
+│  [warning]: UndefinedObject                                                  │
+│  Unknown object 'section' used.                                              │
+│                                                                              │
+│  71  <a href="mailto:{{ section.settings.card_1_email | default:             │
+│  'support@example.com' }}" class="szc-contact-card__link">                   │
+│                                                                              │
+│                                                                              │
+│  [warning]: UndefinedObject                                                  │
+│  Unknown object 'section' used.                                              │
+│                                                                              │
+│  83  <h3 class="szc-contact-card__title">{{ section.settings.card_2_title |  │
+│   default: "Call Us" }}</h3>                                                 │
+│                                                                              │
+│                                                                              │
+│  [warning]: UndefinedObject                                                  │
+│  Unknown object 'section' used.                                              │
+│                                                                              │
+│  84  <p class="szc-contact-card__value">{{ section.settings.card_2_phone |   │
+│  default: "+1 (800) 123-4567" }}</p>                                         │
+│                                                                              │
+│                                                                              │
+│  [warning]: UndefinedObject                                                  │
+│  Unknown object 'section' used.                                              │
+│                                                                              │
+│  85  <p class="szc-contact-card__subtitle">{{                                │
+│  section.settings.card_2_schedule | default: "Mon - Fri: 9AM - 6PM" }}</p>   │
+│                                                                              │
+│                                                                              │
+│  [warning]: UndefinedObject                                                  │
+│  Unknown object 'section' used.                                              │
+│                                                                              │
+│  96  <h3 class="szc-contact-card__title">{{ section.settings.card_3_title |  │
+│   default: "Visit Us" }}</h3>                                                │
+│                                                                              │
+│                                                                              │
+│  [warning]: UndefinedObject                                                  │
+│  Unknown object 'section' used.                                              │
+│                                                                              │
+│  97  <p class="szc-contact-card__subtitle">{{ section.settings.card_3_addr1  │
+│   | default: "123 Commerce St," }}</p>                                       │
+│                                                                              │
+│                                                                              │
+│  [warning]: UndefinedObject                                                  │
+│  Unknown object 'section' used.                                              │
+│                                                                              │
+│  98  <p class="szc-contact-card__subtitle">{{ section.settings.card_3_addr2  │
+│   | default: "Suite 100, City, Country" }}</p>                               │
+│                                                                              │
+│                                                                              │
+│  [warning]: UndefinedObject                                                  │
+│  Unknown object 'section' used.                                              │
+│                                                                              │
+│  108  <h3 class="szc-contact-card__title">{{ section.settings.card_4_title   │
+│  | default: "Live Chat" }}</h3>                                              │
+│                                                                              │
+│                                                                              │
+│  [warning]: UndefinedObject                                                  │
+│  Unknown object 'section' used.                                              │
+│                                                                              │
+│  109  <p class="szc-contact-card__subtitle">{{ section.settings.card_4_desc  │
+│   | default: "Chat with our team for quick assistance" }}</p>                │
+│                                                                              │
+│                                                                              │
+│  [warning]: UndefinedObject                                                  │
+│  Unknown object 'section' used.                                              │
+│                                                                              │
+│  120  <h2 class="szc-contact-box__title">{{ section.settings.form_title |    │
+│  default: "Send Us a Message" }}</h2>                                        │
+│                                                                              │
+│                                                                              │
+│  [warning]: UndefinedObject                                                  │
+│  Unknown object 'section' used.                                              │
+│                                                                              │
+│  162  <span>{{ section.settings.form_btn_label | default: "SEND MESSAGE"     │
+│  }}</span>                                                                   │
+│                                                                              │
+│                                                                              │
+│  [warning]: UndefinedObject                                                  │
+│  Unknown object 'section' used.                                              │
+│                                                                              │
+│  170  <h2 class="szc-contact-box__title">{{ section.settings.map_title |     │
+│  default: "Find Us" }}</h2>                                                  │
+│                                                                              │
+│                                                                              │
+│  [warning]: UndefinedObject                                                  │
+│  Unknown object 'section' used.                                              │
+│                                                                              │
+│  175  {{ section.settings.map_iframe }}                                      │
+│                                                                              │
+│                                                                              │
+│  [warning]: UndefinedObject                                                  │
+│  Unknown object 'section' used.                                              │
+│                                                                              │
+│  177  {%- elsif section.settings.map_image != blank -%}                      │
+│                                                                              │
+│                                                                              │
+│  [warning]: UndefinedObject                                                  │
+│  Unknown object 'section' used.                                              │
+│                                                                              │
+│  178  {% render 'image', image: section.settings.map_image, loading:         │
+│  'lazy', class: 'szc-contact-map-img' %}                                     │
+│                                                                              │
+│                                                                              │
+│  [warning]: UndefinedObject                                                  │
+│  Unknown object 'section' used.                                              │
+│                                                                              │
+│  173  {%- if section.settings.map_iframe != blank -%}                        │
+│                                                                              │
+│                                                                              │
+│  [warning]: UndefinedObject                                                  │
+│  Unknown object 'section' used.                                              │
+│                                                                              │
+│  185  <h3 class="szc-store-name">{{ section.settings.store_name | default:   │
+│  "Flagship Store" }}</h3>                                                    │
+│                                                                              │
+│                                                                              │
+│  [warning]: UndefinedObject                                                  │
+│  Unknown object 'section' used.                                              │
+│                                                                              │
+│  186  <p class="szc-store-address">{{ section.settings.store_address |       │
+│  default: "123 Commerce St, Suite 100, City, Country" }}</p>                 │
+│                                                                              │
+│                                                                              │
+│  [warning]: UndefinedObject                                                  │
+│  Unknown object 'section' used.                                              │
+│                                                                              │
+│  193  <span>{{ section.settings.store_hours | default: "Open - Closes 8:00   │
+│  PM" }}</span>                                                               │
+│                                                                              │
+│                                                                              │
+│  [warning]: UndefinedObject                                                  │
+│  Unknown object 'section' used.                                              │
+│                                                                              │
+│  197  {%- assign dir_url = section.settings.directions_link | default:       │
+│  "https://maps.google.com" -%}                                               │
+│                                                                              │
+│                                                                              │
+│  [warning]: UndefinedObject                                                  │
+│  Unknown object 'section' used.                                              │
+│                                                                              │
+│  199  <span>{{ section.settings.directions_label | default: "GET             │
+│  DIRECTIONS" }}</span>                                                       │
+│                                                                              │
+│                                                                              │
+│  [warning]: UndefinedObject                                                  │
+│  Unknown object 'section' used.                                              │
+│                                                                              │
+│  211  <h2 class="szc-contact-faq__title">{{ section.settings.faq_title |     │
+│  default: "Frequently Asked Questions" }}</h2>                               │
+│                                                                              │
+│                                                                              │
+│  [warning]: UndefinedObject                                                  │
+│  Unknown object 'section' used.                                              │
+│                                                                              │
+│  215  {%- for block in section.blocks -%}                                    │
+│                                                                              │
+│                                                                              │
+│  [warning]: UndefinedObject                                                  │
+│  Unknown object 'section' used.                                              │
+│                                                                              │
+│  214  {%- if section.blocks.size > 0 -%}                                     │
+│                                                                              │
+╰──────────────────────────────────────────────────────────────────────────────╯
+
+╭─ info ───────────────────────────────────────────────────────────────────────╮
+│                                                                              │
+│  snippets/main-wishlist-content.liquid                                       │
+│                                                                              │
+│                                                                              │
+│  [warning]: UndefinedObject                                                  │
+│  Unknown object 'section' used.                                              │
+│                                                                              │
+│  109  assign empty_title = section.settings.empty_title                      │
+│                                                                              │
+│                                                                              │
+│  [warning]: UndefinedObject                                                  │
+│  Unknown object 'section' used.                                              │
+│                                                                              │
+│  108  if section.settings.empty_title != blank                               │
+│                                                                              │
+│                                                                              │
+│  [warning]: UndefinedObject                                                  │
+│  Unknown object 'section' used.                                              │
+│                                                                              │
+│  112  assign empty_text = section.settings.empty_text                        │
+│                                                                              │
+│                                                                              │
+│  [warning]: UndefinedObject                                                  │
+│  Unknown object 'section' used.                                              │
+│                                                                              │
+│  111  if section.settings.empty_text != blank                                │
+│                                                                              │
+│                                                                              │
+│  [warning]: UndefinedObject                                                  │
+│  Unknown object 'section' used.                                              │
+│                                                                              │
+│  115  assign primary_url = section.settings.empty_btn_link                   │
+│                                                                              │
+│                                                                              │
+│  [warning]: UndefinedObject                                                  │
+│  Unknown object 'section' used.                                              │
+│                                                                              │
+│  114  if section.settings.empty_btn_link != blank                            │
+│                                                                              │
+│                                                                              │
+│  [warning]: UndefinedObject                                                  │
+│  Unknown object 'section' used.                                              │
+│                                                                              │
+│  118  assign primary_label = section.settings.empty_btn_label                │
+│                                                                              │
+│                                                                              │
+│  [warning]: UndefinedObject                                                  │
+│  Unknown object 'section' used.                                              │
+│                                                                              │
+│  117  if section.settings.empty_btn_label != blank                           │
+│                                                                              │
+│                                                                              │
+│  [warning]: UndefinedObject                                                  │
+│  Unknown object 'section' used.                                              │
+│                                                                              │
+│  121  assign secondary_url = section.settings.empty_secondary_link           │
+│                                                                              │
+│                                                                              │
+│  [warning]: UndefinedObject                                                  │
+│  Unknown object 'section' used.                                              │
+│                                                                              │
+│  120  if section.settings.empty_secondary_link != blank                      │
+│                                                                              │
+│                                                                              │
+│  [warning]: UndefinedObject                                                  │
+│  Unknown object 'section' used.                                              │
+│                                                                              │
+│  124  assign secondary_label = section.settings.empty_secondary_label        │
+│                                                                              │
+│                                                                              │
+│  [warning]: UndefinedObject                                                  │
+│  Unknown object 'section' used.                                              │
+│                                                                              │
+│  123  if section.settings.empty_secondary_label != blank                     │
+│                                                                              │
+│                                                                              │
+│  [warning]: UndefinedObject                                                  │
+│  Unknown object 'section' used.                                              │
+│                                                                              │
+│  127  assign empty_image = section.settings.empty_image                      │
+│                                                                              │
+│                                                                              │
+│  [warning]: UndefinedObject                                                  │
+│  Unknown object 'section' used.                                              │
+│                                                                              │
+│  126  if section.settings.empty_image != blank                               │
+│                                                                              │
+│                                                                              │
+│  [warning]: UndefinedObject                                                  │
+│  Unknown object 'section' used.                                              │
+│                                                                              │
+│  107  if section != blank and section.settings != blank                      │
+│                                                                              │
+│                                                                              │
+│  [warning]: UndefinedObject                                                  │
+│  Unknown object 'section' used.                                              │
+│                                                                              │
+│  107  if section != blank and section.settings != blank                      │
+│                                                                              │
+╰──────────────────────────────────────────────────────────────────────────────╯
+
+╭─ info ───────────────────────────────────────────────────────────────────────╮
+│                                                                              │
+│  snippets/pagination.liquid                                                  │
+│                                                                              │
+│                                                                              │
+│  [warning]: UndefinedObject                                                  │
+│  Unknown object 'section' used.                                              │
+│                                                                              │
+│  18  assign type = section.settings.pagination_type                          │
+│                                                                              │
+│                                                                              │
+│  [warning]: UndefinedObject                                                  │
+│  Unknown object 'section' used.                                              │
+│                                                                              │
+│  17  if type == blank and section != blank and section.settings != blank     │
+│                                                                              │
+│                                                                              │
+│  [warning]: UndefinedObject                                                  │
+│  Unknown object 'section' used.                                              │
+│                                                                              │
+│  17  if type == blank and section != blank and section.settings != blank     │
+│                                                                              │
+│                                                                              │
+│  [warning]: UndefinedObject                                                  │
+│  Unknown object 'item_type' used.                                            │
+│                                                                              │
+│  24  assign item_label = item_type | default: ''                             │
+│                                                                              │
+╰──────────────────────────────────────────────────────────────────────────────╯
+
+╭─ info ───────────────────────────────────────────────────────────────────────╮
+│                                                                              │
+│  snippets/product-card-horizontal.liquid                                     │
+│                                                                              │
+│                                                                              │
+│  [warning]: OrphanedSnippet                                                  │
+│  This snippet is not referenced by any other files                           │
+│                                                                              │
+│  1  {% doc %}                                                                │
+│                                                                              │
+╰──────────────────────────────────────────────────────────────────────────────╯
+
+╭─ info ───────────────────────────────────────────────────────────────────────╮
+│                                                                              │
+│  snippets/social-sharing.liquid                                              │
+│                                                                              │
+│                                                                              │
+│  [warning]: OrphanedSnippet                                                  │
+│  This snippet is not referenced by any other files                           │
+│                                                                              │
+│  1  {% doc %}                                                                │
+│                                                                              │
+╰──────────────────────────────────────────────────────────────────────────────╯
+
+╭─ info ───────────────────────────────────────────────────────────────────────╮
+│                                                                              │
+│  snippets/swatch.liquid                                                      │
+│                                                                              │
+│                                                                              │
+│  [warning]: UnusedAssign                                                     │
+│  The variable 'color_handle' is assigned but not used                        │
+│                                                                              │
+│  23  assign color_handle = value | handleize                                 │
+│                                                                              │
+╰──────────────────────────────────────────────────────────────────────────────╯
+
+╭─ info ───────────────────────────────────────────────────────────────────────╮
+│                                                                              │
+│  Theme Check Summary.                                                        │
+│                                                                              │
+│  91 files inspected with 110 total offenses found across 12 files.           │
+│  110 warnings.                                                               │
+│                                                                              │
+╰──────────────────────────────────────────────────────────────────────────────╯
+

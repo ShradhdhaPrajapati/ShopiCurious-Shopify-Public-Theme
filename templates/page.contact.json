@@ -1,0 +1,101 @@
+/*
+ * ------------------------------------------------------------
+ * IMPORTANT: The contents of this file are auto-generated.
+ *
+ * This file may be updated by the Shopify admin theme editor
+ * or related systems. Please exercise caution as any changes
+ * made to this file may be overwritten.
+ * ------------------------------------------------------------
+ */
+{
+  "sections": {
+    "main": {
+      "type": "main-contact",
+      "blocks": {
+        "faq_item_fc66nd": {
+          "type": "faq_item",
+          "settings": {
+            "question": "What is your return policy?",
+            "answer": "We offer a 30-day hassle-free return policy for all unworn items in original packaging."
+          }
+        },
+        "faq_item_EqakY9": {
+          "type": "faq_item",
+          "settings": {
+            "question": "What is your return policy?",
+            "answer": "We offer a 30-day hassle-free return policy for all unworn items in original packaging."
+          }
+        },
+        "faq_item_EcVmbi": {
+          "type": "faq_item",
+          "settings": {
+            "question": "What is your return policy?",
+            "answer": "We offer a 30-day hassle-free return policy for all unworn items in original packaging."
+          }
+        },
+        "faq_item_egbKBH": {
+          "type": "faq_item",
+          "settings": {
+            "question": "What is your return policy?",
+            "answer": "We offer a 30-day hassle-free return policy for all unworn items in original packaging."
+          }
+        },
+        "faq_item_RH3ktq": {
+          "type": "faq_item",
+          "settings": {
+            "question": "What is your return policy?",
+            "answer": "We offer a 30-day hassle-free return policy for all unworn items in original packaging."
+          }
+        },
+        "faq_item_DgqEHj": {
+          "type": "faq_item",
+          "settings": {
+            "question": "What is your return policy?",
+            "answer": "We offer a 30-day hassle-free return policy for all unworn items in original packaging."
+          }
+        }
+      },
+      "block_order": [
+        "faq_item_fc66nd",
+        "faq_item_EqakY9",
+        "faq_item_EcVmbi",
+        "faq_item_egbKBH",
+        "faq_item_RH3ktq",
+        "faq_item_DgqEHj"
+      ],
+      "settings": {
+        "show_hero": true,
+        "hero_title": "Contact Us",
+        "hero_desc": "We're here to help! Reach out to us and our team will get back to you as soon as possible.",
+        "hero_image": "shopify://shop_images/contactus_bannner.png",
+        "show_cards": true,
+        "card_1_title": "Customer Support",
+        "card_1_schedule": "Mon - Fri: 9AM - 6PM",
+        "card_1_email": "support@example.com",
+        "card_2_title": "Call Us",
+        "card_2_phone": "+1 (800) 123-4567",
+        "card_2_schedule": "Mon - Fri: 9AM - 6PM",
+        "card_3_title": "Visit Us",
+        "card_3_addr1": "123 Commerce St,",
+        "card_3_addr2": "Suite 100, City, Country",
+        "card_4_title": "Live Chat",
+        "card_4_desc": "Chat with our team for quick assistance",
+        "form_title": "Send Us a Message",
+        "form_btn_label": "SEND MESSAGE",
+        "show_map": true,
+        "map_title": "Find Us",
+        "map_iframe": "<iframe src=\"https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d184547.0009999643!2d-79.54280387750265!3d43.71996465720793!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x89d4d9f1ad96dacd%3A0x9e197a60028bb5d8!2sToronto%20Zoo!5e0!3m2!1sen!2sin!4v1786188584616!5m2!1sen!2sin\" width=\"600\" height=\"450\" style=\"border:0;\" allowfullscreen=\"\" loading=\"lazy\" referrerpolicy=\"strict-origin-when-cross-origin\"></iframe>",
+        "store_name": "Flagship Store",
+        "store_address": "123 Commerce St, Suite 100, City, Country",
+        "store_hours": "Open - Closes 8:00 PM",
+        "directions_link": "",
+        "directions_label": "GET DIRECTIONS",
+        "show_faq": true,
+        "faq_title": "Frequently Asked Questions"
+      }
+    }
+  },
+  "order": [
+    "main"
+  ]
+}

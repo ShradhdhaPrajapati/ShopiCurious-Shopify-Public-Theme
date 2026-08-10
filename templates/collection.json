@@ -84,8 +84,13 @@
             "image": "shopify://shop_images/collectionpagebnner2.png",
             "subheading": "For effortless everyday looks",
             "heading": "Everyday Essentials",
+            "description": "",
             "button_label": "Shop now",
-            "button_link": ""
+            "button_link": "",
+            "overlay_color": "#000000",
+            "text_color": "#111111",
+            "text_alignment": "center",
+            "content_position": "middle-center"
           }
         },
         "promo_slide_BGcnG3": {
@@ -94,8 +99,13 @@
             "image": "shopify://shop_images/collectionpageslide1.png",
             "subheading": "For effortless everyday looks",
             "heading": "Everyday Essentials",
+            "description": "",
             "button_label": "Shop now",
-            "button_link": ""
+            "button_link": "",
+            "overlay_color": "#000000",
+            "text_color": "#111111",
+            "text_alignment": "center",
+            "content_position": "middle-center"
           }
         }
       },
@@ -139,7 +149,17 @@
         "enable_filtering": true,
         "enable_sticky_filter": true,
         "enable_sorting": true,
-        "show_promo_banner": true
+        "pagination_type": "load_more",
+        "show_promo_banner": true,
+        "promo_enable_slider": true,
+        "promo_autoplay": false,
+        "promo_autoplay_speed": 5,
+        "promo_show_arrows": true,
+        "promo_show_dots": true,
+        "promo_infinite_loop": true,
+        "promo_desktop_height": "medium",
+        "promo_mobile_height": "medium",
+        "promo_overlay_opacity": 20
       }
     }
   },

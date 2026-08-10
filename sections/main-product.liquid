@@ -352,8 +352,8 @@
                     </button>
                   </div>
 
-                  <button type="button" class="szc-button szc-button--outline szc-main-product__buy-now-btn">
-                    BUY IT NOW
+                  <button type="button" class="szc-button szc-button--outline szc-main-product__buy-now-btn" data-buy-now-btn>
+                    <span class="szc-btn-text">BUY IT NOW</span>
                   </button>
                 {%- endform -%}
               </product-form>
@@ -479,149 +479,172 @@
                 {{ product.description }}
               </div>
             {%- endif -%}
+
+          {%- when 'share' -%}
+            <div class="szc-main-product__share" {{ block.shopify_attributes }}>
+              {%- assign share_title = block.settings.share_title | default: 'Share this product:' -%}
+              {%- if share_title != blank -%}
+                <span class="szc-share__title">{{ share_title }}</span>
+              {%- endif -%}
+              <div class="szc-share__buttons">
+                {%- if block.settings.show_facebook != false -%}
+                  <a
+                    href="https://www.facebook.com/sharer/sharer.php?u={{ shop.url | append: product.url | url_encode }}"
+                    target="_blank"
+                    rel="noopener"
+                    class="szc-share-btn szc-share-btn--facebook"
+                    title="Share on Facebook"
+                    aria-label="Share on Facebook"
+                  >
+                    {%- if block.settings.facebook_icon != blank -%}
+                      {{ block.settings.facebook_icon | image_url: width: 40 | image_tag: width: 18, height: 18, class: 'szc-share-custom-img', loading: 'lazy' }}
+                    {%- else -%}
+                      <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z"></path></svg>
+                    {%- endif -%}
+                  </a>
+                {%- endif -%}
+
+                {%- if block.settings.show_twitter != false -%}
+                  <a
+                    href="https://twitter.com/intent/tweet?text={{ product.title | url_encode }}&url={{ shop.url | append: product.url | url_encode }}"
+                    target="_blank"
+                    rel="noopener"
+                    class="szc-share-btn szc-share-btn--twitter"
+                    title="Share on X / Twitter"
+                    aria-label="Share on X / Twitter"
+                  >
+                    {%- if block.settings.twitter_icon != blank -%}
+                      {{ block.settings.twitter_icon | image_url: width: 40 | image_tag: width: 18, height: 18, class: 'szc-share-custom-img', loading: 'lazy' }}
+                    {%- else -%}
+                      <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M23 3a10.9 10.9 0 0 1-3.14 1.53 4.48 4.48 0 0 0-7.86 3v1A10.66 10.66 0 0 1 3 4s-4 9 5 13a11.64 11.64 0 0 1-7 2c9 5 20 0 20-11.5a4.5 4.5 0 0 0-.08-.83A7.72 7.72 0 0 0 23 3z"></path></svg>
+                    {%- endif -%}
+                  </a>
+                {%- endif -%}
+
+                {%- if block.settings.show_pinterest != false -%}
+                  {%- assign pinterest_image = product.featured_media | image_url: width: 1000 -%}
+                  <a
+                    href="https://pinterest.com/pin/create/button/?url={{ shop.url | append: product.url | url_encode }}&media={{ pinterest_image | url_encode }}&description={{ product.title | url_encode }}"
+                    target="_blank"
+                    rel="noopener"
+                    class="szc-share-btn szc-share-btn--pinterest"
+                    title="Pin on Pinterest"
+                    aria-label="Pin on Pinterest"
+                  >
+                    {%- if block.settings.pinterest_icon != blank -%}
+                      {{ block.settings.pinterest_icon | image_url: width: 40 | image_tag: width: 18, height: 18, class: 'szc-share-custom-img', loading: 'lazy' }}
+                    {%- else -%}
+                      <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2a10 10 0 0 0-3.6 19.3c.1-.8.2-2.1.4-3l1.4-6s-.4-.7-.4-1.8c0-1.7 1-3 2.2-3 1 0 1.5.8 1.5 1.7 0 1-.7 2.6-1 4a1.8 1.8 0 0 0 1.9 2.2c2.2 0 4-2.4 4-5.8 0-3-2.2-5.2-5.3-5.2-3.6 0-5.7 2.7-5.7 5.5 0 1.1.4 2.3 1 3 .1.1.1.2.1.3l-.3 1.3c0 .2-.2.3-.4.2-1.4-.7-2.3-2.8-2.3-4.5 0-3.9 2.8-7.5 8.2-7.5 4.3 0 7.7 3.1 7.7 7.2 0 4.3-2.7 7.7-6.4 7.7-1.3 0-2.4-.7-2.8-1.5l-.8 3c-.3 1.1-1.1 2.5-1.6 3.4A10 10 0 1 0 12 2z"></path></svg>
+                    {%- endif -%}
+                  </a>
+                {%- endif -%}
+
+                {%- if block.settings.show_email != false -%}
+                  <a
+                    href="mailto:?subject={{ product.title | url_encode }}&body=Check out this product: {{ shop.url | append: product.url | url_encode }}"
+                    class="szc-share-btn szc-share-btn--email"
+                    title="Share via Email"
+                    aria-label="Share via Email"
+                  >
+                    {%- if block.settings.email_icon != blank -%}
+                      {{ block.settings.email_icon | image_url: width: 40 | image_tag: width: 18, height: 18, class: 'szc-share-custom-img', loading: 'lazy' }}
+                    {%- else -%}
+                      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path><polyline points="22,6 12,13 2,6"></polyline></svg>
+                    {%- endif -%}
+                  </a>
+                {%- endif -%}
+
+                {%- if block.settings.show_copy_link != false -%}
+                  <button
+                    type="button"
+                    class="szc-share-btn szc-share-btn--copy"
+                    title="Copy link"
+                    aria-label="Copy link"
+                    onclick="navigator.clipboard.writeText('{{ shop.url | append: product.url }}'); alert('Product link copied to clipboard!');"
+                  >
+                    {%- if block.settings.copy_icon != blank -%}
+                      {{ block.settings.copy_icon | image_url: width: 40 | image_tag: width: 18, height: 18, class: 'szc-share-custom-img', loading: 'lazy' }}
+                    {%- else -%}
+                      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg>
+                    {%- endif -%}
+                  </button>
+                {%- endif -%}
+              </div>
+            </div>
         {%- endcase -%}
       {%- endfor -%}
     </div>
   </div>
 
-  <!-- 4. Product Details Tabs Section (Reference Exact Copy) -->
-  <div class="szc-product-tabs">
-    <div class="szc-product-tabs__header" role="tablist">
-      <button type="button" class="szc-tab-btn is-active" data-tab="tab-description">DESCRIPTION</button>
-      <button type="button" class="szc-tab-btn" data-tab="tab-fabric">FABRIC & CARE</button>
-      <button type="button" class="szc-tab-btn" data-tab="tab-size">SIZE GUIDE</button>
-      <button type="button" class="szc-tab-btn" data-tab="tab-shipping">SHIPPING & RETURNS</button>
-    </div>
+  {%- if section.settings.enable_product_tabs != false -%}
+    <!-- 4. Product Details Tabs Section (100% Editable & Dynamic) -->
+    <div class="szc-product-tabs">
+      <div class="szc-product-tabs__header" role="tablist">
+        {%- if section.settings.show_tab_description != false -%}
+          <button type="button" class="szc-tab-btn is-active" data-tab="tab-description">
+            {{ section.settings.tab_description_title | default: 'DESCRIPTION' }}
+          </button>
+        {%- endif -%}
+        {%- if section.settings.show_tab_fabric != false -%}
+          <button type="button" class="szc-tab-btn {% if section.settings.show_tab_description == false %}is-active{% endif %}" data-tab="tab-fabric">
+            {{ section.settings.tab_fabric_title | default: 'FABRIC & CARE' }}
+          </button>
+        {%- endif -%}
+        {%- if section.settings.show_tab_size != false -%}
+          <button type="button" class="szc-tab-btn {% if section.settings.show_tab_description == false and section.settings.show_tab_fabric == false %}is-active{% endif %}" data-tab="tab-size">
+            {{ section.settings.tab_size_title | default: 'SIZE GUIDE' }}
+          </button>
+        {%- endif -%}
+        {%- if section.settings.show_tab_shipping != false -%}
+          <button type="button" class="szc-tab-btn {% if section.settings.show_tab_description == false and section.settings.show_tab_fabric == false and section.settings.show_tab_size == false %}is-active{% endif %}" data-tab="tab-shipping">
+            {{ section.settings.tab_shipping_title | default: 'SHIPPING & RETURNS' }}
+          </button>
+        {%- endif -%}
+      </div>
 
-    <div class="szc-product-tabs__content">
-      <!-- Tab 1: Description -->
-      <div id="tab-description" class="szc-tab-pane is-active">
-        <div class="szc-tab-pane__grid">
-          <div class="szc-tab-pane__left">
-            <p>
-              A timeless essential, this classic denim jacket is crafted from premium cotton with a comfortable, regular
-              fit. Designed for everyday wear, it features button front closures, chest pockets, and a versatile light
-              blue wash that pairs effortlessly with any outfit.
-            </p>
-            <ul class="szc-tab-bullets">
-              <li>Regular fit</li>
-              <li>Button front closure</li>
-              <li>Chest flap pockets</li>
-              <li>Side welt pockets</li>
-              <li>Adjustable button tabs at hem</li>
-              <li>Lightweight & durable denim</li>
-            </ul>
-          </div>
-          <div class="szc-tab-pane__right">
-            <div class="szc-tab-card">
-              <h4 class="szc-tab-card__title">FABRIC & CARE</h4>
-              <p class="szc-tab-card__sub">100% Cotton Denim</p>
-              <div class="szc-care-icons-grid">
-                <div class="szc-care-item">
-                  <span class="szc-care-icon">🧺</span>
-                  <span>Machine Wash Cold</span>
-                </div>
-                <div class="szc-care-item">
-                  <span class="szc-care-icon">🚫</span>
-                  <span>Do Not Bleach</span>
-                </div>
-                <div class="szc-care-item">
-                  <span class="szc-care-icon">🌀</span>
-                  <span>Tumble Dry Low</span>
-                </div>
-                <div class="szc-care-item">
-                  <span class="szc-care-icon">👔</span>
-                  <span>Iron Low If Needed</span>
-                </div>
-              </div>
-            </div>
-
-            <div class="szc-tab-card" style="margin-top: 16px;">
-              <h4 class="szc-tab-card__title">FIT INFORMATION</h4>
-              <p class="szc-tab-card__sub">Regular Fit</p>
-              <div class="szc-fit-slider">
-                <div class="szc-fit-track">
-                  <div class="szc-fit-thumb" style="left: 50%;"></div>
-                </div>
-                <div class="szc-fit-labels">
-                  <span>Slim</span>
-                  <span style="font-weight: 700;">Regular</span>
-                  <span>Relaxed</span>
-                </div>
-              </div>
+      <div class="szc-product-tabs__content">
+        {%- if section.settings.show_tab_description != false -%}
+          <!-- Tab 1: Description -->
+          <div id="tab-description" class="szc-tab-pane is-active">
+            <div class="szc-product-description-content">
+              {%- if section.settings.fallback_description != blank -%}
+                {{ section.settings.fallback_description }}
+              {%- elsif product.description != blank -%}
+                {{ product.description }}
+              {%- endif -%}
             </div>
           </div>
-        </div>
-      </div>
+        {%- endif -%}
 
-      <!-- Tab 2: Fabric & Care -->
-      <div id="tab-fabric" class="szc-tab-pane">
-        <p><strong>Material:</strong> 100% Premium Organic Cotton Denim.</p>
-        <p>
-          <strong>Care Instructions:</strong> Machine wash cold inside out with like colors. Do not bleach. Tumble dry
-          low or line dry in shade. Warm iron if needed.
-        </p>
-      </div>
+        {%- if section.settings.show_tab_fabric != false -%}
+          <!-- Tab 2: Fabric & Care -->
+          <div id="tab-fabric" class="szc-tab-pane {% if section.settings.show_tab_description == false %}is-active{% endif %}">
+            {%- if section.settings.tab_fabric_content != blank -%}
+              {{ section.settings.tab_fabric_content }}
+            {%- endif -%}
+          </div>
+        {%- endif -%}
 
-      <!-- Tab 3: Size Guide -->
-      <div id="tab-size" class="szc-tab-pane">
-        <table class="szc-size-table">
-          <thead>
-            <tr>
-              <th>Size</th>
-              <th>Chest (in)</th>
-              <th>Waist (in)</th>
-              <th>Length (in)</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr>
-              <td>S</td>
-              <td>36 - 38</td>
-              <td>30 - 32</td>
-              <td>26.5</td>
-            </tr>
-            <tr>
-              <td>M</td>
-              <td>38 - 40</td>
-              <td>32 - 34</td>
-              <td>27.5</td>
-            </tr>
-            <tr>
-              <td>L</td>
-              <td>40 - 42</td>
-              <td>34 - 36</td>
-              <td>28.5</td>
-            </tr>
-            <tr>
-              <td>XL</td>
-              <td>42 - 44</td>
-              <td>36 - 38</td>
-              <td>29.5</td>
-            </tr>
-            <tr>
-              <td>XXL</td>
-              <td>44 - 46</td>
-              <td>38 - 40</td>
-              <td>30.5</td>
-            </tr>
-          </tbody>
-        </table>
-      </div>
+        {%- if section.settings.show_tab_size != false -%}
+          <!-- Tab 3: Size Guide -->
+          <div id="tab-size" class="szc-tab-pane {% if section.settings.show_tab_description == false and section.settings.show_tab_fabric == false %}is-active{% endif %}">
+            {%- if section.settings.tab_size_content != blank -%}
+              {{ section.settings.tab_size_content }}
+            {%- endif -%}
+          </div>
+        {%- endif -%}
 
-      <!-- Tab 4: Shipping & Returns -->
-      <div id="tab-shipping" class="szc-tab-pane">
-        <p>
-          <strong>Free Express Shipping:</strong> Available on all orders over $100. Standard delivery takes 3 - 5
-          business days.
-        </p>
-        <p>
-          <strong>Easy 30-Day Returns:</strong> If you are not 100% satisfied with your purchase, return it within 30
-          days for a full refund or exchange.
-        </p>
+        {%- if section.settings.show_tab_shipping != false -%}
+          <!-- Tab 4: Shipping & Returns -->
+          <div id="tab-shipping" class="szc-tab-pane {% if section.settings.show_tab_description == false and section.settings.show_tab_fabric == false and section.settings.show_tab_size == false %}is-active{% endif %}">
+            {%- if section.settings.tab_shipping_content != blank -%}
+              {{ section.settings.tab_shipping_content }}
+            {%- endif -%}
+          </div>
+        {%- endif -%}
       </div>
     </div>
-  </div>
+  {%- endif -%}
 
   <!-- 5. Sticky Add To Cart Bottom Bar -->
   <div class="szc-sticky-atc-bar" data-sticky-atc-bar>
@@ -629,28 +652,50 @@
       <div class="szc-sticky-atc-bar__product">
         <div class="szc-sticky-atc-bar__img-wrap">
           {%- if featured_media != blank -%}
-            {{ featured_media.preview_image | image_url: width: 100 | image_tag: class: 'szc-sticky-atc-bar__img' }}
+            {{ featured_media.preview_image | image_url: width: 120 | image_tag: class: 'szc-sticky-atc-bar__img', data-sticky-img: '' }}
+          {%- else -%}
+            {{ 'product-1' | placeholder_svg_tag: 'szc-sticky-atc-bar__img' }}
           {%- endif -%}
         </div>
         <div class="szc-sticky-atc-bar__info">
           <h4 class="szc-sticky-atc-bar__title">{{ product.title }}</h4>
-          <div class="szc-sticky-atc-bar__price">{{ current_variant.price | money }}</div>
+          <div class="szc-sticky-atc-bar__price-wrap" data-sticky-price-wrap>
+            <div class="szc-sticky-atc-bar__price" data-sticky-price>
+              <span class="szc-price__item--sale">{{ current_variant.price | money }}</span>
+              <s class="szc-price__item--regular" {% if current_variant.compare_at_price <= current_variant.price %}style="display:none;"{% endif %}>
+                {{ current_variant.compare_at_price | money }}
+              </s>
+            </div>
+          </div>
         </div>
       </div>
-      <div class="szc-sticky-atc-bar__action">
+      <div class="szc-sticky-atc-bar__actions">
         <button
           type="button"
-          class="szc-button szc-button--primary szc-button--sm"
+          class="szc-button szc-button--outline szc-sticky-buy-now-btn"
+          data-sticky-buy-now-btn
+          data-buy-now-btn
+          {% if current_variant.available == false %}
+            disabled
+          {% endif %}
+        >
+          <span class="szc-btn-text">BUY IT NOW</span>
+        </button>
+        <button
+          type="button"
+          class="szc-button szc-button--primary szc-sticky-atc-btn"
           data-sticky-atc-btn
           {% if current_variant.available == false %}
             disabled
           {% endif %}
         >
-          {%- if current_variant.available -%}
-            ADD TO BAG
-          {%- else -%}
-            SOLD OUT
-          {%- endif -%}
+          <span class="szc-btn-text">
+            {%- if current_variant.available -%}
+              ADD TO BAG
+            {%- else -%}
+              SOLD OUT
+            {%- endif -%}
+          </span>
         </button>
       </div>
     </div>
@@ -1352,21 +1397,51 @@
   }
 
   .szc-main-product__buy-now-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
     width: 100%;
     height: 48px;
     margin-top: 10px;
     background-color: #ffffff;
-    color: #000000;
-    border: 1px solid #000000;
+    color: #111111 !important;
+    border: 1px solid #111111;
     border-radius: 4px;
+    font-size: 13px;
     font-weight: 700;
     letter-spacing: 0.08em;
+    text-transform: uppercase;
     cursor: pointer;
-    transition: background-color 150ms ease;
+    transition: background-color 150ms ease, color 150ms ease, border-color 150ms ease;
   }
 
   .szc-main-product__buy-now-btn:hover {
-    background-color: #f8f9fa;
+    background-color: #111111 !important;
+    color: #ffffff !important;
+    border-color: #111111 !important;
+  }
+
+  .szc-main-product__buy-now-btn:hover .szc-btn-text,
+  .szc-main-product__buy-now-btn:hover span {
+    color: #ffffff !important;
+  }
+
+  .szc-main-product__buy-now-btn.is-loading,
+  .szc-main-product__buy-now-btn.szc-btn--loading {
+    background-color: #111111 !important;
+    color: #ffffff !important;
+    border-color: #111111 !important;
+    opacity: 0.9;
+  }
+
+  .szc-main-product__buy-now-btn.is-loading .szc-btn-text,
+  .szc-main-product__buy-now-btn.szc-btn--loading .szc-btn-text,
+  .szc-main-product__buy-now-btn.is-loading span,
+  .szc-main-product__buy-now-btn.szc-btn--loading span {
+    color: #ffffff !important;
+    visibility: visible !important;
+    opacity: 1 !important;
+    display: inline-block;
   }
 
   /* Trust Badges Block (Fully Dynamic via Schema Settings) */
@@ -1589,13 +1664,13 @@
     bottom: 0;
     left: 0;
     right: 0;
-    z-index: 99;
+    z-index: 999;
     background: #ffffff;
     border-top: 1px solid #e5e5e5;
-    box-shadow: 0 -4px 16px rgba(0, 0, 0, 0.06);
+    box-shadow: 0 -4px 16px rgba(0, 0, 0, 0.08);
     transform: translateY(100%);
-    transition: transform 300ms ease;
-    padding: 12px 0;
+    transition: transform 300ms cubic-bezier(0.16, 1, 0.3, 1);
+    padding: 10px 0;
   }
 
   .szc-sticky-atc-bar.is-visible {
@@ -1606,19 +1681,25 @@
     display: flex;
     align-items: center;
     justify-content: space-between;
+    gap: 16px;
   }
 
   .szc-sticky-atc-bar__product {
     display: flex;
     align-items: center;
     gap: 12px;
+    min-width: 0;
+    flex: 1;
   }
 
   .szc-sticky-atc-bar__img-wrap {
-    width: 44px;
-    height: 44px;
+    width: 46px;
+    height: 46px;
     border-radius: 4px;
     overflow: hidden;
+    flex-shrink: 0;
+    background-color: #f5f5f5;
+    border: 1px solid #eaeaea;
   }
 
   .szc-sticky-atc-bar__img {
@@ -1627,15 +1708,236 @@
     object-fit: cover;
   }
 
+  .szc-sticky-atc-bar__info {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    min-width: 0;
+  }
+
   .szc-sticky-atc-bar__title {
     margin: 0;
     font-size: 13px;
     font-weight: 600;
+    color: #111111;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  .szc-sticky-atc-bar__price-wrap {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 13px;
   }
 
   .szc-sticky-atc-bar__price {
+    font-weight: 700;
+    color: #111111;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+
+  .szc-sticky-atc-bar__price .szc-price__item--sale {
+    font-weight: 700;
+    color: #e63946;
+  }
+
+  .szc-sticky-atc-bar__price .szc-price__item--regular {
+    color: #888888;
+    text-decoration: line-through;
+    font-weight: 400;
     font-size: 12px;
-    color: #666666;
+  }
+
+  .szc-sticky-atc-bar__actions {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    flex-shrink: 0;
+  }
+
+  .szc-sticky-buy-now-btn,
+  .szc-sticky-atc-btn {
+    height: 42px;
+    padding: 0 18px;
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    border-radius: 4px;
+    text-transform: uppercase;
+    cursor: pointer;
+    white-space: nowrap;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    transition: background-color 150ms ease, color 150ms ease, border-color 150ms ease;
+  }
+
+  .szc-sticky-buy-now-btn {
+    background-color: #ffffff;
+    color: #111111;
+    border: 1px solid #111111;
+  }
+
+  .szc-sticky-buy-now-btn:hover {
+    background-color: #111111 !important;
+    color: #ffffff !important;
+    border-color: #111111 !important;
+  }
+
+  .szc-sticky-buy-now-btn:hover .szc-btn-text,
+  .szc-sticky-buy-now-btn:hover span {
+    color: #ffffff !important;
+  }
+
+  .szc-sticky-atc-btn {
+    background-color: #111111;
+    color: #ffffff;
+    border: 1px solid #111111;
+  }
+
+  .szc-sticky-atc-btn:hover {
+    background-color: #333333;
+    border-color: #333333;
+  }
+
+  .szc-sticky-buy-now-btn:disabled,
+  .szc-sticky-atc-btn:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+  }
+
+  .szc-sticky-buy-now-btn.is-loading,
+  .szc-sticky-buy-now-btn.szc-btn--loading,
+  .szc-sticky-atc-btn.is-loading,
+  .szc-sticky-atc-btn.szc-btn--loading {
+    opacity: 1 !important;
+    background-color: #111111 !important;
+    color: #ffffff !important;
+    border-color: #111111 !important;
+    cursor: wait !important;
+  }
+
+  .szc-sticky-buy-now-btn.is-loading .szc-btn-text,
+  .szc-sticky-buy-now-btn.szc-btn--loading .szc-btn-text,
+  .szc-sticky-atc-btn.is-loading .szc-btn-text,
+  .szc-sticky-atc-btn.szc-btn--loading .szc-btn-text {
+    color: #ffffff !important;
+    opacity: 1 !important;
+    visibility: visible !important;
+  }
+
+  @media (max-width: 749px) {
+    .szc-sticky-atc-bar {
+      padding: 8px 10px;
+    }
+    .szc-sticky-atc-bar__container {
+      gap: 6px;
+      align-items: center;
+      justify-content: space-between;
+    }
+    .szc-sticky-atc-bar__product {
+      flex: 0 0 auto;
+      gap: 8px;
+      min-width: 0;
+    }
+    .szc-sticky-atc-bar__title {
+      display: none;
+    }
+    .szc-sticky-atc-bar__img-wrap {
+      width: 36px;
+      height: 36px;
+      flex-shrink: 0;
+    }
+    .szc-sticky-atc-bar__info {
+      flex-shrink: 0;
+    }
+    .szc-sticky-atc-bar__price {
+      font-size: 13px;
+      white-space: nowrap;
+    }
+    .szc-sticky-atc-bar__actions {
+      flex: 1;
+      min-width: 0;
+      display: flex;
+      gap: 6px;
+    }
+    .szc-sticky-buy-now-btn,
+    .szc-sticky-atc-btn {
+      flex: 1;
+      min-width: 0;
+      height: 38px;
+      padding: 0 6px;
+      font-size: 11px;
+      letter-spacing: 0.02em;
+      white-space: nowrap;
+      text-overflow: ellipsis;
+      overflow: hidden;
+    }
+  }
+
+  @media (max-width: 380px) {
+    .szc-sticky-buy-now-btn,
+    .szc-sticky-atc-btn {
+      font-size: 10px;
+      padding: 0 4px;
+    }
+  }
+
+  /* Share Block Styles */
+  .szc-main-product__share {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-top: 16px;
+    padding-top: 16px;
+    border-top: 1px solid #eaeaea;
+  }
+
+  .szc-share__title {
+    font-size: 12px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    color: #555555;
+  }
+
+  .szc-share__buttons {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .szc-share-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    background-color: #f5f5f5;
+    color: #333333;
+    border: 1px solid #e0e0e0;
+    transition: all 0.2s ease;
+    cursor: pointer;
+    text-decoration: none;
+  }
+
+  .szc-share-btn:hover {
+    background-color: #111111;
+    color: #ffffff;
+    border-color: #111111;
+    transform: translateY(-2px);
+  }
+
+  .szc-share-custom-img {
+    width: 18px;
+    height: 18px;
+    object-fit: contain;
+    display: block;
   }
 {% endstylesheet %}
 
@@ -1675,6 +1977,9 @@
           behavior: 'smooth',
         });
       }
+
+      slides.forEach((s) => s.classList.remove('is-active'));
+      if (targetSlide) targetSlide.classList.add('is-active');
 
       thumbnailBtns.forEach((b) => b.classList.remove('is-active'));
       const activeBtn = thumbnailBtns[activeIndex];
@@ -1930,9 +2235,27 @@
     }
 
     if (stickyBtn && mainAddBtn) {
-      stickyBtn.addEventListener('click', () => {
+      stickyBtn.addEventListener('click', (e) => {
+        if (stickyBtn.classList.contains('szc-btn--loading') || stickyBtn.classList.contains('is-loading') || stickyBtn.disabled) return;
+        stickyBtn.classList.add('szc-btn--loading', 'is-loading');
+        stickyBtn.setAttribute('aria-disabled', 'true');
+        stickyBtn.disabled = true;
         mainAddBtn.click();
       });
+
+      const resetStickyState = () => {
+        stickyBtn.classList.remove('szc-btn--loading', 'is-loading');
+        stickyBtn.removeAttribute('aria-disabled');
+        const textSpan = stickyBtn.querySelector('.szc-btn-text') || stickyBtn.querySelector('span');
+        if (textSpan && textSpan.textContent.trim() !== 'SOLD OUT') {
+          stickyBtn.disabled = false;
+          textSpan.textContent = 'ADD TO BAG';
+        }
+      };
+
+      if (window.ShopziCurious && window.ShopziCurious.pubsub && window.ShopziCurious.events) {
+        window.ShopziCurious.pubsub.subscribe(window.ShopziCurious.events.CART_UPDATED, resetStickyState);
+      }
     }
   }
 
@@ -2237,7 +2560,185 @@
       "type": "share",
       "name": "Share",
       "limit": 1,
-      "settings": []
+      "settings": [
+        {
+          "type": "text",
+          "id": "share_title",
+          "label": "Share Title / Label",
+          "default": "Share this product:"
+        },
+        {
+          "type": "header",
+          "content": "Facebook Icon"
+        },
+        {
+          "type": "checkbox",
+          "id": "show_facebook",
+          "label": "Show Facebook Icon",
+          "default": true
+        },
+        {
+          "type": "image_picker",
+          "id": "facebook_icon",
+          "label": "Custom Facebook Icon Image (optional)"
+        },
+        {
+          "type": "header",
+          "content": "X / Twitter Icon"
+        },
+        {
+          "type": "checkbox",
+          "id": "show_twitter",
+          "label": "Show X / Twitter Icon",
+          "default": true
+        },
+        {
+          "type": "image_picker",
+          "id": "twitter_icon",
+          "label": "Custom X / Twitter Icon Image (optional)"
+        },
+        {
+          "type": "header",
+          "content": "Pinterest Icon"
+        },
+        {
+          "type": "checkbox",
+          "id": "show_pinterest",
+          "label": "Show Pinterest Icon",
+          "default": true
+        },
+        {
+          "type": "image_picker",
+          "id": "pinterest_icon",
+          "label": "Custom Pinterest Icon Image (optional)"
+        },
+        {
+          "type": "header",
+          "content": "Email Icon"
+        },
+        {
+          "type": "checkbox",
+          "id": "show_email",
+          "label": "Show Email Icon",
+          "default": true
+        },
+        {
+          "type": "image_picker",
+          "id": "email_icon",
+          "label": "Custom Email Icon Image (optional)"
+        },
+        {
+          "type": "header",
+          "content": "Copy Link Icon"
+        },
+        {
+          "type": "checkbox",
+          "id": "show_copy_link",
+          "label": "Show Copy Link Icon",
+          "default": true
+        },
+        {
+          "type": "image_picker",
+          "id": "copy_icon",
+          "label": "Custom Copy Link Icon Image (optional)"
+        }
+      ]
+    }
+  ],
+  "settings": [
+    {
+      "type": "header",
+      "content": "Product Details Tabs"
+    },
+    {
+      "type": "checkbox",
+      "id": "enable_product_tabs",
+      "label": "Enable Product Details Tabs",
+      "default": true
+    },
+    {
+      "type": "header",
+      "content": "Tab 1: Description"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_tab_description",
+      "label": "Show Description Tab",
+      "default": true
+    },
+    {
+      "type": "text",
+      "id": "tab_description_title",
+      "label": "Description Tab Header Title",
+      "default": "DESCRIPTION"
+    },
+    {
+      "type": "richtext",
+      "id": "fallback_description",
+      "label": "Custom Description (leave empty to use Product Description)"
+    },
+    {
+      "type": "header",
+      "content": "Tab 2: Fabric & Care"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_tab_fabric",
+      "label": "Show Fabric & Care Tab",
+      "default": true
+    },
+    {
+      "type": "text",
+      "id": "tab_fabric_title",
+      "label": "Fabric & Care Tab Header Title",
+      "default": "FABRIC & CARE"
+    },
+    {
+      "type": "richtext",
+      "id": "tab_fabric_content",
+      "label": "Fabric & Care Custom Content"
+    },
+    {
+      "type": "header",
+      "content": "Tab 3: Size Guide"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_tab_size",
+      "label": "Show Size Guide Tab",
+      "default": true
+    },
+    {
+      "type": "text",
+      "id": "tab_size_title",
+      "label": "Size Guide Tab Header Title",
+      "default": "SIZE GUIDE"
+    },
+    {
+      "type": "html",
+      "id": "tab_size_content",
+      "label": "Size Guide Custom HTML / Table Code"
+    },
+    {
+      "type": "header",
+      "content": "Tab 4: Shipping & Returns"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_tab_shipping",
+      "label": "Show Shipping & Returns Tab",
+      "default": true
+    },
+    {
+      "type": "text",
+      "id": "tab_shipping_title",
+      "label": "Shipping & Returns Tab Header Title",
+      "default": "SHIPPING & RETURNS"
+    },
+    {
+      "type": "richtext",
+      "id": "tab_shipping_content",
+      "label": "Shipping & Returns Custom Content"
     }
   ]
 }

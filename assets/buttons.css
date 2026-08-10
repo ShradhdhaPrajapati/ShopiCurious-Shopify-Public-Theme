@@ -151,26 +151,29 @@
 /* ==========================================================================
    4. LOADING SPINNER STATE
    ========================================================================== */
-.szc-btn--loading {
-  color: transparent !important;
-  pointer-events: none;
+.szc-btn--loading,
+.is-loading {
+  pointer-events: none !important;
+  position: relative !important;
+  opacity: 1 !important;
 }
 
-.szc-btn--loading::after {
-  content: "";
-  position: absolute;
-  width: 18px;
-  height: 18px;
-  top: calc(50% - 9px);
-  left: calc(50% - 9px);
-  border: 2px solid rgba(255, 255, 255, 0.3);
-  border-radius: 50%;
-  border-top-color: currentColor;
-  animation: szc-spin 0.6s linear infinite;
+.szc-btn--loading::before,
+.is-loading::before {
+  content: "" !important;
+  display: inline-block !important;
+  width: 14px !important;
+  height: 14px !important;
+  margin-right: 8px !important;
+  border: 2px solid currentColor !important;
+  border-top-color: transparent !important;
+  border-radius: 50% !important;
+  animation: szcSpin 0.6s linear infinite !important;
+  vertical-align: middle !important;
+  flex-shrink: 0 !important;
 }
 
-.szc-btn--outline.szc-btn--loading::after,
-.szc-btn--ghost.szc-btn--loading::after {
-  border-color: rgba(0, 0, 0, 0.2);
-  border-top-color: var(--szc-color-text-primary);
+@keyframes szcSpin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
 }

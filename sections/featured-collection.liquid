@@ -8,11 +8,13 @@
   assign limit = section.settings.products_to_show | default: 5
   assign cols_desktop = section.settings.columns_desktop | default: 5
   assign cols_mobile = section.settings.columns_mobile | default: '2'
+  assign enable_swipe = section.settings.enable_swipe_mobile | default: false
+  assign image_ratio = section.settings.image_ratio | default: settings.product_card_image_ratio | default: 'portrait'
 -%}
 
 <section
   id="FeaturedCollection-{{ section.id }}"
-  class="szc-featured-collection page-width"
+  class="szc-featured-collection page-width{% if enable_swipe %} szc-featured-collection--swipe-mobile{% endif %}"
   style="--cols-desktop: {{ cols_desktop }}; --cols-mobile: {{ cols_mobile }};"
 >
   <!-- Section Header -->
@@ -45,30 +47,54 @@
             show_secondary_image: true,
             show_quick_add: true,
             show_quick_view: true,
-            show_price: section.settings.show_price
+            show_price: section.settings.show_price,
+            media_aspect_ratio: image_ratio
           %}
         </div>
       {%- endfor -%}
     {%- else -%}
       <!-- Demo 5 Items matching approved UI screenshot pixel-for-pixel -->
       <div class="szc-featured-collection__item">
-        {% render 'product-card', card_product: nil, title_override: 'Oversized Knit Sweater', price_override: '$59.99', show_price: section.settings.show_price %}
+        {% render 'product-card', card_product: nil, title_override: 'Oversized Knit Sweater', price_override: '$59.99', show_price: section.settings.show_price, media_aspect_ratio: image_ratio %}
       </div>
       <div class="szc-featured-collection__item">
-        {% render 'product-card', card_product: nil, title_override: 'Linen Blend Shirt', price_override: '$49.99', show_price: section.settings.show_price %}
+        {% render 'product-card', card_product: nil, title_override: 'Linen Blend Shirt', price_override: '$49.99', show_price: section.settings.show_price, media_aspect_ratio: image_ratio %}
       </div>
       <div class="szc-featured-collection__item">
-        {% render 'product-card', card_product: nil, title_override: 'Satin Slip Dress', price_override: '$69.99', show_price: section.settings.show_price %}
+        {% render 'product-card', card_product: nil, title_override: 'Satin Slip Dress', price_override: '$69.99', show_price: section.settings.show_price, media_aspect_ratio: image_ratio %}
       </div>
       <div class="szc-featured-collection__item">
-        {% render 'product-card', card_product: nil, title_override: 'Classic Denim Jacket', price_override: '$78.99', show_price: section.settings.show_price %}
+        {% render 'product-card', card_product: nil, title_override: 'Classic Denim Jacket', price_override: '$78.99', show_price: section.settings.show_price, media_aspect_ratio: image_ratio %}
       </div>
       <div class="szc-featured-collection__item">
-        {% render 'product-card', card_product: nil, title_override: 'Wide Leg Trousers', price_override: '$54.99', show_price: section.settings.show_price %}
+        {% render 'product-card', card_product: nil, title_override: 'Wide Leg Trousers', price_override: '$54.99', show_price: section.settings.show_price, media_aspect_ratio: image_ratio %}
       </div>
     {%- endif -%}
   </div>
 </section>
+
+{%- if enable_swipe -%}
+  <script>
+    (function() {
+      function initFeaturedCollectionSwipe() {
+        const grid = document.querySelector('#FeaturedCollection-{{ section.id }} .szc-featured-collection__grid');
+        if (grid) {
+          grid.scrollLeft = 0;
+        }
+      }
+      if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', initFeaturedCollectionSwipe);
+      } else {
+        initFeaturedCollectionSwipe();
+      }
+      document.addEventListener('shopify:section:load', function(e) {
+        if (e.detail && e.detail.sectionId === '{{ section.id }}') {
+          initFeaturedCollectionSwipe();
+        }
+      });
+    })();
+  </script>
+{%- endif -%}
 
 {% stylesheet %}
   .szc-featured-collection {
@@ -169,6 +195,48 @@
     gap: var(--szc-space-4, 16px);
   }
 
+  .szc-featured-collection__item {
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+  }
+
+  @media (max-width: 749px) {
+    .szc-featured-collection--swipe-mobile .szc-featured-collection__grid {
+      display: flex !important;
+      flex-wrap: nowrap !important;
+      overflow-x: auto !important;
+      scroll-snap-type: x mandatory !important;
+      scroll-padding-left: var(--szc-space-6, 24px) !important;
+      scroll-behavior: smooth !important;
+      -webkit-overflow-scrolling: touch !important;
+      padding-bottom: 12px !important;
+      margin-left: calc(-1 * var(--szc-space-6, 24px)) !important;
+      margin-right: calc(-1 * var(--szc-space-6, 24px)) !important;
+      padding-left: var(--szc-space-6, 24px) !important;
+      padding-right: var(--szc-space-6, 24px) !important;
+      scrollbar-width: none;
+    }
+
+    .szc-featured-collection--swipe-mobile .szc-featured-collection__grid::-webkit-scrollbar {
+      display: none;
+    }
+
+    .szc-featured-collection--swipe-mobile .szc-featured-collection__item {
+      scroll-snap-align: start !important;
+      transform: none !important;
+      opacity: 1 !important;
+      flex: 0 0 calc(78% - 10px) !important;
+      min-width: 200px !important;
+    }
+
+    .szc-featured-collection--swipe-mobile[style*="--cols-mobile: 2"] .szc-featured-collection__item,
+    .szc-featured-collection--swipe-mobile[style*='--cols-mobile: "2"'] .szc-featured-collection__item {
+      flex: 0 0 calc(46% - 8px) !important;
+      min-width: 155px !important;
+    }
+  }
+
   @media (min-width: 750px) {
     .szc-featured-collection__grid {
       grid-template-columns: repeat(var(--cols-desktop, 5), 1fr);
@@ -238,6 +306,24 @@
         { "value": "2", "label": "2 Columns" }
       ],
       "default": "2"
+    },
+    {
+      "type": "checkbox",
+      "id": "enable_swipe_mobile",
+      "default": false,
+      "label": "Enable swipe on mobile"
+    },
+    {
+      "type": "select",
+      "id": "image_ratio",
+      "label": "Image size",
+      "options": [
+        { "value": "natural", "label": "Natural" },
+        { "value": "square", "label": "Square (1:1)" },
+        { "value": "portrait", "label": "Portrait (3:4)" },
+        { "value": "landscape", "label": "Landscape (4:3)" }
+      ],
+      "default": "portrait"
     },
     {
       "type": "checkbox",

@@ -8,7 +8,7 @@
   assign title = section.settings.title | default: 'Modern Fashion, Created to Last'
   assign description = section.settings.description | default: "Each piece is a work of art, designed to celebrate life's most precious moments."
   assign button_label = section.settings.button_label | default: 'DISCOVER OUR STORY'
-  assign button_link = section.settings.button_link | default: '/pages/about'
+  assign button_link = section.settings.button_link | default: '/pages/about-us'
   assign img_1 = section.settings.image_1
   assign img_2 = section.settings.image_2
   assign content_pos = section.settings.content_position | default: 'right'
@@ -51,7 +51,20 @@
 
     <!-- Content Box -->
     <div class="szc-promo-banner__content">
-      <div class="szc-promo-banner__content-inner">
+      <div
+        class="szc-promo-banner__content-inner"
+        style="
+          --subtitle-color: {{ section.settings.subtitle_color | default: '#666666' }};
+          --subtitle-size: {{ section.settings.subtitle_size | default: 11 }}px;
+          --subtitle-weight: {{ section.settings.subtitle_weight | default: '600' }};
+          --title-color: {{ section.settings.title_color | default: '#111111' }};
+          --title-size: {{ section.settings.title_size | default: 32 }}px;
+          --title-weight: {{ section.settings.title_weight | default: '500' }};
+          --desc-color: {{ section.settings.desc_color | default: '#555555' }};
+          --desc-size: {{ section.settings.desc_size | default: 13 }}px;
+          --desc-weight: {{ section.settings.desc_weight | default: '400' }};
+        "
+      >
         {%- if subtitle != blank -%}
           <span class="szc-promo-banner__subtitle">{{ subtitle }}</span>
         {%- endif -%}
@@ -123,7 +136,6 @@
 
   .szc-promo-banner__media-item {
     position: relative;
-    /* height: 100%; */
     overflow: hidden;
   }
 
@@ -193,28 +205,29 @@
   .szc-promo-banner__subtitle {
     display: block;
     font-family: var(--szc-font-family-body, sans-serif);
-    font-size: 11px;
-    font-weight: 600;
+    font-size: var(--subtitle-size, 11px);
+    font-weight: var(--subtitle-weight, 600);
     text-transform: uppercase;
     letter-spacing: 0.14em;
-    color: #666666;
+    color: var(--subtitle-color, #666666);
     margin-bottom: 12px;
   }
 
   .szc-promo-banner__title {
     margin: 0 0 14px 0;
     font-family: var(--szc-font-family-heading, Georgia, 'Playfair Display', serif);
-    font-size: clamp(26px, 2.5vw, 36px);
-    font-weight: 500;
-    color: #111111;
+    font-size: var(--title-size, 32px);
+    font-weight: var(--title-weight, 500);
+    color: var(--title-color, #111111);
     line-height: 1.25;
   }
 
   .szc-promo-banner__description {
     margin: 0 0 28px 0;
     font-family: var(--szc-font-family-body, sans-serif);
-    font-size: 13px;
-    color: #555555;
+    font-size: var(--desc-size, 13px);
+    font-weight: var(--desc-weight, 400);
+    color: var(--desc-color, #555555);
     line-height: 1.6;
   }
 
@@ -296,6 +309,103 @@
         { "value": "right", "label": "Right" }
       ],
       "default": "right"
+    },
+    {
+      "type": "header",
+      "content": "Subtitle Styling"
+    },
+    {
+      "type": "color",
+      "id": "subtitle_color",
+      "label": "Subtitle Color",
+      "default": "#666666"
+    },
+    {
+      "type": "range",
+      "id": "subtitle_size",
+      "min": 10,
+      "max": 24,
+      "step": 1,
+      "unit": "px",
+      "label": "Subtitle Font Size",
+      "default": 11
+    },
+    {
+      "type": "select",
+      "id": "subtitle_weight",
+      "label": "Subtitle Font Weight",
+      "options": [
+        { "value": "400", "label": "Normal (400)" },
+        { "value": "500", "label": "Medium (500)" },
+        { "value": "600", "label": "Semi Bold (600)" },
+        { "value": "700", "label": "Bold (700)" }
+      ],
+      "default": "600"
+    },
+    {
+      "type": "header",
+      "content": "Title Styling"
+    },
+    {
+      "type": "color",
+      "id": "title_color",
+      "label": "Title Color",
+      "default": "#111111"
+    },
+    {
+      "type": "range",
+      "id": "title_size",
+      "min": 18,
+      "max": 60,
+      "step": 1,
+      "unit": "px",
+      "label": "Title Font Size",
+      "default": 32
+    },
+    {
+      "type": "select",
+      "id": "title_weight",
+      "label": "Title Font Weight",
+      "options": [
+        { "value": "300", "label": "Light (300)" },
+        { "value": "400", "label": "Normal (400)" },
+        { "value": "500", "label": "Medium (500)" },
+        { "value": "600", "label": "Semi Bold (600)" },
+        { "value": "700", "label": "Bold (700)" }
+      ],
+      "default": "500"
+    },
+    {
+      "type": "header",
+      "content": "Description Styling"
+    },
+    {
+      "type": "color",
+      "id": "desc_color",
+      "label": "Description Color",
+      "default": "#555555"
+    },
+    {
+      "type": "range",
+      "id": "desc_size",
+      "min": 12,
+      "max": 24,
+      "step": 1,
+      "unit": "px",
+      "label": "Description Font Size",
+      "default": 13
+    },
+    {
+      "type": "select",
+      "id": "desc_weight",
+      "label": "Description Font Weight",
+      "options": [
+        { "value": "300", "label": "Light (300)" },
+        { "value": "400", "label": "Normal (400)" },
+        { "value": "500", "label": "Medium (500)" },
+        { "value": "600", "label": "Semi Bold (600)" }
+      ],
+      "default": "400"
     }
   ],
   "presets": [

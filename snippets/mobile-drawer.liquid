@@ -1,0 +1,288 @@
+{% doc %}
+  Renders the mobile navigation drawer panel for the theme header section.
+  Directly renders all configured mega menu schema content (categories, occasions, new arrivals, promo cards, banner) responsively.
+
+  @param {object} main_menu_links - Navigation links object
+  @param {object} section - The header section object
+{% enddoc %}
+
+<div class="szc-mobile-drawer" id="MobileMenuDrawer" aria-hidden="true">
+  <div class="szc-mobile-drawer__overlay" data-mobile-menu-close></div>
+
+  <div class="szc-mobile-drawer__panel">
+    <!-- Header: Title + Close Button -->
+    <div class="szc-mobile-drawer__header">
+      <span class="szc-mobile-drawer__title">MENU</span>
+      <button type="button" class="szc-mobile-drawer__close-btn" data-mobile-menu-close aria-label="Close menu">
+        {% render 'icon', icon: 'close', class: 'szc-header__icon' %}
+      </button>
+    </div>
+
+    <!-- Body: Accordion List Rendering Exact Mega Menu Schema Content Responsively -->
+    <div class="szc-mobile-drawer__body">
+      <nav class="szc-mobile-drawer__nav">
+        <ul class="szc-mobile-drawer__menu-list">
+          {%- for link in main_menu_links -%}
+            {%- liquid
+              assign mob_link_handle = link.handle | default: ''
+              assign mob_link_title_handle = link.title | handleize
+              assign mob_link_title_down = link.title | downcase | strip
+              assign is_sale = false
+              if mob_link_title_down contains 'sale' or mob_link_title_down contains 'offer' or mob_link_title_down contains 'discount'
+                assign is_sale = true
+              endif
+
+              assign mob_mega = null
+              for block in section.blocks
+                if block.type == 'mega_menu'
+                  assign block_title = block.settings.menu_item_title | default: ''
+                  assign block_handle = block_title | handleize
+                  assign block_title_down = block_title | downcase | strip
+                  if block_handle != blank
+                    if block_handle == mob_link_handle or block_handle == mob_link_title_handle or block_title_down == mob_link_title_down
+                      assign mob_mega = block
+                      break
+                    endif
+                  endif
+                endif
+              endfor
+            -%}
+
+            <li class="szc-mobile-drawer__menu-item {% if link.links != blank or mob_mega != null %}has-sub-menu{% endif %}">
+              {%- if link.links != blank or mob_mega != null -%}
+                <div class="szc-mobile-drawer__link-wrap">
+                  <a href="{{ link.url }}" class="szc-mobile-drawer__link {% if is_sale %}is-sale-link{% endif %} {% if link.child_active or link.active %}is-active{% endif %}">
+                    {{ link.title }}
+                  </a>
+                  <button type="button" class="szc-mobile-drawer__accordion-toggle" aria-expanded="false" aria-label="Toggle {{ link.title }}">
+                    {% render 'icon', icon: 'chevron-down', class: 'szc-mobile-drawer__chevron' %}
+                  </button>
+                </div>
+
+                <div class="szc-mobile-drawer__sub-menu" style="display: none;">
+                  {%- if mob_mega != null -%}
+
+                    <!-- 1. CATEGORIES -->
+                    {%- if mob_mega.settings.show_categories -%}
+                      {%- assign cat_setting_mob = mob_mega.settings.categories_menu -%}
+                      {%- assign cat_links_mob = nil -%}
+                      {%- if cat_setting_mob != blank -%}
+                        {%- if cat_setting_mob.links != blank -%}
+                          {%- assign cat_links_mob = cat_setting_mob.links -%}
+                        {%- elsif linklists[cat_setting_mob] != blank and linklists[cat_setting_mob].links != blank -%}
+                          {%- assign cat_links_mob = linklists[cat_setting_mob].links -%}
+                        {%- endif -%}
+                      {%- endif -%}
+                      {%- if cat_links_mob == nil and link.links != blank -%}
+                        {%- assign cat_links_mob = link.links -%}
+                      {%- endif -%}
+
+                      {%- if cat_links_mob != blank -%}
+                        <div class="szc-mob-section">
+                          {%- if mob_mega.settings.category_title != blank -%}
+                            <h5 class="szc-mob-section-title">{{ mob_mega.settings.category_title }}</h5>
+                          {%- endif -%}
+                          <ul class="szc-mob-links-list">
+                            {%- for cat_l in cat_links_mob -%}
+                              <li>
+                                <a href="{{ cat_l.url }}" class="szc-mob-link">{{ cat_l.title }}</a>
+                                {%- if cat_l.links.size > 0 -%}
+                                  <ul class="szc-mob-sublinks-list">
+                                    {%- for sub_l in cat_l.links -%}
+                                      <li><a href="{{ sub_l.url }}" class="szc-mob-sublink">{{ sub_l.title }}</a></li>
+                                    {%- endfor -%}
+                                  </ul>
+                                {%- endif -%}
+                              </li>
+                            {%- endfor -%}
+                          </ul>
+                        </div>
+                      {%- endif -%}
+                    {%- endif -%}
+
+                    <!-- 2. OCCASIONS -->
+                    {%- if mob_mega.settings.show_occasions -%}
+                      {%- assign occ_setting_mob = mob_mega.settings.occasions_menu -%}
+                      {%- assign occ_links_mob = nil -%}
+                      {%- if occ_setting_mob != blank -%}
+                        {%- if occ_setting_mob.links != blank -%}
+                          {%- assign occ_links_mob = occ_setting_mob.links -%}
+                        {%- elsif linklists[occ_setting_mob] != blank and linklists[occ_setting_mob].links != blank -%}
+                          {%- assign occ_links_mob = linklists[occ_setting_mob].links -%}
+                        {%- endif -%}
+                      {%- endif -%}
+
+                      {%- if occ_links_mob != blank -%}
+                        <div class="szc-mob-section">
+                          {%- if mob_mega.settings.occasions_title != blank -%}
+                            <h5 class="szc-mob-section-title">{{ mob_mega.settings.occasions_title }}</h5>
+                          {%- endif -%}
+                          <ul class="szc-mob-links-list">
+                            {%- for occ_l in occ_links_mob -%}
+                              <li><a href="{{ occ_l.url }}" class="szc-mob-link">{{ occ_l.title }}</a></li>
+                            {%- endfor -%}
+                          </ul>
+                        </div>
+                      {%- endif -%}
+                    {%- endif -%}
+
+                    <!-- 3. PRODUCTS / NEW ARRIVALS -->
+                    {%- if mob_mega.settings.show_new_arrivals -%}
+                      {%- assign col_setting_mob = mob_mega.settings.new_arrivals_collection -%}
+                      {%- assign arrival_col_mob = nil -%}
+                      {%- if col_setting_mob != blank -%}
+                        {%- if col_setting_mob.products != blank -%}
+                          {%- assign arrival_col_mob = col_setting_mob -%}
+                        {%- elsif collections[col_setting_mob] != blank -%}
+                          {%- assign arrival_col_mob = collections[col_setting_mob] -%}
+                        {%- endif -%}
+                      {%- endif -%}
+                      {%- assign product_limit_mob = mob_mega.settings.products_to_show | default: 4 -%}
+
+                      {%- if arrival_col_mob != blank and arrival_col_mob.products != blank and arrival_col_mob.products.size > 0 -%}
+                        <div class="szc-mob-section">
+                          {%- if mob_mega.settings.new_arrivals_title != blank -%}
+                            <h5 class="szc-mob-section-title">{{ mob_mega.settings.new_arrivals_title }}</h5>
+                          {%- endif -%}
+                          <div class="szc-mob-products-grid">
+                            {%- for product in arrival_col_mob.products limit: product_limit_mob -%}
+                              <a href="{{ product.url }}" class="szc-mob-product-item">
+                                <div class="szc-mob-prod-thumb">
+                                  {%- if product.featured_image != blank -%}
+                                    {{ product.featured_image | image_url: width: 120 | image_tag: loading: 'lazy', alt: product.title }}
+                                  {%- else -%}
+                                    {{ 'product-1' | placeholder_svg_tag: 'szc-placeholder-svg' }}
+                                  {%- endif -%}
+                                </div>
+                                <div class="szc-mob-prod-info">
+                                  <span class="szc-mob-prod-title">{{ product.title }}</span>
+                                  <span class="szc-mob-prod-price">{{ product.price | money }}</span>
+                                </div>
+                              </a>
+                            {%- endfor -%}
+                          </div>
+                        </div>
+                      {%- endif -%}
+                    {%- endif -%}
+
+                    <!-- 4. PROMO CARDS -->
+                    {%- if mob_mega.settings.show_card_1 and mob_mega.settings.card_1_image != blank or mob_mega.settings.card_1_button_label != blank -%}
+                      <div class="szc-mob-section">
+                        {%- if mob_mega.settings.card_1_title != blank -%}
+                          <h5 class="szc-mob-section-title">{{ mob_mega.settings.card_1_title }}</h5>
+                        {%- endif -%}
+                        <a href="{{ mob_mega.settings.card_1_button_link | default: '#' }}" class="szc-mob-promo-card">
+                          {%- if mob_mega.settings.card_1_image != blank -%}
+                            <div class="szc-mob-promo-img">
+                              {{ mob_mega.settings.card_1_image | image_url: width: 400 | image_tag: loading: 'lazy', alt: mob_mega.settings.card_1_subheading | default: 'Promo Card 1' }}
+                            </div>
+                          {%- endif -%}
+                          <div class="szc-mob-promo-text">
+                            {%- if mob_mega.settings.card_1_subheading != blank -%}
+                              <strong class="szc-mob-promo-sub">{{ mob_mega.settings.card_1_subheading }}</strong>
+                            {%- endif -%}
+                            {%- if mob_mega.settings.card_1_button_label != blank -%}
+                              <span class="szc-mob-promo-link-btn">{{ mob_mega.settings.card_1_button_label }}</span>
+                            {%- endif -%}
+                          </div>
+                        </a>
+                      </div>
+                    {%- endif -%}
+
+                    {%- if mob_mega.settings.show_card_2 and mob_mega.settings.card_2_image != blank or mob_mega.settings.card_2_button_label != blank -%}
+                      <div class="szc-mob-section">
+                        {%- if mob_mega.settings.card_2_title != blank -%}
+                          <h5 class="szc-mob-section-title">{{ mob_mega.settings.card_2_title }}</h5>
+                        {%- endif -%}
+                        <a href="{{ mob_mega.settings.card_2_button_link | default: '#' }}" class="szc-mob-promo-card">
+                          {%- if mob_mega.settings.card_2_image != blank -%}
+                            <div class="szc-mob-promo-img">
+                              {{ mob_mega.settings.card_2_image | image_url: width: 400 | image_tag: loading: 'lazy', alt: mob_mega.settings.card_2_subheading | default: 'Promo Card 2' }}
+                            </div>
+                          {%- endif -%}
+                          <div class="szc-mob-promo-text">
+                            {%- if mob_mega.settings.card_2_subheading != blank -%}
+                              <strong class="szc-mob-promo-sub">{{ mob_mega.settings.card_2_subheading }}</strong>
+                            {%- endif -%}
+                            {%- if mob_mega.settings.card_2_button_label != blank -%}
+                              <span class="szc-mob-promo-link-btn">{{ mob_mega.settings.card_2_button_label }}</span>
+                            {%- endif -%}
+                          </div>
+                        </a>
+                      </div>
+                    {%- endif -%}
+
+                    <!-- 5. PROMO BANNER -->
+                    {%- if mob_mega.settings.show_banner and mob_mega.settings.banner_heading != blank or mob_mega.settings.banner_image != blank -%}
+                      <div class="szc-mob-section">
+                        <div class="szc-mob-banner-card">
+                          {%- if mob_mega.settings.banner_image != blank -%}
+                            <div class="szc-mob-banner-img">
+                              {{ mob_mega.settings.banner_image | image_url: width: 400 | image_tag: loading: 'lazy', alt: mob_mega.settings.banner_heading | default: link.title }}
+                            </div>
+                          {%- endif -%}
+                          <div class="szc-mob-banner-content">
+                            {%- if mob_mega.settings.banner_subtitle != blank -%}
+                              <span class="szc-mob-banner-sub">{{ mob_mega.settings.banner_subtitle }}</span>
+                            {%- endif -%}
+                            {%- if mob_mega.settings.banner_heading != blank -%}
+                              <h4 class="szc-mob-banner-title">{{ mob_mega.settings.banner_heading }}</h4>
+                            {%- endif -%}
+                            {%- if mob_mega.settings.banner_button_label != blank -%}
+                              <a href="{{ mob_mega.settings.banner_button_link | default: link.url }}" class="szc-mob-banner-btn">
+                                {{ mob_mega.settings.banner_button_label }}
+                              </a>
+                            {%- endif -%}
+                          </div>
+                        </div>
+                      </div>
+                    {%- endif -%}
+
+                  {%- else -%}
+                    <!-- FALLBACK STANDARD CHILD LINKS -->
+                    {%- if link.links != blank -%}
+                      <ul class="szc-mob-links-list">
+                        {%- for childlink in link.links -%}
+                          <li>
+                            <a href="{{ childlink.url }}" class="szc-mob-link">{{ childlink.title }}</a>
+                            {%- if childlink.links.size > 0 -%}
+                              <ul class="szc-mob-sublinks-list">
+                                {%- for grandchildlink in childlink.links -%}
+                                  <li><a href="{{ grandchildlink.url }}" class="szc-mob-sublink">{{ grandchildlink.title }}</a></li>
+                                {%- endfor -%}
+                              </ul>
+                            {%- endif -%}
+                          </li>
+                        {%- endfor -%}
+                      </ul>
+                    {%- endif -%}
+                  {%- endif -%}
+                </div>
+              {%- else -%}
+                <a href="{{ link.url }}" class="szc-mobile-drawer__link {% if is_sale %}is-sale-link{% endif %} {% if link.active %}is-active{% endif %}">
+                  {{ link.title }}
+                </a>
+              {%- endif -%}
+            </li>
+          {%- endfor -%}
+        </ul>
+      </nav>
+    </div>
+
+    <!-- Footer Action Links -->
+    <div class="szc-mobile-drawer__footer">
+      <a href="{% if customer %}{{ routes.account_url }}{% else %}{{ routes.account_login_url }}{% endif %}" class="szc-mobile-drawer__footer-link">
+        {% render 'icon', icon: 'user', class: 'szc-header__icon' %}
+        <span>{% if customer %}Account{% else %}Sign In / Register{% endif %}</span>
+      </a>
+      <a href="/pages/wishlist" class="szc-mobile-drawer__footer-link">
+        {% render 'icon', icon: 'heart', class: 'szc-header__icon' %}
+        <span>Wishlist</span>
+      </a>
+      <a href="{{ routes.cart_url }}" class="szc-mobile-drawer__footer-link">
+        {% render 'icon', icon: 'bag', class: 'szc-header__icon' %}
+        <span>Shopping Bag ({{ cart.item_count }})</span>
+      </a>
+    </div>
+  </div>
+</div>

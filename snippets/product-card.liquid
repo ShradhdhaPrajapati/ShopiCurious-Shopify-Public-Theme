@@ -14,12 +14,32 @@
   @param {string} [class] - Additional CSS class names
 
   @example
-  {% render 'product-card', card_product: product, show_secondary_image: true %}
 {% enddoc %}
 
 {%- liquid
   assign product = card_product
-  assign aspect_ratio = media_aspect_ratio | default: settings.product_card_aspect_ratio | default: '3/4'
+  assign raw_aspect = media_aspect_ratio | default: settings.product_card_image_ratio | default: settings.product_card_aspect_ratio | default: 'portrait'
+  
+  if raw_aspect == 'natural' or raw_aspect == 'adapt'
+    if product != blank and product.featured_media.preview_image != blank
+      assign aspect_ratio = product.featured_media.preview_image.aspect_ratio
+    else
+      assign aspect_ratio = '1'
+    endif
+    assign is_fixed_aspect = false
+  elsif raw_aspect == 'square'
+    assign aspect_ratio = '1/1'
+    assign is_fixed_aspect = true
+  elsif raw_aspect == 'portrait'
+    assign aspect_ratio = '3/4'
+    assign is_fixed_aspect = true
+  elsif raw_aspect == 'landscape'
+    assign aspect_ratio = '4/3'
+    assign is_fixed_aspect = true
+  else
+    assign aspect_ratio = raw_aspect
+    assign is_fixed_aspect = true
+  endif
   
   assign show_secondary = true
   if show_secondary_image == false
@@ -75,7 +95,7 @@
 -%}
 
 {%- if product != blank -%}
-  <product-card class="szc-product-card {{ custom_class }}">
+  <product-card class="szc-product-card {% if is_fixed_aspect %}szc-product-card--fixed-ratio{% endif %} {{ custom_class }}">
     <div class="szc-product-card__media-container" style="aspect-ratio: {{ aspect_ratio }};">
       <a href="{{ product.url }}" class="szc-product-card__media-link" aria-label="{{ product.title | escape }}">
         {%- if featured_img != blank -%}
@@ -223,7 +243,7 @@
   </product-card>
 {%- else -%}
   <!-- Demo Placeholder Product Card matching Approved UI Screenshot -->
-  <div class="szc-product-card szc-product-card--placeholder {{ custom_class }}">
+  <div class="szc-product-card szc-product-card--placeholder {% if is_fixed_aspect %}szc-product-card--fixed-ratio{% endif %} {{ custom_class }}">
     <div class="szc-product-card__media-container" style="aspect-ratio: {{ aspect_ratio }};">
       {{ 'product-1' | placeholder_svg_tag: 'szc-image-placeholder' }}
       <div class="szc-product-card__actions">
@@ -269,6 +289,15 @@
     box-shadow: 0 2px 6px rgba(0, 0, 0, 0.02);
     overflow: hidden;
     transition: transform 250ms ease, box-shadow 250ms ease;
+  }
+
+  .szc-product-card--fixed-ratio {
+    height: 100%;
+    flex: 1;
+  }
+
+  .szc-product-card--fixed-ratio .szc-product-card__info {
+    flex-grow: 1;
   }
 
   .szc-product-card:hover {

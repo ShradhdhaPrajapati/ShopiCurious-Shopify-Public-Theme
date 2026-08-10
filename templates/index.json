@@ -18,8 +18,17 @@
             "image": "shopify://shop_images/Herroslider.png",
             "overlay_opacity": 20,
             "subheading": "New Arrivals",
+            "subheading_font_size": 14,
+            "subheading_font_weight": "700",
+            "subheading_color": "#000000",
             "heading": "Elevate Your Style",
+            "heading_font_size": 64,
+            "heading_font_weight": "700",
+            "heading_color": "#ffffff",
             "text": "<p>Explore our latest seasonal arrivals crafted with premium fabrics.</p>",
+            "text_font_size": 16,
+            "text_font_weight": "400",
+            "text_color": "#ffffff",
             "content_alignment": "center",
             "button_label_1": "SHOP NOW",
             "button_link_1": "",
@@ -38,9 +47,18 @@
             "image": "shopify://shop_images/Herpsildersecond_d97352f4-10d3-43d2-ab98-fcb00e695627.png",
             "overlay_opacity": 20,
             "subheading": "New Arrivals",
+            "subheading_font_size": 14,
+            "subheading_font_weight": "700",
+            "subheading_color": "#000000",
             "heading": "Elevate Your Style",
+            "heading_font_size": 64,
+            "heading_font_weight": "700",
+            "heading_color": "#ffffff",
             "text": "<p>Explore our latest seasonal arrivals crafted with premium fabrics.</p>",
-            "content_alignment": "center",
+            "text_font_size": 16,
+            "text_font_weight": "400",
+            "text_color": "#ffffff",
+            "content_alignment": "left",
             "button_label_1": "SHOP NOW",
             "button_link_1": "",
             "button_1_style": "primary",
@@ -58,9 +76,18 @@
             "image": "shopify://shop_images/Herosliderthird.png",
             "overlay_opacity": 20,
             "subheading": "New Arrivals",
+            "subheading_font_size": 14,
+            "subheading_font_weight": "700",
+            "subheading_color": "#000000",
             "heading": "Elevate Your Style",
+            "heading_font_size": 64,
+            "heading_font_weight": "700",
+            "heading_color": "#ffffff",
             "text": "<p>Explore our latest seasonal arrivals crafted with premium fabrics.</p>",
-            "content_alignment": "center",
+            "text_font_size": 16,
+            "text_font_weight": "400",
+            "text_color": "#ffffff",
+            "content_alignment": "right",
             "button_label_1": "SHOP NOW",
             "button_link_1": "",
             "button_1_style": "primary",
@@ -84,17 +111,31 @@
         "auto_rotate": true,
         "change_slides_every": 5,
         "subheading": "New Collection",
+        "subheading_font_size": 14,
+        "subheading_font_weight": "700",
+        "subheading_color": "#d4a373",
         "heading": "Timeless Style, Designed for You",
+        "heading_font_size": 64,
+        "heading_font_weight": "700",
+        "heading_color": "#ffffff",
         "text": "<p>Discover curated luxury fashion pieces designed to elevate your everyday capsule wardrobe.</p>",
+        "text_font_size": 16,
+        "text_font_weight": "400",
+        "text_color": "#ffffff",
         "content_alignment": "left",
         "button_label_1": "SHOP NOW",
         "button_link_1": "",
+        "button_1_style": "primary",
+        "button_1_size": "md",
         "button_label_2": "Explore Lookbook",
         "button_link_2": "",
+        "button_2_style": "outline",
+        "button_2_size": "md",
+        "hide_button_2_mobile": true,
         "layout_style": "card",
         "card_border_radius": 16,
         "show_container_mobile": false,
-        "content_alignment_mobile": "left"
+        "content_alignment_mobile": "center"
       }
     },
     "feature_icons_bar": {
@@ -222,6 +263,8 @@
         "products_to_show": 5,
         "columns_desktop": 5,
         "columns_mobile": "2",
+        "enable_swipe_mobile": true,
+        "image_ratio": "portrait",
         "show_price": true,
         "show_view_all": true
       }
@@ -236,7 +279,16 @@
         "description": "Each piece is a work of art, designed to celebrate life's most precious moments.",
         "button_label": "DISCOVER OUR STORY",
         "button_link": "",
-        "content_position": "right"
+        "content_position": "right",
+        "subtitle_color": "#666666",
+        "subtitle_size": 11,
+        "subtitle_weight": "600",
+        "title_color": "#111111",
+        "title_size": 32,
+        "title_weight": "500",
+        "desc_color": "#555555",
+        "desc_size": 13,
+        "desc_weight": "400"
       }
     },
     "brand_features": {
@@ -357,6 +409,15 @@
         "title": "Be the First to Know",
         "description": "Get early access to new collections, exclusive offers, and insider updates.",
         "button_label": "SUBSCRIBE",
+        "subtitle_color": "#666666",
+        "subtitle_size": 11,
+        "subtitle_weight": "600",
+        "title_color": "#111111",
+        "title_size": 32,
+        "title_weight": "500",
+        "desc_color": "#555555",
+        "desc_size": 13,
+        "desc_weight": "400",
         "badge_1": "Exclusive Offers",
         "badge_2": "New Arrivals",
         "badge_3": "Style Inspiration"
@@ -432,6 +493,16 @@
         "columns_mobile": "2"
       }
     },
+    "recent_blog_posts_TxPkBy": {
+      "type": "recent-blog-posts",
+      "name": "Recent Blog Posts",
+      "settings": {
+        "heading": "Recently Viewed Articles",
+        "subtitle": "Articles you've recently read",
+        "articles_to_show": 4,
+        "columns_desktop": 4
+      }
+    },
     "bottom_usp_bar": {
       "type": "bottom-usp-bar",
       "blocks": {
@@ -487,6 +558,7 @@
     "explore_collections",
     "newsletter",
     "instagram_gallery",
+    "recent_blog_posts_TxPkBy",
     "bottom_usp_bar"
   ]
 }

@@ -137,6 +137,20 @@
     transform: translateY(-2px);
   }
 
+  .szc-button--pill {
+    background-color: var(--szc-color-primary, #111111);
+    color: var(--szc-color-text-inverse, #ffffff);
+    border-color: var(--szc-color-primary, #111111);
+    border-radius: 9999px;
+  }
+
+  .szc-button--pill:hover:not([disabled]) {
+    background-color: var(--szc-color-primary-light, #2c2c2c);
+    border-color: var(--szc-color-primary-light, #2c2c2c);
+    transform: translateY(-2px);
+    box-shadow: var(--szc-shadow-md);
+  }
+
   .szc-button--accent {
     background-color: var(--szc-color-accent, #e76f51);
     color: #ffffff;

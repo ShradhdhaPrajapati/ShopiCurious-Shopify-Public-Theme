@@ -84,7 +84,14 @@
         },
         "share": {
           "type": "share",
-          "settings": {}
+          "settings": {
+            "share_title": "Share this product:",
+            "show_facebook": true,
+            "show_twitter": true,
+            "show_pinterest": true,
+            "show_email": true,
+            "show_copy_link": true
+          }
         }
       },
       "block_order": [
@@ -100,7 +107,21 @@
         "accordion_shipping",
         "share"
       ],
-      "settings": {}
+      "settings": {
+        "enable_product_tabs": true,
+        "show_tab_description": true,
+        "tab_description_title": "DESCRIPTION",
+        "fallback_description": "<p>A timeless essential, this classic denim jacket is crafted from premium cotton with a comfortable, regular fit. Designed for everyday wear, it features button front closures, chest pockets, and a versatile light blue wash that pairs effortlessly with any outfit.</p><ul><li>Regular fit</li><li>Button front closure</li><li>Chest flap pockets</li><li>Side welt pockets</li><li>Adjustable button tabs at hem</li><li>Lightweight & durable denim</li></ul>",
+        "show_tab_fabric": true,
+        "tab_fabric_title": "FABRIC & CARE",
+        "tab_fabric_content": "<p><strong>Material:</strong> 100% Premium Organic Cotton Denim.</p><p><strong>Care Instructions:</strong> Machine wash cold inside out with like colors. Do not bleach. Tumble dry low or line dry in shade. Warm iron if needed.</p>",
+        "show_tab_size": true,
+        "tab_size_title": "SIZE GUIDE",
+        "tab_size_content": "<table class=\"szc-size-table\">\n<thead><tr>\n<th>Size</th>\n<th>Chest (in)</th>\n<th>Waist (in)</th>\n<th>Length (in)</th>\n</tr></thead>\n<tbody>\n<tr>\n<td>S</td>\n<td>36 - 38</td>\n<td>30 - 32</td>\n<td>26.5</td>\n</tr>\n<tr>\n<td>M</td>\n<td>38 - 40</td>\n<td>32 - 34</td>\n<td>27.5</td>\n</tr>\n<tr>\n<td>L</td>\n<td>40 - 42</td>\n<td>34 - 36</td>\n<td>28.5</td>\n</tr>\n<tr>\n<td>XL</td>\n<td>42 - 44</td>\n<td>36 - 38</td>\n<td>29.5</td>\n</tr>\n<tr>\n<td>XXL</td>\n<td>44 - 46</td>\n<td>38 - 40</td>\n<td>30.5</td>\n</tr>\n</tbody>\n</table>",
+        "show_tab_shipping": true,
+        "tab_shipping_title": "SHIPPING & RETURNS",
+        "tab_shipping_content": "<p><strong>Free Express Shipping:</strong> Available on all orders over $100. Standard delivery takes 3 - 5 business days.</p><p><strong>Easy 30-Day Returns:</strong> If you are not 100% satisfied with your purchase, return it within 30 days for a full refund or exchange.</p>"
+      }
     },
     "related-products": {
       "type": "product-recommendations",

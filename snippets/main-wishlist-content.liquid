@@ -95,25 +95,70 @@
     <div class="szc-wishlist-grid" id="WishlistGridContainer"></div>
 
     <!-- 4. Empty Wishlist State -->
+    {%- liquid
+      assign empty_title = settings.wishlist_empty_title | default: "Your wishlist is empty"
+      assign empty_text = settings.wishlist_empty_text | default: "Looks like you haven't added anything to your wishlist yet."
+      assign primary_url = routes.all_products_collection_url
+      assign primary_label = "START SHOPPING"
+      assign secondary_url = routes.all_products_collection_url
+      assign secondary_label = "EXPLORE NEW ARRIVALS"
+      assign empty_image = nil
+
+      if section != blank and section.settings != blank
+        if section.settings.empty_title != blank
+          assign empty_title = section.settings.empty_title
+        endif
+        if section.settings.empty_text != blank
+          assign empty_text = section.settings.empty_text
+        endif
+        if section.settings.empty_btn_link != blank
+          assign primary_url = section.settings.empty_btn_link
+        endif
+        if section.settings.empty_btn_label != blank
+          assign primary_label = section.settings.empty_btn_label
+        endif
+        if section.settings.empty_secondary_link != blank
+          assign secondary_url = section.settings.empty_secondary_link
+        endif
+        if section.settings.empty_secondary_label != blank
+          assign secondary_label = section.settings.empty_secondary_label
+        endif
+        if section.settings.empty_image != blank
+          assign empty_image = section.settings.empty_image
+        endif
+      endif
+    -%}
     <div class="szc-wishlist-empty" id="WishlistEmptyState" style="display: none;">
-      <div class="szc-wishlist-empty__icon-wrap">
-        <svg class="szc-wishlist-empty__icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round">
-          <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/>
-        </svg>
-      </div>
-      <h2 class="szc-wishlist-empty__title">{{ settings.wishlist_empty_title | default: "Your wishlist is empty" }}</h2>
-      <p class="szc-wishlist-empty__desc">{{ settings.wishlist_empty_text | default: "Looks like you haven't added anything to your wishlist yet." }}</p>
-      <div class="szc-wishlist-empty__actions">
-        <a href="{{ routes.all_products_collection_url }}" class="szc-btn-empty-primary">
-          START SHOPPING
-        </a>
-        <a href="{{ routes.all_products_collection_url }}" class="szc-link-explore-arrivals">
-          <span>EXPLORE NEW ARRIVALS</span>
-          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-            <line x1="5" y1="12" x2="19" y2="12"></line>
-            <polyline points="12 5 19 12 12 19"></polyline>
+      <div class="szc-wishlist-empty__inner">
+        <div class="szc-wishlist-empty__icon-wrap">
+          <svg class="szc-wishlist-empty__icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/>
           </svg>
-        </a>
+        </div>
+        <h2 class="szc-wishlist-empty__title">{{ empty_title }}</h2>
+        <p class="szc-wishlist-empty__desc">{{ empty_text }}</p>
+        <div class="szc-wishlist-empty__actions">
+          <a href="{{ primary_url }}" class="szc-btn-empty-primary">
+            <span>{{ primary_label }}</span>
+          </a>
+
+          <a href="{{ secondary_url }}" class="szc-link-explore-arrivals">
+            <span>{{ secondary_label }}</span>
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <line x1="5" y1="12" x2="19" y2="12"></line>
+              <polyline points="12 5 19 12 12 19"></polyline>
+            </svg>
+          </a>
+        </div>
+      </div>
+
+      <!-- Bottom Decorative / Schema Image -->
+      <div class="szc-wishlist-empty__media">
+        {%- if empty_image != blank -%}
+          {% render 'image', image: empty_image, loading: 'lazy', class: 'szc-wishlist-empty__image' %}
+        {%- else -%}
+          <img src="{{ 'wishlistempty.png' | asset_url }}" alt="Empty wishlist" class="szc-wishlist-empty__image" loading="lazy" width="480" height="320">
+        {%- endif -%}
       </div>
     </div>
 
@@ -558,16 +603,32 @@
 
   .szc-wishlist-empty {
     text-align: center;
-    padding: 72px 16px 90px;
-    max-width: 440px;
-    margin: 0 auto;
+    padding: 56px 24px 40px;
+    max-width: 460px;
+    min-height: 500px;
+    margin: 20px auto 40px;
     display: flex;
     flex-direction: column;
     align-items: center;
+    background-color: #fcfbfa;
+    border: 1px solid #eae5db;
+    border-radius: 20px;
+    box-shadow: 0 4px 24px rgba(0, 0, 0, 0.04);
+    overflow: hidden;
+    position: relative;
+  }
+
+  .szc-wishlist-empty__inner {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 100%;
+    position: relative;
+    z-index: 2;
   }
 
   .szc-wishlist-empty__icon-wrap {
-    margin: 0 auto 20px;
+    margin: 0 auto 16px;
     color: #111111;
     display: flex;
     align-items: center;
@@ -575,24 +636,25 @@
   }
 
   .szc-wishlist-empty__icon {
-    width: 48px;
-    height: 48px;
+    width: 44px;
+    height: 44px;
   }
 
   .szc-wishlist-empty__title {
-    font-size: 30px;
-    font-weight: 400;
-    margin: 0 0 12px;
+    font-family: var(--szc-font-family-heading, Georgia, 'Playfair Display', serif);
+    font-size: 26px;
+    font-weight: 500;
+    margin: 0 0 10px;
     color: #111111;
-    letter-spacing: -0.01em;
+    line-height: 1.3;
   }
 
   .szc-wishlist-empty__desc {
     color: #555555;
-    font-size: 15px;
+    font-size: 14px;
     line-height: 1.5;
-    margin: 0 auto 28px;
-    max-width: 320px;
+    margin: 0 auto 24px;
+    max-width: 300px;
   }
 
   .szc-wishlist-empty__actions {
@@ -609,21 +671,22 @@
     justify-content: center;
     background-color: #111111;
     color: #ffffff;
-    padding: 14px 40px;
-    font-size: 13px;
+    padding: 14px 36px;
+    font-size: 12px;
     font-weight: 700;
     letter-spacing: 0.08em;
     text-transform: uppercase;
     text-decoration: none;
     border-radius: 6px;
-    transition: background-color 150ms ease;
+    transition: background-color 150ms ease, transform 150ms ease;
     border: none;
     cursor: pointer;
   }
 
   .szc-btn-empty-primary:hover {
-    background-color: #333333;
+    background-color: #000000;
     color: #ffffff;
+    transform: translateY(-1px);
   }
 
   .szc-link-explore-arrivals {
@@ -642,6 +705,25 @@
   .szc-link-explore-arrivals:hover {
     gap: 10px;
     opacity: 0.8;
+  }
+
+  .szc-wishlist-empty__media {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 1;
+    pointer-events: none;
+    overflow: hidden;
+  }
+
+  .szc-wishlist-empty__image {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: center bottom;
+    display: block;
   }
 
   .szc-wishlist-mobile-delete-btn {

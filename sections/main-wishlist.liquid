@@ -1,5 +1,5 @@
 {% comment %}
-  Renders the dedicated Wishlist Page section.
+  Renders the dedicated Wishlist Page section with schema settings for empty state customization.
 {% endcomment %}
 
 {% render 'main-wishlist-content' %}
@@ -7,6 +7,53 @@
 {% schema %}
 {
   "name": "Wishlist Page",
-  "settings": []
+  "tag": "section",
+  "class": "section-main-wishlist",
+  "settings": [
+    {
+      "type": "header",
+      "content": "Empty Wishlist Customization"
+    },
+    {
+      "type": "image_picker",
+      "id": "empty_image",
+      "label": "Bottom Decorative Image",
+      "info": "Upload an image (e.g. shopping bag / lifestyle photo) to display at the bottom of the empty wishlist card."
+    },
+    {
+      "type": "text",
+      "id": "empty_title",
+      "default": "Your wishlist is empty",
+      "label": "Empty Wishlist Title"
+    },
+    {
+      "type": "textarea",
+      "id": "empty_text",
+      "default": "Looks like you haven't added anything to your wishlist yet.",
+      "label": "Empty Wishlist Description"
+    },
+    {
+      "type": "text",
+      "id": "empty_btn_label",
+      "default": "START SHOPPING",
+      "label": "Primary Button Label"
+    },
+    {
+      "type": "url",
+      "id": "empty_btn_link",
+      "label": "Primary Button Link"
+    },
+    {
+      "type": "text",
+      "id": "empty_secondary_label",
+      "default": "EXPLORE NEW ARRIVALS",
+      "label": "Secondary Link Label"
+    },
+    {
+      "type": "url",
+      "id": "empty_secondary_link",
+      "label": "Secondary Link Link"
+    }
+  ]
 }
 {% endschema %}

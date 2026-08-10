@@ -74,30 +74,75 @@
 
     renderProductInfo() {
       // Update Price display
-      const priceContainers = document.querySelectorAll(`.szc-main-product__price, #price-${this.dataset.section}`);
+      const priceContainers = document.querySelectorAll(`.szc-main-product__price, #price-${this.dataset.section}, [data-sticky-price]`);
       priceContainers.forEach(priceContainer => {
         if (priceContainer && this.currentVariant) {
-          const priceElement = priceContainer.querySelector('.price-item--regular, .szc-price__regular') || priceContainer;
-          if (priceElement) {
-            const formattedPrice = (window.ShopziCurious && ShopziCurious.helpers) 
-              ? ShopziCurious.helpers.formatMoney(this.currentVariant.price) 
-              : `$${(this.currentVariant.price / 100).toFixed(2)}`;
-            priceElement.textContent = formattedPrice;
+          const formattedPrice = (window.ShopziCurious && ShopziCurious.helpers) 
+            ? ShopziCurious.helpers.formatMoney(this.currentVariant.price) 
+            : `$${(this.currentVariant.price / 100).toFixed(2)}`;
+
+          const regularElements = priceContainer.querySelectorAll('.szc-price__item--regular, .price-item--regular');
+          const saleElements = priceContainer.querySelectorAll('.szc-price__item--sale');
+          const badgeElements = priceContainer.querySelectorAll('.szc-price__badge');
+          const priceWraps = priceContainer.querySelectorAll('.szc-price');
+
+          if (this.currentVariant.compare_at_price > this.currentVariant.price) {
+            const formattedCompare = (window.ShopziCurious && ShopziCurious.helpers) 
+              ? ShopziCurious.helpers.formatMoney(this.currentVariant.compare_at_price) 
+              : `$${(this.currentVariant.compare_at_price / 100).toFixed(2)}`;
+            const savings = Math.round(((this.currentVariant.compare_at_price - this.currentVariant.price) * 100) / this.currentVariant.compare_at_price);
+
+            priceWraps.forEach(w => w.classList.add('szc-price--on-sale'));
+            saleElements.forEach(s => {
+              s.textContent = formattedPrice;
+              if (s.parentElement) s.parentElement.style.display = 'inline-flex';
+            });
+            regularElements.forEach(r => {
+              r.textContent = formattedCompare;
+              r.style.display = 'inline-block';
+            });
+            badgeElements.forEach(b => {
+              b.textContent = `-${savings}%`;
+              b.style.display = 'inline-block';
+            });
+          } else {
+            priceWraps.forEach(w => w.classList.remove('szc-price--on-sale'));
+            saleElements.forEach(s => {
+              s.textContent = formattedPrice;
+              if (s.parentElement) s.parentElement.style.display = 'none';
+            });
+            regularElements.forEach(r => {
+              r.textContent = '';
+              r.style.display = 'none';
+            });
+            badgeElements.forEach(b => b.style.display = 'none');
           }
         }
       });
 
-      // Update Submit Button State
-      const submitButtons = document.querySelectorAll(`[data-add-to-cart-btn], #product-submit-${this.dataset.section}`);
+      // Update Submit Button State across all buttons
+      const submitButtons = document.querySelectorAll(`[data-add-to-cart-btn], [data-sticky-atc-btn], #product-submit-${this.dataset.section}`);
       submitButtons.forEach(submitButton => {
         if (submitButton) {
-          const textSpan = submitButton.querySelector('span') || submitButton;
-          if (!this.currentVariant.available) {
+          const textSpan = submitButton.querySelector('.szc-btn-text, span') || submitButton;
+          if (!this.currentVariant || !this.currentVariant.available) {
             submitButton.setAttribute('disabled', 'disabled');
             textSpan.textContent = 'SOLD OUT';
           } else {
             submitButton.removeAttribute('disabled');
             textSpan.textContent = 'ADD TO BAG';
+          }
+        }
+      });
+
+      // Update Buy Now Buttons State
+      const buyNowButtons = document.querySelectorAll(`[data-buy-now-btn], [data-sticky-buy-now-btn], .szc-main-product__buy-now-btn`);
+      buyNowButtons.forEach(btn => {
+        if (btn) {
+          if (!this.currentVariant || !this.currentVariant.available) {
+            btn.setAttribute('disabled', 'disabled');
+          } else {
+            btn.removeAttribute('disabled');
           }
         }
       });
@@ -109,6 +154,12 @@
       const targetThumbnail = document.querySelector(`[data-media-id="${mediaId}"]`);
       if (targetThumbnail) {
         targetThumbnail.click();
+      }
+
+      const stickyImg = document.querySelector('[data-sticky-img]');
+      if (stickyImg && this.currentVariant.featured_media.preview_image) {
+        const newSrc = this.currentVariant.featured_media.preview_image.src || this.currentVariant.featured_media.src;
+        if (newSrc) stickyImg.src = newSrc;
       }
     }
 

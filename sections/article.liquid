@@ -1,68 +1,451 @@
 {% comment %}
-  This section is used in the article template to render the article page, which
-  displays the full content of the blog post and can optionally include a
-  comments section for customers (not shown in this example).
-
-  https://shopify.dev/docs/storefronts/themes/architecture/templates/article
+  ShopziCurious - Single Article Detail Section
+  Renders luxury styled article post layout with hero header, rich content, author metadata, tags, and comment section.
 {% endcomment %}
 
-{% if article.image %}
-  {{ article.image | image_url: width: 1000 | image_tag }}
-{% endif %}
+<article class="szc-article-page page-width">
+  {% render 'breadcrumbs' %}
 
-<h1>{{ article.title }}</h1>
+  <header class="szc-article-header">
+    <div class="szc-article-header__meta">
+      <span class="szc-article-header__tag">
+        {%- if article.tags.size > 0 -%}
+          {{ article.tags.first | upcase }}
+        {%- else -%}
+          FASHION
+        {%- endif -%}
+      </span>
+      <span class="szc-article-header__dot">•</span>
+      <time datetime="{{ article.published_at | date: '%Y-%m-%d' }}" class="szc-article-header__date">
+        {{ article.published_at | date: "%B %d, %Y" }}
+      </time>
+      {%- if article.author != blank -%}
+        <span class="szc-article-header__dot">•</span>
+        <span class="szc-article-header__author">By {{ article.author }}</span>
+      {%- endif -%}
+    </div>
 
-{% assign date = article.published_at | time_tag: format: 'date' %}
-<p>{{ 'blog.article_metadata_html' | t: date: date, author: article.author }}</p>
+    <h1 class="szc-article-header__title">{{ article.title }}</h1>
+  </header>
 
-{{ article.content }}
+  {%- if article.image -%}
+    <div class="szc-article-hero-media">
+      {{ article.image | image_url: width: 1400 | image_tag: class: 'szc-article-hero-img', loading: 'eager', alt: article.title }}
+    </div>
+  {%- endif -%}
 
-{% if blog.comments_enabled? %}
-  <h2>{{ 'blog.article_comments' | t }}</h2>
+  <div class="szc-article-body">
+    <div class="szc-article-content rte">
+      {{ article.content }}
+    </div>
 
-  <div id="comments">
-    {% paginate article.comments by 10 %}
-      {% for comment in article.comments %}
-        <div>
-          <p>{{ comment.author }}</p>
-          <p>
-            {{- comment.created_at | time_tag: format: 'date' -}}
-          </p>
-          <p>{{ comment.content }}</p>
+    <!-- Article Footer / Tags & Share -->
+    <div class="szc-article-footer">
+      {%- if article.tags.size > 0 -%}
+        <div class="szc-article-tags">
+          <span class="szc-article-tags__label">Tags:</span>
+          {%- for tag in article.tags -%}
+            <a href="{{ blog.url }}/tagged/{{ tag | handle }}" class="szc-article-tag__pill">
+              {{ tag }}
+            </a>
+          {%- endfor -%}
         </div>
-      {% endfor %}
+      {%- endif -%}
 
-      {{ paginate | default_pagination: anchor: 'comments' }}
-    {% endpaginate %}
+      <div class="szc-article-back-wrap">
+        <a href="{{ blog.url }}" class="szc-button szc-button--outline szc-article-back-btn">
+          ← BACK TO JOURNAL
+        </a>
+      </div>
+    </div>
+
+    <!-- Comments Section -->
+    {%- if blog.comments_enabled? -%}
+      <div id="comments" class="szc-article-comments">
+        <h2 class="szc-article-comments__title">
+          Comments ({{ article.comments_count }})
+        </h2>
+
+        {%- if article.comments_count > 0 -%}
+          {%- paginate article.comments by 10 -%}
+            <div class="szc-article-comments__list">
+              {%- for comment in article.comments -%}
+                <div class="szc-article-comment-card">
+                  <div class="szc-article-comment-card__header">
+                    <strong class="szc-article-comment-card__author">{{ comment.author }}</strong>
+                    <time datetime="{{ comment.created_at | date: '%Y-%m-%d' }}" class="szc-article-comment-card__date">
+                      {{ comment.created_at | date: "%B %d, %Y" }}
+                    </time>
+                  </div>
+                  <div class="szc-article-comment-card__body">
+                    {{ comment.content }}
+                  </div>
+                </div>
+              {%- endfor -%}
+            </div>
+
+            {%- if paginate.pages > 1 -%}
+              {% render 'pagination', paginate: paginate %}
+            {%- endif -%}
+          {%- endpaginate -%}
+        {%- endif -%}
+
+        <!-- New Comment Form -->
+        {% form 'new_comment', article, class: 'szc-article-comment-form' %}
+          <h3 class="szc-article-comment-form__title">Leave a Comment</h3>
+
+          {%- if form.errors -%}
+            <div class="szc-article-form__error">
+              {{ form.errors | default_errors }}
+            </div>
+          {%- endif -%}
+
+          {%- if form.posted_successfully? -%}
+            <p class="szc-article-form__success">
+              {%- if blog.moderated? -%}
+                Your comment was submitted successfully and will be published after review.
+              {%- else -%}
+                Your comment has been published!
+              {%- endif -%}
+            </p>
+          {%- endif -%}
+
+          <div class="szc-article-form__grid">
+            <div class="szc-article-form__field">
+              <label for="CommentAuthor-{{ section.id }}" class="szc-article-form__label">Name *</label>
+              <input
+                type="text"
+                name="comment[author]"
+                id="CommentAuthor-{{ section.id }}"
+                class="szc-article-form__input"
+                value="{{ form.author }}"
+                required
+              >
+            </div>
+
+            <div class="szc-article-form__field">
+              <label for="CommentEmail-{{ section.id }}" class="szc-article-form__label">Email *</label>
+              <input
+                type="email"
+                name="comment[email]"
+                id="CommentEmail-{{ section.id }}"
+                class="szc-article-form__input"
+                value="{{ form.email }}"
+                required
+              >
+            </div>
+          </div>
+
+          <div class="szc-article-form__field">
+            <label for="CommentBody-{{ section.id }}" class="szc-article-form__label">Comment *</label>
+            <textarea
+              name="comment[body]"
+              id="CommentBody-{{ section.id }}"
+              rows="5"
+              class="szc-article-form__textarea"
+              required
+            >{{ form.body }}</textarea>
+          </div>
+
+          <button type="submit" class="szc-button szc-button--primary szc-article-form__submit">
+            POST COMMENT
+          </button>
+        {% endform %}
+      </div>
+    {%- endif -%}
   </div>
+</article>
 
-  {% form 'new_comment', article %}
-    <h2>{{ 'blog.comment_form_title' | t }}</h2>
+<script type="application/json" id="ArticleData-{{ section.id }}">
+  {
+    "id": {{ article.id | json }},
+    "title": {{ article.title | json }},
+    "url": {{ article.url | json }},
+    "image": {% if article.image %}{{ article.image | image_url: width: 600 | json }}{% else %}""{% endif %},
+    "published_at": {{ article.published_at | date: "%b %d, %Y" | json }},
+    "tag": {% if article.tags.size > 0 %}{{ article.tags.first | upcase | json }}{% else %}"FASHION"{% endif %},
+    "excerpt": {{ article.excerpt_or_content | strip_html | truncate: 120 | json }}
+  }
+</script>
+<script>
+  (function() {
+    try {
+      var dataEl = document.getElementById('ArticleData-{{ section.id }}');
+      if (!dataEl) return;
+      var currentArticle = JSON.parse(dataEl.textContent);
+      if (!currentArticle || !currentArticle.url) return;
 
-    {{ form.errors | default_errors }}
+      var storageKey = 'szc_recently_viewed_articles';
+      var history = [];
+      try {
+        history = JSON.parse(localStorage.getItem(storageKey)) || [];
+      } catch (e) {
+        history = [];
+      }
 
-    <div>
-      <label for="author">{{ 'blog.comment_form_name' | t }}</label>
-      <input type="text" name="comment[author]" id="author" value="{{ form.author }}" required>
-    </div>
+      history = history.filter(function(item) {
+        return item.url !== currentArticle.url && item.id !== currentArticle.id;
+      });
 
-    <div>
-      <label for="email">{{ 'blog.comment_form_email' | t }}</label>
-      <input type="email" name="comment[email]" id="email" value="{{ form.email }}" required>
-    </div>
+      history.unshift(currentArticle);
 
-    <div>
-      <label for="body">{{ 'blog.comment_form_body' | t }}</label>
-      <textarea name="comment[body]" id="body" required>{{ form.body }}</textarea>
-    </div>
+      if (history.length > 6) {
+        history = history.slice(0, 6);
+      }
 
-    <input type="submit" value="{{ 'blog.comment_form_submit' | t }}">
-  {% endform %}
-{% endif %}
+      localStorage.setItem(storageKey, JSON.stringify(history));
+    } catch (err) {
+      console.warn('Recently viewed articles storage error:', err);
+    }
+  })();
+</script>
+
+{% stylesheet %}
+  .szc-article-page {
+    padding-top: 16px;
+    padding-bottom: 80px;
+    max-width: 900px;
+    margin: 0 auto;
+    padding-left: 24px;
+    padding-right: 24px;
+  }
+
+  .szc-article-header {
+    text-align: center;
+    margin-top: 24px;
+    margin-bottom: 32px;
+  }
+
+  .szc-article-header__meta {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    font-size: 12px;
+    color: #666666;
+    margin-bottom: 12px;
+  }
+
+  .szc-article-header__tag {
+    font-weight: 700;
+    letter-spacing: 0.12em;
+    color: #997b53;
+  }
+
+  .szc-article-header__title {
+    font-family: var(--szc-font-family-heading, Georgia, serif);
+    font-size: 36px;
+    font-weight: 500;
+    color: #111111;
+    line-height: 1.25;
+    margin: 0;
+  }
+
+  .szc-article-hero-media {
+    width: 100%;
+    aspect-ratio: 16 / 9;
+    border-radius: 12px;
+    overflow: hidden;
+    margin-bottom: 40px;
+    background-color: #f7f7f7;
+  }
+
+  .szc-article-hero-img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+  }
+
+  .szc-article-body {
+    max-width: 780px;
+    margin: 0 auto;
+  }
+
+  .szc-article-content {
+    font-family: var(--szc-font-family-body, sans-serif);
+    font-size: 16px;
+    line-height: 1.7;
+    color: #333333;
+  }
+
+  .szc-article-content p {
+    margin-bottom: 24px;
+  }
+
+  .szc-article-content img {
+    max-width: 100%;
+    height: auto;
+    border-radius: 8px;
+    margin: 24px 0;
+  }
+
+  .szc-article-footer {
+    margin-top: 48px;
+    padding-top: 32px;
+    border-top: 1px solid #eaeaea;
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+  }
+
+  .szc-article-tags {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+
+  .szc-article-tags__label {
+    font-size: 13px;
+    font-weight: 600;
+    color: #111111;
+  }
+
+  .szc-article-tag__pill {
+    padding: 4px 12px;
+    font-size: 12px;
+    color: #555555;
+    background-color: #f4f4f4;
+    border-radius: 20px;
+    text-decoration: none;
+    transition: background-color 150ms ease;
+  }
+
+  .szc-article-tag__pill:hover {
+    background-color: #111111;
+    color: #ffffff;
+  }
+
+  .szc-article-back-wrap {
+    margin-top: 8px;
+  }
+
+  .szc-article-back-btn {
+    display: inline-flex;
+    align-items: center;
+    height: 42px;
+    padding: 0 20px;
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-decoration: none;
+  }
+
+  /* Comments */
+  .szc-article-comments {
+    margin-top: 56px;
+    padding-top: 40px;
+    border-top: 1px solid #eaeaea;
+  }
+
+  .szc-article-comments__title {
+    font-family: var(--szc-font-family-heading, Georgia, serif);
+    font-size: 22px;
+    margin-bottom: 24px;
+  }
+
+  .szc-article-comment-card {
+    padding: 20px;
+    background-color: #f9f9f9;
+    border-radius: 8px;
+    margin-bottom: 16px;
+  }
+
+  .szc-article-comment-card__header {
+    display: flex;
+    justify-content: space-between;
+    font-size: 13px;
+    margin-bottom: 8px;
+  }
+
+  .szc-article-comment-card__date {
+    color: #888888;
+  }
+
+  .szc-article-comment-card__body {
+    font-size: 14px;
+    color: #444444;
+    line-height: 1.5;
+  }
+
+  .szc-article-comment-form {
+    margin-top: 40px;
+  }
+
+  .szc-article-comment-form__title {
+    font-size: 18px;
+    margin-bottom: 20px;
+  }
+
+  .szc-article-form__grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px;
+  }
+
+  .szc-article-form__field {
+    margin-bottom: 16px;
+  }
+
+  .szc-article-form__label {
+    display: block;
+    font-size: 12px;
+    font-weight: 600;
+    margin-bottom: 6px;
+  }
+
+  .szc-article-form__input,
+  .szc-article-form__textarea {
+    width: 100%;
+    padding: 10px 14px;
+    font-size: 13px;
+    border: 1px solid #cccccc;
+    border-radius: 4px;
+    outline: none;
+    box-sizing: border-box;
+  }
+
+  .szc-article-form__input:focus,
+  .szc-article-form__textarea:focus {
+    border-color: #111111;
+  }
+
+  .szc-article-form__submit {
+    height: 44px;
+    padding: 0 28px;
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+  }
+
+  .szc-article-form__success {
+    color: #2e7d32;
+    font-size: 14px;
+    margin-bottom: 16px;
+  }
+
+  .szc-article-form__error {
+    color: #d32f2f;
+    font-size: 13px;
+    margin-bottom: 16px;
+  }
+
+  @media (max-width: 768px) {
+    .szc-article-header__title {
+      font-size: 26px;
+    }
+    .szc-article-form__grid {
+      grid-template-columns: 1fr;
+    }
+  }
+{% endstylesheet %}
 
 {% schema %}
 {
-  "name": "t:general.article",
+  "name": "Article",
+  "tag": "section",
+  "class": "section-article",
   "settings": []
 }
 {% endschema %}

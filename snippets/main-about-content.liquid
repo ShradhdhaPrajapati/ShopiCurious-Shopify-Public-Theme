@@ -1,0 +1,717 @@
+{% doc %}
+  Renders the About Us page content matching luxury design system with hero banner, value proposition cards, 2x2 collage story section with stats, and horizontal timeline journey.
+{% enddoc %}
+
+{%- assign show_hero = true -%}
+{%- if section.settings.show_hero == false -%}
+  {%- assign show_hero = false -%}
+{%- endif -%}
+
+{%- assign show_values = true -%}
+{%- if section.settings.show_values == false -%}
+  {%- assign show_values = false -%}
+{%- endif -%}
+
+{%- assign show_story = true -%}
+{%- if section.settings.show_story == false -%}
+  {%- assign show_story = false -%}
+{%- endif -%}
+
+{%- assign show_journey = true -%}
+{%- if section.settings.show_journey == false -%}
+  {%- assign show_journey = false -%}
+{%- endif -%}
+
+<div class="szc-about-page-wrapper">
+
+  <!-- 1. Full-Width Hero Section -->
+  {%- if show_hero -%}
+    {%- if section.settings.hero_image != blank -%}
+      {%- assign hero_bg_url = section.settings.hero_image | image_url: width: 2000 -%}
+      <div class="szc-about-hero-banner" style="--hero-bg-img: url('{{ hero_bg_url }}');">
+    {%- else -%}
+      <div class="szc-about-hero-banner szc-about-hero-banner--placeholder">
+    {%- endif -%}
+      <div class="szc-about-container">
+        
+        <!-- Breadcrumbs inside Hero Banner -->
+        <nav class="szc-about-breadcrumbs" aria-label="Breadcrumb">
+          <a href="{{ routes.root_url }}">Home</a>
+          <span class="szc-breadcrumb-sep">&gt;</span>
+          <span class="szc-breadcrumb-current">About Us</span>
+        </nav>
+
+        <div class="szc-about-hero__content">
+          <h1 class="szc-about-hero__title">{{ section.settings.hero_title | default: "About Us" }}</h1>
+          <p class="szc-about-hero__tagline">{{ section.settings.hero_tagline | default: "Timeless style. Thoughtful design. Created for every moment." }}</p>
+          <p class="szc-about-hero__desc">
+            {{ section.settings.hero_desc | default: "We believe fashion is more than just what you wear—it's how you express yourself. Our collections are crafted with care, inspired by elegance, and designed to empower." }}
+          </p>
+
+          <a href="{{ section.settings.hero_btn_link | default: '#OurStorySection' }}" class="szc-btn-about-hero">
+            <span>{{ section.settings.hero_btn_label | default: "OUR STORY" }}</span>
+          </a>
+        </div>
+
+      </div>
+    </div>
+  {%- endif -%}
+
+  <div class="szc-about-container">
+
+    <!-- 2. Value Proposition Cards (4 Column Grid Overlapping Banner) -->
+    {%- if show_values -%}
+      <div class="szc-about-values-grid">
+        
+        <!-- Card 1 -->
+        <div class="szc-about-val-card">
+          <div class="szc-about-val-card__icon-wrap">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round" class="szc-about-icon">
+              <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/>
+            </svg>
+          </div>
+          <h3 class="szc-about-val-card__title">{{ section.settings.val_1_title | default: "Timeless Design" }}</h3>
+          <p class="szc-about-val-card__desc">{{ section.settings.val_1_desc | default: "Styles that never go out of fashion" }}</p>
+        </div>
+
+        <!-- Card 2 -->
+        <div class="szc-about-val-card">
+          <div class="szc-about-val-card__icon-wrap">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round" class="szc-about-icon">
+              <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
+              <polyline points="9 12 11 14 15 10"/>
+            </svg>
+          </div>
+          <h3 class="szc-about-val-card__title">{{ section.settings.val_2_title | default: "Quality You Can Trust" }}</h3>
+          <p class="szc-about-val-card__desc">{{ section.settings.val_2_desc | default: "Premium materials, perfect finish" }}</p>
+        </div>
+
+        <!-- Card 3 -->
+        <div class="szc-about-val-card">
+          <div class="szc-about-val-card__icon-wrap">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round" class="szc-about-icon">
+              <path d="M11 20A7 7 0 0 1 9.8 6.1C15.5 5 17 4.48 19 2c1 2 2 4.18 2 8 0 5.5-4.78 10-10 10Z"/>
+              <path d="M2 21c0-3 1.85-5.36 5.08-6C9.5 14.52 12 13 13 12"/>
+            </svg>
+          </div>
+          <h3 class="szc-about-val-card__title">{{ section.settings.val_3_title | default: "Sustainable Approach" }}</h3>
+          <p class="szc-about-val-card__desc">{{ section.settings.val_3_desc | default: "Thoughtful choices for a better planet" }}</p>
+        </div>
+
+        <!-- Card 4 -->
+        <div class="szc-about-val-card">
+          <div class="szc-about-val-card__icon-wrap">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round" class="szc-about-icon">
+              <path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"/>
+              <line x1="3" y1="6" x2="21" y2="6"/>
+              <path d="M16 10a4 4 0 0 1-8 0"/>
+            </svg>
+          </div>
+          <h3 class="szc-about-val-card__title">{{ section.settings.val_4_title | default: "Customer First" }}</h3>
+          <p class="szc-about-val-card__desc">{{ section.settings.val_4_desc | default: "Your satisfaction is our priority" }}</p>
+        </div>
+
+      </div>
+    {%- endif -%}
+
+    <!-- 3. Our Story Section (2-Column Grid with 2x2 Collage + Text & Stats) -->
+    {%- if show_story -%}
+      <div class="szc-about-story-section" id="OurStorySection">
+        <div class="szc-about-story-grid">
+          
+          <!-- Left Column: 2x2 Image Collage -->
+          <div class="szc-about-story-collage">
+            <div class="szc-collage-item">
+              {%- if section.settings.story_img_1 != blank -%}
+                {% render 'image', image: section.settings.story_img_1, loading: 'lazy', class: 'szc-collage-img' %}
+              {%- else -%}
+                {{ 'lifestyle-1' | placeholder_svg_tag: 'szc-collage-img szc-placeholder-svg' }}
+              {%- endif -%}
+            </div>
+            <div class="szc-collage-item">
+              {%- if section.settings.story_img_2 != blank -%}
+                {% render 'image', image: section.settings.story_img_2, loading: 'lazy', class: 'szc-collage-img' %}
+              {%- else -%}
+                {{ 'lifestyle-2' | placeholder_svg_tag: 'szc-collage-img szc-placeholder-svg' }}
+              {%- endif -%}
+            </div>
+            <div class="szc-collage-item">
+              {%- if section.settings.story_img_3 != blank -%}
+                {% render 'image', image: section.settings.story_img_3, loading: 'lazy', class: 'szc-collage-img' %}
+              {%- else -%}
+                {{ 'collection-1' | placeholder_svg_tag: 'szc-collage-img szc-placeholder-svg' }}
+              {%- endif -%}
+            </div>
+            <div class="szc-collage-item">
+              {%- if section.settings.story_img_4 != blank -%}
+                {% render 'image', image: section.settings.story_img_4, loading: 'lazy', class: 'szc-collage-img' %}
+              {%- else -%}
+                {{ 'collection-2' | placeholder_svg_tag: 'szc-collage-img szc-placeholder-svg' }}
+              {%- endif -%}
+            </div>
+          </div>
+
+          <!-- Right Column: Story Text Content & 3 Key Stats -->
+          <div class="szc-about-story-content">
+            <h2 class="szc-about-story__title">{{ section.settings.story_title | default: "Our Story" }}</h2>
+            
+            <p class="szc-about-story__text">
+              {{ section.settings.story_p1 | default: "Founded with a simple mission—to create fashion that blends timeless elegance with everyday comfort. What began as a small idea has grown into a brand trusted by thousands of customers worldwide." }}
+            </p>
+            
+            <p class="szc-about-story__text">
+              {{ section.settings.story_p2 | default: "We collaborate with skilled artisans and use high-quality materials to create pieces that are made to last and loved for years to come." }}
+            </p>
+
+            <!-- 3 Key Stat Items -->
+            <div class="szc-about-stats-row">
+              <div class="szc-stat-item">
+                <div class="szc-stat-value">{{ section.settings.stat_1_num | default: "20K+" }}</div>
+                <div class="szc-stat-label">{{ section.settings.stat_1_label | default: "Happy Customers" }}</div>
+              </div>
+
+              <div class="szc-stat-item">
+                <div class="szc-stat-icon-val">
+                  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" class="szc-stat-icon"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/></svg>
+                  <span class="szc-stat-value">{{ section.settings.stat_2_num | default: "150+" }}</span>
+                </div>
+                <div class="szc-stat-label">{{ section.settings.stat_2_label | default: "Premium Products" }}</div>
+              </div>
+
+              <div class="szc-stat-item">
+                <div class="szc-stat-icon-val">
+                  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" class="szc-stat-icon"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg>
+                  <span class="szc-stat-value">{{ section.settings.stat_3_num | default: "50+" }}</span>
+                </div>
+                <div class="szc-stat-label">{{ section.settings.stat_3_label | default: "Countries Served" }}</div>
+              </div>
+            </div>
+
+          </div>
+
+        </div>
+      </div>
+    {%- endif -%}
+
+    <!-- 4. Our Journey Horizontal Timeline Section -->
+    {%- if show_journey -%}
+      <div class="szc-about-journey-section">
+        <h2 class="szc-about-journey__title">{{ section.settings.journey_title | default: "Our Journey" }}</h2>
+
+        <div class="szc-about-timeline-grid">
+          {%- if section.blocks.size > 0 -%}
+            {%- for block in section.blocks -%}
+              <div class="szc-timeline-step" {{ block.shopify_attributes }}>
+                <div class="szc-timeline-badge-wrap">
+                  <div class="szc-timeline-icon-badge">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="12" cy="12" r="10"/><polygon points="12 8 8 12 12 16 16 12 12 8"/></svg>
+                  </div>
+                </div>
+                <div class="szc-timeline-year">{{ block.settings.year }}</div>
+                <h3 class="szc-timeline-step-title">{{ block.settings.title }}</h3>
+                <p class="szc-timeline-step-desc">{{ block.settings.desc }}</p>
+              </div>
+            {%- endfor -%}
+          {%- else -%}
+            <!-- Default Built-in 4-Step Timeline -->
+            <div class="szc-timeline-step">
+              <div class="szc-timeline-badge-wrap">
+                <div class="szc-timeline-icon-badge">
+                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/></svg>
+                </div>
+              </div>
+              <div class="szc-timeline-year">2020+</div>
+              <h3 class="szc-timeline-step-title">The Beginning</h3>
+              <p class="szc-timeline-step-desc">Our brand was founded with a vision to redefine everyday fashion.</p>
+            </div>
+
+            <div class="szc-timeline-step">
+              <div class="szc-timeline-badge-wrap">
+                <div class="szc-timeline-icon-badge">
+                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/></svg>
+                </div>
+              </div>
+              <div class="szc-timeline-year">2021</div>
+              <h3 class="szc-timeline-step-title">First Collection</h3>
+              <p class="szc-timeline-step-desc">Launched our first collection focused on timeless wardrobe essentials.</p>
+            </div>
+
+            <div class="szc-timeline-step">
+              <div class="szc-timeline-badge-wrap">
+                <div class="szc-timeline-icon-badge">
+                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+                </div>
+              </div>
+              <div class="szc-timeline-year">2022</div>
+              <h3 class="szc-timeline-step-title">Growing Together</h3>
+              <p class="szc-timeline-step-desc">Expanded our reach and became a trusted name in fashion.</p>
+            </div>
+
+            <div class="szc-timeline-step">
+              <div class="szc-timeline-badge-wrap">
+                <div class="szc-timeline-icon-badge">
+                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>
+                </div>
+              </div>
+              <div class="szc-timeline-year">2024 &amp; Beyond</div>
+              <h3 class="szc-timeline-step-title">Future Forward</h3>
+              <p class="szc-timeline-step-desc">Continuing our journey with sustainability, innovation, and you.</p>
+            </div>
+          {%- endif -%}
+        </div>
+      </div>
+    {%- endif -%}
+
+  </div>
+</div>
+
+<style>
+  .szc-about-page-wrapper {
+    background-color: #faf9f6;
+    padding-bottom: 80px;
+    font-family: inherit;
+    color: #111111;
+  }
+
+  .szc-about-container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 24px;
+  }
+
+  /* 1. Full-Width Hero Section */
+  .szc-about-hero-banner {
+    position: relative;
+    width: 100%;
+    min-height: 440px;
+    background-image: var(--hero-bg-img);
+    background-size: cover;
+    background-position: center right;
+    background-repeat: no-repeat;
+    background-color: #f5efe6;
+    padding: 70px 0 120px;
+    box-sizing: border-box;
+  }
+
+  .szc-about-hero-banner--placeholder {
+    background: linear-gradient(135deg, #1c1917 0%, #292524 50%, #44403c 100%);
+    color: #ffffff;
+  }
+
+  .szc-about-hero-banner--placeholder .szc-about-breadcrumbs,
+  .szc-about-hero-banner--placeholder .szc-about-breadcrumbs a,
+  .szc-about-hero-banner--placeholder .szc-breadcrumb-current,
+  .szc-about-hero-banner--placeholder .szc-about-hero__title,
+  .szc-about-hero-banner--placeholder .szc-about-hero__tagline,
+  .szc-about-hero-banner--placeholder .szc-about-hero__desc {
+    color: #ffffff;
+  }
+
+  .szc-about-hero-banner::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(90deg, rgba(245, 239, 230, 0.96) 0%, rgba(245, 239, 230, 0.88) 50%, rgba(245, 239, 230, 0.15) 100%);
+    z-index: 1;
+    pointer-events: none;
+  }
+
+  .szc-about-hero-banner--placeholder::before {
+    background: linear-gradient(90deg, rgba(28, 25, 23, 0.92) 0%, rgba(28, 25, 23, 0.75) 50%, rgba(28, 25, 23, 0.2) 100%);
+  }
+
+  .szc-about-hero-banner .szc-about-container {
+    position: relative;
+    z-index: 2;
+  }
+
+  /* Breadcrumbs */
+  .szc-about-breadcrumbs {
+    font-size: 13px;
+    color: #666666;
+    margin-bottom: 32px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .szc-about-breadcrumbs a {
+    color: #444444;
+    text-decoration: none;
+    transition: color 150ms ease;
+  }
+
+  .szc-about-breadcrumbs a:hover {
+    color: #000000;
+  }
+
+  .szc-breadcrumb-sep {
+    font-size: 11px;
+    color: #999999;
+  }
+
+  .szc-breadcrumb-current {
+    font-weight: 600;
+    color: #111111;
+  }
+
+  .szc-about-hero__content {
+    max-width: 520px;
+  }
+
+  .szc-about-hero__title {
+    font-family: var(--szc-font-family-heading, Georgia, 'Playfair Display', serif);
+    font-size: 46px;
+    font-weight: 500;
+    line-height: 1.15;
+    margin: 0 0 12px;
+    color: #111111;
+    letter-spacing: -0.01em;
+  }
+
+  .szc-about-hero__tagline {
+    font-size: 16px;
+    font-weight: 600;
+    color: #222222;
+    margin: 0 0 14px;
+    line-height: 1.4;
+  }
+
+  .szc-about-hero__desc {
+    font-size: 14px;
+    line-height: 1.6;
+    color: #555555;
+    margin: 0 0 28px;
+  }
+
+  .szc-btn-about-hero {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    background-color: #111111;
+    color: #ffffff;
+    padding: 14px 36px;
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    text-decoration: none;
+    border-radius: 6px;
+    transition: background-color 150ms ease, transform 150ms ease;
+  }
+
+  .szc-about-hero-banner--placeholder .szc-btn-about-hero {
+    background-color: #ffffff;
+    color: #111111;
+  }
+
+  .szc-btn-about-hero:hover {
+    background-color: #000000;
+    transform: translateY(-1px);
+  }
+
+  .szc-about-hero-banner--placeholder .szc-btn-about-hero:hover {
+    background-color: #f0f0f0;
+  }
+
+  /* 2. Value Proposition Cards Grid (Overlapping Banner) */
+  .szc-about-values-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 20px;
+    margin-top: -18px;
+    margin-bottom: 56px;
+    position: relative;
+    z-index: 3;
+  }
+
+  .szc-about-val-card {
+    background-color: #ffffff;
+    border: 1px solid #eee8df;
+    border-radius: 16px;
+    padding: 28px 20px;
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.04);
+    transition: transform 200ms ease, box-shadow 200ms ease;
+  }
+
+  .szc-about-val-card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 12px 32px rgba(0,0,0,0.07);
+  }
+
+  .szc-about-val-card__icon-wrap {
+    width: 48px;
+    height: 48px;
+    border-radius: 50%;
+    background-color: #fdf8f2;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 16px;
+    color: #c88344;
+  }
+
+  .szc-about-icon {
+    width: 24px;
+    height: 24px;
+  }
+
+  .szc-about-val-card__title {
+    font-size: 15px;
+    font-weight: 700;
+    margin: 0 0 6px;
+    color: #111111;
+  }
+
+  .szc-about-val-card__desc {
+    font-size: 12px;
+    color: #666666;
+    margin: 0;
+    line-height: 1.4;
+  }
+
+  /* 3. Our Story Section (2-Column Grid) */
+  .szc-about-story-section {
+    margin-bottom: 64px;
+  }
+
+  .szc-about-story-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 48px;
+    align-items: center;
+  }
+
+  .szc-about-story-collage {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 14px;
+  }
+
+  .szc-collage-item {
+    width: 100%;
+    aspect-ratio: 1 / 1;
+    border-radius: 14px;
+    overflow: hidden;
+    background-color: #eee8df;
+  }
+
+  .szc-collage-img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+    transition: transform 300ms ease;
+  }
+
+  .szc-placeholder-svg {
+    background-color: #f4efe9;
+    fill: #d6cbbe;
+  }
+
+  .szc-collage-item:hover .szc-collage-img {
+    transform: scale(1.04);
+  }
+
+  .szc-about-story-content {
+    padding-left: 12px;
+  }
+
+  .szc-about-story__title {
+    font-family: var(--szc-font-family-heading, Georgia, 'Playfair Display', serif);
+    font-size: 38px;
+    font-weight: 500;
+    margin: 0 0 20px;
+    color: #111111;
+  }
+
+  .szc-about-story__text {
+    font-size: 14px;
+    line-height: 1.65;
+    color: #555555;
+    margin: 0 0 20px;
+  }
+
+  /* 3 Key Stats Row */
+  .szc-about-stats-row {
+    display: flex;
+    align-items: center;
+    gap: 36px;
+    margin-top: 32px;
+    padding-top: 24px;
+    border-top: 1px solid #eee8df;
+  }
+
+  .szc-stat-item {
+    display: flex;
+    flex-direction: column;
+  }
+
+  .szc-stat-icon-val {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+
+  .szc-stat-icon {
+    color: #c88344;
+  }
+
+  .szc-stat-value {
+    font-family: var(--szc-font-family-heading, Georgia, serif);
+    font-size: 28px;
+    font-weight: 700;
+    color: #111111;
+    line-height: 1;
+  }
+
+  .szc-stat-label {
+    font-size: 12px;
+    color: #666666;
+    margin-top: 6px;
+    font-weight: 500;
+  }
+
+  /* 4. Our Journey Horizontal Timeline */
+  .szc-about-journey-section {
+    background-color: #ffffff;
+    border: 1px solid #eee8df;
+    border-radius: 20px;
+    padding: 44px 40px 48px;
+    box-shadow: 0 2px 12px rgba(0,0,0,0.02);
+  }
+
+  .szc-about-journey__title {
+    font-family: var(--szc-font-family-heading, Georgia, 'Playfair Display', serif);
+    font-size: 32px;
+    font-weight: 500;
+    margin: 0 0 36px;
+    color: #111111;
+    text-align: center;
+  }
+
+  .szc-about-timeline-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 24px;
+    position: relative;
+  }
+
+  .szc-about-timeline-grid::before {
+    content: '';
+    position: absolute;
+    top: 24px;
+    left: 10%;
+    right: 10%;
+    height: 1px;
+    background: #e5ded4;
+    z-index: 1;
+  }
+
+  .szc-timeline-step {
+    text-align: center;
+    position: relative;
+    z-index: 2;
+  }
+
+  .szc-timeline-badge-wrap {
+    display: flex;
+    justify-content: center;
+    margin-bottom: 16px;
+  }
+
+  .szc-timeline-icon-badge {
+    width: 48px;
+    height: 48px;
+    border-radius: 50%;
+    background-color: #ffffff;
+    border: 1px solid #c88344;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #c88344;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+  }
+
+  .szc-timeline-year {
+    font-size: 13px;
+    font-weight: 700;
+    color: #c88344;
+    margin-bottom: 6px;
+    letter-spacing: 0.04em;
+  }
+
+  .szc-timeline-step-title {
+    font-size: 15px;
+    font-weight: 700;
+    margin: 0 0 8px;
+    color: #111111;
+  }
+
+  .szc-timeline-step-desc {
+    font-size: 12px;
+    line-height: 1.5;
+    color: #666666;
+    margin: 0;
+  }
+
+  /* Responsive Media Queries */
+  @media (max-width: 991px) {
+    .szc-about-hero-banner {
+      min-height: 380px;
+      padding-bottom: 100px;
+    }
+
+    .szc-about-hero__title {
+      font-size: 36px;
+    }
+
+    .szc-about-values-grid {
+      grid-template-columns: repeat(2, 1fr);
+      margin-top: -40px;
+    }
+
+    .szc-about-story-grid {
+      grid-template-columns: 1fr;
+      gap: 32px;
+    }
+
+    .szc-about-story-content {
+      padding-left: 0;
+    }
+
+    .szc-about-timeline-grid {
+      grid-template-columns: repeat(2, 1fr);
+      gap: 32px 24px;
+    }
+
+    .szc-about-timeline-grid::before {
+      display: none;
+    }
+  }
+
+  @media (max-width: 576px) {
+    .szc-about-values-grid {
+      grid-template-columns: 1fr;
+    }
+
+    .szc-about-timeline-grid {
+      grid-template-columns: 1fr;
+    }
+
+    .szc-about-stats-row {
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 20px;
+    }
+
+    .szc-about-journey-section {
+      padding: 28px 20px;
+    }
+  }
+</style>

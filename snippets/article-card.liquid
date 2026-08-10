@@ -1,0 +1,88 @@
+{% doc %}
+  Renders a luxury fashion article card for blog listing and article search results.
+
+  @param {article} article - The article object to render
+  @param {boolean} [show_excerpt] - Whether to show the article excerpt (default: true)
+  @param {boolean} [show_date] - Whether to show the published date (default: true)
+  @param {boolean} [show_read_time] - Whether to show estimated reading time (default: true)
+
+  @example
+  {% render 'article-card', article: article %}
+{% enddoc %}
+
+{%- liquid
+  assign show_excerpt_val = show_excerpt
+  if show_excerpt_val == nil
+    assign show_excerpt_val = true
+  endif
+
+  assign show_date_val = show_date
+  if show_date_val == nil
+    assign show_date_val = true
+  endif
+
+  assign show_read_time_val = show_read_time
+  if show_read_time_val == nil
+    assign show_read_time_val = true
+  endif
+-%}
+
+<article class="szc-article-card">
+  <a href="{{ article.url }}" class="szc-article-card__link-wrap" aria-label="{{ article.title | escape }}">
+    <!-- Image Wrapper -->
+    <div class="szc-article-card__media">
+      {%- if article.image -%}
+        {{ article.image | image_url: width: 800 | image_tag: class: 'szc-article-card__img', loading: 'lazy', alt: article.title }}
+      {%- else -%}
+        <div class="szc-article-card__placeholder">
+          {{ 'lifestyle-2' | placeholder_svg_tag: 'szc-placeholder-svg' }}
+        </div>
+      {%- endif -%}
+    </div>
+
+    <!-- Content Area -->
+    <div class="szc-article-card__content">
+      <!-- Tag / Category -->
+      <span class="szc-article-card__tag">
+        {%- if article.tags.size > 0 -%}
+          {{ article.tags.first | upcase }}
+        {%- else -%}
+          FASHION
+        {%- endif -%}
+      </span>
+
+      <!-- Title -->
+      <h2 class="szc-article-card__title">{{ article.title }}</h2>
+
+      <!-- Excerpt -->
+      {%- if show_excerpt_val -%}
+        <p class="szc-article-card__excerpt">
+          {%- if article.excerpt.size > 0 -%}
+            {{ article.excerpt | strip_html | truncatewords: 18 }}
+          {%- else -%}
+            {{ article.content | strip_html | truncatewords: 18 }}
+          {%- endif -%}
+        </p>
+      {%- endif -%}
+
+      <!-- Footer Meta (Date + Read Time) -->
+      <div class="szc-article-card__meta">
+        {%- if show_date_val -%}
+          <time datetime="{{ article.published_at | date: '%Y-%m-%d' }}" class="szc-article-card__date">
+            {{ article.published_at | date: "%b %d, %Y" }}
+          </time>
+        {%- endif -%}
+
+        {%- if show_date_val and show_read_time_val -%}
+          <span class="szc-article-card__dot" aria-hidden="true">•</span>
+        {%- endif -%}
+
+        {%- if show_read_time_val -%}
+          {%- assign words = article.content | strip_html | split: ' ' | size -%}
+          {%- assign read_mins = words | divided_by: 200 | at_least: 1 -%}
+          <span class="szc-article-card__read-time">{{ read_mins }} min read</span>
+        {%- endif -%}
+      </div>
+    </div>
+  </a>
+</article>

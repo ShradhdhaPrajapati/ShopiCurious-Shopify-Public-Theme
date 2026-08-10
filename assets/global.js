@@ -122,27 +122,37 @@
    * Universal Product Image Finder (Bulletproof)
    * Resolves the primary visible product image from any DOM node, card, section, modal, or img element.
    */
-  ShopziCurious.findProductImage = function (container) {
-    if (!container) {
-      return document.querySelector('.szc-main-product__slider-slide.is-active img, .szc-product-card__image--primary img, #QvStageImg, .szc-image-wrapper img, img');
+  /**
+   * Universal Product Image Finder (Bulletproof)
+   * Resolves the primary visible product image from any DOM node, card, section, modal, or img element.
+   */
+  ShopziCurious.findProductImage = function (source) {
+    if (!source) return null;
+
+    // 1. Direct Image Element check
+    if (source instanceof HTMLElement && source.tagName === 'IMG') {
+      return source;
     }
 
-    if (container instanceof HTMLElement && container.tagName === 'IMG') {
-      return container;
-    }
+    if (source instanceof HTMLElement) {
+      // 2. Identify the specific product container wrapper associated with the click
+      const productContainer = source.closest(
+        'product-card, .szc-product-card, .szc-card-horizontal, .szc-wishlist-card, .szc-main-product, .szc-qv-grid, [data-product-id], [data-product-handle], form'
+      ) || source;
 
-    if (container instanceof HTMLElement) {
+      // 3. Selectors targeting real <img> elements inside the specific product container
       const selectors = [
-        '.szc-main-product__slider-slide.is-active img',
-        '.szc-main-product__slider-img',
-        '#QvStageImg',
-        '.szc-qv-stage-img',
-        '.szc-quick-view__media img',
-        '.szc-product-card__image--primary img',
-        '.szc-wishlist-card__image',
-        '.szc-wishlist-card img',
-        '.szc-card-horizontal__image img',
+        '[data-sticky-img]',
+        '.szc-sticky-atc-bar__img',
+        'img.szc-product-card__image--primary',
+        'img.szc-product-card__image',
         '.szc-product-card__media-container img',
+        '.szc-main-product__slider-slide.is-active img',
+        'img.szc-main-product__slider-img',
+        '#QvStageImg',
+        'img.szc-qv-stage-img',
+        'img.szc-wishlist-card__image',
+        'img.szc-card-horizontal__image',
         '.szc-image-wrapper img',
         'img.szc-image',
         '.product-single__media img',
@@ -151,17 +161,35 @@
       ];
 
       for (const sel of selectors) {
-        const imgs = container.querySelectorAll(sel);
+        const imgs = productContainer.querySelectorAll(sel);
         for (const img of imgs) {
           if (img && (img.src || img.getAttribute('src'))) {
-            return img;
+            const rect = img.getBoundingClientRect();
+            if (rect.width > 0 && rect.height > 0) {
+              return img;
+            }
+          }
+        }
+      }
+
+      // 4. Fallback search up to section if source was inside product info or form
+      const mainSection = source.closest('.szc-main-product, [data-section-type="main-product"], section');
+      if (mainSection && mainSection !== productContainer) {
+        for (const sel of selectors) {
+          const imgs = mainSection.querySelectorAll(sel);
+          for (const img of imgs) {
+            if (img && (img.src || img.getAttribute('src'))) {
+              const rect = img.getBoundingClientRect();
+              if (rect.width > 0 && rect.height > 0) {
+                return img;
+              }
+            }
           }
         }
       }
     }
 
-    // Fallback search across document
-    return document.querySelector('.szc-main-product__slider-slide.is-active img, .szc-product-card__image--primary img, .szc-wishlist-card__image, #QvStageImg, .szc-image-wrapper img, img');
+    return null;
   };
 
   /**
@@ -207,43 +235,45 @@
     const sourceImg = ShopziCurious.findProductImage(source);
     const cartIcon = ShopziCurious.getHeaderCartIcon();
 
-    if (!sourceImg) {
+    let sourceElement = sourceImg;
+    if (!sourceElement && source instanceof HTMLElement) {
+      sourceElement = source;
+    }
+
+    if (!sourceElement) {
       ShopziCurious.bounceCartBadge();
       return;
     }
 
-    let sourceRect = sourceImg.getBoundingClientRect();
+    const sourceRect = sourceElement.getBoundingClientRect();
     if (sourceRect.width === 0 || sourceRect.height === 0) {
-      if (source instanceof HTMLElement) {
-        sourceRect = source.getBoundingClientRect();
-      }
-    }
-    if (sourceRect.width === 0 || sourceRect.height === 0) {
-      sourceRect = {
-        top: window.innerHeight / 2 - 50,
-        left: window.innerWidth / 2 - 50,
-        width: 100,
-        height: 100
-      };
+      ShopziCurious.bounceCartBadge();
+      return;
     }
 
-    let cartRect = cartIcon ? cartIcon.getBoundingClientRect() : null;
+    const cartRect = cartIcon ? cartIcon.getBoundingClientRect() : null;
     let targetX = window.innerWidth - 60;
     let targetY = 20;
 
     if (cartRect && cartRect.width > 0 && cartRect.height > 0) {
-      targetX = cartRect.left + (cartRect.width / 2) - 20;
-      targetY = Math.max(10, cartRect.top + (cartRect.height / 2) - 20);
+      targetX = cartRect.left + (cartRect.width / 2) - 18;
+      targetY = Math.max(10, cartRect.top + (cartRect.height / 2) - 18);
     }
 
-    const imgUrl = sourceImg.src || sourceImg.getAttribute('src');
-    if (!imgUrl) {
-      ShopziCurious.bounceCartBadge();
-      return;
+    let imgUrl = null;
+    if (sourceImg) {
+      imgUrl = sourceImg.src || sourceImg.getAttribute('src');
+    }
+    if (!imgUrl && source instanceof HTMLElement) {
+      const parentCard = source.closest('.szc-product-card, .szc-card-horizontal, .szc-main-product');
+      if (parentCard) {
+        const anyImg = parentCard.querySelector('img');
+        if (anyImg) imgUrl = anyImg.src || anyImg.getAttribute('src');
+      }
     }
 
     const flyImg = document.createElement('img');
-    flyImg.src = imgUrl;
+    if (imgUrl) flyImg.src = imgUrl;
     flyImg.className = 'szc-fly-to-cart-clone';
     flyImg.style.cssText = `
       position: fixed;
@@ -258,17 +288,21 @@
       box-shadow: 0 10px 30px rgba(0,0,0,0.25);
       transition: all 650ms cubic-bezier(0.2, 0.8, 0.2, 1);
       opacity: 0.95;
+      background-color: #ffffff;
     `;
 
     document.body.appendChild(flyImg);
-    void flyImg.offsetWidth; // force browser layout calculation
 
-    flyImg.style.top = `${targetY}px`;
-    flyImg.style.left = `${targetX}px`;
-    flyImg.style.width = '40px';
-    flyImg.style.height = '40px';
-    flyImg.style.opacity = '0.15';
-    flyImg.style.transform = 'scale(0.3) rotate(12deg)';
+    requestAnimationFrame(() => {
+      requestAnimationFrame(() => {
+        flyImg.style.top = `${targetY}px`;
+        flyImg.style.left = `${targetX}px`;
+        flyImg.style.width = '36px';
+        flyImg.style.height = '36px';
+        flyImg.style.opacity = '0.15';
+        flyImg.style.transform = 'scale(0.3) rotate(12deg)';
+      });
+    });
 
     setTimeout(() => {
       if (flyImg.parentNode) {
@@ -481,6 +515,98 @@
       }
     });
 
+    // Global Buy Now Handler (Direct Checkout Redirect)
+    document.addEventListener('click', async (e) => {
+      const buyNowBtn = e.target.closest('.szc-main-product__buy-now-btn, [data-buy-now-btn], [data-sticky-buy-now-btn], #QvBuyNowBtn, .szc-qv-buy-btn');
+      if (!buyNowBtn) return;
+
+      e.preventDefault();
+      e.stopPropagation();
+
+      if (buyNowBtn.classList.contains('szc-btn--loading') || buyNowBtn.classList.contains('is-loading')) return;
+
+      // Trigger Fly to Cart animation starting from exact visible product image
+      const productContainer = buyNowBtn.closest('.szc-main-product, product-card, .szc-product-card, section, modal-dialog') || buyNowBtn;
+      if (window.ShopziCurious && window.ShopziCurious.animateFlyToCart) {
+        window.ShopziCurious.animateFlyToCart(productContainer);
+      }
+
+      // Add loading state and show PROCESSING... text in white on dark background
+      buyNowBtn.classList.add('szc-btn--loading', 'is-loading');
+      buyNowBtn.setAttribute('aria-disabled', 'true');
+      buyNowBtn.disabled = true;
+
+      const textSpan = buyNowBtn.querySelector('.szc-btn-text') || buyNowBtn.querySelector('span');
+      const originalText = textSpan ? textSpan.textContent : buyNowBtn.textContent;
+      if (textSpan) {
+        textSpan.textContent = 'PROCESSING...';
+        textSpan.style.color = '#ffffff';
+        textSpan.style.visibility = 'visible';
+        textSpan.style.opacity = '1';
+      }
+
+      const form = buyNowBtn.closest('form, product-form');
+      let variantId = null;
+      let quantity = 1;
+
+      if (form) {
+        const idInput = form.querySelector('[name="id"]');
+        if (idInput) variantId = idInput.value;
+        const qtyInput = form.querySelector('[name="quantity"]');
+        if (qtyInput) quantity = parseInt(qtyInput.value, 10) || 1;
+      }
+
+      if (!variantId && buyNowBtn.dataset.variantId) {
+        variantId = buyNowBtn.dataset.variantId;
+      }
+
+      if (!variantId) {
+        const section = buyNowBtn.closest('section, modal-dialog, .szc-qv-grid, .szc-main-product');
+        if (section) {
+          const idInput = section.querySelector('[name="id"]');
+          if (idInput) variantId = idInput.value;
+        }
+      }
+
+      if (!variantId) {
+        console.error('[ShopziCurious Buy Now Error] Variant ID not found');
+        buyNowBtn.classList.remove('szc-btn--loading', 'is-loading');
+        buyNowBtn.removeAttribute('aria-disabled');
+        buyNowBtn.disabled = false;
+        if (textSpan) textSpan.textContent = originalText;
+        return;
+      }
+
+      try {
+        const res = await fetch('/cart/add.js', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'Accept': 'application/json',
+            'X-Requested-With': 'XMLHttpRequest'
+          },
+          body: JSON.stringify({ items: [{ id: parseInt(variantId, 10), quantity }] })
+        });
+
+        const data = await res.json();
+        if (res.status === 422 || data.status) {
+          throw new Error(data.description || 'Could not process Buy Now');
+        }
+
+        // Direct redirect to checkout
+        window.location.href = '/checkout';
+      } catch (err) {
+        console.error('[ShopziCurious Buy Now Error]', err);
+        if (window.ShopziCurious && window.ShopziCurious.showToast) {
+          window.ShopziCurious.showToast(err.message || 'Error processing Buy Now', 'error');
+        }
+        buyNowBtn.classList.remove('szc-btn--loading', 'is-loading');
+        buyNowBtn.removeAttribute('aria-disabled');
+        buyNowBtn.disabled = false;
+        if (textSpan) textSpan.textContent = originalText;
+      }
+    });
+
     // Bind Skip to Content Smooth Scroll & Focus
     document.addEventListener('click', (e) => {
       const skipLink = e.target.closest('.szc-skip-to-content, .szc-skip-link');
@@ -558,8 +684,21 @@
         }
       } finally {
         if (submitBtn) {
-          submitBtn.classList.remove('szc-btn--loading');
+          submitBtn.classList.remove('szc-btn--loading', 'is-loading');
           submitBtn.removeAttribute('aria-disabled');
+          if (!submitBtn.hasAttribute('disabled') || submitBtn.textContent.trim() !== 'SOLD OUT') {
+            submitBtn.disabled = false;
+          }
+        }
+        const stickyBtn = document.querySelector('[data-sticky-atc-btn]');
+        if (stickyBtn) {
+          stickyBtn.classList.remove('szc-btn--loading', 'is-loading');
+          stickyBtn.removeAttribute('aria-disabled');
+          const textSpan = stickyBtn.querySelector('.szc-btn-text') || stickyBtn.querySelector('span');
+          if (textSpan && textSpan.textContent.trim() !== 'SOLD OUT') {
+            stickyBtn.disabled = false;
+            textSpan.textContent = 'ADD TO BAG';
+          }
         }
       }
     });

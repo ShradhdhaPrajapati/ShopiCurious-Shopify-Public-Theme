@@ -1,0 +1,137 @@
+{% comment %}
+  Predictive Search Section Template - Returns HTML for 3-column popover modal results.
+{% endcomment %}
+
+{%- if predictive_search.performed -%}
+  <div id="PredictiveSearchResults" class="szc-search-results-grid">
+    
+    <!-- COLUMN 1: SUGGESTIONS -->
+    <div class="szc-search-col szc-search-col--suggestions">
+      <h4 class="szc-search-col__title">SUGGESTIONS</h4>
+      <ul class="szc-suggestions-list" id="SearchSuggestionsList">
+        {%- if predictive_search.resources.queries.size > 0 -%}
+          {%- for query in predictive_search.resources.queries -%}
+            <li>
+              <a href="{{ query.url }}" class="szc-suggestion-link">
+                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+                <span>{{ query.text }}</span>
+              </a>
+            </li>
+          {%- endfor -%}
+        {%- endif -%}
+      </ul>
+    </div>
+
+    <!-- COLUMN 2: POPULAR PRODUCTS -->
+    <div class="szc-search-col szc-search-col--products">
+      <h4 class="szc-search-col__title">POPULAR PRODUCTS</h4>
+      <div class="szc-search-products-list" id="SearchProductsList">
+        {%- if predictive_search.resources.products.size > 0 -%}
+          {%- for product in predictive_search.resources.products -%}
+            <a href="{{ product.url }}" class="szc-search-product-card">
+              <div class="szc-search-product-thumb">
+                {%- if product.featured_media != blank -%}
+                  {{ product.featured_media | image_url: width: 140 | image_tag: loading: 'lazy', alt: product.title }}
+                {%- else -%}
+                  <img src="{{ 'about-story-1.png' | asset_url }}" alt="{{ product.title }}" width="70" height="85" loading="lazy">
+                {%- endif -%}
+              </div>
+              <div class="szc-search-product-info">
+                <h5 class="szc-search-product-title">{{ product.title }}</h5>
+                <div class="szc-search-product-variant">
+                  {%- if product.first_available_variant.title != 'Default Title' -%}
+                    {{ product.first_available_variant.title }}
+                  {%- else -%}
+                    {{ product.vendor | default: 'Standard' }}
+                  {%- endif -%}
+                </div>
+                <div class="szc-search-product-price">{{ product.price | money }}</div>
+              </div>
+            </a>
+          {%- endfor -%}
+        {%- else -%}
+          {%- for product in collections['all'].products limit: 4 -%}
+            <a href="{{ product.url }}" class="szc-search-product-card">
+              <div class="szc-search-product-thumb">
+                {%- if product.featured_media != blank -%}
+                  {{ product.featured_media | image_url: width: 140 | image_tag: loading: 'lazy', alt: product.title }}
+                {%- else -%}
+                  <img src="{{ 'about-story-1.png' | asset_url }}" alt="{{ product.title }}" width="70" height="85" loading="lazy">
+                {%- endif -%}
+              </div>
+              <div class="szc-search-product-info">
+                <h5 class="szc-search-product-title">{{ product.title }}</h5>
+                <div class="szc-search-product-variant">
+                  {%- if product.first_available_variant.title != 'Default Title' -%}
+                    {{ product.first_available_variant.title }}
+                  {%- else -%}
+                    {{ product.vendor | default: 'Standard' }}
+                  {%- endif -%}
+                </div>
+                <div class="szc-search-product-price">{{ product.price | money }}</div>
+              </div>
+            </a>
+          {%- endfor -%}
+        {%- endif -%}
+      </div>
+    </div>
+
+    <!-- COLUMN 3: COLLECTIONS -->
+    <div class="szc-search-col szc-search-col--collections">
+      <h4 class="szc-search-col__title">COLLECTIONS</h4>
+      <div class="szc-search-collections-list" id="SearchCollectionsList">
+        {%- if predictive_search.resources.collections.size > 0 -%}
+          {%- for collection in predictive_search.resources.collections -%}
+            <a href="{{ collection.url }}" class="szc-search-collection-card">
+              <div class="szc-search-collection-thumb">
+                {%- if collection.featured_image != blank -%}
+                  {{ collection.featured_image | image_url: width: 160 | image_tag: loading: 'lazy', alt: collection.title }}
+                {%- elsif collection.products.first.featured_media != blank -%}
+                  {{ collection.products.first.featured_media | image_url: width: 160 | image_tag: loading: 'lazy', alt: collection.title }}
+                {%- else -%}
+                  <img src="{{ 'about-story-1.png' | asset_url }}" alt="{{ collection.title }}" width="90" height="65" loading="lazy">
+                {%- endif -%}
+              </div>
+              <div class="szc-search-collection-info">
+                <h5 class="szc-search-collection-title">{{ collection.title }}</h5>
+                <div class="szc-search-collection-count">{{ collection.all_products_count | default: 24 }} items</div>
+              </div>
+            </a>
+          {%- endfor -%}
+        {%- else -%}
+          {%- assign coll_count = 0 -%}
+          {%- for collection in collections -%}
+            {%- unless collection.handle == 'frontpage' -%}
+              {%- if coll_count < 4 -%}
+                {%- assign coll_count = coll_count | plus: 1 -%}
+                <a href="{{ collection.url }}" class="szc-search-collection-card">
+                  <div class="szc-search-collection-thumb">
+                    {%- if collection.featured_image != blank -%}
+                      {{ collection.featured_image | image_url: width: 180 | image_tag: loading: 'lazy', alt: collection.title }}
+                    {%- elsif collection.products.first.featured_media != blank -%}
+                      {{ collection.products.first.featured_media | image_url: width: 180 | image_tag: loading: 'lazy', alt: collection.title }}
+                    {%- else -%}
+                      <img src="{{ 'about-story-1.png' | asset_url }}" alt="{{ collection.title }}" width="90" height="65" loading="lazy">
+                    {%- endif -%}
+                  </div>
+                  <div class="szc-search-collection-info">
+                    <h5 class="szc-search-collection-title">{{ collection.title }}</h5>
+                    <div class="szc-search-collection-count">{{ collection.all_products_count | default: 12 }} items</div>
+                  </div>
+                </a>
+              {%- endif -%}
+            {%- endunless -%}
+          {%- endfor -%}
+        {%- endif -%}
+      </div>
+    </div>
+
+  </div>
+{%- endif -%}
+
+{% schema %}
+{
+  "name": "Predictive Search",
+  "settings": []
+}
+{% endschema %}

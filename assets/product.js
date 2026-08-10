@@ -20,8 +20,17 @@
       evt.preventDefault();
       if (!this.submitButton || this.submitButton.classList.contains('szc-btn--loading')) return;
 
-      this.submitButton.classList.add('szc-btn--loading');
+      const stickyBtn = document.querySelector('[data-sticky-atc-btn]');
+      const activeSticky = document.activeElement && document.activeElement.closest('[data-sticky-atc-bar]');
+
+      this.submitButton.classList.add('szc-btn--loading', 'is-loading');
       this.submitButton.setAttribute('aria-disabled', 'true');
+
+      if (stickyBtn) {
+        stickyBtn.classList.add('szc-btn--loading', 'is-loading');
+        stickyBtn.setAttribute('aria-disabled', 'true');
+        stickyBtn.disabled = true;
+      }
 
       const formData = new FormData(this.form);
       const config = {
@@ -45,8 +54,9 @@
         const cartRes = await fetch('/cart.js');
         const cartData = await cartRes.json();
 
+        const flySource = activeSticky || document.querySelector('[data-sticky-atc-bar].is-visible') || this;
         if (window.ShopziCurious && window.ShopziCurious.animateFlyToCart) {
-          window.ShopziCurious.animateFlyToCart(this);
+          window.ShopziCurious.animateFlyToCart(flySource);
         } else if (window.ShopziCurious && window.ShopziCurious.bounceCartBadge) {
           window.ShopziCurious.bounceCartBadge();
         }
@@ -68,8 +78,19 @@
           window.ShopziCurious.showToast(error.message || 'Error adding item to cart', 'error');
         }
       } finally {
-        this.submitButton.classList.remove('szc-btn--loading');
-        this.submitButton.removeAttribute('aria-disabled');
+        if (this.submitButton) {
+          this.submitButton.classList.remove('szc-btn--loading', 'is-loading');
+          this.submitButton.removeAttribute('aria-disabled');
+        }
+        if (stickyBtn) {
+          stickyBtn.classList.remove('szc-btn--loading', 'is-loading');
+          stickyBtn.removeAttribute('aria-disabled');
+          const textSpan = stickyBtn.querySelector('.szc-btn-text') || stickyBtn.querySelector('span');
+          if (textSpan && textSpan.textContent.trim() !== 'SOLD OUT') {
+            stickyBtn.disabled = false;
+            textSpan.textContent = 'ADD TO BAG';
+          }
+        }
       }
     }
   }

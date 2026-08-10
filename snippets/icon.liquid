@@ -155,10 +155,15 @@
       <path d="M2 9h20"/>
     </svg>
 
-  {%- when 'shield-check', 'badge-check' -%}
-    <svg class="szc-icon szc-icon--shield-check {{ custom_class }}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false">
-      <rect x="5" y="4" width="14" height="16" rx="3"/>
-      <polyline points="9 12 11 14 15 10"/>
+  {%- when 'award', 'badge', 'ribbon' -%}
+    <svg class="szc-icon szc-icon--award {{ custom_class }}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false">
+      <circle cx="12" cy="8" r="7"/>
+      <polyline points="8.21 13.89 7 23 12 20 17 23 15.79 13.88"/>
+    </svg>
+
+  {%- when 'shield', 'shield-check', 'badge-check', 'security' -%}
+    <svg class="szc-icon szc-icon--shield {{ custom_class }}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false">
+      <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
     </svg>
 
   {%- when 'user-heart', 'trusted-user' -%}
