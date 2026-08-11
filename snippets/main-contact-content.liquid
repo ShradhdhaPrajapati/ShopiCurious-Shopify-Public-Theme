@@ -1,5 +1,7 @@
 {% doc %}
   Renders the Contact Us page content matching luxury design system with full-width hero background banner, overlapping contact cards, contact form, store location map (image or dynamic iframe code), and FAQ accordions.
+
+  @param {object} [section] - The section object containing settings
 {% enddoc %}
 
 {%- assign show_hero = true -%}
@@ -26,12 +28,15 @@
 
   <!-- 1. Full-Width Hero Section -->
   {%- if show_hero -%}
+    {%- assign hero_class = 'szc-contact-hero-banner' -%}
+    {%- assign hero_style = '' -%}
     {%- if section.settings.hero_image != blank -%}
       {%- assign hero_bg_url = section.settings.hero_image | image_url: width: 2000 -%}
-      <div class="szc-contact-hero-banner" style="--hero-bg-img: url('{{ hero_bg_url }}');">
+      {%- assign hero_style = '--hero-bg-img: url(' | append: hero_bg_url | append: ');' -%}
     {%- else -%}
-      <div class="szc-contact-hero-banner szc-contact-hero-banner--placeholder">
+      {%- assign hero_class = hero_class | append: ' szc-contact-hero-banner--placeholder' -%}
     {%- endif -%}
+    <div class="{{ hero_class }}"{% if hero_style != blank %} style="{{ hero_style }}"{% endif %}>
       <div class="szc-contact-container">
         
         <!-- Breadcrumbs inside Hero Banner -->
@@ -68,9 +73,12 @@
           </div>
           <h3 class="szc-contact-card__title">{{ section.settings.card_1_title | default: "Customer Support" }}</h3>
           <p class="szc-contact-card__subtitle">{{ section.settings.card_1_schedule | default: "Mon - Fri: 9AM - 6PM" }}</p>
-          <a href="mailto:{{ section.settings.card_1_email | default: 'support@example.com' }}" class="szc-contact-card__link">
-            {{ section.settings.card_1_email | default: "support@example.com" }}
-          </a>
+          {%- assign contact_email = section.settings.card_1_email | default: shop.email -%}
+          {%- if contact_email != blank -%}
+            <a href="mailto:{{ contact_email }}" class="szc-contact-card__link">
+              {{ contact_email }}
+            </a>
+          {%- endif -%}
         </div>
 
         <!-- Card 2: Call Us -->

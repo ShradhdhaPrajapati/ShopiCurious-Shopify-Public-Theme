@@ -5,6 +5,8 @@
   @param {string} [anchor] - Optional anchor string (e.g., '#ProductGrid')
   @param {string} [class] - Additional CSS class names
   @param {string} [pagination_type] - 'numbers', 'infinite_scroll', or 'load_more'
+  @param {string} [item_type] - 'products' or 'articles' label for infinite scroll / load more
+  @param {object} [section] - The section object containing settings
 
   @example
   {% render 'pagination', paginate: paginate, anchor: '#ProductGrid', pagination_type: section.settings.pagination_type %}

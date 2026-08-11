@@ -2,3 +2,6 @@ extends: theme-check:recommended
 
 ValidScopedCSSClass:
   enabled: false
+
+OrphanedSnippet:
+  enabled: false

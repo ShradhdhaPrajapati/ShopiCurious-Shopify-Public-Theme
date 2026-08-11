@@ -4,3 +4,14 @@
 
 config/settings_data.json
 config/settings_data.*.json
+
+# Development and documentation files
+AGENTS.md
+theme_check_output.txt
+theme_settings_documentation.md
+README.md
+CONTRIBUTING.md
+CODE_OF_CONDUCT.md
+LICENSE.md
+Shopzicurious-theme-shopify.zip
+

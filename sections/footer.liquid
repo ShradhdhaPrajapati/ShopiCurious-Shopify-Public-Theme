@@ -18,8 +18,11 @@
                     {% render 'image', image: block.settings.logo, aspect_ratio: 'auto', class: 'szc-footer__logo-img', width: block.settings.logo_width %}
                   </div>
                 {%- else -%}
-                  <span class="szc-footer__brand-title">LUMIÈRE</span>
-                  <span class="szc-footer__brand-sub">FINE FASHION</span>
+                  <span class="szc-footer__brand-title">{{ shop.name | upcase }}</span>
+                  {%- assign brand_sub = block.settings.brand_subtitle | default: 'PREMIUM STORE' -%}
+                  {%- if brand_sub != blank -%}
+                    <span class="szc-footer__brand-sub">{{ brand_sub }}</span>
+                  {%- endif -%}
                 {%- endif -%}
               </div>
 
@@ -151,9 +154,9 @@
               {%- else -%}
                 <!-- Clean Default Links: Home, Catalog, Contact Us -->
                 <ul class="szc-footer__menu-list" role="list">
-                  <li><a href="/" class="szc-footer__menu-link">Home</a></li>
-                  <li><a href="/collections/all" class="szc-footer__menu-link">Catalog</a></li>
-                  <li><a href="/pages/contact" class="szc-footer__menu-link">Contact Us</a></li>
+                  <li><a href="{{ routes.root_url }}" class="szc-footer__menu-link">Home</a></li>
+                  <li><a href="{{ routes.all_products_collection_url }}" class="szc-footer__menu-link">Catalog</a></li>
+                  <li><a href="{{ routes.root_url }}pages/contact" class="szc-footer__menu-link">Contact Us</a></li>
                 </ul>
               {%- endif -%}
             </div>
@@ -747,7 +750,7 @@
       "type": "text",
       "id": "copyright_text",
       "label": "Copyright Text (Leave blank for shop name default)",
-      "default": "ShopziCurious Fine Fashion, All Rights Reserved."
+      "default": "All Rights Reserved."
     },
     {
       "type": "header",
@@ -934,6 +937,12 @@
           "unit": "px",
           "label": "Logo width",
           "default": 160
+        },
+        {
+          "type": "text",
+          "id": "brand_subtitle",
+          "default": "PREMIUM STORE",
+          "label": "Brand Subtitle"
         },
         {
           "type": "text",

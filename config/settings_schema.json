@@ -656,7 +656,7 @@
         "type": "text",
         "id": "copyright_text",
         "label": "Custom Copyright Text",
-        "default": "© 2026 Premium Fashion Brand. All Rights Reserved."
+        "default": "© All Rights Reserved."
       }
     ]
   },

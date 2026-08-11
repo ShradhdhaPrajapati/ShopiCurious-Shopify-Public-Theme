@@ -34,7 +34,7 @@
         {%- if article.tags.size > 0 -%}
           {{ article.tags.first | upcase }}
         {%- else -%}
-          FASHION
+          BLOG
         {%- endif -%}
       </span>
       {%- if show_date != false -%}
@@ -191,7 +191,7 @@
     "url": {{ article.url | json }},
     "image": {% if article.image %}{{ article.image | image_url: width: 600 | json }}{% else %}""{% endif %},
     "published_at": {{ article.published_at | date: "%b %d, %Y" | json }},
-    "tag": {% if article.tags.size > 0 %}{{ article.tags.first | upcase | json }}{% else %}"FASHION"{% endif %},
+    "tag": {% if article.tags.size > 0 %}{{ article.tags.first | upcase | json }}{% else %}"BLOG"{% endif %},
     "excerpt": {{ article.excerpt_or_content | strip_html | truncate: 120 | json }}
   }
 </script>

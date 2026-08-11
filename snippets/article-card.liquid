@@ -3,6 +3,7 @@
 
   @param {article} article - The article object to render
   @param {boolean} [show_excerpt] - Whether to show the article excerpt (default: true)
+  @param {boolean} [show_author] - Whether to show the article author (default: true)
   @param {boolean} [show_date] - Whether to show the published date (default: true)
   @param {boolean} [show_read_time] - Whether to show estimated reading time (default: true)
 
@@ -61,7 +62,7 @@
         {%- if article.tags.size > 0 -%}
           {{ article.tags.first | upcase }}
         {%- else -%}
-          FASHION
+          BLOG
         {%- endif -%}
       </span>
 

@@ -24,7 +24,7 @@
   endfor
 -%}
 
-<facet-filters-form class="szc-facets szc-facets--{{ filter_type | default: 'sidebar' }}">
+<facet-filters-form class="szc-facets szc-facets--{{ filter_type | default: 'sidebar' }}" data-enable-sorting="{{ enable_sorting | default: false }}">
   <form id="FacetFiltersForm" class="szc-facets__form">
     {%- if results.terms -%}
       <input type="hidden" name="q" value="{{ results.terms | escape }}">

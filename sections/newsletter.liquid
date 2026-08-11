@@ -4,7 +4,11 @@
 {%- endcomment -%}
 
 {%- liquid
-  assign subtitle = section.settings.subtitle | default: 'JOIN THE LUMIÈRE CLUB'
+  assign shop_club_default = 'JOIN THE ' | append: shop.name | append: ' CLUB' | upcase
+  assign subtitle = section.settings.subtitle | default: shop_club_default
+  if subtitle == 'JOIN THE LUMIÈRE CLUB'
+    assign subtitle = shop_club_default
+  endif
   assign title = section.settings.title | default: 'Be the First to Know'
   assign description = section.settings.description | default: 'Get early access to new collections, exclusive offers, and insider updates.'
   assign button_label = section.settings.button_label | default: 'SUBSCRIBE'
@@ -418,7 +422,7 @@
     {
       "type": "text",
       "id": "subtitle",
-      "default": "JOIN THE LUMIÈRE CLUB",
+      "default": "JOIN OUR CLUB",
       "label": "Subtitle"
     },
     {
