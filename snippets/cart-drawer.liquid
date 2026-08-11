@@ -7,23 +7,6 @@
   {% render 'cart-drawer' %}
 {% enddoc %}
 
-{%- liquid
-  assign free_shipping_threshold_dollars = settings.free_shipping_threshold | default: 100
-  assign free_shipping_threshold = free_shipping_threshold_dollars | times: 100
-  assign cart_total = cart.total_price
-  assign amount_left = free_shipping_threshold | minus: cart_total
-
-  if free_shipping_threshold > 0
-    if amount_left <= 0
-      assign shipping_progress = 100
-      assign free_shipping_reached = true
-    else
-      assign shipping_progress = cart_total | times: 100.0 | divided_by: free_shipping_threshold
-      assign free_shipping_reached = false
-    endif
-  endif
--%}
-
 {%- if settings.cart_type == 'drawer' -%}
 <cart-drawer id="CartDrawer" class="szc-drawer szc-cart-drawer" aria-hidden="true" role="dialog" aria-modal="true" aria-labelledby="CartDrawerTitle">
   <div class="szc-drawer__overlay" data-drawer-close></div>
@@ -46,25 +29,6 @@
         </svg>
       </button>
     </div>
-
-    <!-- Free Shipping Progress Bar -->
-    {%- if settings.enable_free_shipping_bar != false and free_shipping_threshold > 0 -%}
-      <div class="szc-cart-drawer__shipping-bar">
-        <div class="szc-cart-drawer__shipping-text">
-          {%- if free_shipping_reached -%}
-            <span>You qualify for <strong>FREE shipping!</strong></span>
-          {%- else -%}
-            <span>You're <strong>{{ amount_left | money }}</strong> away from free shipping!</span>
-          {%- endif -%}
-        </div>
-        <div class="szc-cart-drawer__progress-row">
-          <div class="szc-cart-drawer__progress-track">
-            <div class="szc-cart-drawer__progress-fill" style="width: {{ shipping_progress }}%;"></div>
-          </div>
-          <span class="szc-cart-drawer__progress-target">{{ free_shipping_threshold | money }}</span>
-        </div>
-      </div>
-    {%- endif -%}
 
     <!-- Main Content Body -->
     <div class="szc-drawer__body">
@@ -213,7 +177,7 @@
                 >
                   <span class="szc-btn-text">
                     {%- if cart.cart_level_discount_applications.size > 0 -%}
-                      ✓ APPLIED
+                      {% render 'icon', icon: 'check', class: 'szc-discount-check-icon' %} APPLIED
                     {%- else -%}
                       APPLY
                     {%- endif -%}
@@ -457,47 +421,6 @@
 
   .szc-drawer__close-btn:hover {
     opacity: 0.7;
-  }
-
-  /* Shipping Progress Bar */
-  .szc-cart-drawer__shipping-bar {
-    padding: 10px 24px 16px 24px;
-    background-color: var(--szc-color-surface, #ffffff);
-  }
-
-  .szc-cart-drawer__shipping-text {
-    font-size: 13px;
-    color: var(--szc-color-text-primary, #111111);
-    text-align: center;
-    margin-bottom: 10px;
-  }
-
-  .szc-cart-drawer__progress-row {
-    display: flex;
-    align-items: center;
-    gap: 12px;
-  }
-
-  .szc-cart-drawer__progress-track {
-    flex: 1;
-    height: 8px;
-    background-color: #f0ece6;
-    border-radius: 999px;
-    overflow: hidden;
-  }
-
-  .szc-cart-drawer__progress-fill {
-    height: 100%;
-    background-color: #b07d4f;
-    border-radius: 999px;
-    transition: width 300ms ease;
-  }
-
-  .szc-cart-drawer__progress-target {
-    font-size: 13px;
-    font-weight: 700;
-    color: #111111;
-    flex-shrink: 0;
   }
 
   /* Drawer Body */

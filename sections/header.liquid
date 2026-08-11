@@ -299,7 +299,7 @@
     align-items: center;
     gap: 4px;
     padding: 24px 0;
-    font-family: var(--szc-font-family-body);
+    font-family: var(--szc-font-family-nav, var(--szc-font-family-body));
     font-size: var(--szc-font-size-sm, 14px);
     font-weight: 600;
     color: var(--szc-color-text-primary, #111111);
@@ -362,7 +362,7 @@
   }
 
   /* ==========================================================================
-     💎 THEME STORE 10/10 ULTRA-LUXURY MEGA MENU PANEL (Prestige & Impact Level)
+     THEME STORE 10/10 ULTRA-LUXURY MEGA MENU PANEL (Prestige & Impact Level)
      ========================================================================== */
   .szc-header__menu-item.has-mega-menu {
     position: static;
@@ -951,6 +951,7 @@
   .szc-mobile-drawer__link {
     display: block;
     padding: 8px 0;
+    font-family: var(--szc-font-family-nav, var(--szc-font-family-body));
     font-size: 15px;
     font-weight: 700;
     color: #111111;

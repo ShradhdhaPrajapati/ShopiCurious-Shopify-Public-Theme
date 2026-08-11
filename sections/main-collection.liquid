@@ -1,7 +1,34 @@
 {%- liquid
-  assign per_page = section.settings.products_per_page | default: 16
-  assign cols_desktop = section.settings.columns_desktop | default: 4
-  assign cols_mobile = section.settings.columns_mobile | default: '2'
+  assign per_page = section.settings.products_per_page | default: settings.products_per_page | default: 16
+  assign cols_desktop = section.settings.columns_desktop | default: settings.collection_desktop_columns | default: 4
+  assign cols_mobile = section.settings.columns_mobile | default: settings.collection_mobile_columns | default: '2'
+
+  if section.settings.columns_desktop == 4 and settings.collection_desktop_columns != blank and settings.collection_desktop_columns != 4
+    assign cols_desktop = settings.collection_desktop_columns
+  endif
+
+  if section.settings.columns_mobile == '2' and settings.collection_mobile_columns != blank and settings.collection_mobile_columns != '2'
+    assign cols_mobile = settings.collection_mobile_columns
+  endif
+
+  if section.settings.products_per_page == 16 and settings.products_per_page != blank and settings.products_per_page != 16
+    assign per_page = settings.products_per_page
+  endif
+
+  assign is_lookbook = false
+  if section.settings.enable_lookbook_mode == true or settings.enable_lookbook_mode == true
+    assign is_lookbook = true
+  endif
+
+  assign show_filtering = true
+  if section.settings.enable_filtering == false or settings.enable_filtering == false
+    assign show_filtering = false
+  endif
+
+  assign show_sorting = true
+  if section.settings.enable_sorting == false or settings.enable_sorting == false
+    assign show_sorting = false
+  endif
 
   # Metafields
   assign meta_banner_img = collection.metafields.custom.banner_image
@@ -47,13 +74,13 @@
   assign desc_color = section.settings.hero_description_color | default: 'rgba(255, 255, 255, 0.9)'
   assign desc_size = section.settings.hero_description_size | default: 14
   assign desc_weight = section.settings.hero_description_weight | default: '400'
-  assign breadcrumbs_color = section.settings.hero_breadcrumbs_color | default: 'rgba(255, 255, 255, 0.85)'
+  assign breadcrumbs_color = section.settings.hero_title_color | default: '#ffffff'
   assign overlay_color = section.settings.hero_overlay_color | default: '#000000'
   assign btn_color = section.settings.hero_button_color | default: '#111111'
   assign btn_bg = section.settings.hero_button_bg | default: '#ffffff'
 -%}
 
-<div class="szc-main-collection-wrapper" style="--cols-desktop: {{ cols_desktop }}; --cols-mobile: {{ cols_mobile }};">
+<div class="szc-main-collection-wrapper" style="--cols-desktop: {{ cols_desktop }}; --cols-mobile: {{ cols_mobile }};" data-animate="slide-up">
   <!-- 1. COLLECTION HERO BANNER SECTION -->
   {%- if section.settings.show_hero -%}
     <div
@@ -110,7 +137,7 @@
         {%- if section.settings.show_hero_divider -%}
           <div class="szc-collection-hero__divider" aria-hidden="true">
             <span class="szc-collection-hero__line"></span>
-            <span class="szc-collection-hero__diamond">✧</span>
+            <span class="szc-collection-hero__diamond">{% render 'icon', icon: 'diamond', class: 'szc-collection-hero__diamond-icon' %}</span>
             <span class="szc-collection-hero__line"></span>
           </div>
         {%- endif -%}
@@ -272,17 +299,20 @@
 
       <div class="szc-collection-toolbar__actions">
         <!-- Mobile Filter Trigger Button -->
-        <button
-          type="button"
-          class="szc-button szc-button--outline szc-button--sm szc-collection-toolbar__mobile-filter-btn"
-          data-drawer-trigger="FilterDrawer"
-        >
-          {% render 'icon', icon: 'filter', class: 'szc-button__icon' %}
-          <span>Filter</span>
-        </button>
+        {%- if show_filtering -%}
+          <button
+            type="button"
+            class="szc-button szc-button--outline szc-button--sm szc-collection-toolbar__mobile-filter-btn"
+            data-drawer-trigger="FilterDrawer"
+            aria-label="Open filters"
+          >
+            {% render 'icon', icon: 'filter', class: 'szc-button__icon' %}
+            <span>Filter</span>
+          </button>
+        {%- endif -%}
 
         <!-- Sorting Selector -->
-        {%- if section.settings.enable_sorting -%}
+        {%- if show_sorting -%}
           <div class="szc-collection-toolbar__sort">
             <label for="SortByToolbar" class="szc-collection-toolbar__sort-label">Sort by:</label>
             {%- assign sort_by = collection.sort_by | default: collection.default_sort_by -%}
@@ -336,13 +366,13 @@
     </div>
 
     <!-- 4. MAIN CONTENT LAYOUT (STICKY SIDEBAR + PRODUCT GRID) -->
-    <div class="szc-collection-layout {% if section.settings.enable_filtering %}has-sidebar{% endif %} {% if section.settings.enable_sticky_filter %}is-sticky-sidebar{% endif %}">
+    <div class="szc-collection-layout {% if show_filtering %}has-sidebar{% endif %} {% if section.settings.enable_sticky_filter %}is-sticky-sidebar{% endif %}">
       <!-- SIDEBAR FILTERS (DESKTOP) -->
-      {%- if section.settings.enable_filtering -%}
+      {%- if show_filtering -%}
         <aside class="szc-collection-sidebar">
           {% render 'facets',
             results: collection,
-            enable_filtering: section.settings.enable_filtering,
+            enable_filtering: show_filtering,
             enable_sorting: false,
             filter_type: 'sidebar'
           %}
@@ -353,12 +383,11 @@
       <main class="szc-collection-main">
         {%- paginate collection.products by per_page -%}
           {%- if collection.products.size > 0 -%}
-            <div class="szc-product-grid" id="ProductGrid">
+            <div class="szc-product-grid {% if is_lookbook %}is-lookbook-mode{% endif %}" id="ProductGrid">
               {%- for product in collection.products -%}
                 <div class="szc-product-grid__item szc-animate-fade-up">
                   {% render 'product-card',
                     card_product: product,
-                    show_secondary_image: true,
                     show_quick_add: true,
                     show_quick_view: true
                   %}
@@ -433,6 +462,32 @@
       </main>
     </div>
 
+    <!-- MOBILE FILTER DRAWER (Tablet & Mobile Only) -->
+    {%- if show_filtering -%}
+      <div id="FilterDrawer" class="szc-filter-drawer" aria-hidden="true" role="dialog" aria-modal="true" aria-label="Filters">
+        <div class="szc-filter-drawer__inner">
+          <div class="szc-filter-drawer__header">
+            <span class="szc-filter-drawer__title">FILTERS</span>
+            <button type="button" class="szc-filter-drawer__close" data-drawer-close="FilterDrawer" aria-label="Close filters">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                <line x1="18" y1="6" x2="6" y2="18"></line>
+                <line x1="6" y1="6" x2="18" y2="18"></line>
+              </svg>
+            </button>
+          </div>
+          <div class="szc-filter-drawer__body">
+            {% render 'facets',
+              results: collection,
+              enable_filtering: show_filtering,
+              enable_sorting: false,
+              filter_type: 'drawer'
+            %}
+          </div>
+        </div>
+      </div>
+      <div class="szc-filter-drawer__overlay" data-drawer-close="FilterDrawer" aria-hidden="true"></div>
+    {%- endif -%}
+
     <!-- 5. BOTTOM PROMOTIONAL BANNER SLIDER (ONLY SHOWN WHEN COLLECTION HAS PRODUCTS) -->
     {%- if collection.products_count > 0 and section.settings.show_promo_banner -%}
       {%- assign promo_blocks = section.blocks | where: 'type', 'promo_slide' -%}
@@ -443,7 +498,7 @@
             data-promo-slider
             data-autoplay="{{ section.settings.promo_autoplay }}"
             data-autoplay-speed="{{ section.settings.promo_autoplay_speed | times: 1000 }}"
-            data-infinite="{{ section.settings.promo_infinite_loop }}"
+            data-infinite="true"
           >
             <div class="szc-promo-slider__slides-wrapper">
               <div class="szc-promo-slider__track">
@@ -797,7 +852,7 @@
   }
 
   .szc-collection-toolbar__mobile-filter-btn {
-    display: none;
+    display: none !important;
   }
 
   .szc-collection-toolbar__sort {
@@ -892,7 +947,103 @@
   }
 
   /* ==========================================================================
-     5. BOTTOM PROMO BANNER SLIDER
+     5. MOBILE FILTER DRAWER
+     ========================================================================== */
+  .szc-filter-drawer {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 320px;
+    max-width: 90vw;
+    height: 100vh;
+    background: #ffffff;
+    z-index: 9000;
+    transform: translateX(-100%);
+    transition: transform 300ms cubic-bezier(0.4, 0, 0.2, 1);
+    display: flex;
+    flex-direction: column;
+    box-shadow: 4px 0 24px rgba(0, 0, 0, 0.12);
+  }
+
+  .szc-filter-drawer.is-open {
+    transform: translateX(0);
+  }
+
+  .szc-filter-drawer__inner {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    overflow: hidden;
+  }
+
+  .szc-filter-drawer__header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 18px 20px;
+    border-bottom: 1px solid var(--szc-color-border, #e5e5e5);
+    flex-shrink: 0;
+  }
+
+  .szc-filter-drawer__title {
+    font-size: 13px;
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--szc-color-text-primary, #111111);
+  }
+
+  .szc-filter-drawer__close {
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding: 4px;
+    color: #555555;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 4px;
+    transition: color 150ms ease, background-color 150ms ease;
+  }
+
+  .szc-filter-drawer__close:hover {
+    color: #111111;
+    background-color: #f4f4f4;
+  }
+
+  .szc-filter-drawer__body {
+    flex: 1;
+    overflow-y: auto;
+    padding: 16px 20px 32px;
+    scrollbar-width: thin;
+  }
+
+  .szc-filter-drawer__body .szc-facets {
+    width: 100%;
+  }
+
+  .szc-filter-drawer__overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.45);
+    z-index: 8999;
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity 300ms ease, visibility 300ms ease;
+    cursor: pointer;
+  }
+
+  .szc-filter-drawer__overlay.is-visible {
+    opacity: 1;
+    visibility: visible;
+  }
+
+  body.filter-drawer-open {
+    overflow: hidden;
+  }
+
+  /* ==========================================================================
+     6. BOTTOM PROMO BANNER SLIDER
      ========================================================================== */
   .szc-collection-promo {
     margin-top: 56px;
@@ -1239,15 +1390,17 @@
      ========================================================================== */
   @media (max-width: 1023px) {
     .szc-collection-layout.has-sidebar {
-      grid-template-columns: 1fr;
+      grid-template-columns: 1fr !important;
     }
 
-    .szc-collection-sidebar {
-      display: none;
+    .szc-collection-sidebar,
+    .szc-collection-layout.is-sticky-sidebar .szc-collection-sidebar {
+      display: none !important;
+      position: static !important;
     }
 
     .szc-collection-toolbar__mobile-filter-btn {
-      display: inline-flex;
+      display: inline-flex !important;
     }
 
     .szc-product-grid {
@@ -1300,12 +1453,19 @@
 
   @media (max-width: 480px) {
     .szc-product-grid {
-      grid-template-columns: repeat(2, 1fr);
+      grid-template-columns: repeat(var(--cols-mobile, 2), 1fr);
       gap: 10px;
     }
 
     .szc-collection-hero__container {
       padding: 24px 12px;
+    }
+  }
+
+  /* Editorial Lookbook Grid Layout Mode */
+  @media (min-width: 768px) {
+    .szc-product-grid.is-lookbook-mode .szc-product-grid__item:nth-child(5n + 1) {
+      grid-column: span 2;
     }
   }
 
@@ -1382,7 +1542,7 @@
 {% endstylesheet %}
 
 {% javascript %}
-  document.addEventListener('DOMContentLoaded', function() {
+  function initMainCollection() {
     const switcher = document.querySelector('[data-grid-switcher]');
     const productGrid = document.getElementById('ProductGrid');
 
@@ -1468,7 +1628,77 @@
         promoSlider.addEventListener('mouseleave', startAutoplay);
       }
     }
+  }
+
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', initMainCollection);
+  } else {
+    initMainCollection();
+  }
+
+  document.addEventListener('shopify:section:load', function() {
+    initMainCollection();
   });
+
+  function initFilterDrawer() {
+    const drawerTriggers = document.querySelectorAll('[data-drawer-trigger="FilterDrawer"]');
+    let drawer = document.getElementById('FilterDrawer');
+    let overlay = document.querySelector('.szc-filter-drawer__overlay');
+
+    if (!drawer) return;
+
+    // Move drawer & overlay to <body> to escape any parent transform stacking context
+    // (data-animate parent with transform breaks position:fixed children)
+    if (drawer.parentElement !== document.body) {
+      document.body.appendChild(drawer);
+    }
+    if (overlay && overlay.parentElement !== document.body) {
+      document.body.appendChild(overlay);
+    }
+
+    function openDrawer() {
+      drawer.classList.add('is-open');
+      drawer.setAttribute('aria-hidden', 'false');
+      if (overlay) overlay.classList.add('is-visible');
+      document.body.classList.add('filter-drawer-open');
+    }
+
+    function closeDrawer() {
+      drawer.classList.remove('is-open');
+      drawer.setAttribute('aria-hidden', 'true');
+      if (overlay) overlay.classList.remove('is-visible');
+      document.body.classList.remove('filter-drawer-open');
+    }
+
+    // Remove old listeners by cloning triggers
+    drawerTriggers.forEach(function(btn) {
+      const clone = btn.cloneNode(true);
+      btn.parentNode.replaceChild(clone, btn);
+      clone.addEventListener('click', openDrawer);
+    });
+
+    document.querySelectorAll('[data-drawer-close="FilterDrawer"]').forEach(function(btn) {
+      btn.addEventListener('click', closeDrawer);
+    });
+
+    if (overlay) {
+      overlay.addEventListener('click', closeDrawer);
+    }
+
+    document.addEventListener('keydown', function(e) {
+      if (e.key === 'Escape' && drawer.classList.contains('is-open')) {
+        closeDrawer();
+      }
+    });
+  }
+
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', initFilterDrawer);
+  } else {
+    initFilterDrawer();
+  }
+
+  document.addEventListener('shopify:section:load', initFilterDrawer);
 {% endjavascript %}
 
 {% schema %}
@@ -1550,12 +1780,6 @@
       "id": "show_breadcrumbs",
       "label": "Show breadcrumbs",
       "default": true
-    },
-    {
-      "type": "color",
-      "id": "hero_breadcrumbs_color",
-      "label": "Breadcrumbs color",
-      "default": "#ffffff"
     },
     {
       "type": "header",
@@ -1782,12 +2006,6 @@
       "type": "checkbox",
       "id": "promo_show_dots",
       "label": "Show Pagination Dots",
-      "default": true
-    },
-    {
-      "type": "checkbox",
-      "id": "promo_infinite_loop",
-      "label": "Infinite Loop",
       "default": true
     },
     {

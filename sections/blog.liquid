@@ -13,8 +13,15 @@
   assign show_recent_posts = section.settings.show_recent_posts
   assign show_newsletter = section.settings.show_newsletter
   assign show_excerpt = section.settings.show_excerpt
-  assign show_date = section.settings.show_date
-  assign show_read_time = section.settings.show_read_time
+  assign show_author = settings.show_article_author
+  assign show_date = settings.show_article_date
+  assign show_read_time = settings.show_reading_time
+  if section.settings.show_date == false
+    assign show_date = false
+  endif
+  if section.settings.show_read_time == false
+    assign show_read_time = false
+  endif
   assign journal_heading = section.settings.journal_heading | default: 'OUR JOURNAL'
   assign journal_subtitle = section.settings.journal_subtitle | default: 'Style tips, fashion trends, and inspiration to elevate your everyday.'
 
@@ -30,7 +37,7 @@
   endif
 -%}
 
-<div class="szc-blog-page page-width">
+<div class="szc-blog-page page-width" data-animate="slide-up">
   {% render 'breadcrumbs' %}
 
   <div class="szc-blog-layout{% unless show_sidebar %} szc-blog-layout--no-sidebar{% endunless %}">
@@ -60,6 +67,14 @@
                   aria-label="Search articles"
                   class="szc-blog-search-input"
                 >
+                {%- if blog_search_q != blank -%}
+                  <a href="{{ blog.url }}" class="szc-blog-search-clear" aria-label="Clear search">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                      <line x1="18" y1="6" x2="6" y2="18"></line>
+                      <line x1="6" y1="6" x2="18" y2="18"></line>
+                    </svg>
+                  </a>
+                {%- endif -%}
                 <button type="submit" class="szc-blog-search-btn" aria-label="Search">
                   <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                     <circle cx="11" cy="11" r="8"></circle>
@@ -223,22 +238,25 @@
         </div>
 
         <!-- Article Grid -->
-        {%- if blog.articles.size > 0 and matching_articles_count > 0 -%}
+        {%- if blog.articles.size > 0 -%}
           <div class="szc-blog-grid">
             {%- for article in display_articles -%}
-              {%- assign t_dc = article.title | downcase -%}
-              {%- assign e_dc = article.excerpt | downcase -%}
-              {%- assign c_dc = article.content | downcase -%}
-              {%- assign tags_dc = article.tags | join: ' ' | downcase -%}
-              {%- if blog_search_q == blank or t_dc contains search_query_dc or e_dc contains search_query_dc or c_dc contains search_query_dc or tags_dc contains search_query_dc -%}
-                {% render 'article-card',
-                  article: article,
-                  show_excerpt: show_excerpt,
-                  show_date: show_date,
-                  show_read_time: show_read_time
-                %}
-              {%- endif -%}
+              {% render 'article-card',
+                article: article,
+                show_excerpt: show_excerpt,
+                show_author: show_author,
+                show_date: show_date,
+                show_read_time: show_read_time
+              %}
             {%- endfor -%}
+          </div>
+
+          <div class="szc-blog-empty" id="BlogSearchEmptyState" style="display: none;">
+            <h2 class="szc-blog-empty__title">No matching articles found</h2>
+            <p class="szc-blog-empty__subtitle">We couldn't find any articles matching your search. Try another search or browse all articles.</p>
+            <div class="szc-blog-empty__actions">
+              <button type="button" class="szc-btn szc-btn--primary" id="BlogClearSearchBtn">View All Articles</button>
+            </div>
           </div>
 
           <!-- Pagination -->
@@ -249,14 +267,6 @@
               item_type: 'articles'
             %}
           {%- endif -%}
-        {%- elsif blog_search_q != blank -%}
-          <div class="szc-blog-empty">
-            <h2 class="szc-blog-empty__title">No matching articles found</h2>
-            <p class="szc-blog-empty__subtitle">We couldn't find any articles matching "{{ blog_search_q }}". Try another search or browse all articles.</p>
-            <div class="szc-blog-empty__actions">
-              <a href="{{ blog.url }}" class="szc-btn szc-btn--primary">View All Articles</a>
-            </div>
-          </div>
         {%- elsif request.design_mode -%}
           {%- comment -%} Theme Editor Demo Grid Preview when Store has no Articles {%- endcomment -%}
           <div class="szc-blog-grid">
@@ -424,6 +434,31 @@
 
   .szc-blog-search-input:focus {
     border-color: #111111;
+  }
+
+  .szc-blog-search-input::-webkit-search-decoration,
+  .szc-blog-search-input::-webkit-search-cancel-button,
+  .szc-blog-search-input::-webkit-search-results-button,
+  .szc-blog-search-input::-webkit-search-results-decoration {
+    -webkit-appearance: none;
+    appearance: none;
+    display: none;
+  }
+
+  .szc-blog-search-clear {
+    position: absolute;
+    right: 36px;
+    color: #888888;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 4px;
+    text-decoration: none;
+    transition: color 150ms ease;
+  }
+
+  .szc-blog-search-clear:hover {
+    color: #111111;
   }
 
   .szc-blog-search-btn {
@@ -1017,6 +1052,108 @@
 
 {% javascript %}
   document.addEventListener('DOMContentLoaded', function() {
+    const searchInput = document.querySelector('.szc-blog-search-input');
+    const searchForm = document.querySelector('.szc-blog-search-form');
+    const countContainer = document.querySelector('.szc-blog-toolbar__count');
+    const blogGrid = document.querySelector('.szc-blog-grid');
+    const emptyState = document.getElementById('BlogSearchEmptyState');
+    const clearEmptyBtn = document.getElementById('BlogClearSearchBtn');
+
+    if (searchInput && blogGrid) {
+      const articleCards = Array.from(blogGrid.querySelectorAll('.szc-article-card'));
+      const originalCountText = countContainer ? countContainer.innerHTML : '';
+
+      function filterArticles(query) {
+        const q = (query || '').toLowerCase().trim();
+        let visibleCount = 0;
+
+        articleCards.forEach(function(card) {
+          const text = card.textContent.toLowerCase();
+          if (q === '' || text.includes(q)) {
+            card.style.display = '';
+            visibleCount++;
+          } else {
+            card.style.display = 'none';
+          }
+        });
+
+        if (countContainer) {
+          if (q !== '') {
+            countContainer.textContent = `Showing ${visibleCount} result${visibleCount !== 1 ? 's' : ''} for "${query}"`;
+          } else {
+            countContainer.innerHTML = originalCountText;
+          }
+        }
+
+        if (emptyState) {
+          if (visibleCount === 0 && q !== '') {
+            emptyState.style.display = 'block';
+            blogGrid.style.display = 'none';
+          } else {
+            emptyState.style.display = 'none';
+            blogGrid.style.display = '';
+          }
+        }
+
+        let dynamicClearBtn = searchInput.parentElement.querySelector('.szc-blog-search-clear');
+        if (q !== '') {
+          if (!dynamicClearBtn) {
+            dynamicClearBtn = document.createElement('a');
+            dynamicClearBtn.href = '#';
+            dynamicClearBtn.className = 'szc-blog-search-clear';
+            dynamicClearBtn.setAttribute('aria-label', 'Clear search');
+            dynamicClearBtn.innerHTML = `<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>`;
+            dynamicClearBtn.addEventListener('click', function(e) {
+              e.preventDefault();
+              searchInput.value = '';
+              filterArticles('');
+              const url = new URL(window.location.href);
+              url.searchParams.delete('q');
+              window.history.replaceState({}, '', url.toString());
+            });
+            searchInput.parentElement.insertBefore(dynamicClearBtn, searchInput.nextSibling);
+          }
+        } else if (dynamicClearBtn) {
+          dynamicClearBtn.remove();
+        }
+      }
+
+      const urlParams = new URLSearchParams(window.location.search);
+      const urlQ = urlParams.get('q');
+      if (urlQ) {
+        searchInput.value = urlQ;
+        filterArticles(urlQ);
+      }
+
+      searchInput.addEventListener('input', function() {
+        filterArticles(this.value);
+      });
+
+      if (searchForm) {
+        searchForm.addEventListener('submit', function(e) {
+          e.preventDefault();
+          filterArticles(searchInput.value);
+          const url = new URL(window.location.href);
+          if (searchInput.value.trim() !== '') {
+            url.searchParams.set('q', searchInput.value.trim());
+          } else {
+            url.searchParams.delete('q');
+          }
+          window.history.replaceState({}, '', url.toString());
+        });
+      }
+
+      if (clearEmptyBtn) {
+        clearEmptyBtn.addEventListener('click', function() {
+          searchInput.value = '';
+          filterArticles('');
+          const url = new URL(window.location.href);
+          url.searchParams.delete('q');
+          window.history.replaceState({}, '', url.toString());
+        });
+      }
+    }
+
     const sortSelects = document.querySelectorAll('.szc-blog-sort-select');
     sortSelects.forEach(function(select) {
       select.addEventListener('change', function() {

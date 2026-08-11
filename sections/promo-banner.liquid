@@ -17,7 +17,7 @@
 <section id="PromoBanner-{{ section.id }}" class="szc-promo-banner-section page-width">
   <div class="szc-promo-banner szc-promo-banner--content-{{ content_pos }}">
     <!-- Images Container (Dual Split) -->
-    <div class="szc-promo-banner__media">
+    <div class="szc-promo-banner__media" data-animate="slide-right">
       <div class="szc-promo-banner__media-item szc-promo-banner__media-item--narrow">
         {%- if img_1 != blank -%}
           {% render 'image',
@@ -50,7 +50,7 @@
     </div>
 
     <!-- Content Box -->
-    <div class="szc-promo-banner__content">
+    <div class="szc-promo-banner__content" data-animate="slide-left">
       <div
         class="szc-promo-banner__content-inner"
         style="

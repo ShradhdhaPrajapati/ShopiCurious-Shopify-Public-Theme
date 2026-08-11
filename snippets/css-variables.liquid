@@ -9,19 +9,39 @@
 {% style %}
   {% # Load Primary (Body) Font Variations %}
   {{ settings.type_primary_font | font_face: font_display: 'swap' }}
-  {{ settings.type_primary_font | font_modify: 'weight', 'bold' | font_face: font_display: 'swap' }}
-  {{ settings.type_primary_font | font_modify: 'weight', 'bold' | font_modify: 'style', 'italic' | font_face: font_display: 'swap' }}
-  {{ settings.type_primary_font | font_modify: 'style', 'italic' | font_face: font_display: 'swap' }}
+  {%- assign primary_font_bold = settings.type_primary_font | font_modify: 'weight', 'bold' -%}
+  {%- if primary_font_bold -%}
+    {{ primary_font_bold | font_face: font_display: 'swap' }}
+  {%- endif -%}
+  {%- assign primary_font_bold_italic = primary_font_bold | font_modify: 'style', 'italic' -%}
+  {%- if primary_font_bold_italic -%}
+    {{ primary_font_bold_italic | font_face: font_display: 'swap' }}
+  {%- endif -%}
+  {%- assign primary_font_italic = settings.type_primary_font | font_modify: 'style', 'italic' -%}
+  {%- if primary_font_italic -%}
+    {{ primary_font_italic | font_face: font_display: 'swap' }}
+  {%- endif -%}
 
   {% # Load Heading Font Variations %}
   {% unless settings.type_heading_font.family == settings.type_primary_font.family %}
     {{ settings.type_heading_font | font_face: font_display: 'swap' }}
-    {{ settings.type_heading_font | font_modify: 'weight', 'bold' | font_face: font_display: 'swap' }}
+    {%- assign heading_font_bold = settings.type_heading_font | font_modify: 'weight', 'bold' -%}
+    {%- if heading_font_bold -%}
+      {{ heading_font_bold | font_face: font_display: 'swap' }}
+    {%- endif -%}
+    {%- assign heading_font_italic = settings.type_heading_font | font_modify: 'style', 'italic' -%}
+    {%- if heading_font_italic -%}
+      {{ heading_font_italic | font_face: font_display: 'swap' }}
+    {%- endif -%}
   {% endunless %}
 
   {% # Load Navigation Font Variations %}
   {% unless settings.type_nav_font.family == settings.type_primary_font.family or settings.type_nav_font.family == settings.type_heading_font.family %}
     {{ settings.type_nav_font | font_face: font_display: 'swap' }}
+    {%- assign nav_font_bold = settings.type_nav_font | font_modify: 'weight', 'bold' -%}
+    {%- if nav_font_bold -%}
+      {{ nav_font_bold | font_face: font_display: 'swap' }}
+    {%- endif -%}
   {% endunless %}
 
   {%- liquid
@@ -57,12 +77,27 @@
     --font-heading--weight: {{ settings.type_heading_font.weight }};
 
     --font-nav--family: {{ settings.type_nav_font.family }}, {{ settings.type_nav_font.fallback_families }};
+    --font-nav--style: {{ settings.type_nav_font.style }};
+    --font-nav--weight: {{ settings.type_nav_font.weight }};
 
     --szc-font-family-body: var(--font-primary--family);
     --szc-font-family-heading: var(--font-heading--family);
+    --szc-font-family-nav: var(--font-nav--family);
+
+    --szc-font-weight-body: var(--font-primary--weight);
+    --szc-font-weight-heading: var(--font-heading--weight);
+    --szc-font-weight-nav: var(--font-nav--weight);
 
     --szc-font-size-base: {{ settings.base_font_size | default: 16 }}px;
     --szc-heading-scale: {{ settings.heading_scale | default: 100 | divided_by: 100.0 }};
+
+    --szc-font-size-h6: calc(clamp(1.1rem, 1rem + 0.4vw, 1.25rem) * var(--szc-heading-scale, 1));
+    --szc-font-size-h5: calc(clamp(1.25rem, 1.1rem + 0.7vw, 1.5rem) * var(--szc-heading-scale, 1));
+    --szc-font-size-h4: calc(clamp(1.5rem, 1.3rem + 1vw, 1.875rem) * var(--szc-heading-scale, 1));
+    --szc-font-size-h3: calc(clamp(1.75rem, 1.4rem + 1.4vw, 2.25rem) * var(--szc-heading-scale, 1));
+    --szc-font-size-h2: calc(clamp(2.1rem, 1.6rem + 2vw, 2.85rem) * var(--szc-heading-scale, 1));
+    --szc-font-size-h1: calc(clamp(2.5rem, 1.8rem + 3vw, 3.75rem) * var(--szc-heading-scale, 1));
+    --szc-font-size-display: calc(clamp(3rem, 2rem + 4vw, 5rem) * var(--szc-heading-scale, 1));
 
     /* Dynamic Fashion Color Palette */
     --szc-color-primary: {{ primary_color }};
@@ -102,17 +137,144 @@
     /* Layout & Container Tokens */
     --page-width: {{ settings.max_page_width | default: '1280px' }};
     --page-margin: {{ settings.min_page_margin | default: 20 }}px;
+    --szc-container-max-width: var(--page-width);
+    --szc-container-padding: var(--page-margin);
     --szc-section-spacing-desktop: {{ settings.section_spacing_desktop | default: 80 }}px;
     --szc-grid-gap: {{ settings.grid_gap | default: 24 }}px;
 
     /* Border Radii */
     --style-border-radius-inputs: {{ settings.input_corner_radius | default: 2 }}px;
+    --szc-radius-input: {{ settings.input_corner_radius | default: 2 }}px;
     --szc-radius-button: {{ settings.button_corner_radius | default: 2 }}px;
     --szc-radius-card: {{ settings.card_corner_radius | default: 4 }}px;
 
     /* Component Heights & Styles */
     --szc-button-height: {{ settings.button_height | default: '48px' }};
   }
+
+  {% # Primary Button Design %}
+  {% if settings.primary_button_style == 'accent' %}
+    .szc-btn--primary {
+      background-color: var(--szc-color-accent) !important;
+      color: #ffffff !important;
+      border-color: var(--szc-color-accent) !important;
+    }
+    .szc-btn--primary:hover {
+      background-color: var(--szc-color-accent-dark) !important;
+      border-color: var(--szc-color-accent-dark) !important;
+    }
+  {% elsif settings.primary_button_style == 'outline' %}
+    .szc-btn--primary {
+      background-color: transparent !important;
+      color: var(--szc-color-primary) !important;
+      border: 1px solid var(--szc-color-primary) !important;
+    }
+    .szc-btn--primary:hover {
+      background-color: var(--szc-color-primary) !important;
+      color: var(--szc-color-text-inverse) !important;
+    }
+  {% endif %}
+
+  {% # Button Hover Effect %}
+  {% if settings.button_hover_effect == 'lift' %}
+    .szc-btn:hover,
+    button.szc-btn:hover,
+    a.szc-btn:hover {
+      transform: translateY(-2px) !important;
+      box-shadow: var(--szc-shadow-md) !important;
+    }
+  {% elsif settings.button_hover_effect == 'color_shift' %}
+    .szc-btn:hover,
+    button.szc-btn:hover,
+    a.szc-btn:hover {
+      transform: none !important;
+      box-shadow: none !important;
+      filter: brightness(0.88) !important;
+    }
+  {% elsif settings.button_hover_effect == 'none' %}
+    .szc-btn:hover,
+    button.szc-btn:hover,
+    a.szc-btn:hover {
+      transform: none !important;
+      box-shadow: none !important;
+      filter: none !important;
+    }
+  {% endif %}
+
+  {% # Card Visual Style %}
+  {% if settings.card_style == 'bordered' %}
+    .szc-card,
+    .szc-product-card,
+    .szc-card-collection {
+      border: 1px solid var(--szc-color-border) !important;
+      box-shadow: none !important;
+    }
+    .szc-card:hover,
+    .szc-product-card:hover,
+    .szc-card-collection:hover {
+      border-color: var(--szc-color-border-strong) !important;
+    }
+  {% elsif settings.card_style == 'shadow' %}
+    .szc-card,
+    .szc-product-card,
+    .szc-card-collection {
+      box-shadow: var(--szc-shadow-sm) !important;
+      border: 1px solid transparent !important;
+      background-color: var(--szc-color-surface-elevated, #ffffff) !important;
+    }
+    .szc-card:hover,
+    .szc-product-card:hover,
+    .szc-card-collection:hover {
+      box-shadow: var(--szc-shadow-md) !important;
+    }
+  {% elsif settings.card_style == 'flat' %}
+    .szc-card,
+    .szc-product-card,
+    .szc-card-collection {
+      box-shadow: none !important;
+      border: none !important;
+    }
+  {% endif %}
+
+  {% # Card Hover Micro-Animation %}
+  {% if settings.card_hover_effect == 'zoom' %}
+    .szc-card:hover .szc-card__media img,
+    .szc-product-card:hover .szc-product-card__image,
+    .szc-card-collection:hover .szc-card-collection__image {
+      transform: scale(1.05) !important;
+      transition: transform var(--szc-transition-slow, 400ms ease) !important;
+    }
+    .szc-card:hover,
+    .szc-product-card:hover,
+    .szc-card-collection:hover {
+      transform: none !important;
+    }
+  {% elsif settings.card_hover_effect == 'lift' %}
+    .szc-card:hover,
+    .szc-product-card:hover,
+    .szc-card-collection:hover {
+      transform: translateY(-4px) !important;
+      box-shadow: var(--szc-shadow-md) !important;
+      transition: transform var(--szc-transition-base, 250ms ease), box-shadow var(--szc-transition-base, 250ms ease) !important;
+    }
+    .szc-card:hover .szc-card__media img,
+    .szc-product-card:hover .szc-product-card__image,
+    .szc-card-collection:hover .szc-card-collection__image {
+      transform: none !important;
+    }
+  {% elsif settings.card_hover_effect == 'none' %}
+    .szc-card:hover,
+    .szc-product-card:hover,
+    .szc-card-collection:hover {
+      transform: none !important;
+      box-shadow: none !important;
+    }
+    .szc-card:hover .szc-card__media img,
+    .szc-product-card:hover .szc-product-card__image,
+    .szc-card-collection:hover .szc-card-collection__image {
+      transform: none !important;
+    }
+  {% endif %}
 
   {% if settings.accessibility_focus_ring != false %}
     *:focus-visible {

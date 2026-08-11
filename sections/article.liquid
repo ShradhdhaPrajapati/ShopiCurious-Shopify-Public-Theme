@@ -3,21 +3,25 @@
   Renders luxury styled article post layout with hero header, rich content, author metadata, tags, and comment section.
 {% endcomment %}
 
-<article class="szc-article-page page-width">
+<article class="szc-article-page page-width" data-animate="slide-up">
   {% render 'breadcrumbs' %}
 
   {%- liquid
-    assign show_author = section.settings.show_author
-    if show_author == blank
-      assign show_author = settings.show_article_author
+    assign show_author = settings.show_article_author
+    if section.settings.show_author == false
+      assign show_author = false
     endif
 
-    assign show_date = section.settings.show_date
-    if show_date == blank
-      assign show_date = settings.show_article_date
+    assign show_date = settings.show_article_date
+    if section.settings.show_date == false
+      assign show_date = false
     endif
 
     assign show_reading_time = settings.show_reading_time
+    if section.settings.show_reading_time == false
+      assign show_reading_time = false
+    endif
+
     if show_reading_time != false
       assign words = article.content | strip_html | split: ' ' | size
       assign reading_minutes = words | divided_by: 200 | at_least: 1
@@ -78,7 +82,7 @@
 
       <div class="szc-article-back-wrap">
         <a href="{{ blog.url }}" class="szc-button szc-button--outline szc-article-back-btn">
-          ← BACK TO JOURNAL
+          {% render 'icon', icon: 'arrow-left', class: 'szc-icon--back' %} BACK TO JOURNAL
         </a>
       </div>
     </div>

@@ -64,7 +64,7 @@
       "menu": "Main Navigation",
       "cart": "Shopping bag",
       "announcement": "Announcement Bar",
-      "announcement_default": "✨ Free Express Shipping on Orders Over $100 | Shop Now"
+      "announcement_default": "Free Express Shipping on Orders Over $100 | Shop Now"
     },
     "announcement-bar": {
       "name": "Announcement Bar"

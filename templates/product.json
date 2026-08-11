@@ -52,15 +52,6 @@
         "trust_badges": {
           "type": "trust_badges",
           "settings": {
-            "badge_1_title": "Free Shipping",
-            "badge_1_subtext": "On orders over $100",
-            "badge_1_icon": "shipping",
-            "badge_2_title": "Easy Returns",
-            "badge_2_subtext": "30-day return policy",
-            "badge_2_icon": "returns",
-            "badge_3_title": "Secure Payment",
-            "badge_3_subtext": "100% secure checkout",
-            "badge_3_icon": "secure",
             "icon_color": "#d7ab83",
             "icon_size": 24,
             "title_color": "#111111",

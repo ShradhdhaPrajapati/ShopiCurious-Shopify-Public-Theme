@@ -18,7 +18,10 @@
 
 {%- liquid
   assign product = card_product
-  assign raw_aspect = media_aspect_ratio | default: settings.product_card_image_ratio | default: settings.product_card_aspect_ratio | default: 'portrait'
+  assign raw_aspect = media_aspect_ratio
+  if raw_aspect == 'theme' or raw_aspect == blank or raw_aspect == 'default'
+    assign raw_aspect = settings.product_card_image_ratio | default: settings.product_card_aspect_ratio | default: '3/4'
+  endif
   
   if raw_aspect == 'natural' or raw_aspect == 'adapt'
     if product != blank and product.featured_media.preview_image != blank
@@ -27,13 +30,16 @@
       assign aspect_ratio = '1'
     endif
     assign is_fixed_aspect = false
-  elsif raw_aspect == 'square'
+  elsif raw_aspect == '1/1' or raw_aspect == 'square'
     assign aspect_ratio = '1/1'
     assign is_fixed_aspect = true
-  elsif raw_aspect == 'portrait'
+  elsif raw_aspect == '3/4' or raw_aspect == 'portrait'
     assign aspect_ratio = '3/4'
     assign is_fixed_aspect = true
-  elsif raw_aspect == 'landscape'
+  elsif raw_aspect == '2/3'
+    assign aspect_ratio = '2/3'
+    assign is_fixed_aspect = true
+  elsif raw_aspect == 'landscape' or raw_aspect == '4/3'
     assign aspect_ratio = '4/3'
     assign is_fixed_aspect = true
   else
@@ -42,7 +48,9 @@
   endif
   
   assign show_secondary = true
-  if show_secondary_image == false
+  if settings.show_secondary_image == false or settings.product_card_show_secondary_image == false
+    assign show_secondary = false
+  elsif show_secondary_image == false
     assign show_secondary = false
   elsif show_secondary_image == true
     assign show_secondary = true
@@ -62,7 +70,9 @@
   endif
 
   assign show_view = true
-  if show_quick_view == false
+  if settings.enable_quick_shop == false
+    assign show_view = false
+  elsif show_quick_view == false
     assign show_view = false
   elsif show_quick_view == true
     assign show_view = true
@@ -140,11 +150,11 @@
             {%- assign is_limited = true -%}
           {%- endif -%}
 
-          {%- if is_new and settings.show_new_arrival_badge != false -%}
+          {%- if is_new -%}
             {% render 'badge', label: 'New', type: 'new', size: 'sm' %}
-          {%- elsif is_bestseller and settings.show_bestseller_badge != false -%}
+          {%- elsif is_bestseller -%}
             {% render 'badge', label: 'Best Seller', type: 'bestseller', size: 'sm' %}
-          {%- elsif is_limited and settings.show_limited_badge != false -%}
+          {%- elsif is_limited -%}
             {% render 'badge', label: 'Limited', type: 'limited', size: 'sm' %}
           {%- endif -%}
         {%- endif -%}
@@ -226,6 +236,51 @@
         <div class="szc-product-card__price-wrapper">
           {% render 'price', product: product, show_badges: false %}
         </div>
+      {%- endif -%}
+
+      {%- if settings.enable_color_swatches != false -%}
+        {%- assign color_option = product.options_with_values | where: 'name', 'Color' | first -%}
+        {%- if color_option == blank -%}
+          {%- assign color_option = product.options_with_values | where: 'name', 'color' | first -%}
+        {%- endif -%}
+        {%- if color_option != blank and color_option.values.size > 0 -%}
+          <div class="szc-product-card__swatches">
+            {%- for val in color_option.values limit: 5 -%}
+              <span class="szc-card-swatch" style="background-color: {{ val | downcase | remove: ' ' }};" title="{{ val }}"></span>
+            {%- endfor -%}
+            {%- if color_option.values.size > 5 -%}
+              <span class="szc-card-swatch-more">+{{ color_option.values.size | minus: 5 }}</span>
+            {%- endif -%}
+          </div>
+        {%- elsif product == blank -%}
+          <div class="szc-product-card__swatches">
+            <span class="szc-card-swatch" style="background-color: #111111;" title="Black"></span>
+            <span class="szc-card-swatch" style="background-color: #d4a373;" title="Beige"></span>
+            <span class="szc-card-swatch" style="background-color: #e0e0e0;" title="White"></span>
+          </div>
+        {%- endif -%}
+      {%- endif -%}
+
+      {%- if settings.enable_size_swatches != false -%}
+        {%- assign size_option = product.options_with_values | where: 'name', 'Size' | first -%}
+        {%- if size_option == blank -%}
+          {%- assign size_option = product.options_with_values | where: 'name', 'size' | first -%}
+        {%- endif -%}
+        {%- if size_option != blank and size_option.values.size > 0 -%}
+          <div class="szc-product-card__sizes">
+            {%- for val in size_option.values limit: 5 -%}
+              <span class="szc-card-size-badge">{{ val }}</span>
+            {%- endfor -%}
+          </div>
+        {%- elsif product == blank -%}
+          <div class="szc-product-card__sizes">
+            <span class="szc-card-size-badge">XS</span>
+            <span class="szc-card-size-badge">S</span>
+            <span class="szc-card-size-badge">M</span>
+            <span class="szc-card-size-badge">L</span>
+            <span class="szc-card-size-badge">XL</span>
+          </div>
+        {%- endif -%}
       {%- endif -%}
 
       <!-- List View Quick Add / Add to Cart Button -->
@@ -551,5 +606,43 @@
     .szc-product-card__price-wrapper {
       font-size: 13px;
     }
+  }
+
+  /* Variant Swatches & Size Badges */
+  .szc-product-card__swatches {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    margin-top: 4px;
+  }
+
+  .szc-card-swatch {
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+    border: 1px solid rgba(0, 0, 0, 0.15);
+    display: inline-block;
+  }
+
+  .szc-card-swatch-more {
+    font-size: 10px;
+    color: var(--szc-color-text-muted, #777);
+  }
+
+  .szc-product-card__sizes {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    margin-top: 4px;
+    flex-wrap: wrap;
+  }
+
+  .szc-card-size-badge {
+    font-size: 10px;
+    padding: 1px 5px;
+    border: 1px solid var(--szc-color-border, #e0e0e0);
+    border-radius: 2px;
+    color: var(--szc-color-text-secondary, #555);
+    line-height: 1.2;
   }
 {% endstylesheet %}

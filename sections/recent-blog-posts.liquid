@@ -2,7 +2,7 @@
   Renders recently viewed blog articles stored in LocalStorage.
 {%- endcomment -%}
 
-<div class="szc-recent-blog-posts page-width" id="RecentBlogPosts-{{ section.id }}" style="display: none;">
+<div class="szc-recent-blog-posts page-width" id="RecentBlogPosts-{{ section.id }}" style="display: none;" data-animate="slide-up">
   {%- if section.settings.heading != blank or section.settings.subtitle != blank -%}
     <div class="szc-recent-blog-posts__header">
       {%- if section.settings.subtitle != blank -%}
@@ -26,12 +26,14 @@
       <div class="szc-article-card__content">
         <div class="szc-article-card__meta">
           <span class="szc-article-card__tag">BLOG</span>
-          <span class="szc-article-card__dot">•</span>
-          <time class="szc-article-card__date"></time>
+          {%- if settings.show_article_date -%}
+            <span class="szc-article-card__dot">•</span>
+            <time class="szc-article-card__date"></time>
+          {%- endif -%}
         </div>
         <h3 class="szc-article-card__title"></h3>
         <p class="szc-article-card__excerpt"></p>
-        <span class="szc-article-card__read-more">READ MORE →</span>
+        <span class="szc-article-card__read-more">READ MORE {% render 'icon', icon: 'arrow-right', class: 'szc-read-more-icon' %}</span>
       </div>
     </a>
   </article>
@@ -217,6 +219,33 @@
       grid-template-columns: 1fr;
       gap: 20px;
     }
+  }
+
+  .szc-article-card__read-more {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    color: var(--szc-color-text-primary, #111111);
+    margin-top: 14px;
+    text-transform: uppercase;
+    transition: color 150ms ease;
+  }
+
+  .szc-article-card__read-more svg,
+  .szc-article-card__read-more .szc-icon,
+  .szc-article-card__read-more .szc-read-more-icon {
+    width: 14px;
+    height: 14px;
+    flex-shrink: 0;
+    transition: transform 150ms ease;
+  }
+
+  .szc-article-card:hover .szc-article-card__read-more svg,
+  .szc-article-card:hover .szc-article-card__read-more .szc-read-more-icon {
+    transform: translateX(3px);
   }
 {% endstylesheet %}
 

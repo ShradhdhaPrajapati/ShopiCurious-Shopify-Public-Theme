@@ -61,6 +61,7 @@
 
 <product-recommendations
   class="szc-product-recommendations page-width"
+  data-animate="slide-up"
   {% if rec_product != blank %}
     data-url="{{ routes.product_recommendations_url }}?section_id={{ section.id }}&product_id={{ rec_product.id }}&limit={{ section.settings.products_to_show }}&intent=related"
   {% endif %}

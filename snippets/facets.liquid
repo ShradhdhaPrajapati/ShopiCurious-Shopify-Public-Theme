@@ -30,6 +30,9 @@
       <input type="hidden" name="q" value="{{ results.terms | escape }}">
       <input type="hidden" name="type" value="product">
     {%- endif -%}
+    {%- if sort_by != blank -%}
+      <input type="hidden" name="sort_by" value="{{ sort_by | escape }}">
+    {%- endif -%}
 
     <div class="szc-facets__wrapper">
       <!-- 1. ACTIVE FILTERS PILL BAR -->

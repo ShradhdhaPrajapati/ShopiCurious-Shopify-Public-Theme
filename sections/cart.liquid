@@ -3,7 +3,7 @@
   Pixel-matched to approved Cart Page UI specification.
 {% endcomment %}
 
-<div class="szc-cart-page page-width" id="MainCartPage">
+<div class="szc-cart-page page-width" id="MainCartPage" data-animate="slide-up">
   <!-- Cart Header Row -->
   <div class="szc-cart-page__header">
     <h1 class="szc-cart-page__title">
@@ -164,7 +164,7 @@
               >
                 <span class="szc-btn-text">
                   {%- if cart.cart_level_discount_applications.size > 0 -%}
-                    ✓ APPLIED
+                    {% render 'icon', icon: 'check', class: 'szc-discount-check-icon' %} APPLIED
                   {%- else -%}
                     APPLY
                   {%- endif -%}
@@ -201,6 +201,19 @@
 
             <div id="DiscountStatusMessage" class="szc-discount-status" aria-live="polite" style="display:none;"></div>
           </div>
+
+          {%- if settings.enable_cart_notes != false -%}
+            <div class="szc-cart-note-box">
+              <h3 class="szc-cart-note-box__title">GIFT MESSAGE / SPECIAL INSTRUCTIONS</h3>
+              <textarea
+                name="note"
+                id="CartPageNote"
+                class="szc-cart-note-box__input"
+                placeholder="Add a gift message or special instructions for your order..."
+                rows="3"
+              >{{ cart.note }}</textarea>
+            </div>
+          {%- endif -%}
 
           <!-- Reusable Trust Badges -->
           <div class="szc-cart-page__trust-badges">
@@ -327,6 +340,41 @@
   .szc-cart-page {
     padding-top: 40px;
     padding-bottom: 80px;
+  }
+
+  /* Cart Note Box */
+  .szc-cart-note-box {
+    border: 1px solid #e5e5e5;
+    border-radius: 8px;
+    padding: 20px 24px;
+    background-color: #ffffff;
+    margin-bottom: 24px;
+  }
+
+  .szc-cart-note-box__title {
+    margin: 0 0 10px 0;
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: #111111;
+  }
+
+  .szc-cart-note-box__input {
+    width: 100%;
+    border: 1px solid #e0e0e0;
+    border-radius: 6px;
+    padding: 10px 14px;
+    font-size: 13px;
+    font-family: inherit;
+    color: #111111;
+    resize: vertical;
+    outline: none;
+    box-sizing: border-box;
+  }
+
+  .szc-cart-note-box__input:focus {
+    border-color: #111111;
   }
 
   .szc-cart-page__header {
@@ -1135,7 +1183,7 @@
               newApplyBtn.disabled = true;
               newApplyBtn.classList.add('is-applied');
               const newTextSpan = newApplyBtn.querySelector('.szc-btn-text');
-              if (newTextSpan) newTextSpan.textContent = '✓ APPLIED';
+              if (newTextSpan) newTextSpan.textContent = 'APPLIED';
             }
 
             // Hide inline success message (Applied tag & Order summary pill serve as visual indicator)
@@ -1149,7 +1197,7 @@
               window.ShopziCurious.showToast('Discount applied successfully.');
             }
 
-            // Focus Management: Focus the Remove Discount button (✕)
+            // Focus Management: Focus the Remove Discount button
             const removeBtn = newCartPage.querySelector('.szc-tag-remove-btn') || newCartPage.querySelector('[data-remove-discount]');
             if (removeBtn) {
               removeBtn.focus();

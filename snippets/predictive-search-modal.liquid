@@ -39,7 +39,7 @@
         </button>
 
         <div class="szc-search-brand-title">
-          <span class="szc-brand-name">SHOPZICURIOUS</span>
+          <span class="szc-brand-name">{{ shop.name | upcase }}</span>
           <span class="szc-brand-sub">PREMIUM FASHION</span>
         </div>
 
@@ -121,7 +121,9 @@
         <div class="szc-search-col szc-search-col--suggestions" id="ColSuggestions">
           <h4 class="szc-search-col__title" id="ColTitleSuggestions">TRENDING SEARCHES</h4>
           <ul class="szc-suggestions-list" id="SearchSuggestionsList">
-            {%- assign trending_keywords = settings.search_trending_keywords | default: 'Dresses, Jackets, Denim, Linen, Coats' | split: ',' -%}
+            {%- assign raw_keywords = settings.search_trending_keywords -%}
+            {%- if raw_keywords == blank -%}{%- assign raw_keywords = 'Dresses, Jackets, Denim, Linen, Coats' -%}{%- endif -%}
+            {%- assign trending_keywords = raw_keywords | split: ',' -%}
             {%- for keyword in trending_keywords -%}
               {%- assign clean_kw = keyword | strip -%}
               {%- if clean_kw != blank -%}
@@ -603,7 +605,7 @@
     transform: translateX(3px);
   }
 
-  /* 📱 MOBILE VIEW LUXURY UI/UX (Matching Screenshots 1 & 2 1:1) */
+  /* MOBILE VIEW LUXURY UI/UX (Matching Screenshots 1 & 2 1:1) */
   @media (max-width: 767px) {
     .szc-search-modal__popover {
       position: fixed;
@@ -807,6 +809,8 @@
       }
     }
 
+    const enablePredictiveSearch = {{ settings.enable_predictive_search | default: true | json }};
+
     // Live Predictive Search JSON API Querying
     if (input) {
       input.addEventListener('input', function () {
@@ -815,6 +819,10 @@
 
         if (!query) {
           resetToInitialState();
+          return;
+        }
+
+        if (!enablePredictiveSearch) {
           return;
         }
 

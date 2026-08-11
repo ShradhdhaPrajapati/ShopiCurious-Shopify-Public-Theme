@@ -15,9 +15,9 @@
         assign trust_subtext_key = 'trust_badge_' | append: i | append: '_subtext'
         assign trust_icon_key = 'trust_badge_' | append: i | append: '_icon'
         
-        assign b_title = settings[badge_title_key] | default: settings[trust_title_key]
-        assign b_subtext = settings[badge_subtext_key] | default: settings[trust_subtext_key]
-        assign b_icon = settings[badge_icon_key] | default: settings[trust_icon_key]
+        assign b_title = settings[trust_title_key] | default: settings[badge_title_key]
+        assign b_subtext = settings[trust_subtext_key] | default: settings[badge_subtext_key]
+        assign b_icon = settings[trust_icon_key] | default: settings[badge_icon_key]
       -%}
       {%- if b_title != blank or b_subtext != blank -%}
         <div class="szc-qv-trust-item">
@@ -26,6 +26,8 @@
               <svg class="szc-qv-trust-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="1 4 1 10 7 10"></polyline><path d="M3.51 15a9 9 0 1 0 2.13-9.36L1 10"></path></svg>
             {%- when 'secure' -%}
               <svg class="szc-qv-trust-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect><path d="M7 11V7a5 5 0 0 1 10 0v4"></path></svg>
+            {%- when 'shield' -%}
+              <svg class="szc-qv-trust-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path></svg>
             {%- when 'star' -%}
               <svg class="szc-qv-trust-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg>
             {%- when 'support' -%}

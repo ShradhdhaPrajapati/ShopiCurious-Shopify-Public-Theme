@@ -9,13 +9,17 @@
   assign cols_desktop = section.settings.columns_desktop | default: 5
   assign cols_mobile = section.settings.columns_mobile | default: '2'
   assign enable_swipe = section.settings.enable_swipe_mobile | default: false
-  assign image_ratio = section.settings.image_ratio | default: settings.product_card_image_ratio | default: 'portrait'
+  assign image_ratio = section.settings.image_ratio
+  if image_ratio == 'theme' or image_ratio == blank
+    assign image_ratio = settings.product_card_image_ratio | default: '3/4'
+  endif
 -%}
 
 <section
   id="FeaturedCollection-{{ section.id }}"
   class="szc-featured-collection page-width{% if enable_swipe %} szc-featured-collection--swipe-mobile{% endif %}"
   style="--cols-desktop: {{ cols_desktop }}; --cols-mobile: {{ cols_mobile }};"
+  data-animate="slide-up"
 >
   <!-- Section Header -->
   {%- assign align_class = section.settings.heading_alignment | default: 'left' -%}
@@ -44,7 +48,6 @@
         <div class="szc-featured-collection__item szc-animate-fade-up">
           {% render 'product-card',
             card_product: product,
-            show_secondary_image: true,
             show_quick_add: true,
             show_quick_view: true,
             show_price: section.settings.show_price,
@@ -318,12 +321,13 @@
       "id": "image_ratio",
       "label": "Image size",
       "options": [
+        { "value": "theme", "label": "Default from Theme Settings" },
         { "value": "natural", "label": "Natural" },
         { "value": "square", "label": "Square (1:1)" },
         { "value": "portrait", "label": "Portrait (3:4)" },
         { "value": "landscape", "label": "Landscape (4:3)" }
       ],
-      "default": "portrait"
+      "default": "theme"
     },
     {
       "type": "checkbox",

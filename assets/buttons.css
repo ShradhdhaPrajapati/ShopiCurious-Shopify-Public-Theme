@@ -12,7 +12,8 @@
   align-items: center;
   justify-content: center;
   gap: var(--szc-space-2);
-  padding: var(--szc-space-3) var(--szc-space-6);
+  padding: 0 var(--szc-space-6);
+  min-height: var(--szc-button-height, 48px);
   font-family: var(--szc-font-family-body);
   font-size: var(--szc-font-size-base);
   font-weight: var(--szc-font-weight-medium);
@@ -39,7 +40,7 @@
 }
 
 .szc-btn:hover {
-  transform: translateY(-1px);
+  /* Controlled dynamically via Theme Settings (button_hover_effect) */
 }
 
 .szc-btn:active {
@@ -70,7 +71,6 @@
   background-color: var(--szc-color-primary-light);
   border-color: var(--szc-color-primary-light);
   color: var(--szc-color-text-inverse);
-  box-shadow: var(--szc-shadow-md);
 }
 
 /* Secondary / Accent Button */

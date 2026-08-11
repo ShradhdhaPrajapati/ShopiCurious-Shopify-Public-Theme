@@ -16,14 +16,28 @@
     assign show_excerpt_val = true
   endif
 
+  assign show_author_val = show_author
+  if show_author_val == nil
+    assign show_author_val = settings.show_article_author
+  endif
+  if settings.show_article_author == false
+    assign show_author_val = false
+  endif
+
   assign show_date_val = show_date
   if show_date_val == nil
-    assign show_date_val = true
+    assign show_date_val = settings.show_article_date
+  endif
+  if settings.show_article_date == false
+    assign show_date_val = false
   endif
 
   assign show_read_time_val = show_read_time
   if show_read_time_val == nil
-    assign show_read_time_val = true
+    assign show_read_time_val = settings.show_reading_time
+  endif
+  if settings.show_reading_time == false
+    assign show_read_time_val = false
   endif
 -%}
 
@@ -65,16 +79,26 @@
         </p>
       {%- endif -%}
 
-      <!-- Footer Meta (Date + Read Time) -->
+      <!-- Footer Meta (Author + Date + Read Time) -->
       <div class="szc-article-card__meta">
+        {%- if show_author_val and article.author != blank -%}
+          <span class="szc-article-card__author">By {{ article.author }}</span>
+        {%- endif -%}
+
+        {%- if show_author_val and article.author != blank and show_date_val -%}
+          <span class="szc-article-card__dot" aria-hidden="true">•</span>
+        {%- endif -%}
+
         {%- if show_date_val -%}
           <time datetime="{{ article.published_at | date: '%Y-%m-%d' }}" class="szc-article-card__date">
             {{ article.published_at | date: "%b %d, %Y" }}
           </time>
         {%- endif -%}
 
-        {%- if show_date_val and show_read_time_val -%}
-          <span class="szc-article-card__dot" aria-hidden="true">•</span>
+        {%- if show_date_val or show_author_val -%}
+          {%- if show_read_time_val -%}
+            <span class="szc-article-card__dot" aria-hidden="true">•</span>
+          {%- endif -%}
         {%- endif -%}
 
         {%- if show_read_time_val -%}

@@ -409,24 +409,6 @@
       },
       {
         "type": "checkbox",
-        "id": "show_new_arrival_badge",
-        "label": "Show 'New Arrival' Badge",
-        "default": true
-      },
-      {
-        "type": "checkbox",
-        "id": "show_bestseller_badge",
-        "label": "Show 'Best Seller' Badge",
-        "default": true
-      },
-      {
-        "type": "checkbox",
-        "id": "show_limited_badge",
-        "label": "Show 'Limited Edition' Badge",
-        "default": true
-      },
-      {
-        "type": "checkbox",
         "id": "show_sale_badge",
         "label": "Show Discount Sale Badge",
         "default": true
@@ -503,36 +485,6 @@
           { "value": "grid_2col", "label": "2-Column Runway Image Grid" }
         ],
         "default": "stacked"
-      },
-      {
-        "type": "checkbox",
-        "id": "enable_size_guide",
-        "label": "Enable Size Guide Popup Modal Link",
-        "default": true
-      },
-      {
-        "type": "checkbox",
-        "id": "show_model_info",
-        "label": "Show Model Information Block (Height & Size Worn)",
-        "default": true
-      },
-      {
-        "type": "checkbox",
-        "id": "show_fabric_info",
-        "label": "Show Fabric & Material Composition Accordion",
-        "default": true
-      },
-      {
-        "type": "checkbox",
-        "id": "show_care_instructions",
-        "label": "Show Garment Washing & Care Instructions Accordion",
-        "default": true
-      },
-      {
-        "type": "checkbox",
-        "id": "show_fit_info",
-        "label": "Show Sizing & Fit Recommendation Bar (e.g. Runs True to Size)",
-        "default": true
       },
       {
         "type": "header",
@@ -630,22 +582,6 @@
           { "value": "page", "label": "Dedicated Cart Page" }
         ],
         "default": "drawer"
-      },
-      {
-        "type": "checkbox",
-        "id": "enable_free_shipping_bar",
-        "label": "Enable Free Shipping Goal Progress Bar",
-        "default": true
-      },
-      {
-        "type": "range",
-        "id": "free_shipping_threshold",
-        "min": 25,
-        "max": 300,
-        "step": 25,
-        "unit": "$",
-        "label": "Free Shipping Threshold",
-        "default": 100
       },
       {
         "type": "checkbox",

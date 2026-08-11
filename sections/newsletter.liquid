@@ -17,7 +17,7 @@
 <section id="Newsletter-{{ section.id }}" class="szc-newsletter-section page-width">
   <div class="szc-newsletter">
     <!-- Left Media Image -->
-    <div class="szc-newsletter__media">
+    <div class="szc-newsletter__media" data-animate="slide-right">
       {%- if image != blank -%}
         {% render 'image', image: image, loading: 'lazy', class: 'szc-newsletter__image' %}
       {%- else -%}
@@ -28,7 +28,7 @@
     </div>
 
     <!-- Right Content Box -->
-    <div class="szc-newsletter__content">
+    <div class="szc-newsletter__content" data-animate="slide-left">
       <div
         class="szc-newsletter__content-inner"
         style="

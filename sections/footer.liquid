@@ -31,7 +31,7 @@
               {%- endif -%}
 
               <!-- Social Media Icons Row -->
-              {%- if block.settings.show_socials -%}
+              {%- if block.settings.show_socials and settings.show_social_icons != false -%}
                 <div class="szc-footer__socials">
                   {%- if block.settings.show_instagram != false -%}
                     {%- assign insta_link = block.settings.instagram_link | default: settings.social_instagram_link | default: '#' -%}
@@ -159,51 +159,53 @@
             </div>
 
           {%- when 'newsletter' -%}
-            <div class="szc-footer__col szc-footer__col--newsletter" {{ block.shopify_attributes }}>
-              {%- if block.settings.heading != blank -%}
-                <h3 class="szc-footer__heading">{{ block.settings.heading }}</h3>
-              {%- endif -%}
-              {%- if block.settings.subtext != blank -%}
-                <p class="szc-footer__newsletter-subtext">{{ block.settings.subtext }}</p>
-              {%- endif -%}
-
-              {%- form 'customer', class: 'szc-footer__newsletter-form' -%}
-                <input type="hidden" name="contact[tags]" value="newsletter">
-                <div class="szc-footer__newsletter-field">
-                  <input
-                    type="email"
-                    name="contact[email]"
-                    class="szc-footer__newsletter-input"
-                    value="{{ form.email }}"
-                    placeholder="{{ 'newsletter.label' | t | default: 'Enter your email' }}"
-                    required
-                  >
-                  <button
-                    type="submit"
-                    class="szc-footer__newsletter-btn"
-                    aria-label="{{ 'newsletter.button_label' | t | default: 'Subscribe' }}"
-                  >
-                    <svg
-                      class="szc-arrow-icon"
-                      viewBox="0 0 24 24"
-                      fill="none"
-                      stroke="currentColor"
-                      stroke-width="2"
-                      stroke-linecap="round"
-                      stroke-linejoin="round"
-                      aria-hidden="true"
-                    >
-                      <line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/>
-                    </svg>
-                  </button>
-                </div>
-                {%- if form.posted_successfully? -%}
-                  <p class="szc-footer__newsletter-success">
-                    {{ 'sections.newsletter.success' | t | default: 'Thanks for subscribing!' }}
-                  </p>
+            {%- if settings.show_footer_newsletter != false -%}
+              <div class="szc-footer__col szc-footer__col--newsletter" {{ block.shopify_attributes }}>
+                {%- if block.settings.heading != blank -%}
+                  <h3 class="szc-footer__heading">{{ block.settings.heading }}</h3>
                 {%- endif -%}
-              {%- endform -%}
-            </div>
+                {%- if block.settings.subtext != blank -%}
+                  <p class="szc-footer__newsletter-subtext">{{ block.settings.subtext }}</p>
+                {%- endif -%}
+
+                {%- form 'customer', class: 'szc-footer__newsletter-form' -%}
+                  <input type="hidden" name="contact[tags]" value="newsletter">
+                  <div class="szc-footer__newsletter-field">
+                    <input
+                      type="email"
+                      name="contact[email]"
+                      class="szc-footer__newsletter-input"
+                      value="{{ form.email }}"
+                      placeholder="{{ 'newsletter.label' | t | default: 'Enter your email' }}"
+                      required
+                    >
+                    <button
+                      type="submit"
+                      class="szc-footer__newsletter-btn"
+                      aria-label="{{ 'newsletter.button_label' | t | default: 'Subscribe' }}"
+                    >
+                      <svg
+                        class="szc-arrow-icon"
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        stroke="currentColor"
+                        stroke-width="2"
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                        aria-hidden="true"
+                      >
+                        <line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/>
+                      </svg>
+                    </button>
+                  </div>
+                  {%- if form.posted_successfully? -%}
+                    <p class="szc-footer__newsletter-success">
+                      {{ 'sections.newsletter.success' | t | default: 'Thanks for subscribing!' }}
+                    </p>
+                  {%- endif -%}
+                {%- endform -%}
+              </div>
+            {%- endif -%}
         {%- endcase -%}
       {%- endfor -%}
     </div>
@@ -213,15 +215,21 @@
   <div class="szc-footer__bottom">
     <div class="szc-footer__bottom-inner page-width">
       <div class="szc-footer__copyright">
-        &copy; {{ 'now' | date: '%Y' }}
-        {%- if section.settings.copyright_text != blank -%}
-          {{ section.settings.copyright_text }}
+        {%- if settings.copyright_text != blank -%}
+          {{ settings.copyright_text }}
+        {%- elsif section.settings.copyright_text != blank -%}
+          &copy; {{ 'now' | date: '%Y' }} {{ section.settings.copyright_text }}
         {%- else -%}
-          {{ shop.name }}, All Rights Reserved.
+          &copy; {{ 'now' | date: '%Y' }} {{ shop.name }}, All Rights Reserved.
         {%- endif -%}
       </div>
 
-      {%- if section.settings.show_payment_icons -%}
+      {%- assign display_payment_icons = settings.show_payment_icons -%}
+      {%- if display_payment_icons != false and section.settings.show_payment_icons == false -%}
+        {%- assign display_payment_icons = false -%}
+      {%- endif -%}
+
+      {%- if display_payment_icons != false -%}
         <div class="szc-footer__payment-types">
 
             {%- if section.settings.show_visa != false -%}

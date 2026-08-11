@@ -17,6 +17,7 @@
      ========================================================================== */
   --szc-font-family-body: var(--font-primary--family, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif);
   --szc-font-family-heading: var(--font-heading--family, var(--szc-font-family-body));
+  --szc-font-family-nav: var(--font-nav--family, var(--szc-font-family-body));
 
   --szc-font-weight-light: 300;
   --szc-font-weight-regular: 400;
@@ -72,6 +73,7 @@
 
   --szc-section-spacing-desktop: 80px;
   --szc-section-spacing-mobile: 48px;
+  --szc-grid-gap: 24px;
 
   /* ==========================================================================
      4. BORDER RADIUS SYSTEM
@@ -84,9 +86,9 @@
   --szc-radius-xl: 24px;
   --szc-radius-pill: 9999px;
   --szc-radius-circle: 50%;
-  --szc-radius-input: var(--style-border-radius-inputs, 4px);
-  --szc-radius-button: var(--style-border-radius-inputs, 4px);
-  --szc-radius-card: 8px;
+  --szc-radius-input: var(--style-border-radius-inputs, 2px);
+  --szc-radius-button: var(--style-border-radius-inputs, 2px);
+  --szc-radius-card: 4px;
 
   /* ==========================================================================
      5. ELEVATION & SHADOW SYSTEM

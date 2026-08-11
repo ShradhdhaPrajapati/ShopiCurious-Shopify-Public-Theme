@@ -6,9 +6,10 @@
   if pag_type == blank
     assign pag_type = 'numbers'
   endif
+  assign current_sort_by = search.sort_by | default: search.default_sort_by | default: 'relevance'
 -%}
 
-<div class="szc-main-search page-width" style="--cols-desktop: {{ cols_desktop }}; --cols-mobile: {{ cols_mobile }};">
+<div class="szc-main-search page-width" style="--cols-desktop: {{ cols_desktop }}; --cols-mobile: {{ cols_mobile }};" data-animate="slide-up">
   {% render 'breadcrumbs' %}
 
   <!-- Top Search Bar Form with Dynamic Predictive Auto-Suggestions -->
@@ -45,11 +46,24 @@
     <div class="szc-main-search__controls">    
       <div class="szc-main-search__sort">
         <label for="SearchSortSelect" class="szc-sort-label">Sort by:</label>
-        <select id="SearchSortSelect" class="szc-sort-select">
-          <option value="relevance" selected>Relevance</option>
-          <option value="price-ascending">Price: Low to High</option>
-          <option value="price-descending">Price: High to Low</option>
-          <option value="created-descending">Newest</option>
+        <select
+          id="SearchSortSelect"
+          name="sort_by"
+          class="szc-sort-select"
+          form="FacetFiltersForm"
+        >
+          {%- if search.sort_options.size > 0 -%}
+            {%- for option in search.sort_options -%}
+              <option value="{{ option.value }}" {% if option.value == current_sort_by %}selected{% endif %}>
+                {{ option.name }}
+              </option>
+            {%- endfor -%}
+          {%- else -%}
+            <option value="relevance" {% if current_sort_by == 'relevance' or current_sort_by == blank %}selected{% endif %}>Relevance</option>
+            <option value="price-ascending" {% if current_sort_by == 'price-ascending' %}selected{% endif %}>Price: Low to High</option>
+            <option value="price-descending" {% if current_sort_by == 'price-descending' %}selected{% endif %}>Price: High to Low</option>
+            <option value="created-descending" {% if current_sort_by == 'created-descending' %}selected{% endif %}>Newest</option>
+          {%- endif -%}
         </select>
       </div>
     </div>
@@ -99,7 +113,6 @@
                 <div class="szc-main-search__item szc-animate-fade-up">
                   {% render 'product-card',
                     card_product: item,
-                    show_secondary_image: true,
                     show_quick_add: true,
                     show_quick_view: true
                   %}
@@ -123,7 +136,6 @@
             <div class="szc-main-search__item szc-animate-fade-up">
               {% render 'product-card',
                 card_product: product,
-                show_secondary_image: true,
                 show_quick_add: true,
                 show_quick_view: true
               %}
@@ -494,6 +506,29 @@
       document.addEventListener('click', function(e) {
         if (!input.contains(e.target) && !pageSuggestions.contains(e.target)) {
           pageSuggestions.style.display = 'none';
+        }
+      });
+    }
+
+    const searchSortSelect = document.getElementById('SearchSortSelect');
+    if (searchSortSelect) {
+      searchSortSelect.addEventListener('change', function() {
+        const facetForm = document.getElementById('FacetFiltersForm');
+        if (facetForm) {
+          let sortInput = facetForm.querySelector('input[name="sort_by"]');
+          if (!sortInput) {
+            sortInput = document.createElement('input');
+            sortInput.type = 'hidden';
+            sortInput.name = 'sort_by';
+            facetForm.appendChild(sortInput);
+          }
+          sortInput.value = this.value;
+          facetForm.dispatchEvent(new Event('change', { bubbles: true, cancelable: true }));
+        } else {
+          const url = new URL(window.location.href);
+          url.searchParams.set('sort_by', this.value);
+          url.searchParams.delete('page');
+          window.location.href = url.toString();
         }
       });
     }
