@@ -229,19 +229,37 @@
                         </span>
                       </legend>
                       {%- if is_size -%}
-                        <button type="button" class="szc-size-guide-btn" data-size-guide-trigger>
-                          <svg
-                            width="14"
-                            height="14"
-                            viewBox="0 0 24 24"
-                            fill="none"
-                            stroke="currentColor"
-                            stroke-width="2"
+                        {%- liquid
+                          # Sourced directly from product.metafields.custom.size_guide_table / size_guide via render-tab-content
+                          assign sg_button_mf = product.metafields.custom.size_guide_table | default: product.metafields.custom.size_guide
+                        -%}
+                        {%- capture sg_btn_content -%}
+                          {% render 'render-tab-content', metafield: sg_button_mf %}
+                        {%- endcapture -%}
+                        {%- assign sg_btn_stripped = sg_btn_content | strip_html | strip -%}
+
+                        {%- if sg_btn_content != blank and sg_btn_stripped != blank -%}
+                          <button
+                            type="button"
+                            class="szc-size-guide-btn"
+                            data-size-guide-trigger
+                            aria-haspopup="dialog"
+                            aria-expanded="false"
+                            aria-controls="SizeGuideModal-{{ section.id }}"
                           >
-                            <path d="M2 12h20M2 12v6a2 2 0 002 2h16a2 2 0 002-2v-6M6 12v-3M10 12v-2M14 12v-3M18 12v-2"/>
-                          </svg>
-                          <span>Size Guide</span>
-                        </button>
+                            <svg
+                              width="14"
+                              height="14"
+                              viewBox="0 0 24 24"
+                              fill="none"
+                              stroke="currentColor"
+                              stroke-width="2"
+                            >
+                              <path d="M2 12h20M2 12v6a2 2 0 002 2h16a2 2 0 002-2v-6M6 12v-3M10 12v-2M14 12v-3M18 12v-2"/>
+                            </svg>
+                            <span>Size Guide</span>
+                          </button>
+                        {%- endif -%}
                       {%- endif -%}
                     </div>
 
@@ -322,34 +340,36 @@
                       </span>
                     </button>
 
-                    <button
-                      type="button"
-                      class="szc-main-product__wishlist-btn"
-                      data-wishlist-toggle
-                      data-product-handle="{{ product.handle }}"
-                      data-product-id="{{ current_variant.id | default: product.id }}"
-                      data-product-title="{{ product.title | escape }}"
-                      data-product-price="{{ current_variant.price | default: product.price | money }}"
-                      data-product-compare-price="{% if current_variant.compare_at_price > current_variant.price %}{{ current_variant.compare_at_price | money }}{% endif %}"
-                      data-product-image="{% if product.featured_media != blank %}{{ product.featured_media | image_url: width: 600 }}{% endif %}"
-                      data-product-url="{{ product.url }}"
-                      data-product-vendor="{{ product.vendor | escape }}"
-                      data-product-available="{{ current_variant.available }}"
-                      aria-label="Add to Wishlist"
-                    >
-                      <span class="szc-wishlist-icon-wrap">
-                        <svg
-                          width="18"
-                          height="18"
-                          viewBox="0 0 24 24"
-                          fill="none"
-                          stroke="currentColor"
-                          stroke-width="2"
-                        >
-                          <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l8.78-8.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path>
-                        </svg>
-                      </span>
-                    </button>
+                    {%- if settings.enable_wishlist != false -%}
+                      <button
+                        type="button"
+                        class="szc-main-product__wishlist-btn"
+                        data-wishlist-toggle
+                        data-product-handle="{{ product.handle }}"
+                        data-product-id="{{ current_variant.id | default: product.id }}"
+                        data-product-title="{{ product.title | escape }}"
+                        data-product-price="{{ current_variant.price | default: product.price | money }}"
+                        data-product-compare-price="{% if current_variant.compare_at_price > current_variant.price %}{{ current_variant.compare_at_price | money }}{% endif %}"
+                        data-product-image="{% if product.featured_media != blank %}{{ product.featured_media | image_url: width: 600 }}{% endif %}"
+                        data-product-url="{{ product.url }}"
+                        data-product-vendor="{{ product.vendor | escape }}"
+                        data-product-available="{{ current_variant.available }}"
+                        aria-label="Add to Wishlist"
+                      >
+                        <span class="szc-wishlist-icon-wrap">
+                          <svg
+                            width="18"
+                            height="18"
+                            viewBox="0 0 24 24"
+                            fill="none"
+                            stroke="currentColor"
+                            stroke-width="2"
+                          >
+                            <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l8.78-8.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path>
+                          </svg>
+                        </span>
+                      </button>
+                    {%- endif -%}
                   </div>
 
                   <button type="button" class="szc-button szc-button--outline szc-main-product__buy-now-btn" data-buy-now-btn>
@@ -597,72 +617,97 @@
     </div>
   </div>
 
-  {%- if section.settings.enable_product_tabs != false -%}
-    <!-- 4. Product Details Tabs Section (100% Editable & Dynamic) -->
+  {%- assign tab_blocks = section.blocks | where: 'type', 'tab' -%}
+  {%- if section.settings.enable_product_tabs != false and tab_blocks.size > 0 -%}
+    <!-- 4. Product Details Tabs Section (Section Blocks & Dynamic Sources Sourced) -->
     <div class="szc-product-tabs">
       <div class="szc-product-tabs__header" role="tablist">
-        {%- if section.settings.show_tab_description != false -%}
-          <button type="button" class="szc-tab-btn is-active" data-tab="tab-description">
-            {{ section.settings.tab_description_title | default: 'DESCRIPTION' }}
-          </button>
-        {%- endif -%}
-        {%- if section.settings.show_tab_fabric != false -%}
-          <button type="button" class="szc-tab-btn {% if section.settings.show_tab_description == false %}is-active{% endif %}" data-tab="tab-fabric">
-            {{ section.settings.tab_fabric_title | default: 'FABRIC & CARE' }}
-          </button>
-        {%- endif -%}
-        {%- if section.settings.show_tab_size != false -%}
-          <button type="button" class="szc-tab-btn {% if section.settings.show_tab_description == false and section.settings.show_tab_fabric == false %}is-active{% endif %}" data-tab="tab-size">
-            {{ section.settings.tab_size_title | default: 'SIZE GUIDE' }}
-          </button>
-        {%- endif -%}
-        {%- if section.settings.show_tab_shipping != false -%}
-          <button type="button" class="szc-tab-btn {% if section.settings.show_tab_description == false and section.settings.show_tab_fabric == false and section.settings.show_tab_size == false %}is-active{% endif %}" data-tab="tab-shipping">
-            {{ section.settings.tab_shipping_title | default: 'SHIPPING & RETURNS' }}
-          </button>
-        {%- endif -%}
+        {%- assign active_tab_found = false -%}
+        {%- for block in tab_blocks -%}
+          {%- liquid
+            assign raw_content = block.settings.tab_content
+            assign heading_upper = block.settings.heading | default: '' | upcase
+            assign default_metafield = nil
+
+            if heading_upper contains 'FABRIC' or heading_upper contains 'CARE'
+              assign default_metafield = product.metafields.custom.care_instructions | default: product.metafields.custom.fabric_care | default: product.metafields.custom.fabric_and_care
+            elsif heading_upper contains 'SIZE'
+              assign default_metafield = product.metafields.custom.size_guide_table | default: product.metafields.custom.size_guide
+            elsif heading_upper contains 'SHIPPING' or heading_upper contains 'RETURN'
+              assign default_metafield = product.metafields.custom.shipping_returns | default: product.metafields.custom.shipping_and_returns
+            elsif heading_upper contains 'DESCRIPTION'
+              if raw_content == blank
+                assign raw_content = product.description
+              endif
+            endif
+          -%}
+
+          {%- capture rendered_content -%}
+            {% render 'render-tab-content', content: raw_content, metafield: default_metafield %}
+          {%- endcapture -%}
+
+          {%- assign stripped_content = rendered_content | strip_html | strip -%}
+
+          {%- if rendered_content != blank and stripped_content != blank -%}
+            <button
+              type="button"
+              class="szc-tab-btn{% if active_tab_found == false %} is-active{% endif %}"
+              data-tab="tab-{{ block.id }}"
+              {{ block.shopify_attributes }}
+            >
+              {{ block.settings.heading | default: 'TAB' }}
+            </button>
+            {%- assign active_tab_found = true -%}
+          {%- endif -%}
+        {%- endfor -%}
       </div>
 
       <div class="szc-product-tabs__content">
-        {%- if section.settings.show_tab_description != false -%}
-          <!-- Tab 1: Description -->
-          <div id="tab-description" class="szc-tab-pane is-active">
-            <div class="szc-product-description-content">
-              {%- if section.settings.fallback_description != blank -%}
-                {{ section.settings.fallback_description }}
-              {%- elsif product.description != blank -%}
-                {{ product.description }}
+        {%- assign active_pane_found = false -%}
+        {%- for block in tab_blocks -%}
+          {%- liquid
+            assign raw_content = block.settings.tab_content
+            assign heading_upper = block.settings.heading | default: '' | upcase
+            assign default_metafield = nil
+
+            if heading_upper contains 'FABRIC' or heading_upper contains 'CARE'
+              assign default_metafield = product.metafields.custom.care_instructions | default: product.metafields.custom.fabric_care | default: product.metafields.custom.fabric_and_care
+            elsif heading_upper contains 'SIZE'
+              assign default_metafield = product.metafields.custom.size_guide_table | default: product.metafields.custom.size_guide
+            elsif heading_upper contains 'SHIPPING' or heading_upper contains 'RETURN'
+              assign default_metafield = product.metafields.custom.shipping_returns | default: product.metafields.custom.shipping_and_returns
+            elsif heading_upper contains 'DESCRIPTION'
+              if raw_content == blank
+                assign raw_content = product.description
+              endif
+            endif
+          -%}
+
+          {%- capture rendered_content -%}
+            {% render 'render-tab-content', content: raw_content, metafield: default_metafield %}
+          {%- endcapture -%}
+
+          {%- assign stripped_content = rendered_content | strip_html | strip -%}
+
+          {%- if rendered_content != blank and stripped_content != blank -%}
+            <div
+              id="tab-{{ block.id }}"
+              class="szc-tab-pane{% if active_pane_found == false %} is-active{% endif %}"
+              {{ block.shopify_attributes }}
+            >
+              {%- if heading_upper contains 'DESCRIPTION' -%}
+                <div class="szc-product-description-content">
+                  {{ rendered_content }}
+                </div>
+              {%- else -%}
+                <div class="szc-tab-pane-table-wrapper">
+                  {{ rendered_content }}
+                </div>
               {%- endif -%}
             </div>
-          </div>
-        {%- endif -%}
-
-        {%- if section.settings.show_tab_fabric != false -%}
-          <!-- Tab 2: Fabric & Care -->
-          <div id="tab-fabric" class="szc-tab-pane {% if section.settings.show_tab_description == false %}is-active{% endif %}">
-            {%- if section.settings.tab_fabric_content != blank -%}
-              {{ section.settings.tab_fabric_content }}
-            {%- endif -%}
-          </div>
-        {%- endif -%}
-
-        {%- if section.settings.show_tab_size != false -%}
-          <!-- Tab 3: Size Guide -->
-          <div id="tab-size" class="szc-tab-pane {% if section.settings.show_tab_description == false and section.settings.show_tab_fabric == false %}is-active{% endif %}">
-            {%- if section.settings.tab_size_content != blank -%}
-              {{ section.settings.tab_size_content }}
-            {%- endif -%}
-          </div>
-        {%- endif -%}
-
-        {%- if section.settings.show_tab_shipping != false -%}
-          <!-- Tab 4: Shipping & Returns -->
-          <div id="tab-shipping" class="szc-tab-pane {% if section.settings.show_tab_description == false and section.settings.show_tab_fabric == false and section.settings.show_tab_size == false %}is-active{% endif %}">
-            {%- if section.settings.tab_shipping_content != blank -%}
-              {{ section.settings.tab_shipping_content }}
-            {%- endif -%}
-          </div>
-        {%- endif -%}
+            {%- assign active_pane_found = true -%}
+          {%- endif -%}
+        {%- endfor -%}
       </div>
     </div>
   {%- endif -%}
@@ -724,6 +769,53 @@
     </div>
   {%- endif -%}
 </section>
+
+<!-- 5.5 Reusable Size Guide Modal Popup -->
+{%- liquid
+  # Size Guide Modal Popup Markup & Content Sourcing
+  # Note: Intentionally reuses the exact same product Size Guide metafield as the lower Size Guide tab
+  assign sg_modal_mf = product.metafields.custom.size_guide_table | default: product.metafields.custom.size_guide
+-%}
+{%- capture sg_modal_content -%}
+  {% render 'render-tab-content', metafield: sg_modal_mf %}
+{%- endcapture -%}
+{%- assign sg_modal_stripped = sg_modal_content | strip_html | strip -%}
+
+{%- if sg_modal_content != blank and sg_modal_stripped != blank -%}
+  <!-- Size Guide Popup Dialog (Reuses product.metafields.custom.size_guide_table / size_guide) -->
+  <div
+    class="szc-size-guide-modal"
+    id="SizeGuideModal-{{ section.id }}"
+    role="dialog"
+    aria-modal="true"
+    aria-label="Size Guide"
+    aria-hidden="true"
+    data-size-guide-modal
+  >
+    <div class="szc-size-guide-modal__backdrop" data-size-guide-close></div>
+    <div class="szc-size-guide-modal__dialog">
+      <div class="szc-size-guide-modal__header">
+        <h3 class="szc-size-guide-modal__title">SIZE GUIDE</h3>
+        <button
+          type="button"
+          class="szc-size-guide-modal__close"
+          aria-label="Close Size Guide"
+          data-size-guide-close
+        >
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <line x1="18" y1="6" x2="6" y2="18"></line>
+            <line x1="6" y1="6" x2="18" y2="18"></line>
+          </svg>
+        </button>
+      </div>
+      <div class="szc-size-guide-modal__body">
+        <div class="szc-tab-pane-table-wrapper">
+          {{ sg_modal_content }}
+        </div>
+      </div>
+    </div>
+  </div>
+{%- endif -%}
 
 <!-- 6. Shopify Style Native Zoom Modal Lightbox (Crystal Clear Ultra High-Res + Top-to-Bottom Scrollable) -->
 <div class="szc-zoom-modal" id="ProductZoomModal" aria-hidden="true" data-zoom-modal>
@@ -1608,6 +1700,134 @@
     display: block;
   }
 
+  .szc-tab-pane-table-wrapper {
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    margin-bottom: 16px;
+    width: 100%;
+  }
+
+  .szc-tab-pane table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 12px 0;
+    font-size: 14px;
+    text-align: left;
+  }
+
+  .szc-tab-pane table th,
+  .szc-tab-pane table td {
+    padding: 12px 16px;
+    border-bottom: 1px solid rgba(0, 0, 0, 0.08);
+  }
+
+  .szc-tab-pane table th {
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    font-size: 12px;
+    background-color: rgba(0, 0, 0, 0.03);
+    color: #111111;
+  }
+
+  .szc-tab-pane table tr:hover {
+    background-color: rgba(0, 0, 0, 0.015);
+  }
+
+  /* Size Guide Reusable Modal Styling */
+  .szc-size-guide-modal {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 99999;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity 0.25s ease, visibility 0.25s ease;
+    padding: 16px;
+    box-sizing: border-box;
+  }
+
+  .szc-size-guide-modal.is-active {
+    opacity: 1;
+    visibility: visible;
+  }
+
+  .szc-size-guide-modal__backdrop {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+    backdrop-filter: blur(2px);
+  }
+
+  .szc-size-guide-modal__dialog {
+    position: relative;
+    background-color: #ffffff;
+    width: 100%;
+    max-width: 750px;
+    max-height: 85vh;
+    border-radius: 8px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    transform: scale(0.95);
+    transition: transform 0.25s ease;
+    z-index: 1;
+  }
+
+  .szc-size-guide-modal.is-active .szc-size-guide-modal__dialog {
+    transform: scale(1);
+  }
+
+  .szc-size-guide-modal__header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 20px 24px;
+    border-bottom: 1px solid rgba(0, 0, 0, 0.08);
+  }
+
+  .szc-size-guide-modal__title {
+    margin: 0;
+    font-size: 18px;
+    font-weight: 700;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+    color: #111111;
+  }
+
+  .szc-size-guide-modal__close {
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding: 6px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #555555;
+    border-radius: 50%;
+    transition: background-color 0.2s ease, color 0.2s ease;
+  }
+
+  .szc-size-guide-modal__close:hover {
+    background-color: rgba(0, 0, 0, 0.05);
+    color: #000000;
+  }
+
+  .szc-size-guide-modal__body {
+    padding: 24px;
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+
   .szc-tab-pane__grid {
     display: grid;
     grid-template-columns: 1fr;
@@ -2337,6 +2557,45 @@
       });
     });
 
+    // Size Guide Reusable Modal Popup Logic
+    const sizeGuideModal = document.querySelector('[data-size-guide-modal]');
+    const sizeGuideTriggers = document.querySelectorAll('[data-size-guide-trigger]');
+    const sizeGuideClosers = document.querySelectorAll('[data-size-guide-close]');
+
+    function openSizeGuideModal() {
+      if (!sizeGuideModal) return;
+      sizeGuideModal.classList.add('is-active');
+      sizeGuideModal.setAttribute('aria-hidden', 'false');
+      document.body.style.overflow = 'hidden';
+    }
+
+    function closeSizeGuideModal() {
+      if (!sizeGuideModal) return;
+      sizeGuideModal.classList.remove('is-active');
+      sizeGuideModal.setAttribute('aria-hidden', 'true');
+      document.body.style.overflow = '';
+    }
+
+    sizeGuideTriggers.forEach((trigger) => {
+      trigger.addEventListener('click', function (e) {
+        e.preventDefault();
+        openSizeGuideModal();
+      });
+    });
+
+    sizeGuideClosers.forEach((closer) => {
+      closer.addEventListener('click', function (e) {
+        e.preventDefault();
+        closeSizeGuideModal();
+      });
+    });
+
+    document.addEventListener('keydown', function (e) {
+      if (e.key === 'Escape' && sizeGuideModal && sizeGuideModal.classList.contains('is-active')) {
+        closeSizeGuideModal();
+      }
+    });
+
     // Sticky ATC Bar IntersectionObserver
     const mainAddBtn = document.querySelector('[data-add-to-cart-btn]');
     const stickyBar = document.querySelector('[data-sticky-atc-bar]');
@@ -2768,6 +3027,24 @@
           "label": "Custom Copy Link Icon Image (optional)"
         }
       ]
+    },
+    {
+      "type": "tab",
+      "name": "Tab",
+      "settings": [
+        {
+          "type": "text",
+          "id": "heading",
+          "label": "Tab Heading",
+          "default": "Tab"
+        },
+        {
+          "type": "richtext",
+          "id": "tab_content",
+          "label": "Tab Content Source",
+          "info": "Size Guide is managed per product. Add the product-specific size chart data in the product's Size Guide metafield in Shopify Admin. The table will automatically appear here."
+        }
+      ]
     }
   ],
   "settings": [
@@ -2782,88 +3059,12 @@
       "default": true
     },
     {
-      "type": "header",
-      "content": "Tab 1: Description"
+      "type": "paragraph",
+      "content": "Tab content can be connected to product data using Shopify Dynamic Sources. For product-specific content, create and fill the corresponding product metafield in Shopify Admin, then connect it using the Dynamic Source icon."
     },
     {
-      "type": "checkbox",
-      "id": "show_tab_description",
-      "label": "Show Description Tab",
-      "default": true
-    },
-    {
-      "type": "text",
-      "id": "tab_description_title",
-      "label": "Description Tab Header Title",
-      "default": "DESCRIPTION"
-    },
-    {
-      "type": "richtext",
-      "id": "fallback_description",
-      "label": "Custom Description (leave empty to use Product Description)"
-    },
-    {
-      "type": "header",
-      "content": "Tab 2: Fabric & Care"
-    },
-    {
-      "type": "checkbox",
-      "id": "show_tab_fabric",
-      "label": "Show Fabric & Care Tab",
-      "default": true
-    },
-    {
-      "type": "text",
-      "id": "tab_fabric_title",
-      "label": "Fabric & Care Tab Header Title",
-      "default": "FABRIC & CARE"
-    },
-    {
-      "type": "richtext",
-      "id": "tab_fabric_content",
-      "label": "Fabric & Care Custom Content"
-    },
-    {
-      "type": "header",
-      "content": "Tab 3: Size Guide"
-    },
-    {
-      "type": "checkbox",
-      "id": "show_tab_size",
-      "label": "Show Size Guide Tab",
-      "default": true
-    },
-    {
-      "type": "text",
-      "id": "tab_size_title",
-      "label": "Size Guide Tab Header Title",
-      "default": "SIZE GUIDE"
-    },
-    {
-      "type": "html",
-      "id": "tab_size_content",
-      "label": "Size Guide Custom HTML / Table Code"
-    },
-    {
-      "type": "header",
-      "content": "Tab 4: Shipping & Returns"
-    },
-    {
-      "type": "checkbox",
-      "id": "show_tab_shipping",
-      "label": "Show Shipping & Returns Tab",
-      "default": true
-    },
-    {
-      "type": "text",
-      "id": "tab_shipping_title",
-      "label": "Shipping & Returns Tab Header Title",
-      "default": "SHIPPING & RETURNS"
-    },
-    {
-      "type": "richtext",
-      "id": "tab_shipping_content",
-      "label": "Shipping & Returns Custom Content"
+      "type": "paragraph",
+      "content": "Size Guide content is product-specific. Add the size chart data to the product's Size Guide metafield in Shopify Admin. The table will automatically appear in this tab."
     }
   ]
 }

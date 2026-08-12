@@ -275,10 +275,12 @@
         {% render 'icon', icon: 'user', class: 'szc-header__icon' %}
         <span>{% if customer %}Account{% else %}Sign In / Register{% endif %}</span>
       </a>
-      <a href="/pages/wishlist" class="szc-mobile-drawer__footer-link">
-        {% render 'icon', icon: 'heart', class: 'szc-header__icon' %}
-        <span>Wishlist</span>
-      </a>
+      {%- if settings.enable_wishlist != false -%}
+        <a href="/pages/wishlist" class="szc-mobile-drawer__footer-link">
+          {% render 'icon', icon: 'heart', class: 'szc-header__icon' %}
+          <span>Wishlist</span>
+        </a>
+      {%- endif -%}
       <a href="{{ routes.cart_url }}" class="szc-mobile-drawer__footer-link">
         {% render 'icon', icon: 'bag', class: 'szc-header__icon' %}
         <span>Shopping Bag ({{ cart.item_count }})</span>

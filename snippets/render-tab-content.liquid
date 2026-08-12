@@ -1,0 +1,138 @@
+{% doc %}
+  Renders tab content cleanly, supporting HTML strings, text metafields, Rich Text metafields, and Markdown tables.
+
+  @param {string} [content] - Section setting value or content string
+  @param {metafield} [metafield] - Direct product metafield object drop
+
+  @example
+  {% render 'render-tab-content', content: section.settings.tab_shipping_content, metafield: product.metafields.custom.shipping_returns %}
+{% enddoc %}
+
+{%- liquid
+  capture base_text
+    if content != blank
+      echo content
+    elsif metafield != blank
+      if metafield.value != blank
+        echo metafield.value
+      else
+        echo metafield
+      endif
+    endif
+  endcapture
+
+  capture html_text
+    if metafield != blank and metafield.type == 'rich_text_field'
+      echo metafield | metafield_tag
+    elsif content != blank and content contains '"type":"root"'
+      echo content | metafield_tag
+    else
+      echo base_text
+    endif
+  endcapture
+
+  assign test_lines = html_text | replace: '</p>', '<br />' | replace: '</div>', '<br />' | newline_to_br | replace: '<br/>', '<br />' | replace: '<br>', '<br />' | split: '<br />'
+
+  assign pipe_count = 0
+  for line in test_lines
+    assign clean_test = line | strip_html | strip | strip_newlines
+    if clean_test contains '|'
+      assign pipe_count = pipe_count | plus: 1
+    endif
+  endfor
+
+  assign is_pipe_table = false
+  if pipe_count >= 2
+    assign is_pipe_table = true
+  endif
+
+  assign rendered_output = ''
+
+  if is_pipe_table
+    assign lines = html_text | replace: '</p>', '<br />' | replace: '</div>', '<br />' | newline_to_br | replace: '<br/>', '<br />' | replace: '<br>', '<br />' | split: '<br />'
+
+    capture html_table
+      echo '<table class="szc-size-table"><thead>'
+      assign in_tbody = false
+      assign is_first_row = true
+
+      for line in lines
+        assign clean_line = line | strip_html | strip | strip_newlines
+
+        if clean_line == blank or clean_line contains '---' or clean_line contains ':-' or clean_line contains '-:'
+          continue
+        endif
+
+        if clean_line contains '|'
+          assign line_len = clean_line | size
+          assign last_idx = line_len | minus: 1
+          assign first_char = clean_line | slice: 0, 1
+          assign last_char = clean_line | slice: last_idx, 1
+
+          if first_char == '|'
+            assign clean_line = clean_line | remove_first: '|'
+          endif
+          if last_char == '|'
+            assign clean_line = clean_line | remove_last: '|'
+          endif
+
+          assign cells = clean_line | split: '|'
+
+          if is_first_row
+            echo '<tr>'
+            for cell in cells
+              assign cell_clean = cell | strip_html | strip
+              if cell_clean != blank
+                echo '<th>'
+                echo cell_clean
+                echo '</th>'
+              endif
+            endfor
+            echo '</tr></thead><tbody>'
+            assign is_first_row = false
+            assign in_tbody = true
+          else
+            echo '<tr>'
+            for cell in cells
+              assign cell_clean = cell | strip_html | strip
+              if cell_clean != blank
+                echo '<td>'
+                echo cell_clean
+                echo '</td>'
+              endif
+            endfor
+            echo '</tr>'
+          endif
+        endif
+      endfor
+
+      if in_tbody
+        echo '</tbody>'
+      else
+        echo '</thead>'
+      endif
+      echo '</table>'
+    endcapture
+
+    assign rendered_output = html_table
+
+  elsif base_text contains '"type"=>"root"' or base_text contains '{"type":"root"' or base_text contains 'type=>"root"'
+    if metafield != blank
+      assign rendered_output = metafield | metafield_tag
+    elsif content != blank
+      assign rendered_output = content | metafield_tag
+    endif
+  elsif content != blank
+    assign rendered_output = content
+  elsif metafield != blank
+    if metafield.type == 'rich_text_field'
+      assign rendered_output = metafield | metafield_tag
+    elsif metafield.type == 'multi_line_text_field'
+      assign rendered_output = metafield.value | newline_to_br
+    else
+      assign rendered_output = metafield.value | default: metafield
+    endif
+  endif
+-%}
+
+{{ rendered_output }}

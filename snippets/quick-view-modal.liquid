@@ -49,7 +49,14 @@
   </div>
 {%- endcapture -%}
 
-<quick-view-modal id="QuickViewModal" class="szc-modal szc-quick-view-modal" aria-hidden="true" role="dialog" aria-modal="true" aria-labelledby="QuickViewTitle">
+<quick-view-modal
+  id="QuickViewModal"
+  class="szc-modal szc-quick-view-modal"
+  aria-hidden="true"
+  role="dialog"
+  aria-modal="true"
+  aria-labelledby="QuickViewTitle"
+>
   <div class="szc-modal__overlay" data-modal-close></div>
 
   <div class="szc-modal__container szc-quick-view__container">
@@ -59,7 +66,16 @@
       data-modal-close
       aria-label="{{ 'accessibility.close' | t | default: 'Close modal' }}"
     >
-      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+      <svg
+        width="16"
+        height="16"
+        viewBox="0 0 24 24"
+        fill="none"
+        stroke="currentColor"
+        stroke-width="2"
+        stroke-linecap="round"
+        stroke-linejoin="round"
+      >
         <line x1="18" y1="6" x2="6" y2="18"></line>
         <line x1="6" y1="6" x2="18" y2="18"></line>
       </svg>
@@ -67,7 +83,13 @@
 
     <div class="szc-modal__content szc-quick-view__content" id="QuickViewContent">
       <div class="szc-modal__spinner-container">
-        <svg class="szc-icon szc-icon--spinner szc-animate-spin szc-modal__spinner" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+        <svg
+          class="szc-icon szc-icon--spinner szc-animate-spin szc-modal__spinner"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="2"
+        >
           <circle cx="12" cy="12" r="10" stroke-opacity="0.25"/>
           <path d="M12 2a10 10 0 0 1 10 10" stroke-linecap="round"/>
         </svg>
@@ -170,7 +192,9 @@
   }
 
   @keyframes szcSpin {
-    to { transform: rotate(360deg); }
+    to {
+      transform: rotate(360deg);
+    }
   }
 
   /* Grid Layout: 4 Columns on Desktop */
@@ -429,7 +453,7 @@
 
   .szc-qv-stepper-btn {
     width: 35px;
-    height: 100%;
+    height: 14px;
     background: transparent;
     border: none;
     font-size: 16px;
@@ -438,6 +462,7 @@
     align-items: center;
     justify-content: center;
     color: #333333;
+    padding: 0;
   }
 
   .szc-qv-stepper-btn:hover {
@@ -453,6 +478,10 @@
     font-size: 14px;
     font-weight: 700;
     background: transparent;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    user-select: none;
   }
 
   /* Action Buttons Row */
@@ -674,6 +703,7 @@
 
         renderProduct(product) {
           const trustBadgesHtml = {{ trust_badges_html | strip_newlines | json }};
+          const enableWishlist = {%- if settings.enable_wishlist == false -%}false{%- else -%}true{%- endif -%};
           const moneyFormat = (window.ShopziCurious && window.ShopziCurious.moneyFormat) || '$' + '{' + '{amount}}';
 
           const formatMoney = (cents) => {
@@ -802,9 +832,18 @@
                 <!-- Quantity Stepper Box -->
                 <div class="szc-qv-option-group">
                   <div class="szc-qv-stepper">
-                    <button type="button" class="szc-qv-stepper-btn" data-qv-action="minus">-</button>
-                    <input type="number" class="szc-qv-stepper-input" id="QvQtyInput" value="1" min="1" readonly>
-                    <button type="button" class="szc-qv-stepper-btn" data-qv-action="plus">+</button>
+                    <button type="button" class="szc-qv-stepper-btn" data-qv-action="minus" aria-label="Decrease quantity">
+                      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false">
+                        <line x1="5" y1="12" x2="19" y2="12"></line>
+                      </svg>
+                    </button>
+                    <div class="szc-qv-stepper-input" id="QvQtyInput" data-value="1">1</div>
+                    <button type="button" class="szc-qv-stepper-btn" data-qv-action="plus" aria-label="Increase quantity">
+                      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false">
+                        <line x1="12" y1="5" x2="12" y2="19"></line>
+                        <line x1="5" y1="12" x2="19" y2="12"></line>
+                      </svg>
+                    </button>
                   </div>
                 </div>
 
@@ -814,26 +853,28 @@
                     <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 0 1-8 0"/></svg>
                     <span>${firstVariant.available !== false ? 'ADD TO BAG' : 'SOLD OUT'}</span>
                   </button>
-                  <button
-                    type="button"
-                    class="szc-qv-wishlist-btn"
-                    id="QvWishlistBtn"
-                    data-wishlist-toggle
-                    data-product-handle="${product.handle}"
-                    data-product-id="${firstVariant.id || product.id}"
-                    data-product-title="${(product.title || '').replace(/"/g, '&quot;')}"
-                    data-product-price="${formatMoney(firstVariant.price)}"
-                    data-product-compare-price="${firstVariant.compare_at_price ? formatMoney(firstVariant.compare_at_price) : ''}"
-                    data-product-image="${images[0] || ''}"
-                    data-product-url="/products/${product.handle}"
-                    data-product-vendor="${(product.vendor || '').replace(/"/g, '&quot;')}"
-                    data-product-available="${firstVariant.available !== false}"
-                    aria-label="Add to wishlist"
-                  >
-                    <span class="szc-wishlist-icon-wrap">
-                      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>
-                    </span>
-                  </button>
+                  ${enableWishlist ? `
+                    <button
+                      type="button"
+                      class="szc-qv-wishlist-btn"
+                      id="QvWishlistBtn"
+                      data-wishlist-toggle
+                      data-product-handle="${product.handle}"
+                      data-product-id="${firstVariant.id || product.id}"
+                      data-product-title="${(product.title || '').replace(/"/g, '&quot;')}"
+                      data-product-price="${formatMoney(firstVariant.price)}"
+                      data-product-compare-price="${firstVariant.compare_at_price ? formatMoney(firstVariant.compare_at_price) : ''}"
+                      data-product-image="${images[0] || ''}"
+                      data-product-url="/products/${product.handle}"
+                      data-product-vendor="${(product.vendor || '').replace(/"/g, '&quot;')}"
+                      data-product-available="${firstVariant.available !== false}"
+                      aria-label="Add to wishlist"
+                    >
+                      <span class="szc-wishlist-icon-wrap">
+                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>
+                      </span>
+                    </button>
+                  ` : ''}
                 </div>
 
                 <button type="button" class="szc-qv-buy-btn" id="QvBuyNowBtn" data-buy-now-btn>
@@ -948,12 +989,26 @@
 
           // Stepper (+ / -)
           const qtyInput = this.querySelector('#QvQtyInput');
+          const getQty = () => {
+            if (!qtyInput) return 1;
+            return parseInt(qtyInput.value || qtyInput.textContent || qtyInput.getAttribute('data-value') || 1, 10) || 1;
+          };
+          const setQty = (val) => {
+            if (!qtyInput) return;
+            if ('value' in qtyInput && qtyInput.tagName === 'INPUT') {
+              qtyInput.value = val;
+            } else {
+              qtyInput.textContent = val;
+              qtyInput.setAttribute('data-value', val);
+            }
+          };
+
           this.querySelectorAll('[data-qv-action]').forEach((btn) => {
             btn.addEventListener('click', () => {
-              let qty = parseInt(qtyInput.value, 10) || 1;
+              let qty = getQty();
               if (btn.dataset.qvAction === 'plus') qty++;
               else if (btn.dataset.qvAction === 'minus') qty = Math.max(1, qty - 1);
-              qtyInput.value = qty;
+              setQty(qty);
             });
           });
 
@@ -963,7 +1018,7 @@
             buyNowBtn.addEventListener('click', async () => {
               const addBtn = this.querySelector('#QvAddToCartBtn');
               const variantId = addBtn ? addBtn.dataset.variantId : firstVariant.id;
-              const quantity = parseInt(qtyInput ? qtyInput.value : 1, 10);
+              const quantity = getQty();
               if (!variantId) return;
 
               buyNowBtn.disabled = true;
@@ -992,7 +1047,7 @@
           if (addBtn) {
             addBtn.addEventListener('click', async () => {
               const variantId = addBtn.dataset.variantId;
-              const quantity = parseInt(qtyInput ? qtyInput.value : 1, 10);
+              const quantity = getQty();
               if (!variantId) return;
 
               addBtn.disabled = true;

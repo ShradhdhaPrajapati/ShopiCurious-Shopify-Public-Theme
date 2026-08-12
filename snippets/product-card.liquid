@@ -319,9 +319,11 @@
     <div class="szc-product-card__media-container" style="aspect-ratio: {{ aspect_ratio }};">
       {{ 'product-1' | placeholder_svg_tag: 'szc-image-placeholder' }}
       <div class="szc-product-card__actions">
-        <button type="button" class="szc-product-card__wishlist-btn" aria-label="Add to Wishlist">
-          {% render 'icon', icon: 'heart', class: 'szc-product-card__wishlist-icon' %}
-        </button>
+        {%- if settings.enable_wishlist != false and settings.enable_wishlist_button != false -%}
+          <button type="button" class="szc-product-card__wishlist-btn" aria-label="Add to Wishlist">
+            {% render 'icon', icon: 'heart', class: 'szc-product-card__wishlist-icon' %}
+          </button>
+        {%- endif -%}
       </div>
     </div>
     <div class="szc-product-card__info">
