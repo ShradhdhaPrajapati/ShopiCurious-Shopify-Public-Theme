@@ -83,7 +83,7 @@
 
           const regularElements = priceContainer.querySelectorAll('.szc-price__item--regular, .price-item--regular');
           const saleElements = priceContainer.querySelectorAll('.szc-price__item--sale');
-          const badgeElements = priceContainer.querySelectorAll('.szc-price__badge');
+          const badgeElements = priceContainer.querySelectorAll('.szc-price__badge, [data-discount-badge], .szc-product-discount-badge');
           const priceWraps = priceContainer.querySelectorAll('.szc-price');
 
           if (this.currentVariant.compare_at_price > this.currentVariant.price) {
@@ -102,8 +102,13 @@
               r.style.display = 'inline-block';
             });
             badgeElements.forEach(b => {
-              b.textContent = `-${savings}%`;
-              b.style.display = 'inline-block';
+              if (b.classList.contains('szc-product-discount-badge') || b.hasAttribute('data-discount-badge')) {
+                b.textContent = `${savings}% OFF`;
+                b.style.display = 'inline-flex';
+              } else {
+                b.textContent = `-${savings}%`;
+                b.style.display = 'inline-block';
+              }
             });
           } else {
             priceWraps.forEach(w => w.classList.remove('szc-price--on-sale'));

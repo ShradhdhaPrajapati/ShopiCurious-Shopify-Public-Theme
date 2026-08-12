@@ -104,17 +104,42 @@
       this.querySelectorAll('button').forEach((button) =>
         button.addEventListener('click', this.onButtonClick.bind(this))
       );
+
+      if (this.input) {
+        this.input.addEventListener('change', this.validateQty.bind(this));
+      }
+      this.validateQty();
+    }
+
+    validateQty() {
+      if (!this.input) return;
+      const value = parseInt(this.input.value, 10) || 1;
+      const min = parseInt(this.input.getAttribute('min'), 10) || 1;
+      const max = this.input.getAttribute('max') ? parseInt(this.input.getAttribute('max'), 10) : null;
+      const minusBtn = this.querySelector('button[name="decrement"]') || this.querySelector('button[name="minus"]') || this.querySelector('.szc-quantity-input__button--minus');
+      const plusBtn = this.querySelector('button[name="increment"]') || this.querySelector('button[name="plus"]') || this.querySelector('.szc-quantity-input__button--plus');
+
+      if (minusBtn) {
+        minusBtn.disabled = value <= min;
+      }
+      if (plusBtn) {
+        plusBtn.disabled = max !== null && value >= max;
+      }
     }
 
     onButtonClick(event) {
       event.preventDefault();
       const previousValue = this.input.value;
 
-      if (event.currentTarget.name === 'plus') {
+      const isIncrement = event.currentTarget.name === 'increment' || event.currentTarget.name === 'plus' || event.currentTarget.classList.contains('szc-quantity-input__button--plus');
+
+      if (isIncrement) {
         this.input.stepUp();
       } else {
         this.input.stepDown();
       }
+
+      this.validateQty();
 
       if (previousValue !== this.input.value) {
         this.input.dispatchEvent(this.changeEvent);

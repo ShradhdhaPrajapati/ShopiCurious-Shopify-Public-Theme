@@ -471,6 +471,12 @@
     "settings": [
       {
         "type": "checkbox",
+        "id": "show_discount_badge",
+        "label": "Show Discount Percentage Badge",
+        "default": true
+      },
+      {
+        "type": "checkbox",
         "id": "enable_sticky_add_to_cart",
         "label": "Enable Sticky Add To Cart Bar on Mobile/Scroll",
         "default": true

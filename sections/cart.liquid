@@ -101,16 +101,15 @@
                     data-action="minus"
                     data-line="{{ forloop.index }}"
                     aria-label="Decrease quantity"
-                  >-</button>
-                  <input
-                    type="number"
-                    name="updates[]"
-                    class="szc-stepper-input"
-                    value="{{ item.quantity }}"
-                    min="0"
-                    data-line="{{ forloop.index }}"
-                    readonly
                   >
+                    {% render 'icon', icon: 'minus' %}
+                  </button>
+                  <div
+                    class="szc-stepper-input"
+                    data-line="{{ forloop.index }}"
+                  >
+                    {{ item.quantity }}
+                  </div>
                   <button
                     type="button"
                     class="szc-stepper-btn"
@@ -572,6 +571,11 @@
     background-color: #f5f5f5;
   }
 
+  .szc-stepper-btn svg {
+    width: 14px;
+    height: 14px;
+  }
+
   .szc-stepper-input {
     width: 40px;
     height: 100%;
@@ -582,6 +586,9 @@
     font-weight: 600;
     color: #111111;
     background: transparent;
+    display: flex;
+    align-items: center;
+    justify-content: center;
   }
 
   .szc-cart-total-price {
@@ -646,7 +653,7 @@
     height: 44px;
     border: 1px solid #e0e0e0;
     border-radius: 4px;
-    padding: 0 14px;
+    padding: 10px 14px;
     font-size: 13px;
     font-family: inherit;
     color: #111111;
@@ -1054,8 +1061,8 @@
         const action = stepperBtn.dataset.action;
         const line = stepperBtn.dataset.line;
         if (line) {
-          const input = cartPage.querySelector(`input.szc-stepper-input[data-line="${line}"]`);
-          let currentQty = input ? parseInt(input.value, 10) || 1 : 1;
+          const input = cartPage.querySelector(`.szc-stepper-input[data-line="${line}"]`);
+          let currentQty = input ? parseInt(input.value || input.textContent, 10) || 1 : 1;
           let newQty = currentQty;
           if (action === 'plus') newQty = currentQty + 1;
           else if (action === 'minus') newQty = Math.max(0, currentQty - 1);

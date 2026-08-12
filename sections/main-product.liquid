@@ -196,7 +196,7 @@
           {%- when 'price' -%}
             <div class="szc-main-product__price-wrap" {{ block.shopify_attributes }}>
               <div class="szc-main-product__price">
-                {% render 'price', product: product, use_variant: true, variant: current_variant, show_badges: false %}
+                {% render 'price', product: product, use_variant: true, variant: current_variant, show_badges: false, show_discount_badge: settings.show_discount_badge %}
               </div>
             </div>
 
@@ -1507,8 +1507,9 @@
 
   /* Trust Badges Block (Fully Dynamic via Schema Settings) */
   .szc-main-product__trust-badges {
-    display: grid;
-    grid-template-columns: repeat(3, 1fr);
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
     gap: 16px;
     padding: 12px 14px;
     background-color: var(--tb-bg-color, transparent);
@@ -1894,15 +1895,22 @@
   @media (max-width: 749px) {
     .szc-sticky-atc-bar {
       padding: 8px 10px;
+      box-sizing: border-box;
+      max-width: 100vw;
+      overflow: hidden;
     }
     .szc-sticky-atc-bar__container {
       gap: 6px;
       align-items: center;
       justify-content: space-between;
+      padding-left: 0 !important;
+      padding-right: 0 !important;
+      width: 100%;
+      box-sizing: border-box;
     }
     .szc-sticky-atc-bar__product {
       flex: 0 0 auto;
-      gap: 8px;
+      gap: 6px;
       min-width: 0;
     }
     .szc-sticky-atc-bar__title {
@@ -1915,36 +1923,52 @@
     }
     .szc-sticky-atc-bar__info {
       flex-shrink: 0;
+      min-width: 0;
     }
     .szc-sticky-atc-bar__price {
-      font-size: 13px;
+      font-size: 12px;
       white-space: nowrap;
     }
     .szc-sticky-atc-bar__actions {
-      flex: 1;
+      flex: 1 1 0%;
       min-width: 0;
+      width: 0;
       display: flex;
       gap: 6px;
     }
     .szc-sticky-buy-now-btn,
     .szc-sticky-atc-btn {
-      flex: 1;
-      min-width: 0;
-      height: 38px;
-      padding: 0 6px;
-      font-size: 11px;
-      letter-spacing: 0.02em;
-      white-space: nowrap;
-      text-overflow: ellipsis;
-      overflow: hidden;
+      flex: 1 1 0% !important;
+      min-width: 0 !important;
+      width: 0 !important;
+      height: 38px !important;
+      padding: 0 4px !important;
+      font-size: 11px !important;
+      letter-spacing: 0.01em !important;
+      white-space: nowrap !important;
+      box-sizing: border-box !important;
+    }
+    .szc-sticky-buy-now-btn .szc-btn-text,
+    .szc-sticky-atc-btn .szc-btn-text {
+      white-space: nowrap !important;
+      overflow: hidden !important;
+      text-overflow: ellipsis !important;
+      display: block !important;
+      max-width: 100% !important;
     }
   }
 
   @media (max-width: 380px) {
+    .szc-sticky-atc-bar__container {
+      gap: 4px;
+    }
+    .szc-sticky-atc-bar__actions {
+      gap: 4px;
+    }
     .szc-sticky-buy-now-btn,
     .szc-sticky-atc-btn {
-      font-size: 10px;
-      padding: 0 4px;
+      font-size: 10px !important;
+      padding: 0 3px !important;
     }
   }
 

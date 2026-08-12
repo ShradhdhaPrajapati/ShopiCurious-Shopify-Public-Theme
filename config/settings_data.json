@@ -57,6 +57,7 @@
     "enable_filtering": true,
     "enable_sorting": true,
     "enable_sticky_add_to_cart": true,
+    "show_discount_badge": true,
     "gallery_layout": "stacked",
     "trust_badge_1_title": "Free Shipping",
     "trust_badge_1_subtext": "On orders over $100",

@@ -6,6 +6,7 @@
   @param {variant} [variant] - Specific variant object to display price for
   @param {boolean} [use_variant] - Forces price display of the specific variant if true
   @param {boolean} [show_badges] - Renders percentage sale badge if true (Default: true)
+  @param {boolean} [show_discount_badge] - Renders Product Page discount percentage badge if true
   @param {string} [price_class] - Additional CSS classes
 
   @example
@@ -65,11 +66,22 @@
           -{{ savings }}%
         </span>
       {%- endif -%}
+      {%- if show_discount_badge and settings.show_discount_badge != false -%}
+        {%- assign savings = compare_at_price | minus: price | times: 100.0 | divided_by: compare_at_price | round -%}
+        <span class="szc-product-discount-badge" data-discount-badge>
+          {{ savings }}% OFF
+        </span>
+      {%- endif -%}
     {%- else -%}
       <span class="szc-price__regular">
         <span class="visually-hidden">{{ 'products.product.price.regular_price' | t | default: 'Regular price' }}</span>
         <span class="szc-price__item szc-price__item--regular">{{ money_price }}</span>
       </span>
+      {%- if show_discount_badge and settings.show_discount_badge != false -%}
+        <span class="szc-product-discount-badge" data-discount-badge style="display: none;">
+          0% OFF
+        </span>
+      {%- endif -%}
     {%- endif -%}
 
     {%- if target.unit_price_measurement -%}
@@ -155,6 +167,22 @@
     background-color: var(--szc-color-accent, #e76f51);
     border-radius: var(--szc-radius-xs, 2px);
     text-transform: uppercase;
+  }
+
+  .szc-product-discount-badge {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 3px 9px;
+    font-size: 11px;
+    font-weight: 700;
+    line-height: 1;
+    color: #ffffff;
+    background-color: var(--szc-color-accent, #e76f51);
+    border-radius: 9999px;
+    text-transform: uppercase;
+    letter-spacing: 0.03em;
+    margin-left: 6px;
   }
 
   .szc-price__unit {
