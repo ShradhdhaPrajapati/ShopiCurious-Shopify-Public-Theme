@@ -15,7 +15,7 @@
         "slide_LRYi3H": {
           "type": "slide",
           "settings": {
-            "image": "shopify://shop_images/Herroslider.png",
+            "image": "",
             "overlay_opacity": 20,
             "subheading": "New Arrivals",
             "subheading_font_size": 14,
@@ -44,7 +44,7 @@
         "slide_DNCVRj": {
           "type": "slide",
           "settings": {
-            "image": "shopify://shop_images/Herpsildersecond_d97352f4-10d3-43d2-ab98-fcb00e695627.png",
+            "image": "",
             "overlay_opacity": 20,
             "subheading": "New Arrivals",
             "subheading_font_size": 14,
@@ -73,7 +73,7 @@
         "slide_3gfGdD": {
           "type": "slide",
           "settings": {
-            "image": "shopify://shop_images/Herosliderthird.png",
+            "image": "",
             "overlay_opacity": 20,
             "subheading": "New Arrivals",
             "subheading_font_size": 14,
@@ -206,8 +206,8 @@
         "women": {
           "type": "category",
           "settings": {
-            "collection": "women",
-            "image": "shopify://shop_images/categorycard1.png",
+            "collection": "",
+            "image": "",
             "title": "WOMEN",
             "button_text": "SHOP NOW"
           }
@@ -215,8 +215,8 @@
         "men": {
           "type": "category",
           "settings": {
-            "collection": "men",
-            "image": "shopify://shop_images/Categorycard2.png",
+            "collection": "",
+            "image": "",
             "title": "MEN",
             "button_text": "SHOP NOW"
           }
@@ -224,8 +224,8 @@
         "accessories": {
           "type": "category",
           "settings": {
-            "collection": "accessories",
-            "image": "shopify://shop_images/Categorycard3.png",
+            "collection": "",
+            "image": "",
             "title": "ACCESSORIES",
             "button_text": "SHOP NOW"
           }
@@ -233,18 +233,18 @@
         "shoes": {
           "type": "category",
           "settings": {
-            "collection": "shoes",
-            "image": "shopify://shop_images/Categorycard4.png",
+            "collection": "",
+            "image": "",
             "title": "SHOES",
             "button_text": "SHOP NOW"
           }
         }
       },
       "block_order": [
-        "women",
-        "men",
-        "accessories",
-        "shoes"
+        "",
+        "",
+        "",
+        ""
       ],
       "settings": {
         "title": "",
@@ -259,7 +259,7 @@
         "subtitle": "NEW ARRIVALS",
         "title": "Handpicked Just For You",
         "heading_alignment": "left",
-        "collection": "new-in",
+        "collection": "",
         "products_to_show": 5,
         "columns_desktop": 5,
         "columns_mobile": "2",
@@ -272,8 +272,8 @@
     "promo_banner": {
       "type": "promo-banner",
       "settings": {
-        "image_1": "shopify://shop_images/Promo_left_side.png",
-        "image_2": "shopify://shop_images/Promo_right_side.png",
+        "image_1": "",
+        "image_2": "",
         "subtitle": "CRAFTED TO PERFECTION",
         "title": "Modern Fashion, Created to Last",
         "description": "Each piece is a work of art, designed to celebrate life's most precious moments.",
@@ -341,8 +341,8 @@
         "coll_1": {
           "type": "collection",
           "settings": {
-            "collection": "shoes",
-            "image": "shopify://shop_images/ExploreColletion1.png",
+            "collection": "",
+            "image": "",
             "title": "Everyday Essentials",
             "subtitle": "Effortless & Comfortable"
           }
@@ -350,8 +350,8 @@
         "coll_2": {
           "type": "collection",
           "settings": {
-            "collection": "new-in",
-            "image": "shopify://shop_images/ExploreColletion2.png",
+            "collection": "",
+            "image": "",
             "title": "New Arrivals",
             "subtitle": "Fresh Styles Weekly"
           }
@@ -359,8 +359,8 @@
         "coll_3": {
           "type": "collection",
           "settings": {
-            "collection": "women",
-            "image": "shopify://shop_images/ExploreColletion3.png",
+            "collection": "",
+            "image": "",
             "title": "Summer Collection",
             "subtitle": "Light, Breezy & Chic"
           }
@@ -368,8 +368,8 @@
         "coll_4": {
           "type": "collection",
           "settings": {
-            "collection": "men",
-            "image": "shopify://shop_images/ExploreColletion4.png",
+            "collection": "",
+            "image": "",
             "title": "Denim Edit",
             "subtitle": "Timeless & Versatile"
           }
@@ -377,8 +377,8 @@
         "coll_5": {
           "type": "collection",
           "settings": {
-            "collection": "accessories",
-            "image": "shopify://shop_images/ExploreColletion5.png",
+            "collection": "",
+            "image": "",
             "title": "Accessories",
             "subtitle": "Complete Your Look"
           }
@@ -404,8 +404,8 @@
       "type": "newsletter",
       "custom_css": [],
       "settings": {
-        "image": "shopify://shop_images/Newsletter.png",
-        "subtitle": "JOIN THE LUMIÈRE CLUB",
+        "image": "",
+        "subtitle": "JOIN THE LUMI\u00c8RE CLUB",
         "title": "Be the First to Know",
         "description": "Get early access to new collections, exclusive offers, and insider updates.",
         "button_label": "SUBSCRIBE",
@@ -429,15 +429,15 @@
         "insta_1": {
           "type": "instagram_post",
           "settings": {
-            "image": "shopify://shop_images/Instapost_1.png",
-            "link": "https://www.instagram.com/p/DO0AkqcAc1Q/",
+            "image": "",
+            "link": "",
             "caption": ""
           }
         },
         "insta_2": {
           "type": "instagram_post",
           "settings": {
-            "image": "shopify://shop_images/Instapost_2.png",
+            "image": "",
             "link": "",
             "caption": ""
           }
@@ -445,7 +445,7 @@
         "insta_3": {
           "type": "instagram_post",
           "settings": {
-            "image": "shopify://shop_images/Instapost_3.png",
+            "image": "",
             "link": "",
             "caption": ""
           }
@@ -453,7 +453,7 @@
         "insta_4": {
           "type": "instagram_post",
           "settings": {
-            "image": "shopify://shop_images/Instapost_4.png",
+            "image": "",
             "link": "",
             "caption": ""
           }
@@ -461,7 +461,7 @@
         "insta_5": {
           "type": "instagram_post",
           "settings": {
-            "image": "shopify://shop_images/Instapost_5.png",
+            "image": "",
             "link": "",
             "caption": ""
           }
@@ -469,7 +469,7 @@
         "instagram_post_cKbjhQ": {
           "type": "instagram_post",
           "settings": {
-            "image": "shopify://shop_images/Instapost_6.png",
+            "image": "",
             "link": "",
             "caption": ""
           }

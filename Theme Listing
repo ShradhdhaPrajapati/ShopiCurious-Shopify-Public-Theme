@@ -1,0 +1,279 @@
+Preset : ShopziCurious
+
+1. Overview
+->Tagline : A refined fashion theme for modern apparel brands
+
+
+2. Industry
+->Industry : Clothing
+->Catalog size : Lots (500+)
+
+3. Highlights
+->Highlight 1 = Video અથવા static image
+->Highlights 2 અને 3 = Static image
+->Video maximum 2 minutes
+->Static images = 1600 × 1200 px
+->દરેક title max 30 characters
+->description max 140 characters.
+
+->Highlight 1 — Video
+તારા themeમાં જે actual functionality strong છે એ બતાવતું video મૂકવું.
+હમણાં screenshotમાં example છે:
+Elegant image zoom
+આ generic example છે.
+તારા theme માટે વધારે suitable:
+Highlight title
+Flexible Product Shopping
+પણ જો videoમાં specifically product image/variant/product-page functionality બતાવતો હોય તો title video પ્રમાણે રાખીશું.
+
+Description
+Example:
+Create an engaging product experience with flexible product layouts, variants, and shopping features.
+પણ અહીં એક condition છે: જો તારા videoમાં આ બધું actually બતાવતું હોય ત્યારે જ આ copy રાખવી.
+
+->Highlight 2
+આ static imageમાં themeની બીજી major functionality બતાવવી.
+તારા themeની actual functionality પ્રમાણે એક strong option:
+Title
+Flexible Collection Layouts
+Description
+Showcase collections with flexible layouts, category navigation, promotional content, and product-focused shopping experiences.
+
+->Highlight 3
+ત્રીજા imageમાં product page functionality બતાવી શકીએ.
+Title
+Enhanced Product Pages
+Description
+Give shoppers a richer product experience with variants, product details, size guides, and responsive layouts.
+આ પણ actual feature સાથે match થાય છે.
+
+
+4. Features Selection
+
+1.Cart and checkout optimization :-
+->Feature	
+Pre-order	no
+Gift wrapping	no
+Cart notes
+In-store pickups
+Quick buy
+Sign in with Shop
+Slide-out cart
+Sticky cart
+
+2. Marketing and conversion :-
+->Feature	
+
+
+Recently viewed	🟡	Confirm
+
+Quantity pricing	no
+Quick order list	no
+Back-in-stock alert	no
+Cross-selling
+Quick view
+Recommended products
+Stock counter
+Customizable contact form
+
+3. Promotional content :-
+->Feature
+Feature	Status	શું કરવું
+Blogs	yes
+Countdown timer	🟡	Confirm
+In-menu promos	yes
+Press coverage	no
+Product badges	yes
+Promo banners	yes
+Promo popups	🟡	Confirm
+Promo tiles	🟡	Confirm
+
+4. Trust and social proof :-
+->Feature
+Age verifier	no
+FAQ page	🟡	Confirm
+Trust badges	🟡	Confirm
+
+5. Selling internationally :-
+->Feature
+EU translations	no
+Right-to-left	no
+
+
+6. Merchandising → Image display :-
+->Feature
+High-resolution images	yes
+Image galleries	yes
+Image hotspot	no
+Image rollover	🟡	Confirm
+Image zoom	yes
+Before/after image slider	no
+Lookbooks	🟡	Confirm
+Slideshow	yes
+
+7. Merchandising → Product details :-
+->Feature
+Color swatches	yes
+Combined listing	no
+Ingredients/nutritional info	no
+Product options	yes
+Product tabs	yes
+Product videos	🟡	Confirm
+Shipping/delivery information	yes
+Size chart	yes
+Usage information	no
+Animation	🟡	Confirm
+
+8. Navigation and filtering :-
+->Feature
+Back-to-top button	🟡	Confirm
+Breadcrumbs	yes
+Collection page navigation	yes
+Enhanced search	yes
+Infinite scroll	no
+Mega menu	yes
+Product filtering and sorting	yes
+Sticky header	yes
+Swatch filters	🟡	Confirm
+
+9. Product highlights :-
+->Feature
+Recently viewed	🟡	Confirm
+Recommended products	🟡	Confirm
+
+10. Customer accounts :-
+->Feature
+Account menu છે.
+પણ એ feature Shopify account functionality સાથે કેવી રીતે integrated છે એ final codeમાં confirm કરવું પડશે.
+એટલે:
+🟡 Confirm before selecting
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

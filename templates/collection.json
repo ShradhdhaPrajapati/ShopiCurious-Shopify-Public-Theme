@@ -15,9 +15,9 @@
         "category_nav_item_Retfeb": {
           "type": "category_nav_item",
           "settings": {
-            "collection": "new-in",
+            "collection": "",
             "title": "NEW IN",
-            "custom_image": "shopify://shop_images/WideLegTrousers_ee47b5ac-5ba4-4fe8-afcd-a33641f87180.png",
+            "custom_image": "",
             "icon_name": "tag",
             "icon_svg": "",
             "custom_url": ""
@@ -26,9 +26,9 @@
         "category_nav_item_YEGcW6": {
           "type": "category_nav_item",
           "settings": {
-            "collection": "frontpage",
+            "collection": "",
             "title": "HOME",
-            "custom_image": "shopify://shop_images/CashmereSweater1_1bd8f65c-ae2a-4f12-ab7a-716810085c5c.png",
+            "custom_image": "",
             "icon_name": "tag",
             "icon_svg": "",
             "custom_url": ""
@@ -37,9 +37,9 @@
         "category_nav_item_pdgPkb": {
           "type": "category_nav_item",
           "settings": {
-            "collection": "men",
+            "collection": "",
             "title": "MEN",
-            "custom_image": "shopify://shop_images/Categorycard2.png",
+            "custom_image": "",
             "icon_name": "tag",
             "icon_svg": "",
             "custom_url": ""
@@ -48,9 +48,9 @@
         "category_nav_item_GQPGc7": {
           "type": "category_nav_item",
           "settings": {
-            "collection": "accessories",
+            "collection": "",
             "title": "ACCESSORIES",
-            "custom_image": "shopify://shop_images/Categorycard3.png",
+            "custom_image": "",
             "icon_name": "tag",
             "icon_svg": "",
             "custom_url": ""
@@ -59,9 +59,9 @@
         "category_nav_item_cFjwDJ": {
           "type": "category_nav_item",
           "settings": {
-            "collection": "shoes",
+            "collection": "",
             "title": "SHOES",
-            "custom_image": "shopify://shop_images/Categorycard4.png",
+            "custom_image": "",
             "icon_name": "tag",
             "icon_svg": "",
             "custom_url": ""
@@ -72,16 +72,16 @@
           "settings": {
             "collection": "",
             "title": "WOMEN",
-            "custom_image": "shopify://shop_images/categorycard1.png",
+            "custom_image": "",
             "icon_name": "tag",
             "icon_svg": "",
-            "custom_url": "shopify://collections/women"
+            "custom_url": ""
           }
         },
         "promo_slide_HaMg69": {
           "type": "promo_slide",
           "settings": {
-            "image": "shopify://shop_images/collectionpagebnner2.png",
+            "image": "",
             "subheading": "For effortless everyday looks",
             "heading": "Everyday Essentials",
             "description": "",
@@ -96,7 +96,7 @@
         "promo_slide_BGcnG3": {
           "type": "promo_slide",
           "settings": {
-            "image": "shopify://shop_images/collectionpageslide1.png",
+            "image": "",
             "subheading": "For effortless everyday looks",
             "heading": "Everyday Essentials",
             "description": "",
@@ -121,7 +121,7 @@
       ],
       "settings": {
         "show_hero": true,
-        "banner_image": "shopify://shop_images/Allproductsbanner.png",
+        "banner_image": "",
         "hero_height": "medium",
         "hero_text_alignment": "left",
         "hero_side_padding": 5,
@@ -139,7 +139,7 @@
         "hero_description_size": 14,
         "hero_description_weight": "400",
         "hero_button_text": "SHOP NOW",
-        "hero_button_link": "shopify://collections/accessories",
+        "hero_button_link": "",
         "hero_button_color": "#111111",
         "hero_button_bg": "#d4d3cb",
         "show_category_nav": true,

@@ -28,7 +28,7 @@
 
     <!-- Brand Logo -->
     <div class="szc-header__logo">
-      <a href="{{ routes.root_url }}" class="szc-header__logo-link">
+      <a href="{{ routes.root_url }}" class="szc-header__logo-link" style="--logo-width: {{ logo_width }}px;">
         {%- if header_logo != blank -%}
           {%- assign logo_height = logo_width | divided_by: header_logo.aspect_ratio -%}
           <picture>
@@ -263,13 +263,36 @@
 
   .szc-header__logo {
     display: flex;
+    align-items: center;
+    flex-shrink: 0;
   }
 
   .szc-header__logo-link {
     display: inline-flex;
     align-items: center;
+    justify-content: center;
     text-decoration: none;
     color: var(--szc-color-text-primary, #111111);
+    max-width: var(--logo-width, 140px);
+  }
+
+  .szc-header__logo-img {
+    display: block;
+    width: 100%;
+    height: auto;
+    max-width: var(--logo-width, 140px);
+    max-height: calc(var(--szc-header-height, 70px) - 16px);
+    object-fit: contain;
+  }
+
+  @media (max-width: 767px) {
+    .szc-header__logo-link {
+      max-width: min(var(--logo-width, 140px), 120px);
+    }
+    .szc-header__logo-img {
+      max-width: min(var(--logo-width, 140px), 120px);
+      max-height: calc(var(--szc-header-height, 70px) - 12px);
+    }
   }
 
   .szc-header__logo-text {
