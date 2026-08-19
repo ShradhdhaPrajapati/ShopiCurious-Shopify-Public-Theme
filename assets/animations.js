@@ -76,7 +76,7 @@
       // Auto-tag any section across all pages if missing explicit data-animate
       document.querySelectorAll('.shopify-section, main > section, main > div').forEach((sec) => {
         if (!sec.hasAttribute('data-animate') && !sec.querySelector('[data-animate]')) {
-          if (!sec.matches('.szc-header, .szc-announcement-bar, .cart-drawer, .quick-view-modal, .szc-zoom-modal, #ProductZoomModal, #shopify-section-header, #shopify-section-announcement-bar')) {
+          if (!sec.matches('.szc-header, .szc-announcement-bar, .cart-drawer, .quick-view-modal, .szc-zoom-modal, #ProductZoomModal, #shopify-section-header, #shopify-section-announcement-bar, .shopify-section-group-overlay-group, .section-age-verifier, .section-promo-popup')) {
             sec.setAttribute('data-animate', 'slide-up');
           }
         }

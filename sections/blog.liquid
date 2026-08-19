@@ -55,7 +55,7 @@
         <!-- Search Articles -->
         {%- if show_search -%}
           <div class="szc-blog-sidebar__widget szc-blog-sidebar__search">
-            <label for="BlogSearch-{{ section.id }}" class="szc-blog-sidebar__title">SEARCH ARTICLES</label>
+            <label for="BlogSearch-{{ section.id }}" class="szc-blog-sidebar__title">{{ 'sections.blog.search_articles' | t | default: 'SEARCH ARTICLES' }}</label>
             <form action="{{ blog.url }}" method="get" role="search" class="szc-blog-search-form">
               <div class="szc-blog-search-input-wrap">
                 <input
@@ -63,19 +63,19 @@
                   type="search"
                   name="q"
                   value="{{ blog_search_q | escape }}"
-                  placeholder="Search articles..."
-                  aria-label="Search articles"
+                  placeholder="{{ 'sections.blog.search_placeholder' | t | default: 'Search articles...' }}"
+                  aria-label="{{ 'sections.blog.search_articles' | t | default: 'Search articles' }}"
                   class="szc-blog-search-input"
                 >
                 {%- if blog_search_q != blank -%}
-                  <a href="{{ blog.url }}" class="szc-blog-search-clear" aria-label="Clear search">
+                  <a href="{{ blog.url }}" class="szc-blog-search-clear" aria-label="{{ 'sections.blog.clear_search' | t | default: 'Clear search' }}">
                     <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                       <line x1="18" y1="6" x2="6" y2="18"></line>
                       <line x1="6" y1="6" x2="18" y2="18"></line>
                     </svg>
                   </a>
                 {%- endif -%}
-                <button type="submit" class="szc-blog-search-btn" aria-label="Search">
+                <button type="submit" class="szc-blog-search-btn" aria-label="{{ 'general.search.search' | t | default: 'Search' }}">
                   <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                     <circle cx="11" cy="11" r="8"></circle>
                     <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
@@ -89,14 +89,14 @@
         <!-- Categories / Tags Filter -->
         {%- if show_categories -%}
           <div class="szc-blog-sidebar__widget">
-            <h3 class="szc-blog-sidebar__title">CATEGORIES</h3>
+            <h3 class="szc-blog-sidebar__title">{{ 'sections.blog.categories' | t | default: 'CATEGORIES' }}</h3>
             <ul class="szc-blog-categories" role="list">
               <li class="szc-blog-category__item">
                 <a
                   href="{{ blog.url }}"
                   class="szc-blog-category__link{% if current_tags == blank %} is-active{% endif %}"
                 >
-                  All
+                  {{ 'sections.blog.all' | t | default: 'All' }}
                 </a>
               </li>
 
@@ -143,7 +143,7 @@
         <!-- Recent Posts Widget -->
         {%- if show_recent_posts -%}
           <div class="szc-blog-sidebar__widget">
-            <h3 class="szc-blog-sidebar__title">RECENT POSTS</h3>
+            <h3 class="szc-blog-sidebar__title">{{ 'sections.blog.recent_posts' | t | default: 'RECENT POSTS' }}</h3>
             <div class="szc-blog-recent-list">
               {%- assign recent_articles = blog.articles | sort: 'published_at' | reverse | slice: 0, 5 -%}
               {%- if recent_articles.size > 0 -%}
@@ -182,7 +182,7 @@
                   </div>
                 {%- endfor -%}
               {%- else -%}
-                <p class="szc-blog-sidebar__empty">No recent posts available.</p>
+                <p class="szc-blog-sidebar__empty">{{ 'sections.blog.no_recent_posts' | t | default: 'No recent posts available.' }}</p>
               {%- endif -%}
             </div>
           </div>
@@ -229,10 +229,10 @@
           </div>
 
           <div class="szc-blog-toolbar__sort">
-            <span class="szc-blog-sort-label">Sort by:</span>
+            <span class="szc-blog-sort-label">{{ 'products.facets.sort_by_label' | t | default: 'Sort by:' }}</span>
             <select class="szc-blog-sort-select" aria-label="Sort articles">
-              <option value="latest" {% if blog_sort_by == 'latest' %}selected{% endif %}>Latest</option>
-              <option value="oldest" {% if blog_sort_by == 'oldest' %}selected{% endif %}>Oldest</option>
+              <option value="latest" {% if blog_sort_by == 'latest' %}selected{% endif %}>{{ 'sections.blog.sort_latest' | t | default: 'Latest' }}</option>
+              <option value="oldest" {% if blog_sort_by == 'oldest' %}selected{% endif %}>{{ 'sections.blog.sort_oldest' | t | default: 'Oldest' }}</option>
             </select>
           </div>
         </div>
@@ -252,10 +252,10 @@
           </div>
 
           <div class="szc-blog-empty" id="BlogSearchEmptyState" style="display: none;">
-            <h2 class="szc-blog-empty__title">No matching articles found</h2>
-            <p class="szc-blog-empty__subtitle">We couldn't find any articles matching your search. Try another search or browse all articles.</p>
+            <h2 class="szc-blog-empty__title">{{ 'sections.blog.no_matching_articles' | t | default: 'No matching articles found' }}</h2>
+            <p class="szc-blog-empty__subtitle">{{ 'sections.blog.no_matching_articles_desc' | t | default: "We couldn't find any articles matching your search. Try another search or browse all articles." }}</p>
             <div class="szc-blog-empty__actions">
-              <button type="button" class="szc-btn szc-btn--primary" id="BlogClearSearchBtn">View All Articles</button>
+              <button type="button" class="szc-btn szc-btn--primary" id="BlogClearSearchBtn">{{ 'sections.blog.view_all_articles' | t | default: 'View All Articles' }}</button>
             </div>
           </div>
 
@@ -299,10 +299,10 @@
               <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"></path>
               <path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"></path>
             </svg>
-            <h3 class="szc-blog-empty__title">No articles yet</h3>
-            <p class="szc-blog-empty__desc">Check back soon for new stories, style guides, and fashion inspiration.</p>
+            <h3 class="szc-blog-empty__title">{{ 'sections.blog.no_articles_yet' | t | default: 'No articles yet' }}</h3>
+            <p class="szc-blog-empty__desc">{{ 'sections.blog.no_articles_yet_desc' | t | default: 'Check back soon for new stories, style guides, and fashion inspiration.' }}</p>
             <a href="{{ routes.root_url }}" class="szc-button szc-button--primary szc-blog-empty__btn">
-              BACK TO HOME
+              {{ '404.back_to_shopping' | t | default: 'BACK TO HOME' }}
             </a>
           </div>
         {%- endif -%}
@@ -329,16 +329,16 @@
                   type="email"
                   name="contact[email]"
                   class="szc-blog-newsletter__input"
-                  placeholder="Enter your email address"
-                  aria-label="Enter your email address"
+                  placeholder="{{ 'newsletter.label' | t | default: 'Enter your email address' }}"
+                  aria-label="{{ 'newsletter.label' | t | default: 'Enter your email address' }}"
                   required
                 >
                 <button type="submit" class="szc-blog-newsletter__submit">
-                  SUBSCRIBE
+                  {{ 'newsletter.button_label' | t | default: 'SUBSCRIBE' }}
                 </button>
               </div>
               {%- if form.posted_successfully? -%}
-                <p class="szc-blog-newsletter__success">Thanks for subscribing to our journal!</p>
+                <p class="szc-blog-newsletter__success">{{ 'sections.newsletter.success' | t | default: 'Thanks for subscribing to our journal!' }}</p>
               {%- endif -%}
             {% endform %}
           </div>

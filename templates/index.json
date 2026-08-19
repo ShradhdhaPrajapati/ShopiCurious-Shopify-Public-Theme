@@ -15,7 +15,6 @@
         "slide_LRYi3H": {
           "type": "slide",
           "settings": {
-            "image": "",
             "overlay_opacity": 20,
             "subheading": "New Arrivals",
             "subheading_font_size": 14,
@@ -44,7 +43,6 @@
         "slide_DNCVRj": {
           "type": "slide",
           "settings": {
-            "image": "",
             "overlay_opacity": 20,
             "subheading": "New Arrivals",
             "subheading_font_size": 14,
@@ -73,7 +71,6 @@
         "slide_3gfGdD": {
           "type": "slide",
           "settings": {
-            "image": "",
             "overlay_opacity": 20,
             "subheading": "New Arrivals",
             "subheading_font_size": 14,
@@ -202,50 +199,6 @@
     },
     "category_cards": {
       "type": "category-cards",
-      "blocks": {
-        "women": {
-          "type": "category",
-          "settings": {
-            "collection": "",
-            "image": "",
-            "title": "WOMEN",
-            "button_text": "SHOP NOW"
-          }
-        },
-        "men": {
-          "type": "category",
-          "settings": {
-            "collection": "",
-            "image": "",
-            "title": "MEN",
-            "button_text": "SHOP NOW"
-          }
-        },
-        "accessories": {
-          "type": "category",
-          "settings": {
-            "collection": "",
-            "image": "",
-            "title": "ACCESSORIES",
-            "button_text": "SHOP NOW"
-          }
-        },
-        "shoes": {
-          "type": "category",
-          "settings": {
-            "collection": "",
-            "image": "",
-            "title": "SHOES",
-            "button_text": "SHOP NOW"
-          }
-        }
-      },
-      "block_order": [
-        "",
-        "",
-        "",
-        ""
-      ],
       "settings": {
         "title": "",
         "image_ratio": "1/1",
@@ -272,8 +225,6 @@
     "promo_banner": {
       "type": "promo-banner",
       "settings": {
-        "image_1": "",
-        "image_2": "",
         "subtitle": "CRAFTED TO PERFECTION",
         "title": "Modern Fashion, Created to Last",
         "description": "Each piece is a work of art, designed to celebrate life's most precious moments.",
@@ -342,7 +293,6 @@
           "type": "collection",
           "settings": {
             "collection": "",
-            "image": "",
             "title": "Everyday Essentials",
             "subtitle": "Effortless & Comfortable"
           }
@@ -351,7 +301,6 @@
           "type": "collection",
           "settings": {
             "collection": "",
-            "image": "",
             "title": "New Arrivals",
             "subtitle": "Fresh Styles Weekly"
           }
@@ -360,7 +309,6 @@
           "type": "collection",
           "settings": {
             "collection": "",
-            "image": "",
             "title": "Summer Collection",
             "subtitle": "Light, Breezy & Chic"
           }
@@ -369,7 +317,6 @@
           "type": "collection",
           "settings": {
             "collection": "",
-            "image": "",
             "title": "Denim Edit",
             "subtitle": "Timeless & Versatile"
           }
@@ -378,7 +325,6 @@
           "type": "collection",
           "settings": {
             "collection": "",
-            "image": "",
             "title": "Accessories",
             "subtitle": "Complete Your Look"
           }
@@ -404,8 +350,7 @@
       "type": "newsletter",
       "custom_css": [],
       "settings": {
-        "image": "",
-        "subtitle": "JOIN THE LUMI\u00c8RE CLUB",
+        "subtitle": "JOIN THE LUMIÈRE CLUB",
         "title": "Be the First to Know",
         "description": "Get early access to new collections, exclusive offers, and insider updates.",
         "button_label": "SUBSCRIBE",
@@ -429,7 +374,6 @@
         "insta_1": {
           "type": "instagram_post",
           "settings": {
-            "image": "",
             "link": "",
             "caption": ""
           }
@@ -437,7 +381,6 @@
         "insta_2": {
           "type": "instagram_post",
           "settings": {
-            "image": "",
             "link": "",
             "caption": ""
           }
@@ -445,7 +388,6 @@
         "insta_3": {
           "type": "instagram_post",
           "settings": {
-            "image": "",
             "link": "",
             "caption": ""
           }
@@ -453,7 +395,6 @@
         "insta_4": {
           "type": "instagram_post",
           "settings": {
-            "image": "",
             "link": "",
             "caption": ""
           }
@@ -461,7 +402,6 @@
         "insta_5": {
           "type": "instagram_post",
           "settings": {
-            "image": "",
             "link": "",
             "caption": ""
           }
@@ -469,7 +409,6 @@
         "instagram_post_cKbjhQ": {
           "type": "instagram_post",
           "settings": {
-            "image": "",
             "link": "",
             "caption": ""
           }
@@ -501,6 +440,20 @@
         "subtitle": "Articles you've recently read",
         "articles_to_show": 4,
         "columns_desktop": 4
+      }
+    },
+    "recently_viewed_products": {
+      "type": "recently-viewed-products",
+      "settings": {
+        "heading": "RECENTLY VIEWED",
+        "products_to_show": 4,
+        "show_price": true,
+        "show_arrows": true,
+        "background_color": "#ffffff",
+        "border_color": "#e5e7eb",
+        "border_radius": 12,
+        "padding_top": 32,
+        "padding_bottom": 32
       }
     },
     "bottom_usp_bar": {
@@ -558,6 +511,7 @@
     "explore_collections",
     "newsletter",
     "instagram_gallery",
+    "recently_viewed_products",
     "recent_blog_posts_TxPkBy",
     "bottom_usp_bar"
   ]

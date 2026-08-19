@@ -271,6 +271,9 @@
 
     <!-- Footer Action Links -->
     <div class="szc-mobile-drawer__footer">
+      <div class="szc-mobile-drawer__lang-wrap">
+        {% render 'language-selector', class: 'mobile-drawer-lang-selector' %}
+      </div>
       <a href="{% if customer %}{{ routes.account_url }}{% else %}{{ routes.account_login_url }}{% endif %}" class="szc-mobile-drawer__footer-link">
         {% render 'icon', icon: 'user', class: 'szc-header__icon' %}
         <span>{% if customer %}Account{% else %}Sign In / Register{% endif %}</span>

@@ -3,13 +3,38 @@
   assign featured_media = current_variant.featured_media | default: product.featured_media
 -%}
 
-<section id="MainProduct-{{ section.id }}" class="szc-main-product page-width">
+<section id="MainProduct-{{ section.id }}" class="szc-main-product page-width" data-product-handle="{{ product.handle }}">
+  <script>
+    (function recordViewedProduct() {
+      function track() {
+        try {
+          const handle = {{ product.handle | json }};
+          if (!handle) return;
+          const key = 'szc_recently_viewed_products';
+          let history = JSON.parse(localStorage.getItem(key) || '[]');
+          history = history.filter(function(h) { return h !== handle; });
+          history.unshift(handle);
+          if (history.length > 15) {
+            history = history.slice(0, 15);
+          }
+          localStorage.setItem(key, JSON.stringify(history));
+          window.dispatchEvent(new CustomEvent('szc:recently-viewed-updated', { detail: { handle: handle } }));
+        } catch (e) {}
+      }
+      track();
+      window.addEventListener('pageshow', function(e) {
+        if (e.persisted) {
+          track();
+        }
+      });
+    })();
+  </script>
   {% render 'breadcrumbs' %}
 
   <div class="szc-main-product__grid" data-animate="slide-up">
     <!-- 1. Media Gallery Column (Vertical Thumbnails + Real Slider + Model Info) -->
     <div class="szc-main-product__media-col">
-      <div class="szc-main-product__gallery-wrap szc-gallery-layout--{{ section.settings.gallery_layout | default: settings.gallery_layout | default: 'stacked' }}">
+      <div class="szc-main-product__gallery-wrap szc-gallery-layout--{{ section.settings.gallery_layout | default: settings.gallery_layout | default: 'stacked' }}{% if product.media.size <= 1 %} szc-gallery-wrap--single-media{% endif %}">
         {%- if product.media.size > 1 -%}
           <div class="szc-main-product__thumbnails-col">
             {%- if product.media.size > 5 -%}
@@ -903,36 +928,97 @@
     flex-direction: column-reverse;
   }
 
+  /* Control slider arrow visibility based on Gallery Layout setting */
+  .szc-gallery-layout--stacked .szc-media-arrow,
+  .szc-gallery-layout--grid_2col .szc-media-arrow {
+    display: none !important;
+  }
+
+  .szc-gallery-layout--thumbnails_left .szc-media-arrow {
+    display: flex !important;
+  }
+
   /* Gallery Layout Options */
   @media (min-width: 750px) {
     .szc-gallery-layout--stacked .szc-main-product__thumbnails-col {
       display: none;
     }
+    .szc-gallery-layout--stacked .szc-main-product__slider-container {
+      aspect-ratio: auto;
+      max-height: calc(100vh - 120px);
+      overflow-y: auto;
+      scrollbar-width: none;
+      -ms-overflow-style: none;
+    }
+    .szc-gallery-layout--stacked .szc-main-product__slider-container::-webkit-scrollbar {
+      width: 6px;
+    }
+    .szc-gallery-layout--stacked .szc-main-product__slider-container::-webkit-scrollbar-track {
+      background: transparent;
+    }
+    .szc-gallery-layout--stacked .szc-main-product__slider-container::-webkit-scrollbar-thumb {
+      background-color: transparent;
+      border-radius: 4px;
+      transition: background-color 0.25s ease;
+    }
+    .szc-gallery-layout--stacked .szc-main-product__slider-container:hover {
+      scrollbar-width: thin;
+      scrollbar-color: rgba(0, 0, 0, 0.3) transparent;
+    }
+    .szc-gallery-layout--stacked .szc-main-product__slider-container:hover::-webkit-scrollbar-thumb {
+      background-color: rgba(0, 0, 0, 0.25);
+    }
+    .szc-gallery-layout--stacked .szc-main-product__slider-container:hover::-webkit-scrollbar-thumb:hover {
+      background-color: rgba(0, 0, 0, 0.5);
+    }
+
     .szc-gallery-layout--stacked .szc-main-product__slider-list {
       display: flex;
       flex-direction: column;
       gap: 16px;
+      height: auto;
+      width: 100%;
+      overflow: visible;
     }
     .szc-gallery-layout--stacked .szc-main-product__slider-slide {
       opacity: 1 !important;
       position: relative !important;
       transform: none !important;
       display: block !important;
+      aspect-ratio: 3/4;
+      border-radius: 8px;
+      overflow: hidden;
     }
 
     .szc-gallery-layout--grid_2col .szc-main-product__thumbnails-col {
       display: none;
     }
+    .szc-gallery-layout--grid_2col .szc-main-product__slider-container {
+      aspect-ratio: auto;
+      overflow: visible;
+    }
     .szc-gallery-layout--grid_2col .szc-main-product__slider-list {
       display: grid;
       grid-template-columns: repeat(2, 1fr);
       gap: 12px;
+      height: auto;
+      width: 100%;
+      overflow: visible;
+    }
+    .szc-gallery-layout--grid_2col.szc-gallery-wrap--single-media .szc-main-product__slider-list {
+      grid-template-columns: 1fr;
     }
     .szc-gallery-layout--grid_2col .szc-main-product__slider-slide {
       opacity: 1 !important;
       position: relative !important;
       transform: none !important;
       display: block !important;
+      aspect-ratio: 3/4;
+      border-radius: 8px;
+      overflow: hidden;
+    }
+    .szc-gallery-layout--grid_2col .szc-main-product__slider-slide:only-child {
+      grid-column: 1 / -1;
     }
   }
 
@@ -3101,6 +3187,17 @@
     }
   ],
   "settings": [
+    {
+      "type": "select",
+      "id": "gallery_layout",
+      "label": "Apparel Media Gallery Layout",
+      "options": [
+        { "value": "stacked", "label": "Editorial Vertical Stacked" },
+        { "value": "thumbnails_left", "label": "Carousel with Left Thumbnails" },
+        { "value": "grid_2col", "label": "2-Column Runway Image Grid" }
+      ],
+      "default": "stacked"
+    },
     {
       "type": "header",
       "content": "Product Details Tabs"

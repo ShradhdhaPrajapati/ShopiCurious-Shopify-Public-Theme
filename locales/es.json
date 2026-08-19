@@ -5,21 +5,21 @@
     "back_to_shopping": "Back to shopping"
   },
   "accessibility": {
-    "close": "Close",
+    "close": "Cerrar",
     "skip_to_content": "Skip to content",
     "back_to_top": "Back to top"
   },
   "general": {
-    "continue_shopping": "Continue Shopping",
+    "continue_shopping": "Continuar comprando",
     "breadcrumbs": {
-      "home": "Home",
-      "collections": "Collections",
-      "search": "Search",
+      "home": "Inicio",
+      "collections": "Colecciones",
+      "search": "Buscar",
       "label": "Breadcrumbs"
     },
     "pagination": {
-      "previous": "Previous",
-      "next": "Next",
+      "previous": "Anterior",
+      "next": "Siguiente",
       "page": "Page {{ page }}",
       "label": "Pagination"
     },
@@ -29,7 +29,7 @@
     },
     "accessibility": {
       "skip_to_content": "Skip to content",
-      "close": "Close",
+      "close": "Cerrar",
       "back_to_top": "Back to top"
     },
     "age_verifier": {
@@ -48,16 +48,16 @@
     "popup": {
       "heading": "Get 15% Off Your First Order",
       "subheading": "Subscribe to receive exclusive offers, new arrival updates, and secret discounts.",
-      "email_placeholder": "Enter your email address",
+      "email_placeholder": "Introduce tu correo electrónico",
       "submit_button": "CLAIM DISCOUNT",
       "close": "Close popup",
       "success": "Thank you for subscribing!"
     },
     "search": {
-      "search": "Search",
+      "search": "Buscar",
       "placeholder": "Search articles, pages, or products",
-      "suggestions": "SUGGESTIONS",
-      "popular_products": "POPULAR PRODUCTS"
+      "suggestions": "SUGERENCIAS",
+      "popular_products": "PRODUCTOS POPULARES"
     },
     "share": {
       "share_url": "Share:",
@@ -70,26 +70,26 @@
     }
   },
   "blog": {
-    "article_comments": "Comments",
+    "article_comments": "Comentarios",
     "article_metadata_html": "{{ date }} by {{ author }}",
-    "comment_form_body": "Comment",
-    "comment_form_email": "Email",
-    "comment_form_name": "Name",
+    "comment_form_body": "Comentario",
+    "comment_form_email": "Correo electrónico",
+    "comment_form_name": "Nombre",
     "comment_form_submit": "Post",
     "comment_form_title": "Add a comment",
-    "article_tags": "Tags:",
+    "article_tags": "Etiquetas:",
     "back_to_journal": "Back to Journal",
     "default_tag": "BLOG",
-    "by_author": "By {{ author }}",
-    "min_read": "{{ minutes }} min read",
-    "comment_success_moderated": "Your comment was submitted successfully and will be published after review.",
-    "comment_success_published": "Your comment has been published!"
+    "by_author": "Por {{ author }}",
+    "min_read": "{{ minutes }} min de lectura",
+    "comment_success_moderated": "Tu comentario fue enviado con éxito y se publicará después de su revisión.",
+    "comment_success_published": "¡Tu comentario ha sido publicado!"
   },
   "cart": {
-    "checkout": "Checkout",
-    "title": "Cart",
+    "checkout": "Finalizar compra",
+    "title": "Carrito",
     "update": "Update",
-    "remove": "Remove"
+    "remove": "Eliminar"
   },
   "sections": {
     "header": {
@@ -141,8 +141,8 @@
       "title": "Your Shopping Bag",
       "summary": "Order Summary",
       "subtotal": "Subtotal",
-      "taxes_and_shipping_at_checkout": "Calculated at checkout",
-      "checkout": "CHECKOUT SECURELY",
+      "taxes_and_shipping_at_checkout": "Calculado en la pantalla de pago",
+      "checkout": "PAGO SEGURO",
       "note": "Add special instructions or a gift note",
       "note_placeholder": "How can we help make your order special?",
       "empty": "Your bag is empty",
@@ -157,23 +157,23 @@
       "cart_quantity_error": "You can't add more of this item to your cart.",
       "login": "Log in to check out faster",
       "taxes_included_and_shipping_policy_html": "Tax included and shipping calculated at checkout.",
-      "column_product": "Product",
-      "column_price": "Price",
-      "column_quantity": "Quantity",
+      "column_product": "Producto",
+      "column_price": "Precio",
+      "column_quantity": "Cantidad",
       "column_total": "Total",
-      "edit": "Edit",
-      "discount_code_heading": "Discount Code",
-      "discount_code_desc": "Enter your promotional or discount code below.",
-      "discount_code_label": "Discount Code",
-      "discount_code_placeholder": "Enter discount code",
-      "discount_code_apply": "Apply discount code",
-      "discount_code_applied": "APPLIED",
-      "discount_code_apply_btn": "APPLY",
-      "gift_message_heading": "Gift Message / Special Instructions",
-      "gift_message_placeholder": "Add a gift message or special instructions for your order...",
-      "discount": "Discount",
-      "shipping": "Shipping",
-      "estimated_taxes": "Estimated Taxes",
+      "edit": "Editar",
+      "discount_code_heading": "Código de descuento",
+      "discount_code_desc": "Introduce tu código promocional o de descuento a continuación.",
+      "discount_code_label": "Código de descuento",
+      "discount_code_placeholder": "Introduce el código de descuento",
+      "discount_code_apply": "Aplicar código de descuento",
+      "discount_code_applied": "APLICADO",
+      "discount_code_apply_btn": "APLICAR",
+      "gift_message_heading": "Mensaje de regalo / Instrucciones especiales",
+      "gift_message_placeholder": "Añade un mensaje de regalo o instrucciones especiales para tu pedido...",
+      "discount": "Descuento",
+      "shipping": "Envío",
+      "estimated_taxes": "Impuestos estimados",
       "total": "Total",
       "subtotal_title": "Subtotal"
     },
@@ -181,37 +181,37 @@
       "view_all": "View All"
     },
     "collection_list": {
-      "items": "items"
+      "items": "artículos"
     },
     "collection_template": {
-      "empty": "No products found",
+      "empty": "No se encontraron productos",
       "use_fewer_filters": "Try clearing some filters or search for another term.",
-      "products_found": "{{ count }} Products Found",
-      "grid_view": "Grid view",
-      "list_view": "List view"
+      "products_found": "{{ count }} productos encontrados",
+      "grid_view": "Vista en cuadrícula",
+      "list_view": "Vista en lista"
     },
     "newsletter": {
       "label": "Enter your email",
       "success": "Thanks for subscribing!"
     },
     "blog": {
-      "search_articles": "Search Articles",
-      "search_placeholder": "Search articles...",
-      "clear_search": "Clear search",
-      "categories": "Categories",
-      "all": "All",
-      "recent_posts": "Recent Posts",
-      "no_recent_posts": "No recent posts available.",
-      "sort_latest": "Latest",
-      "sort_oldest": "Oldest",
-      "no_matching_articles": "No matching articles found",
-      "no_matching_articles_desc": "We couldn't find any articles matching your search. Try another search or browse all articles.",
-      "view_all_articles": "View All Articles",
-      "no_articles_yet": "No articles yet",
-      "no_articles_yet_desc": "Check back soon for new stories, style guides, and fashion inspiration."
+      "search_articles": "Buscar artículos",
+      "search_placeholder": "Buscar artículos...",
+      "clear_search": "Borrar búsqueda",
+      "categories": "Categorías",
+      "all": "Todo",
+      "recent_posts": "Publicaciones recientes",
+      "no_recent_posts": "No hay publicaciones recientes disponibles.",
+      "sort_latest": "Más recientes",
+      "sort_oldest": "Más antiguos",
+      "no_matching_articles": "No se encontraron artículos coincidentes",
+      "no_matching_articles_desc": "No pudimos encontrar artículos que coincidan con tu búsqueda. Intenta otra búsqueda o explora todos los artículos.",
+      "view_all_articles": "Ver todos los artículos",
+      "no_articles_yet": "Aún no hay artículos",
+      "no_articles_yet_desc": "Vuelve pronto para ver nuevas historias, guías de estilo e inspiración de moda."
     },
     "predictive_search": {
-      "items": "items"
+      "items": "artículos"
     }
   },
   "products": {
@@ -220,18 +220,18 @@
       "subtitle": "YOUR SHOPPING HISTORY"
     },
     "product": {
-      "add_to_cart": "Add to Cart",
+      "add_to_cart": "Añadir al carrito",
       "choose_options": "Choose options",
-      "sold_out": "Sold Out",
+      "sold_out": "Agotado",
       "unavailable": "Unavailable",
-      "on_sale": "Sale",
-      "quick_view": "Quick View",
-      "quick_add": "Quick Add",
+      "on_sale": "Oferta",
+      "quick_view": "Vista rápida",
+      "quick_add": "Añadido rápido",
       "wishlist_add": "Add to Wishlist",
       "wishlist_remove": "Remove from Wishlist",
       "quantity": {
-        "label": "Quantity",
-        "input_label": "Quantity",
+        "label": "Cantidad",
+        "input_label": "Cantidad",
         "increase": "Increase quantity for {{ product }}",
         "decrease": "Decrease quantity for {{ product }}"
       },
@@ -263,13 +263,13 @@
     "facets": {
       "active_filters": "Active Filters:",
       "clear_all": "Clear all",
-      "sort_by_label": "Sort by:",
+      "sort_by_label": "Ordenar por:",
       "filter_by_label": "Filter by:"
     }
   },
   "newsletter": {
-    "label": "Enter your email address",
-    "button_label": "Subscribe",
+    "label": "Introduce tu correo electrónico",
+    "button_label": "Suscribirse",
     "success": "Thanks for subscribing!"
   },
   "templates": {
@@ -281,18 +281,18 @@
     }
   },
   "customer": {
-    "account_fallback": "Account"
+    "account_fallback": "Cuenta"
   },
   "customers": {
     "login": {
-      "email": "Email",
+      "email": "Correo electrónico",
       "password": "Password",
       "submit": "Sign in",
       "title": "Login"
     }
   },
   "collections": {
-    "title": "Collections"
+    "title": "Colecciones"
   },
   "gift_card": {
     "add_to_apple_wallet": "Add to Apple Wallet",
@@ -307,9 +307,9 @@
     "enter": "Enter"
   },
   "search": {
-    "title": "Search",
+    "title": "Buscar",
     "placeholder": "Search articles, pages, or products",
-    "submit": "Search",
+    "submit": "Buscar",
     "no_results_html": "No results found for {{ terms }}",
     "results_for_html": "{{ count }} results found for {{ terms }}"
   }

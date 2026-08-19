@@ -34,7 +34,7 @@
         {%- if article.tags.size > 0 -%}
           {{ article.tags.first | upcase }}
         {%- else -%}
-          BLOG
+          {{ 'blog.default_tag' | t | default: 'BLOG' }}
         {%- endif -%}
       </span>
       {%- if show_date != false -%}
@@ -45,11 +45,11 @@
       {%- endif -%}
       {%- if show_author != false and article.author != blank -%}
         <span class="szc-article-header__dot">•</span>
-        <span class="szc-article-header__author">By {{ article.author }}</span>
+        <span class="szc-article-header__author">{{ 'blog.by_author' | t: author: article.author | default: 'By' | append: ' ' | append: article.author }}</span>
       {%- endif -%}
       {%- if show_reading_time != false and reading_minutes > 0 -%}
         <span class="szc-article-header__dot">•</span>
-        <span class="szc-article-header__reading-time">{{ reading_minutes }} min read</span>
+        <span class="szc-article-header__reading-time">{{ 'blog.min_read' | t: minutes: reading_minutes | default: reading_minutes | append: ' min read' }}</span>
       {%- endif -%}
     </div>
 
@@ -71,7 +71,7 @@
     <div class="szc-article-footer">
       {%- if article.tags.size > 0 -%}
         <div class="szc-article-tags">
-          <span class="szc-article-tags__label">Tags:</span>
+          <span class="szc-article-tags__label">{{ 'blog.article_tags' | t | default: 'Tags:' }}</span>
           {%- for tag in article.tags -%}
             <a href="{{ blog.url }}/tagged/{{ tag | handle }}" class="szc-article-tag__pill">
               {{ tag }}
@@ -82,7 +82,7 @@
 
       <div class="szc-article-back-wrap">
         <a href="{{ blog.url }}" class="szc-button szc-button--outline szc-article-back-btn">
-          {% render 'icon', icon: 'arrow-left', class: 'szc-icon--back' %} BACK TO JOURNAL
+          {% render 'icon', icon: 'arrow-left', class: 'szc-icon--back' %} {{ 'blog.back_to_journal' | t | default: 'BACK TO JOURNAL' }}
         </a>
       </div>
     </div>
@@ -91,7 +91,7 @@
     {%- if blog.comments_enabled? -%}
       <div id="comments" class="szc-article-comments">
         <h2 class="szc-article-comments__title">
-          Comments ({{ article.comments_count }})
+          {{ 'blog.article_comments' | t | default: 'Comments' }} ({{ article.comments_count }})
         </h2>
 
         {%- if article.comments_count > 0 -%}
@@ -120,7 +120,7 @@
 
         <!-- New Comment Form -->
         {% form 'new_comment', article, class: 'szc-article-comment-form' %}
-          <h3 class="szc-article-comment-form__title">Leave a Comment</h3>
+          <h3 class="szc-article-comment-form__title">{{ 'blog.comment_form_title' | t | default: 'Leave a Comment' }}</h3>
 
           {%- if form.errors -%}
             <div class="szc-article-form__error">
@@ -131,16 +131,16 @@
           {%- if form.posted_successfully? -%}
             <p class="szc-article-form__success">
               {%- if blog.moderated? -%}
-                Your comment was submitted successfully and will be published after review.
+                {{ 'blog.comment_success_moderated' | t | default: 'Your comment was submitted successfully and will be published after review.' }}
               {%- else -%}
-                Your comment has been published!
+                {{ 'blog.comment_success_published' | t | default: 'Your comment has been published!' }}
               {%- endif -%}
             </p>
           {%- endif -%}
 
           <div class="szc-article-form__grid">
             <div class="szc-article-form__field">
-              <label for="CommentAuthor-{{ section.id }}" class="szc-article-form__label">Name *</label>
+              <label for="CommentAuthor-{{ section.id }}" class="szc-article-form__label">{{ 'blog.comment_form_name' | t | default: 'Name' }} *</label>
               <input
                 type="text"
                 name="comment[author]"
@@ -152,7 +152,7 @@
             </div>
 
             <div class="szc-article-form__field">
-              <label for="CommentEmail-{{ section.id }}" class="szc-article-form__label">Email *</label>
+              <label for="CommentEmail-{{ section.id }}" class="szc-article-form__label">{{ 'blog.comment_form_email' | t | default: 'Email' }} *</label>
               <input
                 type="email"
                 name="comment[email]"
@@ -165,7 +165,7 @@
           </div>
 
           <div class="szc-article-form__field">
-            <label for="CommentBody-{{ section.id }}" class="szc-article-form__label">Comment *</label>
+            <label for="CommentBody-{{ section.id }}" class="szc-article-form__label">{{ 'blog.comment_form_body' | t | default: 'Comment' }} *</label>
             <textarea
               name="comment[body]"
               id="CommentBody-{{ section.id }}"
@@ -176,7 +176,7 @@
           </div>
 
           <button type="submit" class="szc-button szc-button--primary szc-article-form__submit">
-            POST COMMENT
+            {{ 'blog.comment_form_submit' | t | default: 'POST COMMENT' }}
           </button>
         {% endform %}
       </div>

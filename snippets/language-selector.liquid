@@ -1,0 +1,207 @@
+{% doc %}
+  Renders Shopify's native Dawn-style language selector form.
+  Uses native localization.available_languages and localization.language.
+
+  @param {string} [class] - Optional extra CSS classes
+{% enddoc %}
+
+{%- if localization.available_languages.size > 1 -%}
+  <localization-form class="szc-language-selector {{ class }}">
+    {%- form 'localization', id: 'HeaderLanguageForm', class: 'szc-localization-form' -%}
+      <div class="szc-localization-wrapper">
+        <button
+          type="button"
+          class="szc-localization-toggle-btn"
+          aria-expanded="false"
+          aria-controls="HeaderLanguageList"
+          aria-label="{{ localization.language.endonym_name | default: localization.language.name }}"
+        >
+          <span class="szc-localization-current-name">
+            {{ localization.language.endonym_name | default: localization.language.name | capitalize }}
+          </span>
+          {% render 'icon', icon: 'chevron-down', class: 'szc-localization-caret' %}
+        </button>
+
+        <ul
+          id="HeaderLanguageList"
+          role="list"
+          class="szc-localization-dropdown"
+          hidden
+        >
+          {%- for language in localization.available_languages -%}
+            <li class="szc-localization-item">
+              <a
+                class="szc-localization-link {% if language.iso_code == localization.language.iso_code %}is-active{% endif %}"
+                href="#"
+                hreflang="{{ language.iso_code }}"
+                lang="{{ language.iso_code }}"
+                {% if language.iso_code == localization.language.iso_code %}aria-current="true"{% endif %}
+                data-value="{{ language.iso_code }}"
+              >
+                {{ language.endonym_name | default: language.name | capitalize }}
+              </a>
+            </li>
+          {%- endfor -%}
+        </ul>
+
+        <input type="hidden" name="language_code" value="{{ localization.language.iso_code }}">
+      </div>
+    {%- endform -%}
+  </localization-form>
+{%- endif -%}
+
+{% stylesheet %}
+  .szc-language-selector {
+    display: inline-flex;
+    align-items: center;
+    position: relative;
+  }
+
+  .szc-localization-form {
+    margin: 0;
+    padding: 0;
+  }
+
+  .szc-localization-wrapper {
+    position: relative;
+    display: inline-flex;
+    align-items: center;
+  }
+
+  .szc-localization-toggle-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    background: transparent;
+    border: 1px solid var(--szc-color-border, #e0e0e0);
+    border-radius: 4px;
+    padding: 4px 10px;
+    font-family: var(--szc-font-family-body, sans-serif);
+    font-size: 12px;
+    font-weight: 500;
+    color: var(--szc-color-text-primary, #111111);
+    cursor: pointer;
+    line-height: 1.2;
+    height: 32px;
+    box-sizing: border-box;
+    transition: border-color 150ms ease, background-color 150ms ease;
+  }
+
+  .szc-localization-toggle-btn:hover,
+  .szc-localization-toggle-btn[aria-expanded="true"] {
+    border-color: var(--szc-color-secondary, #d4a373);
+    background-color: var(--szc-color-surface, #fafafa);
+  }
+
+  .szc-localization-caret {
+    width: 10px;
+    height: 10px;
+    color: var(--szc-color-text-muted, #666666);
+    transition: transform 150ms ease;
+  }
+
+  .szc-localization-toggle-btn[aria-expanded="true"] .szc-localization-caret {
+    transform: rotate(180deg);
+  }
+
+  .szc-localization-dropdown {
+    position: absolute;
+    top: calc(100% + 4px);
+    right: 0;
+    min-width: 130px;
+    background-color: var(--szc-color-background, #ffffff);
+    border: 1px solid var(--szc-color-border, #e0e0e0);
+    border-radius: 6px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+    list-style: none;
+    margin: 0;
+    padding: 4px 0;
+    z-index: 100;
+  }
+
+  .szc-localization-dropdown[hidden] {
+    display: none !important;
+  }
+
+  .szc-localization-item {
+    margin: 0;
+    padding: 0;
+  }
+
+  .szc-localization-link {
+    display: block;
+    padding: 6px 12px;
+    font-family: var(--szc-font-family-body, sans-serif);
+    font-size: 12px;
+    color: var(--szc-color-text-primary, #111111);
+    text-decoration: none;
+    transition: background-color 150ms ease, color 150ms ease;
+  }
+
+  .szc-localization-link:hover,
+  .szc-localization-link.is-active {
+    background-color: var(--szc-color-surface, #f5f5f5);
+    color: var(--szc-color-secondary, #d4a373);
+    font-weight: 600;
+  }
+
+  html[dir="rtl"] .szc-localization-dropdown {
+    right: auto !important;
+    left: 0 !important;
+  }
+{% endstylesheet %}
+
+{% javascript %}
+  if (!customElements.get('localization-form')) {
+    customElements.define('localization-form', class LocalizationForm extends HTMLElement {
+      constructor() {
+        super();
+        this.form = this.querySelector('form');
+        this.button = this.querySelector('.szc-localization-toggle-btn');
+        this.dropdown = this.querySelector('.szc-localization-dropdown');
+        this.input = this.querySelector('input[name="language_code"]');
+        this.links = this.querySelectorAll('.szc-localization-link');
+
+        if (!this.button || !this.dropdown) return;
+
+        this.button.addEventListener('click', this.toggle.bind(this));
+        this.addEventListener('keyup', (e) => {
+          if (e.code === 'Escape') this.close();
+        });
+
+        document.addEventListener('click', (e) => {
+          if (!this.contains(e.target)) this.close();
+        });
+
+        this.links.forEach(link => {
+          link.addEventListener('click', (e) => {
+            e.preventDefault();
+            if (this.input) {
+              this.input.value = link.dataset.value;
+              this.form.submit();
+            }
+          });
+        });
+      }
+
+      toggle() {
+        const expanded = this.button.getAttribute('aria-expanded') === 'true';
+        if (expanded) {
+          this.close();
+        } else {
+          this.open();
+        }
+      }
+
+      open() {
+        this.button.setAttribute('aria-expanded', 'true');
+        this.dropdown.removeAttribute('hidden');
+      }
+
+      close() {
+        this.button.setAttribute('aria-expanded', 'false');
+        this.dropdown.setAttribute('hidden', '');
+      }
+    });
+  }
+{% endjavascript %}

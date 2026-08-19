@@ -16,61 +16,38 @@ Preset : ShopziCurious
 ->દરેક title max 30 characters
 ->description max 140 characters.
 
-->Highlight 1 — Video
-તારા themeમાં જે actual functionality strong છે એ બતાવતું video મૂકવું.
-હમણાં screenshotમાં example છે:
-Elegant image zoom
-આ generic example છે.
-તારા theme માટે વધારે suitable:
-Highlight title
-Flexible Product Shopping
-પણ જો videoમાં specifically product image/variant/product-page functionality બતાવતો હોય તો title video પ્રમાણે રાખીશું.
+->Highlight 1 — static image->Home Page
+Title: Flexible Storefront Design
+Description: Create a polished fashion storefront with flexible sections, promotional content, collections, and responsive shopping experiences.
 
-Description
-Example:
-Create an engaging product experience with flexible product layouts, variants, and shopping features.
-પણ અહીં એક condition છે: જો તારા videoમાં આ બધું actually બતાવતું હોય ત્યારે જ આ copy રાખવી.
+->Highlight 2 - static image->Collection Page
+Title:Flexible Collection Layouts
+Description: Showcase collections with flexible layouts, category navigation, promotional content, and product-focused shopping experiences.
 
-->Highlight 2
-આ static imageમાં themeની બીજી major functionality બતાવવી.
-તારા themeની actual functionality પ્રમાણે એક strong option:
-Title
-Flexible Collection Layouts
-Description
-Showcase collections with flexible layouts, category navigation, promotional content, and product-focused shopping experiences.
-
-->Highlight 3
-ત્રીજા imageમાં product page functionality બતાવી શકીએ.
-Title
-Enhanced Product Pages
-Description
-Give shoppers a richer product experience with variants, product details, size guides, and responsive layouts.
-આ પણ actual feature સાથે match થાય છે.
+->Highlight 3 - static image->Product Page
+Title: Enhanced Product Pages
+Description: Give shoppers a richer product experience with variants, product details, size guides, product media, and responsive layouts.
 
 
 4. Features Selection
-
 1.Cart and checkout optimization :-
 ->Feature	
-Pre-order	no
-Gift wrapping	no
+Pre-order	🔹️no
+Gift wrapping	🔹️no
 Cart notes
 In-store pickups
 Quick buy
-Sign in with Shop
+Sign in with Shop 
 Slide-out cart
 Sticky cart
 
 2. Marketing and conversion :-
 ->Feature	
-
-
-Recently viewed	🟡	Confirm
-
-Quantity pricing	no
-Quick order list	no
-Back-in-stock alert	no
-Cross-selling
+Recently viewed
+Quantity pricing	🔹️no
+Quick order list	🔹️no
+Back-in-stock alert	🔹️no
+Cross-selling 🔹️no
 Quick view
 Recommended products
 Stock counter
@@ -78,75 +55,87 @@ Customizable contact form
 
 3. Promotional content :-
 ->Feature
-Feature	Status	શું કરવું
-Blogs	yes
-Countdown timer	🟡	Confirm
-In-menu promos	yes
-Press coverage	no
-Product badges	yes
-Promo banners	yes
-Promo popups	🟡	Confirm
-Promo tiles	🟡	Confirm
+Countdown timer 
+Press coverage	🔹️no
+Promo popups 
+Blogs
+In-menu promos
+Product badges
+Promo banners
+Promo tiles
 
 4. Trust and social proof :-
 ->Feature
-Age verifier	no
-FAQ page	🟡	Confirm
-Trust badges	🟡	Confirm
+Age verifier 
+FAQ page	🔹️no
+Trust badges 
 
 5. Selling internationally :-
 ->Feature
-EU translations	no
-Right-to-left	no
+EU translations	
+Right-to-left	
 
 
 6. Merchandising → Image display :-
 ->Feature
-High-resolution images	yes
-Image galleries	yes
-Image hotspot	no
-Image rollover	🟡	Confirm
-Image zoom	yes
-Before/after image slider	no
-Lookbooks	🟡	Confirm
-Slideshow	yes
+Image hotspot	🔹️no
+Before/after image slider	🔹️no
+High-resolution images
+Image galleries
+Image rollover
+Image zoom
+Lookbooks
+Slideshow
 
-7. Merchandising → Product details :-
+7. Merchandising Product details :-
 ->Feature
-Color swatches	yes
-Combined listing	no
-Ingredients/nutritional info	no
-Product options	yes
-Product tabs	yes
-Product videos	🟡	Confirm
-Shipping/delivery information	yes
-Size chart	yes
-Usage information	no
-Animation	🟡	Confirm
+Combined listing	🔹️no
+Ingredients/nutritional info	🔹️no
+Usage information	🔹️no
+Color swatches
+Product options
+Product tabs
+Product videos
+Shipping/delivery information
+Size chart
+Animation
 
 8. Navigation and filtering :-
 ->Feature
-Back-to-top button	🟡	Confirm
-Breadcrumbs	yes
-Collection page navigation	yes
-Enhanced search	yes
-Infinite scroll	no
-Mega menu	yes
-Product filtering and sorting	yes
-Sticky header	yes
-Swatch filters	🟡	Confirm
+Back-to-top button 
+Infinite scroll 🔹️no
+Breadcrumbs
+Collection page navigation
+Enhanced search
+Mega menu
+Product filtering and sorting
+Sticky header
+Swatch filters
 
 9. Product highlights :-
 ->Feature
-Recently viewed	🟡	Confirm
-Recommended products	🟡	Confirm
+Recently viewed 
+Recommended products
 
 10. Customer accounts :-
 ->Feature
-Account menu છે.
-પણ એ feature Shopify account functionality સાથે કેવી રીતે integrated છે એ final codeમાં confirm કરવું પડશે.
-એટલે:
-🟡 Confirm before selecting
+Account menu
+
+
+1. Merchant stores
+Blank for now Demo store dont add here  Auditrecommend this aslo
+
+2. Demo store testing 
+->Use the demo store to explore the homepage, collection pages, product pages, navigation, product filtering and sorting, product media layouts, quick view, wishlist, cart drawer, and responsive layouts. Product pages include configurable variants, swatches, size guide content, product media, and trust badges. The theme also supports multiple product gallery layouts (Editorial Vertical Stacked, Carousel with Left Thumbnails, and 2-Column Runway Image Grid) that can be configured from the Theme Editor.
+
+3. Password
+-> password ON ->actual password is :etrawr
+
+4. What makes your theme unique?
+->ShopziCurious is built with a focus on clean theme architecture, fast load performance, and flexible media presentation for fashion and apparel brands. Key features include three distinct product gallery layouts (Editorial Vertical Stacked, Carousel with Left Thumbnails, and 2-Column Runway Image Grid), high-resolution image zoom, native color swatches, metafield-connected size charts, built-in wishlist functionality, and a slide-out cart drawer. The theme features zero third-party script dependencies, full Online Store 2.0 section flexibility, complete Right-to-Left (RTL) layout support, and multi-language translation files out of the box.
+
+5. What's your past experience with developing themes?
+->I am a Shopify theme developer focused on creating clean, performant, Online Store 2.0 compliant Liquid themes. I have hands-on experience building custom Liquid sections, modular JSON templates, native vanilla JavaScript interactive components, and responsive CSS systems tailored to Shopify Theme Store guidelines.
 
 
 

@@ -7,7 +7,7 @@
     
     <!-- COLUMN 1: SUGGESTIONS -->
     <div class="szc-search-col szc-search-col--suggestions">
-      <h4 class="szc-search-col__title">SUGGESTIONS</h4>
+      <h4 class="szc-search-col__title">{{ 'general.search.suggestions' | t | default: 'SUGGESTIONS' }}</h4>
       <ul class="szc-suggestions-list" id="SearchSuggestionsList">
         {%- if predictive_search.resources.queries.size > 0 -%}
           {%- for query in predictive_search.resources.queries -%}
@@ -24,7 +24,7 @@
 
     <!-- COLUMN 2: POPULAR PRODUCTS -->
     <div class="szc-search-col szc-search-col--products">
-      <h4 class="szc-search-col__title">POPULAR PRODUCTS</h4>
+      <h4 class="szc-search-col__title">{{ 'general.search.popular_products' | t | default: 'POPULAR PRODUCTS' }}</h4>
       <div class="szc-search-products-list" id="SearchProductsList">
         {%- if predictive_search.resources.products.size > 0 -%}
           {%- for product in predictive_search.resources.products -%}
@@ -78,7 +78,7 @@
 
     <!-- COLUMN 3: COLLECTIONS -->
     <div class="szc-search-col szc-search-col--collections">
-      <h4 class="szc-search-col__title">COLLECTIONS</h4>
+      <h4 class="szc-search-col__title">{{ 'collections.title' | t | default: 'COLLECTIONS' }}</h4>
       <div class="szc-search-collections-list" id="SearchCollectionsList">
         {%- if predictive_search.resources.collections.size > 0 -%}
           {%- for collection in predictive_search.resources.collections -%}
@@ -94,7 +94,7 @@
               </div>
               <div class="szc-search-collection-info">
                 <h5 class="szc-search-collection-title">{{ collection.title }}</h5>
-                <div class="szc-search-collection-count">{{ collection.all_products_count | default: 24 }} items</div>
+                <div class="szc-search-collection-count">{{ collection.all_products_count | default: 24 }} {{ 'sections.predictive_search.items' | t | default: 'items' }}</div>
               </div>
             </a>
           {%- endfor -%}
@@ -116,7 +116,7 @@
                   </div>
                   <div class="szc-search-collection-info">
                     <h5 class="szc-search-collection-title">{{ collection.title }}</h5>
-                    <div class="szc-search-collection-count">{{ collection.all_products_count | default: 12 }} items</div>
+                    <div class="szc-search-collection-count">{{ collection.all_products_count | default: 12 }} {{ 'sections.predictive_search.items' | t | default: 'items' }}</div>
                   </div>
                 </a>
               {%- endif -%}

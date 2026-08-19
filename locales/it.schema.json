@@ -1,0 +1,112 @@
+{
+  "general": {
+    "404": "Non trovato",
+    "article": "Articolo",
+    "block": "Blocco",
+    "blog": "Blog",
+    "cart": "Carrello",
+    "collection": "Collezione",
+    "collections": "Collezioni",
+    "collection_card": "Scheda collezione",
+    "collections_grid": "Griglia collezioni",
+    "colors": "Colori",
+    "column": "Colonna",
+    "content": "Contenuto",
+    "custom_section": "Sezione personalizzata",
+    "fonts": "Font",
+    "footer": "Piè di pagina",
+    "group": "Gruppo",
+    "header": "Intestazione",
+    "layout": "Layout",
+    "main": "Principale",
+    "page": "Pagina",
+    "password": "Password",
+    "primary": "Primario",
+    "product": "Prodotto",
+    "row": "Riga",
+    "search": "Cerca",
+    "secondary": "Secondario",
+    "section": "Sezione",
+    "settings": "Impostazioni",
+    "sidebar": "Barra laterale",
+    "text": "Testo",
+    "theme": "Tema",
+    "typography": "Tipografia"
+  },
+  "labels": {
+    "alignment": "Allineamento",
+    "background": "Sfondo",
+    "foreground": "Primo piano",
+    "grid_gap": "Spaziatura griglia",
+    "grid_item_width": "Larghezza elementi griglia",
+    "input_corner_radius": "Raggio angoli campi di testo",
+    "layout_direction": "Orientamento layout",
+    "menu": "Menu",
+    "customer_account_menu": "Menu account cliente",
+    "padding": "Spaziatura interna",
+    "page_margin": "Margine pagina",
+    "page_width": "Larghezza pagina",
+    "show_payment_icons": "Mostra icone di pagamento",
+    "text_style": "Stile testo",
+    "text": "Testo"
+  },
+  "options": {
+    "alignment": {
+      "left": "Sinistra",
+      "center": "Centro",
+      "right": "Destra"
+    },
+    "direction": {
+      "horizontal": "Orizzontale",
+      "vertical": "Verticale"
+    },
+    "page_width": {
+      "narrow": "Stretto",
+      "wide": "Largo"
+    },
+    "size": {
+      "large": "Grande",
+      "small": "Piccolo"
+    },
+    "text_style": {
+      "title": "Titolo",
+      "subtitle": "Sottotitolo",
+      "normal": "Testo normale"
+    }
+  },
+  "sections": {
+    "announcement-bar": {
+      "name": "Barra degli annunci",
+      "presets": {
+        "name": "Barra degli annunci"
+      },
+      "settings": {
+        "background_color": {
+          "label": "Colore di sfondo"
+        },
+        "text_color": {
+          "label": "Colore del testo"
+        },
+        "border_color": {
+          "label": "Colore del bordo"
+        }
+      },
+      "blocks": {
+        "announcement": {
+          "name": "Annuncio",
+          "settings": {
+            "icon": {
+              "label": "Icona"
+            },
+            "text": {
+              "label": "Testo"
+            },
+            "link": {
+              "label": "Link"
+            }
+          }
+        }
+      }
+    }
+  }
+}

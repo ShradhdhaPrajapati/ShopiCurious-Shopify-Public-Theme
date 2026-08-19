@@ -1,0 +1,627 @@
+{%- comment -%}
+  ShopziCurious - Recently Viewed Products Section (Shopify OS 2.0 Theme Store Standard)
+  1. Tracks viewed product handles in client-side localStorage ('szc_recently_viewed_products').
+  2. Renders authentic Shopify product items via Search & Section Rendering API in a compact strip.
+  3. Displays a sleek horizontal layout matching premium Shopify theme standards.
+  4. Remains completely hidden on live storefront if history is empty.
+  5. Renders clean placeholders ONLY in Theme Editor preview (request.design_mode).
+{%- endcomment -%}
+
+<recently-viewed-products
+  class="szc-recently-viewed-section page-width"
+  data-section-id="{{ section.id }}"
+  data-limit="{{ section.settings.products_to_show | default: 4 }}"
+  {% if product != blank %}
+    data-current-product-handle="{{ product.handle }}"
+  {% endif %}
+  style="
+    --padding-top: {{ section.settings.padding_top | default: 32 }}px;
+    --padding-bottom: {{ section.settings.padding_bottom | default: 32 }}px;
+    --strip-bg: {{ section.settings.background_color | default: '#ffffff' }};
+    --strip-border: {{ section.settings.border_color | default: '#e5e7eb' }};
+    --strip-radius: {{ section.settings.border_radius | default: 12 }}px;
+  "
+>
+  {%- if search.performed and search.results_count > 0 -%}
+    <div class="szc-rv-strip">
+      <div class="szc-rv-strip__header">
+        {%- if section.settings.heading != blank -%}
+          <span class="szc-rv-strip__label">{{ section.settings.heading | upcase }}</span>
+        {%- else -%}
+          <span></span>
+        {%- endif -%}
+
+        {%- if section.settings.show_arrows -%}
+          <div class="szc-rv-strip__nav">
+            <button
+              type="button"
+              class="szc-rv-strip__arrow szc-rv-strip__arrow--prev"
+              aria-label="Previous Recently Viewed Products"
+              data-rv-prev
+            >
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                <polyline points="15 18 9 12 15 6"></polyline>
+              </svg>
+            </button>
+            <button
+              type="button"
+              class="szc-rv-strip__arrow szc-rv-strip__arrow--next"
+              aria-label="Next Recently Viewed Products"
+              data-rv-next
+            >
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                <polyline points="9 18 15 12 9 6"></polyline>
+              </svg>
+            </button>
+          </div>
+        {%- endif -%}
+      </div>
+
+      <div class="szc-rv-strip__track" data-rv-track>
+        {%- for item in search.results -%}
+          {%- if item.object_type == 'product' -%}
+            <a href="{{ item.url }}" class="szc-rv-strip__item" data-product-handle="{{ item.handle }}">
+              <div class="szc-rv-strip__img-wrap">
+                {%- if item.featured_media != blank -%}
+                  <img
+                    src="{{ item.featured_media | image_url: width: 160 }}"
+                    alt="{{ item.featured_media.alt | default: item.title | escape }}"
+                    loading="lazy"
+                    width="64"
+                    height="64"
+                    class="szc-rv-strip__img"
+                  >
+                {%- else -%}
+                  {{ 'product-1' | placeholder_svg_tag: 'szc-rv-strip__img szc-placeholder' }}
+                {%- endif -%}
+              </div>
+              <div class="szc-rv-strip__info">
+                <h4 class="szc-rv-strip__title">{{ item.title }}</h4>
+                {%- if section.settings.show_price -%}
+                  <div class="szc-rv-strip__price">
+                    <span class="szc-rv-strip__current-price">{{ item.price | money }}</span>
+                    {%- if item.compare_at_price > item.price -%}
+                      <s class="szc-rv-strip__compare-price">{{ item.compare_at_price | money }}</s>
+                    {%- endif -%}
+                  </div>
+                {%- endif -%}
+              </div>
+            </a>
+          {%- endif -%}
+        {%- endfor -%}
+      </div>
+    </div>
+  {%- else -%}
+    <div class="szc-recently-viewed__container" data-recently-viewed-container>
+      {%- if request.design_mode -%}
+        <div class="szc-rv-strip">
+          <div class="szc-rv-strip__header">
+            {%- if section.settings.heading != blank -%}
+              <span class="szc-rv-strip__label">{{ section.settings.heading | upcase }}</span>
+            {%- else -%}
+              <span></span>
+            {%- endif -%}
+
+            {%- if section.settings.show_arrows -%}
+              <div class="szc-rv-strip__nav">
+                <button type="button" class="szc-rv-strip__arrow szc-rv-strip__arrow--prev" aria-label="Previous" data-rv-prev>
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="15 18 9 12 15 6"></polyline></svg>
+                </button>
+                <button type="button" class="szc-rv-strip__arrow szc-rv-strip__arrow--next" aria-label="Next" data-rv-next>
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="9 18 15 12 9 6"></polyline></svg>
+                </button>
+              </div>
+            {%- endif -%}
+          </div>
+          <div class="szc-rv-strip__track" data-rv-track>
+            {%- assign limit_count = section.settings.products_to_show | default: 4 -%}
+            {%- for i in (1..limit_count) -%}
+              <a href="#" class="szc-rv-strip__item">
+                <div class="szc-rv-strip__img-wrap">
+                  {{ 'product-' | append: i | placeholder_svg_tag: 'szc-rv-strip__img szc-placeholder' }}
+                </div>
+                <div class="szc-rv-strip__info">
+                  <h4 class="szc-rv-strip__title">Sample Product {{ i }}</h4>
+                  {%- if section.settings.show_price -%}
+                    <div class="szc-rv-strip__price">$99.00</div>
+                  {%- endif -%}
+                </div>
+              </a>
+            {%- endfor -%}
+          </div>
+        </div>
+      {%- endif -%}
+    </div>
+  {%- endif -%}
+</recently-viewed-products>
+
+{% stylesheet %}
+  .szc-recently-viewed-section {
+    display: block;
+    padding-top: var(--padding-top, 32px);
+    padding-bottom: var(--padding-bottom, 32px);
+    max-width: var(--szc-page-max-width, 1400px);
+    margin: 0 auto;
+    padding-left: var(--szc-space-6, 24px);
+    padding-right: var(--szc-space-6, 24px);
+  }
+
+  .szc-rv-strip {
+    background: var(--strip-bg, #ffffff);
+    border: 1px solid var(--strip-border, #e5e7eb);
+    border-radius: var(--strip-radius, 12px);
+    padding: 16px 20px;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.02);
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    width: 100%;
+    box-sizing: border-box;
+  }
+
+  .szc-rv-strip__header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    width: 100%;
+  }
+
+  .szc-rv-strip__label {
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    color: #374151;
+    text-transform: uppercase;
+    margin: 0;
+    line-height: 1;
+  }
+
+  .szc-rv-strip__nav {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+
+  .szc-rv-strip__arrow {
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    border: 1px solid #e5e7eb;
+    background: #ffffff;
+    color: #374151;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    padding: 0;
+    transition: all 0.2s ease;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+  }
+
+  .szc-rv-strip__arrow:hover {
+    background: #f9fafb;
+    border-color: #d1d5db;
+    color: #111827;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.08);
+    transform: translateY(-1px);
+  }
+
+  .szc-rv-strip__arrow:focus-visible {
+    outline: 2px solid #111827;
+    outline-offset: 2px;
+  }
+
+  .szc-rv-strip__track {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    overflow-x: auto;
+    scroll-behavior: smooth;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+    padding-bottom: 2px;
+  }
+
+  .szc-rv-strip__track::-webkit-scrollbar {
+    display: none;
+  }
+
+  .szc-rv-strip__item {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    flex: 0 0 calc(25% - 12px);
+    min-width: 230px;
+    text-decoration: none;
+    color: inherit;
+    padding: 6px 10px;
+    border-radius: 8px;
+    transition: background-color 0.2s ease;
+    box-sizing: border-box;
+  }
+
+  .szc-rv-strip__item:hover {
+    background-color: #f8fafc;
+  }
+
+  .szc-rv-strip__img-wrap {
+    width: 64px;
+    height: 64px;
+    flex-shrink: 0;
+    border-radius: 8px;
+    overflow: hidden;
+    background: #f1f5f9;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .szc-rv-strip__img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+  }
+
+  .szc-rv-strip__info {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    min-width: 0;
+    flex: 1;
+  }
+
+  .szc-rv-strip__title {
+    font-size: 13px;
+    font-weight: 500;
+    line-height: 1.35;
+    color: #1e293b;
+    margin: 0 0 4px 0;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    word-break: break-word;
+    max-height: 2.7em;
+  }
+
+  .szc-rv-strip__item:hover .szc-rv-strip__title {
+    color: #0f172a;
+    text-decoration: underline;
+  }
+
+  .szc-rv-strip__price {
+    font-size: 13px;
+    font-weight: 600;
+    color: #0f172a;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    line-height: 1.2;
+  }
+
+  .szc-rv-strip__compare-price {
+    font-size: 11px;
+    font-weight: 400;
+    color: #94a3b8;
+    text-decoration: line-through;
+  }
+
+  @media screen and (max-width: 989px) {
+    .szc-rv-strip__item {
+      flex: 0 0 calc(33.333% - 11px);
+      min-width: 200px;
+    }
+  }
+
+  @media screen and (max-width: 749px) {
+    .szc-recently-viewed-section {
+      padding-left: 16px;
+      padding-right: 16px;
+    }
+
+    .szc-rv-strip {
+      padding: 12px 14px;
+    }
+
+    .szc-rv-strip__item {
+      flex: 0 0 calc(55% - 8px);
+      min-width: 175px;
+      gap: 10px;
+      padding: 5px;
+    }
+
+    .szc-rv-strip__img-wrap {
+      width: 56px;
+      height: 56px;
+      border-radius: 6px;
+    }
+
+    .szc-rv-strip__title {
+      font-size: 12px;
+      line-height: 1.3;
+      max-height: 2.6em;
+    }
+
+    .szc-rv-strip__price {
+      font-size: 12px;
+    }
+  }
+
+  @media screen and (max-width: 480px) {
+    .szc-rv-strip__item {
+      flex: 0 0 calc(72% - 8px);
+      min-width: 160px;
+    }
+  }
+{% endstylesheet %}
+
+{% javascript %}
+  (function () {
+    const STORAGE_KEY = 'szc_recently_viewed_products';
+
+    function getHistory() {
+      try {
+        const raw = localStorage.getItem(STORAGE_KEY);
+        return raw ? JSON.parse(raw) : [];
+      } catch (e) {
+        return [];
+      }
+    }
+
+    function recordProduct(handle) {
+      if (!handle) return;
+      let history = getHistory();
+      history = history.filter((h) => h !== handle);
+      history.unshift(handle);
+      if (history.length > 15) {
+        history = history.slice(0, 15);
+      }
+      try {
+        localStorage.setItem(STORAGE_KEY, JSON.stringify(history));
+        window.dispatchEvent(new CustomEvent('szc:recently-viewed-updated', { detail: { handle: handle } }));
+      } catch (e) {}
+    }
+
+    if (!customElements.get('recently-viewed-products')) {
+      customElements.define(
+        'recently-viewed-products',
+        class RecentlyViewedProducts extends HTMLElement {
+          connectedCallback() {
+            const currentHandle = this.getAttribute('data-current-product-handle');
+            if (currentHandle) {
+              recordProduct(currentHandle);
+            }
+
+            this.loadRecentlyViewed();
+            this.initCarousel();
+
+            this._onRecentlyViewedUpdated = () => {
+              this.loadRecentlyViewed();
+            };
+
+            this._onStorageChange = (e) => {
+              if (e.key === STORAGE_KEY) {
+                this.loadRecentlyViewed();
+              }
+            };
+
+            this._onPageShow = (e) => {
+              if (e.persisted) {
+                this.loadRecentlyViewed();
+              }
+            };
+
+            window.addEventListener('szc:recently-viewed-updated', this._onRecentlyViewedUpdated);
+            window.addEventListener('storage', this._onStorageChange);
+            window.addEventListener('pageshow', this._onPageShow);
+          }
+
+          disconnectedCallback() {
+            if (this._onRecentlyViewedUpdated) {
+              window.removeEventListener('szc:recently-viewed-updated', this._onRecentlyViewedUpdated);
+            }
+            if (this._onStorageChange) {
+              window.removeEventListener('storage', this._onStorageChange);
+            }
+            if (this._onPageShow) {
+              window.removeEventListener('pageshow', this._onPageShow);
+            }
+          }
+
+          initCarousel() {
+            const track = this.querySelector('[data-rv-track]');
+            const prevBtn = this.querySelector('[data-rv-prev]');
+            const nextBtn = this.querySelector('[data-rv-next]');
+
+            if (!track) return;
+
+            if (prevBtn) {
+              prevBtn.onclick = (e) => {
+                e.preventDefault();
+                const scrollAmount = track.clientWidth * 0.75;
+                track.scrollBy({ left: -scrollAmount, behavior: 'smooth' });
+              };
+            }
+
+            if (nextBtn) {
+              nextBtn.onclick = (e) => {
+                e.preventDefault();
+                const scrollAmount = track.clientWidth * 0.75;
+                track.scrollBy({ left: scrollAmount, behavior: 'smooth' });
+              };
+            }
+          }
+
+          loadRecentlyViewed() {
+            const currentHandle = this.getAttribute('data-current-product-handle');
+            const limit = parseInt(this.getAttribute('data-limit') || '4', 10);
+            const sectionId = this.getAttribute('data-section-id');
+
+            let history = getHistory();
+            if (currentHandle) {
+              history = history.filter((h) => h !== currentHandle);
+            }
+
+            if (!history.length) {
+              if (!window.Shopify || !window.Shopify.designMode) {
+                this.style.display = 'none';
+              }
+              return;
+            }
+
+            const handlesToFetch = history.slice(0, limit);
+            const searchQuery = handlesToFetch.map((h) => `handle:${h}`).join(' OR ');
+            const rootUrl = window.Shopify && window.Shopify.routes ? window.Shopify.routes.root : '/';
+            const url = `${rootUrl}search?type=product&q=${encodeURIComponent(searchQuery)}&section_id=${sectionId}`;
+
+            fetch(url)
+              .then((res) => res.text())
+              .then((htmlText) => {
+                const parser = new DOMParser();
+                const doc = parser.parseFromString(htmlText, 'text/html');
+                const newContent = doc.querySelector('recently-viewed-products');
+
+                if (newContent && (newContent.querySelector('.szc-rv-strip__track') || newContent.querySelector('.szc-recently-viewed__grid'))) {
+                  const track = newContent.querySelector('.szc-rv-strip__track');
+                  if (track) {
+                    const items = Array.from(track.querySelectorAll('.szc-rv-strip__item'));
+                    const itemMap = new Map();
+                    items.forEach((item) => {
+                      const handle = item.getAttribute('data-product-handle');
+                      if (handle) {
+                        itemMap.set(handle, item);
+                      }
+                    });
+
+                    track.innerHTML = '';
+                    handlesToFetch.forEach((handle) => {
+                      const itemEl = itemMap.get(handle);
+                      if (itemEl) {
+                        track.appendChild(itemEl);
+                      }
+                    });
+                  }
+
+                  this.innerHTML = newContent.innerHTML;
+                  this.style.display = 'block';
+                  this.initCarousel();
+                } else if (!window.Shopify || !window.Shopify.designMode) {
+                  this.style.display = 'none';
+                }
+              })
+              .catch((err) => {
+                console.error('Failed to load recently viewed products:', err);
+              });
+          }
+        }
+      );
+    }
+  })();
+{% endjavascript %}
+
+{% schema %}
+{
+  "name": "Recently viewed products",
+  "tag": "section",
+  "class": "section-recently-viewed-products",
+  "settings": [
+    {
+      "type": "header",
+      "content": "Heading"
+    },
+    {
+      "type": "text",
+      "id": "heading",
+      "default": "RECENTLY VIEWED",
+      "label": "Heading"
+    },
+    {
+      "type": "header",
+      "content": "Product Settings"
+    },
+    {
+      "type": "range",
+      "id": "products_to_show",
+      "min": 2,
+      "max": 15,
+      "step": 1,
+      "default": 4,
+      "label": "Maximum products to show"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_price",
+      "default": true,
+      "label": "Show product price"
+    },
+    {
+      "type": "header",
+      "content": "Navigation"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_arrows",
+      "default": true,
+      "label": "Show navigation arrows"
+    },
+    {
+      "type": "header",
+      "content": "Appearance"
+    },
+    {
+      "type": "color",
+      "id": "background_color",
+      "default": "#ffffff",
+      "label": "Background"
+    },
+    {
+      "type": "color",
+      "id": "border_color",
+      "default": "#e5e7eb",
+      "label": "Border color"
+    },
+    {
+      "type": "range",
+      "id": "border_radius",
+      "min": 0,
+      "max": 24,
+      "step": 1,
+      "unit": "px",
+      "default": 12,
+      "label": "Corner radius"
+    },
+    {
+      "type": "header",
+      "content": "Spacing"
+    },
+    {
+      "type": "range",
+      "id": "padding_top",
+      "min": 0,
+      "max": 80,
+      "step": 4,
+      "unit": "px",
+      "label": "Top padding",
+      "default": 32
+    },
+    {
+      "type": "range",
+      "id": "padding_bottom",
+      "min": 0,
+      "max": 80,
+      "step": 4,
+      "unit": "px",
+      "label": "Bottom padding",
+      "default": 32
+    }
+  ],
+  "presets": [
+    {
+      "name": "Recently viewed products"
+    }
+  ]
+}
+{% endschema %}

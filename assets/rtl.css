@@ -1,0 +1,244 @@
+/**
+ * ShopziCurious Theme - Right-To-Left (RTL) Design System & Layout Engine
+ * Purpose: Complete bi-directional layout support for Arabic (ar), Hebrew (he), Persian (fa), and Urdu (ur).
+ * Isolated strictly under html[dir="rtl"] to guarantee 0% regression on LTR languages.
+ */
+
+html[dir="rtl"] {
+  direction: rtl !important;
+  text-align: right !important;
+}
+
+/* Prevent horizontal overflow in RTL body */
+html[dir="rtl"],
+html[dir="rtl"] body {
+  overflow-x: hidden;
+  text-align: right;
+}
+
+/* 1. TYPOGRAPHY & BASE ALIGNMENT */
+html[dir="rtl"] body {
+  text-align: right;
+}
+
+html[dir="rtl"] .szc-section-header--left {
+  text-align: right !important;
+}
+
+/* 2. HEADER & NAVIGATION */
+html[dir="rtl"] .szc-header {
+  flex-direction: row !important;
+}
+
+html[dir="rtl"] .szc-header__menu-list {
+  padding: 0 !important;
+}
+
+html[dir="rtl"] .szc-header__dropdown {
+  left: auto !important;
+  right: 0 !important;
+}
+
+html[dir="rtl"] .szc-mega-menu {
+  left: 0 !important;
+  right: 0 !important;
+}
+
+html[dir="rtl"] .szc-mega-subcategories-list {
+  padding: 6px 40px 0 0 !important;
+}
+
+html[dir="rtl"] .szc-mega-product-item:hover {
+  transform: translateX(-3px) !important;
+}
+
+html[dir="rtl"] .szc-header__wishlist-badge,
+html[dir="rtl"] .szc-header__cart-badge {
+  right: auto !important;
+  left: -6px !important;
+}
+
+/* 3. ANNOUNCEMENT BAR */
+html[dir="rtl"] .szc-announcement-bar {
+  text-align: center !important;
+}
+
+/* 4. CART DRAWER (SLIDES FROM LEFT IN RTL) */
+html[dir="rtl"] .szc-cart-drawer {
+  justify-content: flex-start !important;
+}
+
+html[dir="rtl"] .szc-cart-drawer .szc-drawer__container {
+  box-shadow: 4px 0 24px rgba(0, 0, 0, 0.12) !important;
+  transform: translateX(-100%) !important;
+}
+
+html[dir="rtl"] .szc-cart-drawer.is-open .szc-drawer__container {
+  transform: translateX(0) !important;
+}
+
+html[dir="rtl"] .szc-cart-drawer__remove-btn {
+  margin-left: 0 !important;
+  margin-right: auto !important;
+}
+
+html[dir="rtl"] .szc-price--compare {
+  margin-right: 0 !important;
+  margin-left: 6px !important;
+}
+
+html[dir="rtl"] .szc-tooltip-icon {
+  margin-left: 0 !important;
+  margin-right: 4px !important;
+}
+
+/* 5. MOBILE NAVIGATION DRAWER (SLIDES FROM RIGHT IN RTL) */
+html[dir="rtl"] .szc-mobile-drawer {
+  left: auto !important;
+  right: 0 !important;
+}
+
+html[dir="rtl"] .szc-mobile-drawer__inner {
+  right: 0 !important;
+  left: auto !important;
+  transform: translateX(100%) !important;
+}
+
+html[dir="rtl"] .szc-mobile-drawer.is-open .szc-mobile-drawer__inner {
+  transform: translateX(0) !important;
+}
+
+html[dir="rtl"] .szc-mobile-drawer__sublink-chevron,
+html[dir="rtl"] .szc-mobile-drawer__back-btn svg {
+  transform: scaleX(-1) !important;
+}
+
+/* 6. COLLECTION FILTER DRAWER & SIDEBAR */
+html[dir="rtl"] .szc-facets-drawer__inner {
+  right: auto !important;
+  left: 0 !important;
+  transform: translateX(-100%) !important;
+}
+
+html[dir="rtl"] .szc-facets-drawer.is-open .szc-facets-drawer__inner {
+  transform: translateX(0) !important;
+}
+
+html[dir="rtl"] .szc-facet-checkbox__icon {
+  margin-right: 0 !important;
+  margin-left: 8px !important;
+}
+
+/* 7. COLLECTION TOOLBAR */
+html[dir="rtl"] .szc-collection-toolbar {
+  flex-direction: row !important;
+}
+
+/* 8. PRODUCT PAGE MEDIA & BUY BOX LAYOUT */
+html[dir="rtl"] .szc-product__badges {
+  left: auto !important;
+  right: 12px !important;
+}
+
+html[dir="rtl"] .szc-product__summary-list li {
+  padding-left: 0 !important;
+  padding-right: 20px !important;
+}
+
+html[dir="rtl"] .szc-product__summary-list li::before {
+  left: auto !important;
+  right: 0 !important;
+}
+
+/* 9. QUANTITY SELECTOR */
+html[dir="rtl"] .szc-quantity,
+html[dir="rtl"] .szc-cart-drawer__quantity-stepper {
+  flex-direction: row !important;
+}
+
+/* 10. RECENTLY VIEWED PRODUCTS CAROUSEL */
+html[dir="rtl"] .szc-rv-strip__header {
+  flex-direction: row !important;
+}
+
+html[dir="rtl"] .szc-rv-strip__arrow svg {
+  transform: scaleX(-1) !important;
+}
+
+html[dir="rtl"] .szc-rv-strip__item {
+  flex-direction: row !important;
+}
+
+html[dir="rtl"] .szc-rv-strip__compare-price {
+  margin-left: 0 !important;
+  margin-right: 6px !important;
+}
+
+/* 11. PROMO POPUP */
+html[dir="rtl"] .szc-promo-popup__close {
+  right: auto !important;
+  left: 16px !important;
+}
+
+html[dir="rtl"] .szc-promo-popup__content {
+  text-align: right !important;
+}
+
+/* 12. AGE VERIFICATION POPUP */
+html[dir="rtl"] .szc-age-verifier__card {
+  text-align: center !important;
+}
+
+/* 13. BACK TO TOP BUTTON */
+html[dir="rtl"] .szc-back-to-top {
+  right: auto !important;
+  left: 24px !important;
+}
+
+@media (max-width: 767px) {
+  html[dir="rtl"] .szc-back-to-top {
+    right: auto !important;
+    left: 16px !important;
+  }
+}
+
+/* 14. BREADCRUMBS & DIRECTIONAL CHEVRONS / ARROWS */
+html[dir="rtl"] .szc-breadcrumb__separator svg,
+html[dir="rtl"] .szc-icon-chevron-right,
+html[dir="rtl"] .szc-header__menu-chevron,
+html[dir="rtl"] .szc-media-arrow--prev svg,
+html[dir="rtl"] .szc-media-arrow--next svg {
+  transform: scaleX(-1) !important;
+}
+
+/* 15. QUICK VIEW MODAL RTL OVERRIDES */
+html[dir="rtl"] .szc-quick-view-modal .szc-modal__close-btn {
+  right: auto !important;
+  left: 16px !important;
+}
+
+html[dir="rtl"] .szc-qv-trust {
+  border-left: none !important;
+  border-right: 1px solid #f0f0f0 !important;
+  padding-left: 0 !important;
+  padding-right: 20px !important;
+}
+
+@media (max-width: 989px) {
+  html[dir="rtl"] .szc-qv-trust {
+    border-right: none !important;
+    border-top: 1px solid #f0f0f0 !important;
+    padding-right: 0 !important;
+    padding-top: 20px !important;
+  }
+}
+
+html[dir="rtl"] .szc-qv-details {
+  text-align: right !important;
+}
+
+html[dir="rtl"] .szc-qv-stage-nav--prev svg,
+html[dir="rtl"] .szc-qv-stage-nav--next svg {
+  transform: scaleX(-1) !important;
+}
+

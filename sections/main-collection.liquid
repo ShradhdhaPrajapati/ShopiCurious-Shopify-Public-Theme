@@ -294,7 +294,7 @@
     <!-- 3. TOOLBAR (PRODUCT COUNT, SORT & GRID SWITCHER) -->
     <div class="szc-collection-toolbar">
       <div class="szc-collection-toolbar__count">
-        <span>{{ collection.products_count }} Products Found</span>
+        <span>{{ 'sections.collection_template.products_found' | t: count: collection.products_count | default: 'Products Found' }}</span>
       </div>
 
       <div class="szc-collection-toolbar__actions">
@@ -304,17 +304,17 @@
             type="button"
             class="szc-button szc-button--outline szc-button--sm szc-collection-toolbar__mobile-filter-btn"
             data-drawer-trigger="FilterDrawer"
-            aria-label="Open filters"
+            aria-label="{{ 'products.facets.filter_by_label' | t | default: 'Open filters' }}"
           >
             {% render 'icon', icon: 'filter', class: 'szc-button__icon' %}
-            <span>Filter</span>
+            <span>{{ 'products.facets.filter_by_label' | t | default: 'Filter' }}</span>
           </button>
         {%- endif -%}
 
         <!-- Sorting Selector -->
         {%- if show_sorting -%}
           <div class="szc-collection-toolbar__sort">
-            <label for="SortByToolbar" class="szc-collection-toolbar__sort-label">Sort by:</label>
+            <label for="SortByToolbar" class="szc-collection-toolbar__sort-label">{{ 'products.facets.sort_by_label' | t | default: 'Sort by:' }}</label>
             {%- assign sort_by = collection.sort_by | default: collection.default_sort_by -%}
             <select
               name="sort_by"
@@ -338,7 +338,7 @@
             type="button"
             class="szc-grid-btn is-active"
             data-view="grid"
-            aria-label="Grid view"
+            aria-label="{{ 'sections.collection_template.grid_view' | t | default: 'Grid view' }}"
             title="Grid View"
           >
             <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor">
@@ -352,7 +352,7 @@
             type="button"
             class="szc-grid-btn"
             data-view="list"
-            aria-label="List view"
+            aria-label="{{ 'sections.collection_template.list_view' | t | default: 'List view' }}"
             title="List View"
           >
             <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor">
@@ -424,9 +424,9 @@
 
                 <h2 class="szc-collection-empty__title">
                   {%- if active_filters_count > 0 -%}
-                    No Products Found
+                    {{ 'sections.collection_template.empty' | t | default: 'No Products Found' }}
                   {%- else -%}
-                    This Collection is Empty
+                    {{ 'sections.collection_template.empty' | t | default: 'This Collection is Empty' }}
                   {%- endif -%}
                 </h2>
 
@@ -444,7 +444,7 @@
                       href="{{ collection.url }}"
                       class="szc-button szc-button--primary szc-button--md szc-collection-empty__btn"
                     >
-                      Clear All Filters
+                      {{ 'products.facets.clear_all' | t | default: 'Clear All Filters' }}
                     </a>
                   {%- endif -%}
 
@@ -452,7 +452,7 @@
                     href="{{ routes.all_products_collection_url }}"
                     class="szc-button {% if active_filters_count > 0 %}szc-button--outline{% else %}szc-button--primary{% endif %} szc-button--md szc-collection-empty__btn"
                   >
-                    Continue Shopping
+                    {{ 'general.continue_shopping' | t | default: 'Continue Shopping' }}
                   </a>
                 </div>
               </div>
@@ -464,11 +464,11 @@
 
     <!-- MOBILE FILTER DRAWER (Tablet & Mobile Only) -->
     {%- if show_filtering -%}
-      <div id="FilterDrawer" class="szc-filter-drawer" aria-hidden="true" role="dialog" aria-modal="true" aria-label="Filters">
+      <div id="FilterDrawer" class="szc-filter-drawer" aria-hidden="true" role="dialog" aria-modal="true" aria-label="{{ 'products.facets.filter_by_label' | t | default: 'Filters' }}">
         <div class="szc-filter-drawer__inner">
           <div class="szc-filter-drawer__header">
-            <span class="szc-filter-drawer__title">FILTERS</span>
-            <button type="button" class="szc-filter-drawer__close" data-drawer-close="FilterDrawer" aria-label="Close filters">
+            <span class="szc-filter-drawer__title">{{ 'products.facets.filter_by_label' | t | default: 'FILTERS' }}</span>
+            <button type="button" class="szc-filter-drawer__close" data-drawer-close="FilterDrawer" aria-label="{{ 'general.accessibility.close' | t | default: 'Close filters' }}">
               <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
                 <line x1="18" y1="6" x2="6" y2="18"></line>
                 <line x1="6" y1="6" x2="18" y2="18"></line>

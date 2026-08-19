@@ -209,12 +209,15 @@
               <span>{{ 'products.product.add_to_cart' | t | default: 'Quick Add' }}</span>
             </button>
           {%- else -%}
-            <a
-              href="{{ product.url }}"
-              class="szc-button szc-button--secondary szc-button--sm szc-button--full-width"
+            <button
+              type="button"
+              class="szc-button szc-button--secondary szc-button--sm szc-button--full-width szc-quick-view-btn"
+              data-product-handle="{{ product.handle }}"
+              data-quick-view-trigger
+              aria-label="{{ 'products.product.choose_options' | t | default: 'Choose Options' }}"
             >
               <span>{{ 'products.product.choose_options' | t | default: 'Choose Options' }}</span>
-            </a>
+            </button>
           {%- endif -%}
         </div>
       {%- endif -%}

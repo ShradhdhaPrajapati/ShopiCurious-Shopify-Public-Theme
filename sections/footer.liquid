@@ -19,10 +19,6 @@
                   </div>
                 {%- else -%}
                   <span class="szc-footer__brand-title">{{ shop.name | upcase }}</span>
-                  {%- assign brand_sub = block.settings.brand_subtitle | default: 'PREMIUM STORE' -%}
-                  {%- if brand_sub != blank -%}
-                    <span class="szc-footer__brand-sub">{{ brand_sub }}</span>
-                  {%- endif -%}
                 {%- endif -%}
               </div>
 
@@ -466,15 +462,6 @@
     letter-spacing: 0.08em;
     color: var(--szc-color-heading, #111111);
     line-height: 1.1;
-  }
-
-  .szc-footer__brand-sub {
-    font-family: var(--szc-font-family-body, sans-serif);
-    font-size: 9px;
-    font-weight: 600;
-    letter-spacing: 0.22em;
-    color: var(--szc-color-text-muted, #666666);
-    margin-top: 3px;
   }
 
   .szc-footer__brand-bio {
@@ -937,12 +924,6 @@
           "unit": "px",
           "label": "Logo width",
           "default": 160
-        },
-        {
-          "type": "text",
-          "id": "brand_subtitle",
-          "default": "PREMIUM STORE",
-          "label": "Brand Subtitle"
         },
         {
           "type": "text",

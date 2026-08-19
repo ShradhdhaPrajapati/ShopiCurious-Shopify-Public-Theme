@@ -1,0 +1,241 @@
+{% doc %}
+  Renders an accessible age verification modal overlay.
+
+  @example
+  {% render 'age-verifier' %}
+{% enddoc %}
+
+{%- if settings.enable_age_verifier != false or request.design_mode -%}
+  {%- assign min_age = settings.age_verifier_min_age | default: '18' -%}
+  <div
+    class="szc-age-verifier-backdrop{% if request.design_mode and settings.enable_age_verifier %} is-editor-open{% endif %}"
+    id="SzcAgeVerifierModal"
+    role="dialog"
+    aria-modal="true"
+    aria-labelledby="SzcAgeVerifierHeading"
+    aria-describedby="SzcAgeVerifierDescription"
+    tabindex="-1"
+    style="--szc-overlay-opacity: {{ settings.age_verifier_overlay_opacity | default: 80 | divided_by: 100.0 }};"
+  >
+    {%- if settings.age_verifier_bg_image != blank -%}
+      <div class="szc-age-verifier__bg">
+        {{
+          settings.age_verifier_bg_image
+          | image_url: width: 1920
+          | image_tag: loading: 'eager', class: 'szc-age-verifier__bg-img'
+        }}
+      </div>
+    {%- endif -%}
+
+    <div class="szc-age-verifier__card">
+      <div class="szc-age-verifier__icon">
+        <svg
+          width="36"
+          height="36"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="2"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+          aria-hidden="true"
+          focusable="false"
+        >
+          <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
+        </svg>
+      </div>
+
+      <h2 id="SzcAgeVerifierHeading" class="szc-age-verifier__heading">
+        {{
+          settings.age_verifier_heading
+          | default: 'general.age_verifier.heading'
+          | t: default: 'Age Verification Required'
+        }}
+      </h2>
+
+      <div id="SzcAgeVerifierDescription" class="szc-age-verifier__description">
+        {{
+          settings.age_verifier_text
+          | default: 'general.age_verifier.description'
+          | t: default: 'You must be of legal age to enter this store. Please confirm your age to proceed.'
+        }}
+      </div>
+
+      <div class="szc-age-verifier__actions">
+        <button
+          type="button"
+          class="szc-button szc-button--primary szc-age-verifier__confirm"
+          id="SzcAgeConfirmBtn"
+        >
+          {%- if settings.age_verifier_confirm_text != blank and settings.age_verifier_confirm_text != 'I am 18 or older' and settings.age_verifier_confirm_text != 'I am 21 or older' -%}
+            {{ settings.age_verifier_confirm_text }}
+          {%- else -%}
+            {{ 'general.age_verifier.confirm' | t: min_age: min_age | default: 'I am 18 or older' | replace: '18', min_age }}
+          {%- endif -%}
+        </button>
+
+        <button
+          type="button"
+          class="szc-button szc-button--outline szc-age-verifier__decline"
+          id="SzcAgeDeclineBtn"
+          data-redirect-url="{{ settings.age_verifier_decline_url | default: 'https://www.google.com' }}"
+        >
+          {%- if settings.age_verifier_decline_text != blank and settings.age_verifier_decline_text != 'I am under 18' and settings.age_verifier_decline_text != 'I am under 21' -%}
+            {{ settings.age_verifier_decline_text }}
+          {%- else -%}
+            {{ 'general.age_verifier.decline' | t: min_age: min_age | default: 'I am under 18' | replace: '18', min_age }}
+          {%- endif -%}
+        </button>
+      </div>
+    </div>
+  </div>
+{%- endif -%}
+
+{% stylesheet %}
+  .szc-age-verifier-backdrop {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    z-index: 99999;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: rgba(0, 0, 0, var(--szc-overlay-opacity, 0.8));
+    backdrop-filter: blur(8px);
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity 0.3s ease, visibility 0.3s ease;
+    padding: 20px;
+    box-sizing: border-box;
+  }
+
+  .szc-age-verifier-backdrop.is-active {
+    opacity: 1;
+    visibility: visible;
+  }
+
+  .szc-age-verifier__bg {
+    position: absolute;
+    inset: 0;
+    z-index: -1;
+    overflow: hidden;
+  }
+
+  .szc-age-verifier__bg-img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    opacity: 0.4;
+  }
+
+  .szc-age-verifier__card {
+    background: var(--szc-color-surface, #ffffff);
+    color: var(--szc-color-text-primary, #111111);
+    max-width: 460px;
+    width: 100%;
+    padding: 36px 28px;
+    border-radius: var(--szc-card-corner-radius, 8px);
+    text-align: center;
+    box-shadow: 0 20px 50px rgba(0, 0, 0, 0.35);
+    position: relative;
+    z-index: 1;
+    box-sizing: border-box;
+  }
+
+  .szc-age-verifier__icon {
+    width: 60px;
+    height: 60px;
+    margin: 0 auto 18px;
+    border-radius: 50%;
+    background: var(--szc-color-background, #f8f9fa);
+    color: var(--szc-color-primary, #111111);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: 1px solid var(--szc-color-border, #e5e5e5);
+  }
+
+  .szc-age-verifier__heading {
+    font-family: var(--szc-font-family-heading);
+    font-size: var(--szc-font-size-2xl, 22px);
+    font-weight: 700;
+    margin: 0 0 10px 0;
+    color: var(--szc-color-heading, #111111);
+    line-height: 1.3;
+  }
+
+  .szc-age-verifier__description {
+    font-size: var(--szc-font-size-base, 15px);
+    color: var(--szc-color-text-muted, #666666);
+    line-height: 1.55;
+    margin-bottom: 24px;
+  }
+
+  .szc-age-verifier__actions {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+  }
+
+  .szc-age-verifier__confirm,
+  .szc-age-verifier__decline {
+    width: 100%;
+    min-height: 48px;
+    justify-content: center;
+    font-weight: 600;
+    box-sizing: border-box;
+  }
+
+  @media (max-width: 480px) {
+    .szc-age-verifier-backdrop {
+      padding: 16px;
+    }
+    .szc-age-verifier__card {
+      padding: 26px 18px;
+    }
+    .szc-age-verifier__heading {
+      font-size: 19px;
+    }
+    .szc-age-verifier__description {
+      font-size: 14px;
+      margin-bottom: 20px;
+    }
+  }
+{% endstylesheet %}
+
+{% javascript %}
+  (function () {
+    const modal = document.getElementById('SzcAgeVerifierModal');
+    if (!modal) return;
+
+    const storageKey = 'szc_age_verified';
+    const isVerified = sessionStorage.getItem(storageKey);
+
+    if (isVerified === 'true') {
+      return;
+    }
+
+    modal.classList.add('is-active');
+    document.body.style.overflow = 'hidden';
+
+    const confirmBtn = document.getElementById('SzcAgeConfirmBtn');
+    const declineBtn = document.getElementById('SzcAgeDeclineBtn');
+
+    if (confirmBtn) {
+      confirmBtn.addEventListener('click', function () {
+        sessionStorage.setItem(storageKey, 'true');
+        modal.classList.remove('is-active');
+        document.body.style.overflow = '';
+      });
+    }
+
+    if (declineBtn) {
+      declineBtn.addEventListener('click', function () {
+        const redirectUrl = declineBtn.getAttribute('data-redirect-url') || 'https://www.google.com';
+        window.location.href = redirectUrl;
+      });
+    }
+  })();
+{% endjavascript %}

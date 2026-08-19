@@ -24,13 +24,13 @@
       "label": "Pagination"
     },
     "meta": {
-      "tagged": "tagged {{ tags }}",
-      "page": "Page {{ page }}"
+      "tagged": "المصنفة بـ {{ tags }}",
+      "page": "الصفحة {{ page }}"
     },
     "accessibility": {
-      "skip_to_content": "Skip to content",
-      "close": "Close",
-      "back_to_top": "Back to top"
+      "skip_to_content": "الانتقال إلى المحتوى الرئيسي",
+      "close": "إغلاق",
+      "back_to_top": "العودة إلى الأعلى"
     },
     "age_verifier": {
       "heading": "Age Verification Required",
@@ -54,8 +54,8 @@
       "success": "Thank you for subscribing!"
     },
     "search": {
-      "search": "Search",
-      "placeholder": "Search articles, pages, or products",
+      "search": "بحث",
+      "placeholder": "ابحث عن المنتجات والتصاميم...",
       "suggestions": "SUGGESTIONS",
       "popular_products": "POPULAR PRODUCTS"
     },
@@ -79,11 +79,11 @@
     "comment_form_title": "Add a comment",
     "article_tags": "Tags:",
     "back_to_journal": "Back to Journal",
-    "default_tag": "BLOG",
-    "by_author": "By {{ author }}",
-    "min_read": "{{ minutes }} min read",
-    "comment_success_moderated": "Your comment was submitted successfully and will be published after review.",
-    "comment_success_published": "Your comment has been published!"
+    "default_tag": "المقالات",
+    "by_author": "بقلم {{ author }}",
+    "min_read": "{{ minutes }} دقيقة قراءة",
+    "comment_success_moderated": "شكراً لك! تم إرسال تعليقك وسيتم مراجعته قريباً.",
+    "comment_success_published": "شكراً لك! تم نشر تعليقك بنجاح."
   },
   "cart": {
     "checkout": "Checkout",
@@ -93,13 +93,13 @@
   },
   "sections": {
     "header": {
-      "menu": "Main Navigation",
-      "cart": "Shopping bag",
+      "menu": "القائمة الرئيسية",
+      "cart": "حقيبة التسوق",
       "announcement": "Announcement Bar",
       "announcement_default": "Free Express Shipping on Orders Over $100 | Shop Now"
     },
     "announcement-bar": {
-      "name": "Announcement Bar"
+      "name": "شريط الإعلانات"
     },
     "announcement_bar": {
       "name": "Announcement Bar",
@@ -220,12 +220,12 @@
       "subtitle": "YOUR SHOPPING HISTORY"
     },
     "product": {
-      "add_to_cart": "Add to Cart",
-      "choose_options": "Choose options",
-      "sold_out": "Sold Out",
-      "unavailable": "Unavailable",
-      "on_sale": "Sale",
-      "quick_view": "Quick View",
+      "add_to_cart": "إضافة إلى السلة",
+      "choose_options": "اختر الخيارات",
+      "sold_out": "نفدت الكمية",
+      "unavailable": "غير متوفر",
+      "on_sale": "تخفيض",
+      "quick_view": "نظرة سريعة",
       "quick_add": "Quick Add",
       "wishlist_add": "Add to Wishlist",
       "wishlist_remove": "Remove from Wishlist",
@@ -281,7 +281,7 @@
     }
   },
   "customer": {
-    "account_fallback": "Account"
+    "account_fallback": "الحساب"
   },
   "customers": {
     "login": {

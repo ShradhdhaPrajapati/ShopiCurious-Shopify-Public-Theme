@@ -28,7 +28,7 @@
 
     <!-- Brand Logo -->
     <div class="szc-header__logo">
-      <a href="{{ routes.root_url }}" class="szc-header__logo-link" style="--logo-width: {{ logo_width }}px;">
+      <a href="{{ routes.root_url }}" class="szc-header__logo-link {% if header_logo != blank %}szc-header__logo-link--image{% else %}szc-header__logo-link--text{% endif %}" style="--logo-width: {{ logo_width }}px;">
         {%- if header_logo != blank -%}
           {%- assign logo_height = logo_width | divided_by: header_logo.aspect_ratio -%}
           <picture>
@@ -143,6 +143,9 @@
 
     <!-- Header Actions (Search, Account, Wishlist, Cart) -->
     <div class="szc-header__icons">
+      <!-- Native Shopify Language Selector -->
+      {% render 'language-selector', class: 'desktop-only' %}
+
       <!-- Search Trigger -->
       <button
         type="button"
@@ -264,7 +267,8 @@
   .szc-header__logo {
     display: flex;
     align-items: center;
-    flex-shrink: 0;
+    flex-shrink: 1;
+    min-width: 0;
   }
 
   .szc-header__logo-link {
@@ -273,7 +277,12 @@
     justify-content: center;
     text-decoration: none;
     color: var(--szc-color-text-primary, #111111);
+    min-width: 0;
+  }
+
+  .szc-header__logo-link--image {
     max-width: var(--logo-width, 140px);
+    flex-shrink: 0;
   }
 
   .szc-header__logo-img {
@@ -285,22 +294,39 @@
     object-fit: contain;
   }
 
+  .szc-header__logo-link--text {
+    max-width: min(320px, 30vw);
+  }
+
+  .szc-header__logo-text {
+    font-family: var(--szc-font-family-heading, serif);
+    font-size: clamp(16px, 1.8vw, 22px);
+    font-weight: 700;
+    letter-spacing: var(--szc-letter-spacing-wide, 0.04em);
+    text-transform: uppercase;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    line-height: 1.2;
+    display: block;
+    max-width: 100%;
+  }
+
   @media (max-width: 767px) {
-    .szc-header__logo-link {
+    .szc-header__logo-link--image {
       max-width: min(var(--logo-width, 140px), 120px);
     }
     .szc-header__logo-img {
       max-width: min(var(--logo-width, 140px), 120px);
       max-height: calc(var(--szc-header-height, 70px) - 12px);
     }
-  }
-
-  .szc-header__logo-text {
-    font-family: var(--szc-font-family-heading);
-    font-size: var(--szc-font-size-xl, 22px);
-    font-weight: 700;
-    letter-spacing: var(--szc-letter-spacing-wide, 0.05em);
-    text-transform: uppercase;
+    .szc-header__logo-link--text {
+      max-width: calc(100vw - 140px);
+    }
+    .szc-header__logo-text {
+      font-size: clamp(13px, 4vw, 17px);
+      letter-spacing: 0.03em;
+    }
   }
 
   .szc-header__inline-menu {

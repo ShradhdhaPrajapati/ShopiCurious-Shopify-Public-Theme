@@ -1,0 +1,22 @@
+{
+  "type": "custom.overlay",
+  "name": "Popups",
+  "sections": {
+    "popup": {
+      "type": "popup",
+      "settings": {
+        "enable": false
+      }
+    },
+    "age_verifier": {
+      "type": "age-verifier",
+      "settings": {
+        "enable": false
+      }
+    }
+  },
+  "order": [
+    "popup",
+    "age_verifier"
+  ]
+}

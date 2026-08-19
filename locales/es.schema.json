@@ -1,0 +1,112 @@
+{
+  "general": {
+    "404": "No encontrado",
+    "article": "Artículo",
+    "block": "Bloque",
+    "blog": "Blog",
+    "cart": "Carrito",
+    "collection": "Colección",
+    "collections": "Colecciones",
+    "collection_card": "Tarjeta de colección",
+    "collections_grid": "Cuadrícula de colecciones",
+    "colors": "Colores",
+    "column": "Columna",
+    "content": "Contenido",
+    "custom_section": "Sección personalizada",
+    "fonts": "Fuentes",
+    "footer": "Pie de página",
+    "group": "Grupo",
+    "header": "Encabezado",
+    "layout": "Diseño",
+    "main": "Principal",
+    "page": "Página",
+    "password": "Contraseña",
+    "primary": "Principal",
+    "product": "Producto",
+    "row": "Fila",
+    "search": "Buscar",
+    "secondary": "Secundario",
+    "section": "Sección",
+    "settings": "Configuraciones",
+    "sidebar": "Barra lateral",
+    "text": "Texto",
+    "theme": "Tema",
+    "typography": "Tipografía"
+  },
+  "labels": {
+    "alignment": "Alineación",
+    "background": "Fondo",
+    "foreground": "Primer plano",
+    "grid_gap": "Espaciado de la cuadrícula",
+    "grid_item_width": "Ancho del elemento de la cuadrícula",
+    "input_corner_radius": "Radio de esquina de entrada",
+    "layout_direction": "Dirección del diseño",
+    "menu": "Menú",
+    "customer_account_menu": "Menú de cuenta de cliente",
+    "padding": "Relleno",
+    "page_margin": "Margen de página",
+    "page_width": "Ancho de página",
+    "show_payment_icons": "Mostrar iconos de pago",
+    "text_style": "Estilo de texto",
+    "text": "Texto"
+  },
+  "options": {
+    "alignment": {
+      "left": "Izquierda",
+      "center": "Centro",
+      "right": "Derecha"
+    },
+    "direction": {
+      "horizontal": "Horizontal",
+      "vertical": "Vertical"
+    },
+    "page_width": {
+      "narrow": "Estrecho",
+      "wide": "Ancho"
+    },
+    "size": {
+      "large": "Grande",
+      "small": "Pequeño"
+    },
+    "text_style": {
+      "title": "Título",
+      "subtitle": "Subtítulo",
+      "normal": "Texto normal"
+    }
+  },
+  "sections": {
+    "announcement-bar": {
+      "name": "Barra de anuncios",
+      "presets": {
+        "name": "Barra de anuncios"
+      },
+      "settings": {
+        "background_color": {
+          "label": "Color de fondo"
+        },
+        "text_color": {
+          "label": "Color de texto"
+        },
+        "border_color": {
+          "label": "Color del borde"
+        }
+      },
+      "blocks": {
+        "announcement": {
+          "name": "Anuncio",
+          "settings": {
+            "icon": {
+              "label": "Icono"
+            },
+            "text": {
+              "label": "Texto"
+            },
+            "link": {
+              "label": "Enlace"
+            }
+          }
+        }
+      }
+    }
+  }
+}

@@ -282,6 +282,16 @@
         "unit": "px",
         "label": "Input Corner Radius",
         "default": 2
+      },
+      {
+        "type": "header",
+        "content": "Back to Top Button"
+      },
+      {
+        "type": "checkbox",
+        "id": "enable_back_to_top",
+        "label": "Enable Floating Back-to-Top Button",
+        "default": true
       }
     ]
   },

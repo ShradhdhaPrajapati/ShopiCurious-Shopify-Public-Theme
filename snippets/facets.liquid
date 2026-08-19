@@ -24,13 +24,16 @@
   endfor
 -%}
 
-<facet-filters-form class="szc-facets szc-facets--{{ filter_type | default: 'sidebar' }}" data-enable-sorting="{{ enable_sorting | default: false }}">
+<facet-filters-form
+  class="szc-facets szc-facets--{{ filter_type | default: 'sidebar' }}"
+  data-enable-sorting="{{ enable_sorting | default: false }}"
+>
   <form id="FacetFiltersForm" class="szc-facets__form">
     {%- if results.terms -%}
       <input type="hidden" name="q" value="{{ results.terms | escape }}">
       <input type="hidden" name="type" value="product">
     {%- endif -%}
-    {%- if sort_by != blank -%}
+    {%- if sort_by != blank and enable_sorting -%}
       <input type="hidden" name="sort_by" value="{{ sort_by | escape }}">
     {%- endif -%}
 
@@ -38,7 +41,9 @@
       <!-- 1. ACTIVE FILTERS PILL BAR -->
       {%- if total_active_values > 0 -%}
         <div class="szc-facets__active-bar">
-          <span class="szc-facets__active-heading">{{ 'products.facets.active_filters' | t | default: 'Active Filters:' }}</span>
+          <span class="szc-facets__active-heading">
+            {{- 'products.facets.active_filters' | t | default: 'Active Filters:' -}}
+          </span>
           <div class="szc-facets__active-list">
             {%- for filter in results.filters -%}
               {%- for value in filter.active_values -%}
@@ -52,9 +57,17 @@
                 {%- if filter.min_value.value != null or filter.max_value.value != null -%}
                   <a href="{{ filter.url_to_remove }}" class="szc-facets__active-pill">
                     <span>
-                      {%- if filter.min_value.value -%}{{ filter.min_value.value | money }}{%- else -%}{{ 0 | money }}{%- endif -%}
+                      {%- if filter.min_value.value -%}
+                        {{ filter.min_value.value | money }}
+                      {%- else -%}
+                        {{ 0 | money }}
+                      {%- endif -%}
                       -
-                      {%- if filter.max_value.value -%}{{ filter.max_value.value | money }}{%- else -%}{{ filter.range_max | money }}{%- endif -%}
+                      {%- if filter.max_value.value -%}
+                        {{ filter.max_value.value | money }}
+                      {%- else -%}
+                        {{ filter.range_max | money }}
+                      {%- endif -%}
                     </span>
                     {% render 'icon', icon: 'close', class: 'szc-facets__active-icon' %}
                   </a>
@@ -82,15 +95,23 @@
 
           {%- if valid_collections_count > 0 -%}
             <li>
-              <a href="{{ routes.all_products_collection_url }}" class="szc-facets__category-link {% if collection.handle == 'all' or collection.handle == blank %}is-active{% endif %}">
+              <a
+                href="{{ routes.all_products_collection_url }}"
+                class="szc-facets__category-link {% if collection.handle == 'all' or collection.handle == blank %}is-active{% endif %}"
+              >
                 <span class="szc-facets__category-name">All Products</span>
-                <span class="szc-facets__count">({{ collections.all.all_products_count | default: collection.products_count }})</span>
+                <span class="szc-facets__count"
+                  >({{ collections.all.all_products_count | default: collection.products_count }})</span
+                >
               </a>
             </li>
             {%- for col in collections -%}
               {%- if col.all_products_count > 0 -%}
                 <li>
-                  <a href="{{ col.url }}" class="szc-facets__category-link {% if collection.handle == col.handle %}is-active{% endif %}">
+                  <a
+                    href="{{ col.url }}"
+                    class="szc-facets__category-link {% if collection.handle == col.handle %}is-active{% endif %}"
+                  >
                     <span class="szc-facets__category-name">{{ col.title }}</span>
                     <span class="szc-facets__count">({{ col.all_products_count }})</span>
                   </a>
@@ -573,7 +594,7 @@
 {% javascript %}
   function initPriceSliders() {
     const sliders = document.querySelectorAll('[data-price-slider]');
-    sliders.forEach(function(slider) {
+    sliders.forEach(function (slider) {
       const minInput = slider.querySelector('[data-range-min]');
       const maxInput = slider.querySelector('[data-range-max]');
       const progress = slider.querySelector('[data-slider-progress]');
@@ -599,7 +620,7 @@
           }
         }
 
-        const isFiltered = (minVal > 0) || (maxVal < maxLimit);
+        const isFiltered = minVal > 0 || maxVal < maxLimit;
 
         if (isFiltered) {
           slider.classList.add('is-active');
@@ -633,10 +654,10 @@
 
       const form = slider.closest('form');
       if (form) {
-        minInput.addEventListener('change', function() {
+        minInput.addEventListener('change', function () {
           form.dispatchEvent(new Event('submit', { bubbles: true, cancelable: true }));
         });
-        maxInput.addEventListener('change', function() {
+        maxInput.addEventListener('change', function () {
           form.dispatchEvent(new Event('submit', { bubbles: true, cancelable: true }));
         });
       }
@@ -672,8 +693,35 @@
           }
           e.preventDefault();
           const formData = new FormData(this.form);
-          const searchParams = new URLSearchParams(formData).toString();
-          window.location.search = searchParams;
+          // Collect any external controls linked via form="FacetFiltersForm"
+          const formId = this.form.getAttribute('id');
+          if (formId) {
+            document.querySelectorAll(`[form="${formId}"]`).forEach((input) => {
+              if (input.name && !input.disabled) {
+                if (input.type === 'checkbox' || input.type === 'radio') {
+                  if (input.checked) {
+                    formData.append(input.name, input.value);
+                  }
+                } else {
+                  formData.set(input.name, input.value);
+                }
+              }
+            });
+          }
+
+          const searchParams = new URLSearchParams();
+          for (const [key, value] of formData.entries()) {
+            if (value !== null && value !== '') {
+              if (key === 'sort_by' || key === 'q' || key === 'type') {
+                searchParams.set(key, value);
+              } else {
+                searchParams.append(key, value);
+              }
+            }
+          }
+
+          searchParams.delete('page');
+          window.location.search = searchParams.toString();
         }
       }
     );

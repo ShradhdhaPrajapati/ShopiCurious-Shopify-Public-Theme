@@ -24,13 +24,13 @@
       "label": "Pagination"
     },
     "meta": {
-      "tagged": "tagged {{ tags }}",
-      "page": "Page {{ page }}"
+      "tagged": "מתויג ب-{{ tags }}",
+      "page": "עמוד {{ page }}"
     },
     "accessibility": {
-      "skip_to_content": "Skip to content",
-      "close": "Close",
-      "back_to_top": "Back to top"
+      "skip_to_content": "דלג לתוכן המרכזי",
+      "close": "סגור",
+      "back_to_top": "חזרה לראש הדף"
     },
     "age_verifier": {
       "heading": "Age Verification Required",
@@ -54,8 +54,8 @@
       "success": "Thank you for subscribing!"
     },
     "search": {
-      "search": "Search",
-      "placeholder": "Search articles, pages, or products",
+      "search": "חיפוש",
+      "placeholder": "חפש מוצרים ועיצובים...",
       "suggestions": "SUGGESTIONS",
       "popular_products": "POPULAR PRODUCTS"
     },
@@ -79,11 +79,11 @@
     "comment_form_title": "Add a comment",
     "article_tags": "Tags:",
     "back_to_journal": "Back to Journal",
-    "default_tag": "BLOG",
-    "by_author": "By {{ author }}",
-    "min_read": "{{ minutes }} min read",
-    "comment_success_moderated": "Your comment was submitted successfully and will be published after review.",
-    "comment_success_published": "Your comment has been published!"
+    "default_tag": "מאמרים",
+    "by_author": "מאת {{ author }}",
+    "min_read": "{{ minutes }} דק' קריאה",
+    "comment_success_moderated": "תודה! תגובתך נשלחה ותיבדק בקרוב.",
+    "comment_success_published": "תודה! תגובתך פורסמה בהצלחה."
   },
   "cart": {
     "checkout": "Checkout",
@@ -93,13 +93,13 @@
   },
   "sections": {
     "header": {
-      "menu": "Main Navigation",
-      "cart": "Shopping bag",
+      "menu": "תפריט ראשי",
+      "cart": "עגלת קניות",
       "announcement": "Announcement Bar",
       "announcement_default": "Free Express Shipping on Orders Over $100 | Shop Now"
     },
     "announcement-bar": {
-      "name": "Announcement Bar"
+      "name": "סרגל הודעות"
     },
     "announcement_bar": {
       "name": "Announcement Bar",
@@ -220,12 +220,12 @@
       "subtitle": "YOUR SHOPPING HISTORY"
     },
     "product": {
-      "add_to_cart": "Add to Cart",
-      "choose_options": "Choose options",
-      "sold_out": "Sold Out",
-      "unavailable": "Unavailable",
-      "on_sale": "Sale",
-      "quick_view": "Quick View",
+      "add_to_cart": "הוסף לעגלה",
+      "choose_options": "בחר אפשרויות",
+      "sold_out": "אזל מהמלאי",
+      "unavailable": "לא זמין",
+      "on_sale": "מבצע",
+      "quick_view": "מבט מהיר",
       "quick_add": "Quick Add",
       "wishlist_add": "Add to Wishlist",
       "wishlist_remove": "Remove from Wishlist",
@@ -281,7 +281,7 @@
     }
   },
   "customer": {
-    "account_fallback": "Account"
+    "account_fallback": "חשבון"
   },
   "customers": {
     "login": {

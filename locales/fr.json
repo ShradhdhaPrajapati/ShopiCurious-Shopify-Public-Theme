@@ -1,25 +1,25 @@
 {
   "404": {
     "title": "404",
-    "not_found": "Page not found.",
-    "back_to_shopping": "Back to shopping"
+    "not_found": "Page non trouvée.",
+    "back_to_shopping": "Retour aux achats"
   },
   "accessibility": {
-    "close": "Close",
-    "skip_to_content": "Skip to content",
-    "back_to_top": "Back to top"
+    "close": "Fermer",
+    "skip_to_content": "Passer au contenu",
+    "back_to_top": "Retour en haut"
   },
   "general": {
-    "continue_shopping": "Continue Shopping",
+    "continue_shopping": "Continuer les achats",
     "breadcrumbs": {
-      "home": "Home",
+      "home": "Accueil",
       "collections": "Collections",
-      "search": "Search",
+      "search": "Rechercher",
       "label": "Breadcrumbs"
     },
     "pagination": {
-      "previous": "Previous",
-      "next": "Next",
+      "previous": "Précédent",
+      "next": "Suivant",
       "page": "Page {{ page }}",
       "label": "Pagination"
     },
@@ -29,7 +29,7 @@
     },
     "accessibility": {
       "skip_to_content": "Skip to content",
-      "close": "Close",
+      "close": "Fermer",
       "back_to_top": "Back to top"
     },
     "age_verifier": {
@@ -48,16 +48,16 @@
     "popup": {
       "heading": "Get 15% Off Your First Order",
       "subheading": "Subscribe to receive exclusive offers, new arrival updates, and secret discounts.",
-      "email_placeholder": "Enter your email address",
+      "email_placeholder": "Entrez votre adresse e-mail",
       "submit_button": "CLAIM DISCOUNT",
       "close": "Close popup",
       "success": "Thank you for subscribing!"
     },
     "search": {
-      "search": "Search",
+      "search": "Rechercher",
       "placeholder": "Search articles, pages, or products",
       "suggestions": "SUGGESTIONS",
-      "popular_products": "POPULAR PRODUCTS"
+      "popular_products": "PRODUITS POPULAIRES"
     },
     "share": {
       "share_url": "Share:",
@@ -70,26 +70,26 @@
     }
   },
   "blog": {
-    "article_comments": "Comments",
+    "article_comments": "Commentaires",
     "article_metadata_html": "{{ date }} by {{ author }}",
-    "comment_form_body": "Comment",
-    "comment_form_email": "Email",
-    "comment_form_name": "Name",
+    "comment_form_body": "Commentaire",
+    "comment_form_email": "E-mail",
+    "comment_form_name": "Nom",
     "comment_form_submit": "Post",
     "comment_form_title": "Add a comment",
-    "article_tags": "Tags:",
+    "article_tags": "Tags :",
     "back_to_journal": "Back to Journal",
     "default_tag": "BLOG",
-    "by_author": "By {{ author }}",
-    "min_read": "{{ minutes }} min read",
-    "comment_success_moderated": "Your comment was submitted successfully and will be published after review.",
-    "comment_success_published": "Your comment has been published!"
+    "by_author": "Par {{ author }}",
+    "min_read": "{{ minutes }} min de lecture",
+    "comment_success_moderated": "Votre commentaire a été soumis avec succès et sera publié après révision.",
+    "comment_success_published": "Votre commentaire a été publié !"
   },
   "cart": {
-    "checkout": "Checkout",
-    "title": "Cart",
+    "checkout": "Commander",
+    "title": "Panier",
     "update": "Update",
-    "remove": "Remove"
+    "remove": "Supprimer"
   },
   "sections": {
     "header": {
@@ -140,9 +140,9 @@
     "cart": {
       "title": "Your Shopping Bag",
       "summary": "Order Summary",
-      "subtotal": "Subtotal",
-      "taxes_and_shipping_at_checkout": "Calculated at checkout",
-      "checkout": "CHECKOUT SECURELY",
+      "subtotal": "Sous-total",
+      "taxes_and_shipping_at_checkout": "Calculé lors du paiement",
+      "checkout": "COMMANDER EN TOUTE SÉCURITÉ",
       "note": "Add special instructions or a gift note",
       "note_placeholder": "How can we help make your order special?",
       "empty": "Your bag is empty",
@@ -157,61 +157,61 @@
       "cart_quantity_error": "You can't add more of this item to your cart.",
       "login": "Log in to check out faster",
       "taxes_included_and_shipping_policy_html": "Tax included and shipping calculated at checkout.",
-      "column_product": "Product",
-      "column_price": "Price",
-      "column_quantity": "Quantity",
+      "column_product": "Produit",
+      "column_price": "Prix",
+      "column_quantity": "Quantité",
       "column_total": "Total",
-      "edit": "Edit",
-      "discount_code_heading": "Discount Code",
-      "discount_code_desc": "Enter your promotional or discount code below.",
-      "discount_code_label": "Discount Code",
-      "discount_code_placeholder": "Enter discount code",
-      "discount_code_apply": "Apply discount code",
-      "discount_code_applied": "APPLIED",
-      "discount_code_apply_btn": "APPLY",
-      "gift_message_heading": "Gift Message / Special Instructions",
-      "gift_message_placeholder": "Add a gift message or special instructions for your order...",
-      "discount": "Discount",
-      "shipping": "Shipping",
-      "estimated_taxes": "Estimated Taxes",
+      "edit": "Modifier",
+      "discount_code_heading": "Code de réduction",
+      "discount_code_desc": "Entrez votre code promotionnel ou de réduction ci-dessous.",
+      "discount_code_label": "Code de réduction",
+      "discount_code_placeholder": "Saisir le code de réduction",
+      "discount_code_apply": "Appliquer le code de réduction",
+      "discount_code_applied": "APPLIQUÉ",
+      "discount_code_apply_btn": "APPLIQUER",
+      "gift_message_heading": "Message cadeau / Instructions spéciales",
+      "gift_message_placeholder": "Ajoutez un message cadeau ou des instructions spéciales pour votre commande...",
+      "discount": "Remise",
+      "shipping": "Livraison",
+      "estimated_taxes": "Taxes estimées",
       "total": "Total",
-      "subtotal_title": "Subtotal"
+      "subtotal_title": "Sous-total"
     },
     "featured_collection": {
       "view_all": "View All"
     },
     "collection_list": {
-      "items": "items"
+      "items": "articles"
     },
     "collection_template": {
-      "empty": "No products found",
+      "empty": "Aucun produit trouvé",
       "use_fewer_filters": "Try clearing some filters or search for another term.",
-      "products_found": "{{ count }} Products Found",
-      "grid_view": "Grid view",
-      "list_view": "List view"
+      "products_found": "{{ count }} produits trouvés",
+      "grid_view": "Vue grille",
+      "list_view": "Vue liste"
     },
     "newsletter": {
       "label": "Enter your email",
       "success": "Thanks for subscribing!"
     },
     "blog": {
-      "search_articles": "Search Articles",
-      "search_placeholder": "Search articles...",
-      "clear_search": "Clear search",
-      "categories": "Categories",
-      "all": "All",
-      "recent_posts": "Recent Posts",
-      "no_recent_posts": "No recent posts available.",
-      "sort_latest": "Latest",
-      "sort_oldest": "Oldest",
-      "no_matching_articles": "No matching articles found",
-      "no_matching_articles_desc": "We couldn't find any articles matching your search. Try another search or browse all articles.",
-      "view_all_articles": "View All Articles",
-      "no_articles_yet": "No articles yet",
-      "no_articles_yet_desc": "Check back soon for new stories, style guides, and fashion inspiration."
+      "search_articles": "Rechercher des articles",
+      "search_placeholder": "Rechercher des articles...",
+      "clear_search": "Effacer la recherche",
+      "categories": "Catégories",
+      "all": "Tout",
+      "recent_posts": "Articles récents",
+      "no_recent_posts": "Aucun article récent disponible.",
+      "sort_latest": "Plus récents",
+      "sort_oldest": "Plus anciens",
+      "no_matching_articles": "Aucun article correspondant trouvé",
+      "no_matching_articles_desc": "Nous n'avons trouvé aucun article correspondant à votre recherche. Essayez une autre recherche ou parcourez tous les articles.",
+      "view_all_articles": "Voir tous les articles",
+      "no_articles_yet": "Aucun article pour le moment",
+      "no_articles_yet_desc": "Revenez bientôt pour de nouvelles histoires, guides de style et inspirations mode."
     },
     "predictive_search": {
-      "items": "items"
+      "items": "articles"
     }
   },
   "products": {
@@ -220,18 +220,18 @@
       "subtitle": "YOUR SHOPPING HISTORY"
     },
     "product": {
-      "add_to_cart": "Add to Cart",
+      "add_to_cart": "Ajouter au panier",
       "choose_options": "Choose options",
-      "sold_out": "Sold Out",
+      "sold_out": "Épuisé",
       "unavailable": "Unavailable",
-      "on_sale": "Sale",
-      "quick_view": "Quick View",
-      "quick_add": "Quick Add",
+      "on_sale": "Promo",
+      "quick_view": "Aperçu rapide",
+      "quick_add": "Ajout rapide",
       "wishlist_add": "Add to Wishlist",
       "wishlist_remove": "Remove from Wishlist",
       "quantity": {
-        "label": "Quantity",
-        "input_label": "Quantity",
+        "label": "Quantité",
+        "input_label": "Quantité",
         "increase": "Increase quantity for {{ product }}",
         "decrease": "Decrease quantity for {{ product }}"
       },
@@ -263,13 +263,13 @@
     "facets": {
       "active_filters": "Active Filters:",
       "clear_all": "Clear all",
-      "sort_by_label": "Sort by:",
+      "sort_by_label": "Trier par :",
       "filter_by_label": "Filter by:"
     }
   },
   "newsletter": {
-    "label": "Enter your email address",
-    "button_label": "Subscribe",
+    "label": "Entrez votre adresse e-mail",
+    "button_label": "S'abonner",
     "success": "Thanks for subscribing!"
   },
   "templates": {
@@ -281,11 +281,11 @@
     }
   },
   "customer": {
-    "account_fallback": "Account"
+    "account_fallback": "Compte"
   },
   "customers": {
     "login": {
-      "email": "Email",
+      "email": "E-mail",
       "password": "Password",
       "submit": "Sign in",
       "title": "Login"
@@ -295,11 +295,11 @@
     "title": "Collections"
   },
   "gift_card": {
-    "add_to_apple_wallet": "Add to Apple Wallet",
-    "card": "Gift card",
-    "expired": "This gift card has expired",
-    "expires_on": "Expires on {{ expires_on }}",
-    "use_at_checkout": "Use this gift card at checkout"
+    "add_to_apple_wallet": "Ajouter au Wallet d'Apple",
+    "card": "Carte-cadeau",
+    "expired": "Cette carte-cadeau a expiré",
+    "expires_on": "Expire le {{ expires_on }}",
+    "use_at_checkout": "Utiliser cette carte-cadeau au paiement"
   },
   "password": {
     "title": "This shop is private",
@@ -307,9 +307,9 @@
     "enter": "Enter"
   },
   "search": {
-    "title": "Search",
+    "title": "Rechercher",
     "placeholder": "Search articles, pages, or products",
-    "submit": "Search",
+    "submit": "Rechercher",
     "no_results_html": "No results found for {{ terms }}",
     "results_for_html": "{{ count }} results found for {{ terms }}"
   }

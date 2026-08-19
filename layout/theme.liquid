@@ -40,6 +40,10 @@
     {{ 'animations.css' | asset_url | stylesheet_tag }}
     {{ 'responsive.css' | asset_url | stylesheet_tag }}
 
+    {%- if request.locale.iso_code == 'ar' or request.locale.iso_code == 'he' or request.locale.iso_code == 'fa' or request.locale.iso_code == 'ur' -%}
+      {{ 'rtl.css' | asset_url | stylesheet_tag }}
+    {%- endif -%}
+
     {%- render 'css-variables' -%}
 
     {{ content_for_header }}
@@ -98,13 +102,18 @@
       {{ content_for_layout }}
     </main>
 
+    {% sections 'overlay-group' %}
+
+    <div id="ShopziCuriousToastContainer" class="szc-toast-container" aria-live="polite"></div>
+
     {% sections 'footer-group' %}
 
-    <!-- Global Cart Drawer, Quick View & Predictive Search Modals -->
+    <!-- Global Cart Drawer, Quick View, Predictive Search, Back-to-Top & Age Verifier -->
     {% render 'cart-drawer' %}
     {% render 'quick-view-modal' %}
     {% render 'predictive-search-modal' %}
+    {% render 'back-to-top' %}
 
-    <div id="ShopziCuriousToastContainer" class="szc-toast-container" aria-live="polite"></div>
+ 
   </body>
 </html>
