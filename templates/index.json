@@ -103,6 +103,7 @@
         "slide_3gfGdD"
       ],
       "settings": {
+        "hero_style": "hover_panels",
         "section_height": "full",
         "overlay_opacity": 25,
         "auto_rotate": true,

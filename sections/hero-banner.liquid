@@ -10,43 +10,59 @@
   if section.blocks.size > 0
     assign has_blocks = true
   endif
+  assign hero_style = section.settings.hero_style | default: 'classic_slider'
 -%}
 
-<hero-slider
-  id="HeroBanner-{{ section.id }}"
-  class="szc-hero-banner {{ height_class }} {{ layout_style_class }} {{ mobile_container_class }} {{ align_mobile_class }}"
-  style="--szc-banner-radius: {{ section.settings.card_border_radius | default: 16 }}px;"
-  data-auto-rotate="{{ section.settings.auto_rotate }}"
-  data-speed="{{ section.settings.change_slides_every }}"
->
-  <div class="szc-hero-banner__slides" data-slides-container>
-    {%- if has_blocks -%}
-      {%- for block in section.blocks -%}
-        {%- case block.type -%}
-          {%- when 'slide' -%}
+{%- if hero_style == 'hover_panels' -%}
+  <hero-hover-panels
+    id="HeroBanner-{{ section.id }}"
+    class="szc-hero-hover-panels {{ height_class }} {{ layout_style_class }}"
+    style="--szc-banner-radius: {{ section.settings.card_border_radius | default: 16 }}px;"
+  >
+    <div class="szc-hero-hover-panels__container page-width">
+      <div class="szc-hero-hover-panels__grid">
+        {%- if has_blocks -%}
+          {%- for block in section.blocks limit: 4 -%}
             {%- liquid
               assign hero_img = block.settings.image
               assign hero_img_mobile = block.settings.image_mobile | default: hero_img
-              assign align_class = 'szc-hero-banner__content--align-' | append: block.settings.content_alignment
+              assign align_class = 'szc-hero-hover-panels__content--align-' | append: block.settings.content_alignment
               assign overlay_op = block.settings.overlay_opacity | default: section.settings.overlay_opacity
 
               assign sub_size = block.settings.subheading_font_size | default: 14
               assign sub_weight = block.settings.subheading_font_weight | default: '700'
               assign sub_color = block.settings.subheading_color
 
-              assign head_size = block.settings.heading_font_size | default: 64
+              assign head_size = block.settings.heading_font_size | default: 48
               assign head_weight = block.settings.heading_font_weight | default: '700'
               assign head_color = block.settings.heading_color
 
-              assign text_size = block.settings.text_font_size | default: 16
+              assign text_size = block.settings.text_font_size | default: 15
               assign text_weight = block.settings.text_font_weight | default: '400'
               assign text_color = block.settings.text_color
+
+              assign bd_color = block.settings.content_backdrop_color
+              if bd_color == blank or bd_color == 'rgba(0,0,0,0)'
+                assign bd_color = section.settings.hover_backdrop_color
+              endif
+              if bd_color == blank or bd_color == 'rgba(0,0,0,0)'
+                assign bd_color = '#121212'
+              endif
+
+              assign bd_op = block.settings.content_backdrop_opacity
+              if bd_op == blank
+                assign bd_op = section.settings.hover_backdrop_opacity | default: 58
+              endif
+              assign bd_alpha = bd_op | divided_by: 100.0
+              assign backdrop_bg = bd_color | color_modify: 'alpha', bd_alpha
             -%}
             <div
-              class="szc-hero-banner__slide {% if forloop.first %}is-active{% endif %}"
-              data-slide-index="{{ forloop.index0 }}"
+              class="szc-hero-hover-panels__panel {% if forloop.first %}is-active{% endif %}"
+              data-panel-index="{{ forloop.index0 }}"
+              tabindex="0"
               style="
                 --szc-overlay-opacity: {{ overlay_op | divided_by: 100.0 }};
+                --szc-content-backdrop: {{ backdrop_bg }};
                 --szc-subheading-size: {{ sub_size }}px;
                 --szc-subheading-weight: {{ sub_weight }};
                 {% if sub_color != blank and sub_color != 'rgba(0,0,0,0)' %}--szc-subheading-color: {{ sub_color }};{% endif %}
@@ -59,7 +75,7 @@
               "
               {{ block.shopify_attributes }}
             >
-              <div class="szc-hero-banner__media">
+              <div class="szc-hero-hover-panels__media">
                 {%- if hero_img != blank -%}
                   <picture>
                     {%- if hero_img_mobile != blank -%}
@@ -67,34 +83,35 @@
                     {%- endif -%}
                     {{
                       hero_img
-                      | image_url: width: 2400
+                      | image_url: width: 1600
                       | image_tag:
-                        class: 'szc-hero-banner__image',
+                        class: 'szc-hero-hover-panels__image',
                         loading: 'eager',
                         fetchpriority: 'high',
                         alt: block.settings.heading
                     }}
                   </picture>
                 {%- else -%}
-                  <div class="szc-hero-banner__placeholder">
-                    {{ 'lifestyle-1' | placeholder_svg_tag: 'szc-image-placeholder' }}
+                  <div class="szc-hero-hover-panels__placeholder">
+                    {%- assign placeholder_idx = forloop.index | modulo: 3 | plus: 1 -%}
+                    {{ 'lifestyle-' | append: placeholder_idx | placeholder_svg_tag: 'szc-image-placeholder' }}
                   </div>
                 {%- endif -%}
-                <div class="szc-hero-banner__overlay"></div>
+                <div class="szc-hero-hover-panels__overlay"></div>
               </div>
 
-              <div class="szc-hero-banner__container page-width">
-                <div class="szc-hero-banner__content {{ align_class }} szc-animate-fade-up">
+              <div class="szc-hero-hover-panels__content-wrapper">
+                <div class="szc-hero-hover-panels__content {{ align_class }}">
                   {%- if block.settings.subheading != blank -%}
-                    <span class="szc-hero-banner__subheading">{{ block.settings.subheading }}</span>
+                    <span class="szc-hero-hover-panels__subheading">{{ block.settings.subheading }}</span>
                   {%- endif -%}
 
                   {%- if block.settings.heading != blank -%}
-                    <h1 class="szc-hero-banner__heading">{{ block.settings.heading }}</h1>
+                    <h2 class="szc-hero-hover-panels__heading">{{ block.settings.heading }}</h2>
                   {%- endif -%}
 
                   {%- if block.settings.text != blank -%}
-                    <div class="szc-hero-banner__text">{{ block.settings.text }}</div>
+                    <div class="szc-hero-hover-panels__text">{{ block.settings.text }}</div>
                   {%- endif -%}
 
                   {%- if block.settings.button_label_1 != blank or block.settings.button_label_2 != blank -%}
@@ -103,9 +120,8 @@
                       assign b1_size = block.settings.button_1_size | default: 'md'
                       assign b2_variant = block.settings.button_2_style | default: 'outline'
                       assign b2_size = block.settings.button_2_size | default: 'md'
-                      assign mobile_layout = section.settings.buttons_layout_mobile | default: 'inline'
                     -%}
-                    <div class="szc-hero-banner__buttons szc-hero-banner__buttons--mobile-{{ mobile_layout }}">
+                    <div class="szc-hero-hover-panels__buttons">
                       {%- if block.settings.button_label_1 != blank -%}
                         {% render 'button',
                           label: block.settings.button_label_1,
@@ -117,7 +133,7 @@
 
                       {%- if block.settings.button_label_2 != blank -%}
                         {%- assign hide_b2 = block.settings.hide_button_2_mobile -%}
-                        <div class="{% if hide_b2 %}szc-hero-banner__btn-2-mobile-hide{% endif %}">
+                        <div class="{% if hide_b2 %}szc-hero-hover-panels__btn-2-mobile-hide{% endif %}">
                           {% render 'button',
                             label: block.settings.button_label_2,
                             url: block.settings.button_link_2,
@@ -131,142 +147,382 @@
                 </div>
               </div>
             </div>
-        {%- endcase -%}
-      {%- endfor -%}
-    {%- else -%}
-      {%- liquid
-        assign hero_img = section.settings.image
-        assign hero_img_mobile = section.settings.image_mobile | default: hero_img
-        assign align_class = 'szc-hero-banner__content--align-' | append: section.settings.content_alignment
+          {%- endfor -%}
+        {%- else -%}
+          {%- liquid
+            assign hero_img = section.settings.image
+            assign hero_img_mobile = section.settings.image_mobile | default: hero_img
+            assign align_class = 'szc-hero-hover-panels__content--align-' | append: section.settings.content_alignment
+            assign overlay_op = section.settings.overlay_opacity
 
-        assign sub_size = section.settings.subheading_font_size | default: 14
-        assign sub_weight = section.settings.subheading_font_weight | default: '700'
-        assign sub_color = section.settings.subheading_color
+            assign sub_size = section.settings.subheading_font_size | default: 14
+            assign sub_weight = section.settings.subheading_font_weight | default: '700'
+            assign sub_color = section.settings.subheading_color
 
-        assign head_size = section.settings.heading_font_size | default: 64
-        assign head_weight = section.settings.heading_font_weight | default: '700'
-        assign head_color = section.settings.heading_color
+            assign head_size = section.settings.heading_font_size | default: 48
+            assign head_weight = section.settings.heading_font_weight | default: '700'
+            assign head_color = section.settings.heading_color
 
-        assign text_size = section.settings.text_font_size | default: 16
-        assign text_weight = section.settings.text_font_weight | default: '400'
-        assign text_color = section.settings.text_color
-      -%}
-      <div
-        class="szc-hero-banner__slide is-active"
-        data-slide-index="0"
-        style="
-          --szc-overlay-opacity: {{ section.settings.overlay_opacity | divided_by: 100.0 }};
-          --szc-subheading-size: {{ sub_size }}px;
-          --szc-subheading-weight: {{ sub_weight }};
-          {% if sub_color != blank and sub_color != 'rgba(0,0,0,0)' %}--szc-subheading-color: {{ sub_color }};{% endif %}
-          --szc-heading-size: {{ head_size }}px;
-          --szc-heading-weight: {{ head_weight }};
-          {% if head_color != blank and head_color != 'rgba(0,0,0,0)' %}--szc-heading-color: {{ head_color }};{% endif %}
-          --szc-text-size: {{ text_size }}px;
-          --szc-text-weight: {{ text_weight }};
-          {% if text_color != blank and text_color != 'rgba(0,0,0,0)' %}--szc-text-color: {{ text_color }};{% endif %}
-        "
-      >
-        <div class="szc-hero-banner__media">
-          {%- if hero_img != blank -%}
-            <picture>
-              {%- if hero_img_mobile != blank -%}
-                <source media="(max-width: 767px)" srcset="{{ hero_img_mobile | image_url: width: 800 }}">
+            assign text_size = section.settings.text_font_size | default: 15
+            assign text_weight = section.settings.text_font_weight | default: '400'
+            assign text_color = section.settings.text_color
+
+            assign bd_color = section.settings.hover_backdrop_color
+            if bd_color == blank or bd_color == 'rgba(0,0,0,0)'
+              assign bd_color = '#121212'
+            endif
+            assign bd_op = section.settings.hover_backdrop_opacity | default: 58
+            assign bd_alpha = bd_op | divided_by: 100.0
+            assign backdrop_bg = bd_color | color_modify: 'alpha', bd_alpha
+          -%}
+          <div
+            class="szc-hero-hover-panels__panel is-active"
+            tabindex="0"
+            style="
+              --szc-overlay-opacity: {{ overlay_op | divided_by: 100.0 }};
+              --szc-content-backdrop: {{ backdrop_bg }};
+              --szc-subheading-size: {{ sub_size }}px;
+              --szc-subheading-weight: {{ sub_weight }};
+              {% if sub_color != blank and sub_color != 'rgba(0,0,0,0)' %}--szc-subheading-color: {{ sub_color }};{% endif %}
+              --szc-heading-size: {{ head_size }}px;
+              --szc-heading-weight: {{ head_weight }};
+              {% if head_color != blank and head_color != 'rgba(0,0,0,0)' %}--szc-heading-color: {{ head_color }};{% endif %}
+              --szc-text-size: {{ text_size }}px;
+              --szc-text-weight: {{ text_weight }};
+              {% if text_color != blank and text_color != 'rgba(0,0,0,0)' %}--szc-text-color: {{ text_color }};{% endif %}
+            "
+          >
+            <div class="szc-hero-hover-panels__media">
+              {%- if hero_img != blank -%}
+                <picture>
+                  {%- if hero_img_mobile != blank -%}
+                    <source media="(max-width: 767px)" srcset="{{ hero_img_mobile | image_url: width: 800 }}">
+                  {%- endif -%}
+                  {{
+                    hero_img
+                    | image_url: width: 1600
+                    | image_tag:
+                      class: 'szc-hero-hover-panels__image',
+                      loading: 'eager',
+                      fetchpriority: 'high',
+                      alt: section.settings.heading
+                  }}
+                </picture>
+              {%- else -%}
+                <div class="szc-hero-hover-panels__placeholder">
+                  {{ 'lifestyle-1' | placeholder_svg_tag: 'szc-image-placeholder' }}
+                </div>
               {%- endif -%}
-              {{
-                hero_img
-                | image_url: width: 2400
-                | image_tag:
-                  class: 'szc-hero-banner__image',
-                  loading: 'eager',
-                  fetchpriority: 'high',
-                  alt: section.settings.heading
-              }}
-            </picture>
-          {%- else -%}
-            <div class="szc-hero-banner__placeholder">
-              {{ 'lifestyle-1' | placeholder_svg_tag: 'szc-image-placeholder' }}
+              <div class="szc-hero-hover-panels__overlay"></div>
             </div>
-          {%- endif -%}
-          <div class="szc-hero-banner__overlay"></div>
-        </div>
 
-        <div class="szc-hero-banner__container page-width">
-          <div class="szc-hero-banner__content {{ align_class }} szc-animate-fade-up">
-            {%- if section.settings.subheading != blank -%}
-              <span class="szc-hero-banner__subheading">{{ section.settings.subheading }}</span>
-            {%- endif -%}
-
-            {%- if section.settings.heading != blank -%}
-              <h1 class="szc-hero-banner__heading">{{ section.settings.heading }}</h1>
-            {%- endif -%}
-
-            {%- if section.settings.text != blank -%}
-              <div class="szc-hero-banner__text">{{ section.settings.text }}</div>
-            {%- endif -%}
-
-            {%- if section.settings.button_label_1 != blank or section.settings.button_label_2 != blank -%}
-              <div class="szc-hero-banner__buttons szc-hero-banner__buttons--mobile-{{ section.settings.buttons_layout_mobile | default: 'inline' }}">
-                {%- if section.settings.button_label_1 != blank -%}
-                  {% render 'button',
-                    label: section.settings.button_label_1,
-                    url: section.settings.button_link_1,
-                    variant: 'primary',
-                    size: 'md'
-                  %}
+            <div class="szc-hero-hover-panels__content-wrapper">
+              <div class="szc-hero-hover-panels__content {{ align_class }}">
+                {%- if section.settings.subheading != blank -%}
+                  <span class="szc-hero-hover-panels__subheading">{{ section.settings.subheading }}</span>
                 {%- endif -%}
 
-                {%- if section.settings.button_label_2 != blank -%}
-                  <div class="szc-hero-banner__btn-2-mobile-hide">
-                    {% render 'button',
-                      label: section.settings.button_label_2,
-                      url: section.settings.button_link_2,
-                      variant: 'outline',
-                      size: 'md'
-                    %}
+                {%- if section.settings.heading != blank -%}
+                  <h2 class="szc-hero-hover-panels__heading">{{ section.settings.heading }}</h2>
+                {%- endif -%}
+
+                {%- if section.settings.text != blank -%}
+                  <div class="szc-hero-hover-panels__text">{{ section.settings.text }}</div>
+                {%- endif -%}
+
+                {%- if section.settings.button_label_1 != blank or section.settings.button_label_2 != blank -%}
+                  {%- liquid
+                    assign sec_b1_variant = section.settings.button_1_style | default: 'primary'
+                    assign sec_b1_size = section.settings.button_1_size | default: 'md'
+                    assign sec_b2_variant = section.settings.button_2_style | default: 'outline'
+                    assign sec_b2_size = section.settings.button_2_size | default: 'md'
+                  -%}
+                  <div class="szc-hero-hover-panels__buttons">
+                    {%- if section.settings.button_label_1 != blank -%}
+                      {% render 'button',
+                        label: section.settings.button_label_1,
+                        url: section.settings.button_link_1,
+                        variant: sec_b1_variant,
+                        size: sec_b1_size
+                      %}
+                    {%- endif -%}
+
+                    {%- if section.settings.button_label_2 != blank -%}
+                      <div class="szc-hero-hover-panels__btn-2-mobile-hide">
+                        {% render 'button',
+                          label: section.settings.button_label_2,
+                          url: section.settings.button_link_2,
+                          variant: sec_b2_variant,
+                          size: sec_b2_size
+                        %}
+                      </div>
+                    {%- endif -%}
                   </div>
                 {%- endif -%}
               </div>
+            </div>
+          </div>
+        {%- endif -%}
+      </div>
+    </div>
+  </hero-hover-panels>
+{%- else -%}
+  <hero-slider
+    id="HeroBanner-{{ section.id }}"
+    class="szc-hero-banner {{ height_class }} {{ layout_style_class }} {{ mobile_container_class }} {{ align_mobile_class }}"
+    style="--szc-banner-radius: {{ section.settings.card_border_radius | default: 16 }}px;"
+    data-auto-rotate="{{ section.settings.auto_rotate }}"
+    data-speed="{{ section.settings.change_slides_every }}"
+  >
+    <div class="szc-hero-banner__slides" data-slides-container>
+      {%- if has_blocks -%}
+        {%- for block in section.blocks -%}
+          {%- case block.type -%}
+            {%- when 'slide' -%}
+              {%- liquid
+                assign hero_img = block.settings.image
+                assign hero_img_mobile = block.settings.image_mobile | default: hero_img
+                assign align_class = 'szc-hero-banner__content--align-' | append: block.settings.content_alignment
+                assign overlay_op = block.settings.overlay_opacity | default: section.settings.overlay_opacity
+
+                assign sub_size = block.settings.subheading_font_size | default: 14
+                assign sub_weight = block.settings.subheading_font_weight | default: '700'
+                assign sub_color = block.settings.subheading_color
+
+                assign head_size = block.settings.heading_font_size | default: 64
+                assign head_weight = block.settings.heading_font_weight | default: '700'
+                assign head_color = block.settings.heading_color
+
+                assign text_size = block.settings.text_font_size | default: 16
+                assign text_weight = block.settings.text_font_weight | default: '400'
+                assign text_color = block.settings.text_color
+              -%}
+              <div
+                class="szc-hero-banner__slide {% if forloop.first %}is-active{% endif %}"
+                data-slide-index="{{ forloop.index0 }}"
+                style="
+                  --szc-overlay-opacity: {{ overlay_op | divided_by: 100.0 }};
+                  --szc-subheading-size: {{ sub_size }}px;
+                  --szc-subheading-weight: {{ sub_weight }};
+                  {% if sub_color != blank and sub_color != 'rgba(0,0,0,0)' %}--szc-subheading-color: {{ sub_color }};{% endif %}
+                  --szc-heading-size: {{ head_size }}px;
+                  --szc-heading-weight: {{ head_weight }};
+                  {% if head_color != blank and head_color != 'rgba(0,0,0,0)' %}--szc-heading-color: {{ head_color }};{% endif %}
+                  --szc-text-size: {{ text_size }}px;
+                  --szc-text-weight: {{ text_weight }};
+                  {% if text_color != blank and text_color != 'rgba(0,0,0,0)' %}--szc-text-color: {{ text_color }};{% endif %}
+                "
+                {{ block.shopify_attributes }}
+              >
+                <div class="szc-hero-banner__media">
+                  {%- if hero_img != blank -%}
+                    <picture>
+                      {%- if hero_img_mobile != blank -%}
+                        <source media="(max-width: 767px)" srcset="{{ hero_img_mobile | image_url: width: 800 }}">
+                      {%- endif -%}
+                      {{
+                        hero_img
+                        | image_url: width: 2400
+                        | image_tag:
+                          class: 'szc-hero-banner__image',
+                          loading: 'eager',
+                          fetchpriority: 'high',
+                          alt: block.settings.heading
+                      }}
+                    </picture>
+                  {%- else -%}
+                    <div class="szc-hero-banner__placeholder">
+                      {{ 'lifestyle-1' | placeholder_svg_tag: 'szc-image-placeholder' }}
+                    </div>
+                  {%- endif -%}
+                  <div class="szc-hero-banner__overlay"></div>
+                </div>
+
+                <div class="szc-hero-banner__container page-width">
+                  <div class="szc-hero-banner__content {{ align_class }} szc-animate-fade-up">
+                    {%- if block.settings.subheading != blank -%}
+                      <span class="szc-hero-banner__subheading">{{ block.settings.subheading }}</span>
+                    {%- endif -%}
+
+                    {%- if block.settings.heading != blank -%}
+                      <h1 class="szc-hero-banner__heading">{{ block.settings.heading }}</h1>
+                    {%- endif -%}
+
+                    {%- if block.settings.text != blank -%}
+                      <div class="szc-hero-banner__text">{{ block.settings.text }}</div>
+                    {%- endif -%}
+
+                    {%- if block.settings.button_label_1 != blank or block.settings.button_label_2 != blank -%}
+                      {%- liquid
+                        assign b1_variant = block.settings.button_1_style | default: 'primary'
+                        assign b1_size = block.settings.button_1_size | default: 'md'
+                        assign b2_variant = block.settings.button_2_style | default: 'outline'
+                        assign b2_size = block.settings.button_2_size | default: 'md'
+                        assign mobile_layout = section.settings.buttons_layout_mobile | default: 'inline'
+                      -%}
+                      <div class="szc-hero-banner__buttons szc-hero-banner__buttons--mobile-{{ mobile_layout }}">
+                        {%- if block.settings.button_label_1 != blank -%}
+                          {% render 'button',
+                            label: block.settings.button_label_1,
+                            url: block.settings.button_link_1,
+                            variant: b1_variant,
+                            size: b1_size
+                          %}
+                        {%- endif -%}
+
+                        {%- if block.settings.button_label_2 != blank -%}
+                          {%- assign hide_b2 = block.settings.hide_button_2_mobile -%}
+                          <div class="{% if hide_b2 %}szc-hero-banner__btn-2-mobile-hide{% endif %}">
+                            {% render 'button',
+                              label: block.settings.button_label_2,
+                              url: block.settings.button_link_2,
+                              variant: b2_variant,
+                              size: b2_size
+                            %}
+                          </div>
+                        {%- endif -%}
+                      </div>
+                    {%- endif -%}
+                  </div>
+                </div>
+              </div>
+          {%- endcase -%}
+        {%- endfor -%}
+      {%- else -%}
+        {%- liquid
+          assign hero_img = section.settings.image
+          assign hero_img_mobile = section.settings.image_mobile | default: hero_img
+          assign align_class = 'szc-hero-banner__content--align-' | append: section.settings.content_alignment
+
+          assign sub_size = section.settings.subheading_font_size | default: 14
+          assign sub_weight = section.settings.subheading_font_weight | default: '700'
+          assign sub_color = section.settings.subheading_color
+
+          assign head_size = section.settings.heading_font_size | default: 64
+          assign head_weight = section.settings.heading_font_weight | default: '700'
+          assign head_color = section.settings.heading_color
+
+          assign text_size = section.settings.text_font_size | default: 16
+          assign text_weight = section.settings.text_font_weight | default: '400'
+          assign text_color = section.settings.text_color
+        -%}
+        <div
+          class="szc-hero-banner__slide is-active"
+          data-slide-index="0"
+          style="
+            --szc-overlay-opacity: {{ section.settings.overlay_opacity | divided_by: 100.0 }};
+            --szc-subheading-size: {{ sub_size }}px;
+            --szc-subheading-weight: {{ sub_weight }};
+            {% if sub_color != blank and sub_color != 'rgba(0,0,0,0)' %}--szc-subheading-color: {{ sub_color }};{% endif %}
+            --szc-heading-size: {{ head_size }}px;
+            --szc-heading-weight: {{ head_weight }};
+            {% if head_color != blank and head_color != 'rgba(0,0,0,0)' %}--szc-heading-color: {{ head_color }};{% endif %}
+            --szc-text-size: {{ text_size }}px;
+            --szc-text-weight: {{ text_weight }};
+            {% if text_color != blank and text_color != 'rgba(0,0,0,0)' %}--szc-text-color: {{ text_color }};{% endif %}
+          "
+        >
+          <div class="szc-hero-banner__media">
+            {%- if hero_img != blank -%}
+              <picture>
+                {%- if hero_img_mobile != blank -%}
+                  <source media="(max-width: 767px)" srcset="{{ hero_img_mobile | image_url: width: 800 }}">
+                {%- endif -%}
+                {{
+                  hero_img
+                  | image_url: width: 2400
+                  | image_tag:
+                    class: 'szc-hero-banner__image',
+                    loading: 'eager',
+                    fetchpriority: 'high',
+                    alt: section.settings.heading
+                }}
+              </picture>
+            {%- else -%}
+              <div class="szc-hero-banner__placeholder">
+                {{ 'lifestyle-1' | placeholder_svg_tag: 'szc-image-placeholder' }}
+              </div>
             {%- endif -%}
+            <div class="szc-hero-banner__overlay"></div>
+          </div>
+
+          <div class="szc-hero-banner__container page-width">
+            <div class="szc-hero-banner__content {{ align_class }} szc-animate-fade-up">
+              {%- if section.settings.subheading != blank -%}
+                <span class="szc-hero-banner__subheading">{{ section.settings.subheading }}</span>
+              {%- endif -%}
+
+              {%- if section.settings.heading != blank -%}
+                <h1 class="szc-hero-banner__heading">{{ section.settings.heading }}</h1>
+              {%- endif -%}
+
+              {%- if section.settings.text != blank -%}
+                <div class="szc-hero-banner__text">{{ section.settings.text }}</div>
+              {%- endif -%}
+
+              {%- if section.settings.button_label_1 != blank or section.settings.button_label_2 != blank -%}
+                <div class="szc-hero-banner__buttons szc-hero-banner__buttons--mobile-{{ section.settings.buttons_layout_mobile | default: 'inline' }}">
+                  {%- if section.settings.button_label_1 != blank -%}
+                    {% render 'button',
+                      label: section.settings.button_label_1,
+                      url: section.settings.button_link_1,
+                      variant: 'primary',
+                      size: 'md'
+                    %}
+                  {%- endif -%}
+
+                  {%- if section.settings.button_label_2 != blank -%}
+                    <div class="szc-hero-banner__btn-2-mobile-hide">
+                      {% render 'button',
+                        label: section.settings.button_label_2,
+                        url: section.settings.button_link_2,
+                        variant: 'outline',
+                        size: 'md'
+                      %}
+                    </div>
+                  {%- endif -%}
+                </div>
+              {%- endif -%}
+            </div>
           </div>
         </div>
+      {%- endif -%}
+    </div>
+
+    {%- if section.blocks.size > 1 -%}
+      <div class="szc-hero-banner__controls">
+        <button
+          type="button"
+          class="szc-hero-banner__nav-btn szc-hero-banner__nav-btn--prev"
+          data-nav-prev
+          aria-label="{{ 'general.pagination.previous' | t | default: 'Previous slide' }}"
+        >
+          {% render 'icon', icon: 'chevron-left', class: 'szc-hero-banner__nav-icon' %}
+        </button>
+
+        <div class="szc-hero-banner__dots" data-dots-container>
+          {%- for block in section.blocks -%}
+            <button
+              type="button"
+              class="szc-hero-banner__dot {% if forloop.first %}is-active{% endif %}"
+              data-dot-index="{{ forloop.index0 }}"
+              aria-label="Go to slide {{ forloop.index }}"
+            ></button>
+          {%- endfor -%}
+        </div>
+
+        <button
+          type="button"
+          class="szc-hero-banner__nav-btn szc-hero-banner__nav-btn--next"
+          data-nav-next
+          aria-label="{{ 'general.pagination.next' | t | default: 'Next slide' }}"
+        >
+          {% render 'icon', icon: 'chevron-right', class: 'szc-hero-banner__nav-icon' %}
+        </button>
       </div>
     {%- endif -%}
-  </div>
-
-  {%- if section.blocks.size > 1 -%}
-    <div class="szc-hero-banner__controls">
-      <button
-        type="button"
-        class="szc-hero-banner__nav-btn szc-hero-banner__nav-btn--prev"
-        data-nav-prev
-        aria-label="{{ 'general.pagination.previous' | t | default: 'Previous slide' }}"
-      >
-        {% render 'icon', icon: 'chevron-left', class: 'szc-hero-banner__nav-icon' %}
-      </button>
-
-      <div class="szc-hero-banner__dots" data-dots-container>
-        {%- for block in section.blocks -%}
-          <button
-            type="button"
-            class="szc-hero-banner__dot {% if forloop.first %}is-active{% endif %}"
-            data-dot-index="{{ forloop.index0 }}"
-            aria-label="Go to slide {{ forloop.index }}"
-          ></button>
-        {%- endfor -%}
-      </div>
-
-      <button
-        type="button"
-        class="szc-hero-banner__nav-btn szc-hero-banner__nav-btn--next"
-        data-nav-next
-        aria-label="{{ 'general.pagination.next' | t | default: 'Next slide' }}"
-      >
-        {% render 'icon', icon: 'chevron-right', class: 'szc-hero-banner__nav-icon' %}
-      </button>
-    </div>
-  {%- endif -%}
-</hero-slider>
+  </hero-slider>
+{%- endif -%}
 
 {% stylesheet %}
   /* ==========================================================================
@@ -796,9 +1052,425 @@
       align-items: flex-start;
     }
   }
+
+  /* ==========================================================================
+     5. INTERACTIVE HOVER PANELS STYLES (.szc-hero-hover-panels)
+     ========================================================================== */
+  .szc-hero-hover-panels {
+    position: relative;
+    width: 100%;
+    max-width: 100%;
+    overflow: hidden;
+    display: block;
+    background: transparent;
+    box-sizing: border-box;
+  }
+
+  .szc-hero-hover-panels__container {
+    position: relative;
+    z-index: 2;
+    width: 100%;
+    height: 100%;
+    box-sizing: border-box;
+  }
+
+  .szc-hero-hover-panels__grid {
+    display: flex;
+    width: 100%;
+    height: 100%;
+    box-sizing: border-box;
+  }
+
+  .szc-hero-hover-panels__panel {
+    position: relative;
+    flex: 1 1 0%;
+    height: 100%;
+    overflow: hidden;
+    background-color: #121212;
+    transition: flex 600ms cubic-bezier(0.25, 1, 0.5, 1), opacity 400ms ease;
+    cursor: pointer;
+    outline: none;
+    box-sizing: border-box;
+  }
+
+  .szc-hero-hover-panels__panel:focus-visible {
+    outline: 3px solid var(--szc-color-secondary, #d4a373);
+    outline-offset: -3px;
+    z-index: 10;
+  }
+
+  .szc-hero-hover-panels__media {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 1;
+    overflow: hidden;
+  }
+
+  .szc-hero-hover-panels__media picture {
+    display: block;
+    width: 100%;
+    height: 100%;
+    position: absolute;
+    inset: 0;
+  }
+
+  .szc-hero-hover-panels__image {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: center;
+    /* Image remains completely stationary - no zoom or scale */
+    transform: none !important;
+    transition: opacity 400ms ease;
+  }
+
+  .szc-hero-hover-panels__placeholder {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: #2b2b2b;
+  }
+
+  .szc-hero-hover-panels__placeholder svg {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    opacity: 0.6;
+  }
+
+  .szc-hero-hover-panels__overlay {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(180deg, rgba(0, 0, 0, 0.05) 0%, rgba(0, 0, 0, 0.2) 50%, rgba(0, 0, 0, var(--szc-overlay-opacity, 0.5)) 100%);
+    z-index: 2;
+    transition: opacity 400ms ease;
+  }
+
+  .szc-hero-hover-panels__content-wrapper {
+    position: absolute;
+    inset: 0;
+    z-index: 3;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+    padding: 56px 28px;
+    box-sizing: border-box;
+    pointer-events: none;
+    overflow: hidden;
+  }
+
+  .szc-hero-hover-panels__content {
+    display: flex;
+    flex-direction: column;
+    color: #ffffff;
+    pointer-events: auto;
+    width: 100%;
+    max-width: 440px;
+    box-sizing: border-box;
+    padding: 24px 28px;
+    background: var(--szc-content-backdrop, rgba(18, 18, 18, 0.58));
+    -webkit-backdrop-filter: blur(14px);
+    backdrop-filter: blur(14px);
+    border: 1px solid rgba(255, 255, 255, 0.16);
+    border-radius: 16px;
+    box-shadow: 0 16px 36px rgba(0, 0, 0, 0.4);
+    transition: transform 550ms cubic-bezier(0.25, 1, 0.5, 1), opacity 400ms ease;
+  }
+
+  .szc-hero-hover-panels__content--align-left {
+    text-align: start;
+    align-items: flex-start;
+    margin-inline-end: auto;
+  }
+
+  .szc-hero-hover-panels__content--align-center {
+    text-align: center;
+    align-items: center;
+    margin-inline: auto;
+  }
+
+  .szc-hero-hover-panels__content--align-right {
+    text-align: end;
+    align-items: flex-end;
+    margin-inline-start: auto;
+  }
+
+  .szc-hero-hover-panels__subheading {
+    font-family: var(--szc-font-family-body);
+    font-weight: var(--szc-subheading-weight, 700);
+    font-size: var(--szc-subheading-size, 13px);
+    text-transform: uppercase;
+    letter-spacing: var(--szc-letter-spacing-uppercase, 0.15em);
+    color: var(--szc-subheading-color, var(--szc-color-secondary, #d4a373));
+    margin-bottom: 8px;
+  }
+
+  .szc-hero-hover-panels__heading {
+    font-family: var(--szc-font-family-heading);
+    font-weight: var(--szc-heading-weight, 700);
+    font-size: clamp(22px, 3vw, var(--szc-heading-size, 42px));
+    line-height: 1.15;
+    color: var(--szc-heading-color, #ffffff);
+    margin: 0 0 10px 0;
+  }
+
+  .szc-hero-hover-panels__text {
+    font-family: var(--szc-font-family-body);
+    font-weight: var(--szc-text-weight, 400);
+    font-size: var(--szc-text-size, 14px);
+    line-height: 1.5;
+    color: var(--szc-text-color, rgba(255, 255, 255, 0.9));
+    margin-bottom: 18px;
+  }
+
+  .szc-hero-hover-panels__buttons {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    flex-wrap: wrap;
+  }
+
+  /* Desktop Expand / Edge-to-Edge Interaction (≥ 1024px) */
+  @media (min-width: 1024px) {
+    .szc-hero-hover-panels {
+      padding: 0;
+      margin: 0;
+    }
+
+    .szc-hero-hover-panels__container {
+      max-width: 100%;
+      padding: 0;
+      margin: 0;
+    }
+
+    .szc-hero-hover-panels__grid {
+      gap: 0;
+    }
+
+    .szc-hero-hover-panels__panel {
+      border-radius: 0;
+    }
+
+    .szc-hero-hover-panels--small {
+      height: 480px;
+    }
+    .szc-hero-hover-panels--medium {
+      height: 620px;
+    }
+    .szc-hero-hover-panels--large {
+      height: 760px;
+    }
+    .szc-hero-hover-panels--full {
+      height: 88vh;
+      min-height: 650px;
+    }
+
+    /* Initial state before hover: Content hidden below the image boundary */
+    .szc-hero-hover-panels__content {
+      transform: translateY(calc(100% + 80px));
+      opacity: 0;
+    }
+
+    /* Active / Hovered Panel Content Reveal: Slides UP from below and stays elevated above bottom edge */
+    .szc-hero-hover-panels__panel:hover .szc-hero-hover-panels__content,
+    .szc-hero-hover-panels__panel:focus-within .szc-hero-hover-panels__content,
+    .szc-hero-hover-panels__panel.is-active .szc-hero-hover-panels__content {
+      transform: translateY(0);
+      opacity: 1;
+    }
+
+    /* Grid Hover behavior: Panel width expansion */
+    .szc-hero-hover-panels__grid:hover .szc-hero-hover-panels__panel {
+      flex: 0.85 1 0%;
+    }
+
+    .szc-hero-hover-panels__grid:hover .szc-hero-hover-panels__panel:hover,
+    .szc-hero-hover-panels__grid:focus-within .szc-hero-hover-panels__panel:focus-within {
+      flex: 2.2 1 0%;
+    }
+
+    /* Non-hovered panels when grid is hovered: retract content down below */
+    .szc-hero-hover-panels__grid:hover .szc-hero-hover-panels__panel:not(:hover) .szc-hero-hover-panels__content {
+      transform: translateY(calc(100% + 80px));
+      opacity: 0;
+    }
+  }
+
+  /* Tablet Layout (768px – 1023px) */
+  @media (min-width: 768px) and (max-width: 1023px) {
+    .szc-hero-hover-panels__container {
+      max-width: 100%;
+      padding: 0 16px;
+    }
+
+    .szc-hero-hover-panels--small {
+      height: 420px;
+    }
+    .szc-hero-hover-panels--medium {
+      height: 520px;
+    }
+    .szc-hero-hover-panels--large {
+      height: 600px;
+    }
+    .szc-hero-hover-panels--full {
+      height: 75vh;
+      min-height: 520px;
+    }
+
+    .szc-hero-hover-panels__grid {
+      gap: 12px;
+    }
+
+    .szc-hero-hover-panels__panel {
+      flex: 1 1 0%;
+      border-radius: var(--szc-banner-radius, 14px);
+    }
+
+    .szc-hero-hover-panels__grid:hover .szc-hero-hover-panels__panel:hover,
+    .szc-hero-hover-panels__grid:focus-within .szc-hero-hover-panels__panel:focus-within {
+      flex: 1.8 1 0%;
+    }
+
+    .szc-hero-hover-panels__content-wrapper {
+      padding: 0;
+    }
+
+    .szc-hero-hover-panels__content {
+      padding: 20px 20px 24px 20px;
+      transform: translateY(0);
+      opacity: 1;
+    }
+  }
+
+  /* Mobile Layout (320px – 767px) */
+  @media (max-width: 767px) {
+    .szc-hero-hover-panels {
+      height: auto !important;
+      padding: 0;
+      margin: 0;
+      overflow: hidden;
+      width: 100%;
+      max-width: 100%;
+    }
+
+    .szc-hero-hover-panels__container {
+      width: 100%;
+      max-width: 100%;
+      padding-inline: 16px;
+      margin: 0 auto;
+      box-sizing: border-box;
+    }
+
+    .szc-hero-hover-panels__grid {
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+      height: auto;
+      width: 100%;
+      max-width: 100%;
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    .szc-hero-hover-panels__panel {
+      flex: none;
+      width: 100%;
+      max-width: 100%;
+      height: 380px;
+      min-height: 340px;
+      border-radius: var(--szc-banner-radius, 16px);
+      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.18);
+      box-sizing: border-box;
+    }
+
+    .szc-hero-hover-panels__content-wrapper {
+      padding: 16px;
+      overflow: visible;
+    }
+
+    .szc-hero-hover-panels__content {
+      width: 100%;
+      max-width: 100%;
+      padding: 18px 18px 22px 18px;
+      border-radius: 12px;
+      border-top: none;
+      transform: translateY(0) !important;
+      opacity: 1 !important;
+    }
+
+    .szc-hero-hover-panels__heading {
+      font-size: clamp(20px, 5.5vw, 28px);
+      margin-bottom: 6px;
+    }
+
+    .szc-hero-hover-panels__text {
+      font-size: 13px;
+      line-height: 1.4;
+      margin-bottom: 14px;
+    }
+
+    .szc-hero-hover-panels__btn-2-mobile-hide {
+      display: none !important;
+    }
+  }
+
+  /* Reduced Motion Support */
+  @media (prefers-reduced-motion: reduce) {
+    .szc-hero-hover-panels__panel,
+    .szc-hero-hover-panels__image,
+    .szc-hero-hover-panels__content,
+    .szc-hero-hover-panels__overlay {
+      transition: none !important;
+      transform: none !important;
+    }
+
+    .szc-hero-hover-panels__content {
+      transform: translateY(0) !important;
+      opacity: 1 !important;
+    }
+  }
 {% endstylesheet %}
 
 {% javascript %}
+  if (!customElements.get('hero-hover-panels')) {
+    customElements.define(
+      'hero-hover-panels',
+      class HeroHoverPanels extends HTMLElement {
+        constructor() {
+          super();
+          this.panels = Array.from(this.querySelectorAll('.szc-hero-hover-panels__panel'));
+          if (!this.panels.length) return;
+
+          this.panels.forEach((panel) => {
+            panel.addEventListener('mouseenter', () => this.setActive(panel));
+            panel.addEventListener('focus', () => this.setActive(panel));
+            panel.addEventListener('click', (e) => {
+              if (e.target.closest('a, button')) return;
+              const primaryBtn = panel.querySelector('.szc-hero-hover-panels__buttons a, .szc-hero-hover-panels__buttons button');
+              if (primaryBtn) primaryBtn.click();
+            });
+          });
+        }
+
+        setActive(targetPanel) {
+          this.panels.forEach((p) => p.classList.remove('is-active'));
+          targetPanel.classList.add('is-active');
+        }
+      }
+    );
+  }
+
   if (!customElements.get('hero-slider')) {
     customElements.define(
       'hero-slider',
@@ -876,6 +1548,16 @@
   "tag": "section",
   "class": "section-hero-banner",
   "settings": [
+    {
+      "type": "select",
+      "id": "hero_style",
+      "label": "Hero Style",
+      "options": [
+        { "value": "classic_slider", "label": "Classic Slider" },
+        { "value": "hover_panels", "label": "Interactive Hover Panels" }
+      ],
+      "default": "classic_slider"
+    },
     {
       "type": "image_picker",
       "id": "image",
@@ -1156,6 +1838,26 @@
     },
     {
       "type": "header",
+      "content": "Interactive Hover Panels Backdrop"
+    },
+    {
+      "type": "color",
+      "id": "hover_backdrop_color",
+      "label": "Backdrop color",
+      "default": "#121212"
+    },
+    {
+      "type": "range",
+      "id": "hover_backdrop_opacity",
+      "min": 0,
+      "max": 100,
+      "step": 1,
+      "unit": "%",
+      "label": "Backdrop opacity",
+      "default": 58
+    },
+    {
+      "type": "header",
       "content": "Mobile Settings"
     },
     {
@@ -1200,6 +1902,26 @@
           "unit": "%",
           "label": "Slide overlay opacity",
           "default": 30
+        },
+        {
+          "type": "header",
+          "content": "Content Backdrop (Hover Panels)"
+        },
+        {
+          "type": "color",
+          "id": "content_backdrop_color",
+          "label": "Backdrop color",
+          "default": "#121212"
+        },
+        {
+          "type": "range",
+          "id": "content_backdrop_opacity",
+          "min": 0,
+          "max": 100,
+          "step": 1,
+          "unit": "%",
+          "label": "Backdrop opacity",
+          "default": 58
         },
         {
           "type": "header",
