@@ -1,0 +1,1530 @@
+{%- comment -%}
+  ShopziCurious - Sticky Story Showcase Section
+  LEFT: Scrolling visual image story (ONLY images, sticky scroll-driven stacking OR alternating autoplay).
+  RIGHT: Sticky visual poster with interactive product hotspots (light card/tooltip).
+  BACKGROUND: Transparent.
+{%- endcomment -%}
+
+{%- liquid
+  assign custom_images_count = 0
+  if section.settings.image_1 != blank
+    assign custom_images_count = custom_images_count | plus: 1
+  endif
+  if section.settings.image_2 != blank
+    assign custom_images_count = custom_images_count | plus: 1
+  endif
+  if section.settings.image_3 != blank
+    assign custom_images_count = custom_images_count | plus: 1
+  endif
+  if section.settings.image_4 != blank
+    assign custom_images_count = custom_images_count | plus: 1
+  endif
+  if section.settings.image_5 != blank
+    assign custom_images_count = custom_images_count | plus: 1
+  endif
+  if section.settings.image_6 != blank
+    assign custom_images_count = custom_images_count | plus: 1
+  endif
+
+  if custom_images_count == 0
+    assign total_images = 4
+  else
+    assign total_images = custom_images_count
+  endif
+
+  assign scroll_step = section.settings.scroll_step | default: 80
+  assign anim_mode = section.settings.story_animation_mode | default: 'scroll'
+  assign autoplay_speed = section.settings.autoplay_speed | default: 3
+-%}
+
+<section
+  id="StickyStoryShowcase-{{ section.id }}"
+  class="szc-sticky-story-showcase"
+  data-section-id="{{ section.id }}"
+  style="
+    --szc-sss-pt: {{ section.settings.padding_top | default: 36 }}px;
+    --szc-sss-pb: {{ section.settings.padding_bottom | default: 36 }}px;
+    --szc-sss-story-aspect: {{ section.settings.story_image_aspect_ratio | default: '1/1' }};
+    --szc-sss-right-aspect: {{ section.settings.right_image_aspect_ratio | default: '4/5' }};
+  "
+>
+  <sticky-story-showcase
+    class="szc-sss"
+    data-images-count="{{ total_images }}"
+    data-scroll-step="{{ scroll_step }}"
+    data-animation-mode="{{ anim_mode }}"
+    data-autoplay-speed="{{ autoplay_speed }}"
+  >
+    <!-- Outer Scroll Track (Drives scroll distance on desktop in scroll mode) -->
+    <div class="szc-sss__scroll-track">
+      <!-- Sticky Viewport (Locks in viewport during desktop scroll) -->
+      <div class="szc-sss__sticky-viewport">
+        <div class="szc-sss__container page-width">
+          <div class="szc-sss__layout">
+
+            <!-- LEFT SIDE: ONLY Images (Scroll-driven or alternating autoplay transitions) -->
+            <div class="szc-sss__story-column">
+              <div class="szc-sss__story-stage" data-story-stage>
+                <div class="szc-sss__story-cards" data-story-cards>
+                  {%- if custom_images_count > 0 -%}
+                    {%- assign card_idx = 0 -%}
+                    {%- if section.settings.image_1 != blank -%}
+                      <div class="szc-sss__story-card{% if card_idx == 0 %} is-active{% endif %}" data-story-index="{{ card_idx }}">
+                        <div class="szc-sss__story-card-inner">
+                          <div class="szc-sss__story-card-media">
+                            {{
+                              section.settings.image_1
+                              | image_url: width: 1400
+                              | image_tag:
+                                loading: 'lazy',
+                                class: 'szc-sss__story-card-img',
+                                alt: section.settings.image_1.alt | default: shop.name | escape
+                            }}
+                          </div>
+                        </div>
+                      </div>
+                      {%- assign card_idx = card_idx | plus: 1 -%}
+                    {%- endif -%}
+
+                    {%- if section.settings.image_2 != blank -%}
+                      <div class="szc-sss__story-card{% if card_idx == 0 %} is-active{% endif %}" data-story-index="{{ card_idx }}">
+                        <div class="szc-sss__story-card-inner">
+                          <div class="szc-sss__story-card-media">
+                            {{
+                              section.settings.image_2
+                              | image_url: width: 1400
+                              | image_tag:
+                                loading: 'lazy',
+                                class: 'szc-sss__story-card-img',
+                                alt: section.settings.image_2.alt | default: shop.name | escape
+                            }}
+                          </div>
+                        </div>
+                      </div>
+                      {%- assign card_idx = card_idx | plus: 1 -%}
+                    {%- endif -%}
+
+                    {%- if section.settings.image_3 != blank -%}
+                      <div class="szc-sss__story-card{% if card_idx == 0 %} is-active{% endif %}" data-story-index="{{ card_idx }}">
+                        <div class="szc-sss__story-card-inner">
+                          <div class="szc-sss__story-card-media">
+                            {{
+                              section.settings.image_3
+                              | image_url: width: 1400
+                              | image_tag:
+                                loading: 'lazy',
+                                class: 'szc-sss__story-card-img',
+                                alt: section.settings.image_3.alt | default: shop.name | escape
+                            }}
+                          </div>
+                        </div>
+                      </div>
+                      {%- assign card_idx = card_idx | plus: 1 -%}
+                    {%- endif -%}
+
+                    {%- if section.settings.image_4 != blank -%}
+                      <div class="szc-sss__story-card{% if card_idx == 0 %} is-active{% endif %}" data-story-index="{{ card_idx }}">
+                        <div class="szc-sss__story-card-inner">
+                          <div class="szc-sss__story-card-media">
+                            {{
+                              section.settings.image_4
+                              | image_url: width: 1400
+                              | image_tag:
+                                loading: 'lazy',
+                                class: 'szc-sss__story-card-img',
+                                alt: section.settings.image_4.alt | default: shop.name | escape
+                            }}
+                          </div>
+                        </div>
+                      </div>
+                      {%- assign card_idx = card_idx | plus: 1 -%}
+                    {%- endif -%}
+
+                    {%- if section.settings.image_5 != blank -%}
+                      <div class="szc-sss__story-card{% if card_idx == 0 %} is-active{% endif %}" data-story-index="{{ card_idx }}">
+                        <div class="szc-sss__story-card-inner">
+                          <div class="szc-sss__story-card-media">
+                            {{
+                              section.settings.image_5
+                              | image_url: width: 1400
+                              | image_tag:
+                                loading: 'lazy',
+                                class: 'szc-sss__story-card-img',
+                                alt: section.settings.image_5.alt | default: shop.name | escape
+                            }}
+                          </div>
+                        </div>
+                      </div>
+                      {%- assign card_idx = card_idx | plus: 1 -%}
+                    {%- endif -%}
+
+                    {%- if section.settings.image_6 != blank -%}
+                      <div class="szc-sss__story-card{% if card_idx == 0 %} is-active{% endif %}" data-story-index="{{ card_idx }}">
+                        <div class="szc-sss__story-card-inner">
+                          <div class="szc-sss__story-card-media">
+                            {{
+                              section.settings.image_6
+                              | image_url: width: 1400
+                              | image_tag:
+                                loading: 'lazy',
+                                class: 'szc-sss__story-card-img',
+                                alt: section.settings.image_6.alt | default: shop.name | escape
+                            }}
+                          </div>
+                        </div>
+                      </div>
+                    {%- endif -%}
+                  {%- else -%}
+                    <!-- Default 4 Editorial Story Light Placeholders -->
+                    {%- for i in (1..4) -%}
+                      <div class="szc-sss__story-card{% if forloop.first %} is-active{% endif %}" data-story-index="{{ forloop.index0 }}">
+                        <div class="szc-sss__story-card-inner">
+                          <div class="szc-sss__story-card-media">
+                            {%- capture placeholder_name -%}collection-{{ i }}{%- endcapture -%}
+                            {{ placeholder_name | placeholder_svg_tag: 'szc-placeholder-svg szc-sss__placeholder-svg' }}
+                          </div>
+                        </div>
+                      </div>
+                    {%- endfor -%}
+                  {%- endif -%}
+                </div>
+              </div>
+            </div>
+
+            <!-- RIGHT SIDE: Sticky Visual with Interactive Product Hotspots -->
+            <div class="szc-sss__right-column">
+              <div class="szc-sss__right-stage">
+                <div class="szc-sss__right-media-wrapper">
+                  <div class="szc-sss__right-media">
+                    {%- if section.settings.right_image != blank -%}
+                      {{
+                        section.settings.right_image
+                        | image_url: width: 1400
+                        | image_tag:
+                          loading: 'lazy',
+                          class: 'szc-sss__right-img',
+                          alt: section.settings.right_image.alt | default: shop.name | escape
+                      }}
+                    {%- else -%}
+                      <div class="szc-sss__right-placeholder">
+                        {{ 'collection-1' | placeholder_svg_tag: 'szc-placeholder-svg szc-sss__placeholder-svg' }}
+                      </div>
+                    {%- endif -%}
+
+                    <!-- Product Hotspots Layer -->
+                    <div class="szc-sss__hotspots-layer" data-hotspots-layer>
+                      {%- for block in section.blocks -%}
+                        {%- case block.type -%}
+                          {%- when 'hotspot' -%}
+                            {%- assign prod = block.settings.product -%}
+                            {%- assign pos_x = block.settings.position_x -%}
+                            {%- assign pos_y = block.settings.position_y -%}
+
+                            {%- assign align_x = 'center' -%}
+                            {%- if pos_x < 25 -%}
+                              {%- assign align_x = 'left' -%}
+                            {%- elsif pos_x > 75 -%}
+                              {%- assign align_x = 'right' -%}
+                            {%- endif -%}
+
+                            {%- assign align_y = 'top' -%}
+                            {%- if pos_y < 28 -%}
+                              {%- assign align_y = 'bottom' -%}
+                            {%- endif -%}
+
+                            {%- if prod != blank -%}
+                              <div
+                                class="szc-sss__hotspot"
+                                style="--hx: {{ pos_x }}%; --hy: {{ pos_y }}%;"
+                                data-hotspot-index="{{ forloop.index0 }}"
+                                {{ block.shopify_attributes }}
+                              >
+                                <a
+                                  href="{{ prod.url }}"
+                                  class="szc-sss__hotspot-pin"
+                                  aria-label="{{ 'products.product.view' | t: default: 'View' }} {{ prod.title | escape }}"
+                                >
+                                  <span class="szc-sss__hotspot-dot"></span>
+                                  <span class="szc-sss__hotspot-pulse" aria-hidden="true"></span>
+                                  {%- if block.settings.label != blank -%}
+                                    <span class="szc-sss__hotspot-badge">{{ block.settings.label }}</span>
+                                  {%- endif -%}
+                                </a>
+
+                                <!-- Light Tooltip / Product Card -->
+                                <div class="szc-sss__hotspot-card szc-sss__hotspot-card--align-{{ align_x }} szc-sss__hotspot-card--dir-{{ align_y }}" role="tooltip">
+                                  <a href="{{ prod.url }}" class="szc-sss__hotspot-card-inner">
+                                    {%- if prod.featured_image != blank -%}
+                                      <div class="szc-sss__hotspot-card-thumb">
+                                        {{
+                                          prod.featured_image
+                                          | image_url: width: 140
+                                          | image_tag: loading: 'lazy', alt: prod.title | escape
+                                        }}
+                                      </div>
+                                    {%- endif -%}
+                                    <div class="szc-sss__hotspot-card-info">
+                                      {%- if block.settings.label != blank -%}
+                                        <span class="szc-sss__hotspot-card-tag">{{ block.settings.label }}</span>
+                                      {%- endif -%}
+                                      <span class="szc-sss__hotspot-card-title">{{ prod.title }}</span>
+                                      <span class="szc-sss__hotspot-card-price">{{ prod.price | money }}</span>
+                                      <span class="szc-sss__hotspot-card-cta">
+                                        {{ 'products.product.view' | t: default: 'View Product' }}
+                                        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
+                                      </span>
+                                    </div>
+                                  </a>
+                                </div>
+                              </div>
+                            {%- elsif request.design_mode -%}
+                              <!-- Theme Editor Guide Hotspot -->
+                              <div
+                                class="szc-sss__hotspot szc-sss__hotspot--placeholder"
+                                style="--hx: {{ pos_x }}%; --hy: {{ pos_y }}%;"
+                                data-hotspot-index="{{ forloop.index0 }}"
+                                {{ block.shopify_attributes }}
+                              >
+                                <div class="szc-sss__hotspot-pin" role="button" tabindex="0" aria-label="Select product in editor">
+                                  <span class="szc-sss__hotspot-dot"></span>
+                                  <span class="szc-sss__hotspot-pulse" aria-hidden="true"></span>
+                                  {%- if block.settings.label != blank -%}
+                                    <span class="szc-sss__hotspot-badge">{{ block.settings.label }}</span>
+                                  {%- endif -%}
+                                </div>
+                                <div class="szc-sss__hotspot-card szc-sss__hotspot-card--align-{{ align_x }} szc-sss__hotspot-card--dir-{{ align_y }}" role="tooltip">
+                                  <div class="szc-sss__hotspot-card-inner">
+                                    <div class="szc-sss__hotspot-card-info">
+                                      <span class="szc-sss__hotspot-card-title">Select Product</span>
+                                      <span class="szc-sss__hotspot-card-cta">Assign product in sidebar</span>
+                                    </div>
+                                  </div>
+                                </div>
+                              </div>
+                            {%- endif -%}
+                        {%- endcase -%}
+                      {%- endfor -%}
+                    </div>
+
+                  </div>
+                </div>
+              </div>
+            </div>
+
+          </div>
+        </div>
+      </div>
+    </div>
+  </sticky-story-showcase>
+</section>
+
+{% stylesheet %}
+  /* ==========================================================================
+     Sticky Story Showcase Styles
+     Entire section background is 100% transparent.
+     ========================================================================== */
+
+  .szc-sticky-story-showcase {
+    position: relative;
+    background: transparent !important;
+    padding-top: var(--szc-sss-pt, 36px);
+    padding-bottom: var(--szc-sss-pb, 36px);
+    overflow: clip;
+  }
+
+  .szc-sss {
+    display: block;
+    position: relative;
+    width: 100%;
+    background: transparent !important;
+  }
+
+  /* ── Desktop Scroll Track & Sticky Viewport ────────────────────────────── */
+  .szc-sss__scroll-track {
+    position: relative;
+    width: 100%;
+    background: transparent !important;
+  }
+
+  .szc-sss__sticky-viewport {
+    position: relative;
+    width: 100%;
+    background: transparent !important;
+  }
+
+  @media (min-width: 768px) {
+    .szc-sss__sticky-viewport {
+      position: sticky;
+      top: 0;
+      height: 100vh;
+      min-height: 600px;
+      display: flex;
+      align-items: center;
+      overflow: hidden;
+    }
+  }
+
+  .szc-sss__container {
+    width: 100%;
+    margin-left: auto;
+    margin-right: auto;
+    box-sizing: border-box;
+    background: transparent !important;
+  }
+
+  /* ── Split Layout: Left (Smaller Stack 40%) / Right (Full Remaining Width 60%) ── */
+  @media (min-width: 768px) {
+    .szc-sss__layout {
+      display: grid;
+      grid-template-columns: 42% 58%;
+      column-gap: 24px;
+      align-items: center;
+      width: 100%;
+      height: 100%;
+    }
+  }
+
+  @media (min-width: 1200px) {
+    .szc-sss__layout {
+      grid-template-columns: 38% 62%;
+      column-gap: 32px;
+    }
+  }
+
+  /* ── LEFT SIDE: Story Images Stage & Cards ──────────────────────────────── */
+  .szc-sss__story-column {
+    position: relative;
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .szc-sss__story-stage {
+    position: relative;
+    width: 100%;
+    max-width: 440px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    isolation: isolate;
+  }
+
+  @media (min-width: 768px) {
+    .szc-sss__story-stage {
+      perspective: 1200px;
+      height: auto;
+      overflow: visible;
+      padding: 24px 16px;
+    }
+
+    .szc-sss__story-cards {
+      position: relative;
+      width: 100%;
+      max-width: 360px;
+      aspect-ratio: var(--szc-sss-story-aspect, 1/1);
+      margin: 0 auto;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transform-style: preserve-3d;
+    }
+
+    /* Fixed Aspect Ratio: strictly respects --szc-sss-story-aspect with zero height clash */
+    .szc-sss__story-card {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      aspect-ratio: var(--szc-sss-story-aspect, 1/1);
+      transform-origin: center center;
+      will-change: transform, opacity;
+      pointer-events: none;
+      user-select: none;
+      backface-visibility: hidden;
+      -webkit-backface-visibility: hidden;
+    }
+
+    .szc-sss__story-card.is-active {
+      pointer-events: auto;
+    }
+  }
+
+  @media (min-width: 1200px) {
+    .szc-sss__story-cards {
+      max-width: 390px;
+    }
+  }
+
+  .szc-sss__story-card-inner {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    border-radius: 18px;
+    padding: 8px; /* White photo card frame like reference image */
+    box-sizing: border-box;
+    background-color: #ffffff !important;
+    box-shadow:
+      0 20px 40px -10px rgba(0, 0, 0, 0.24),
+      0 4px 14px rgba(0, 0, 0, 0.08),
+      0 0 0 1px rgba(0, 0, 0, 0.08);
+    display: flex;
+    transition: box-shadow 0.3s ease;
+  }
+
+  .szc-sss__story-card-media {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    border-radius: 12px;
+    overflow: hidden;
+    background-color: #f4f1ec !important;
+  }
+
+  .szc-sss__story-card-img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: center;
+    display: block;
+    transition: transform 0.6s cubic-bezier(0.2, 0.8, 0.2, 1);
+  }
+
+  /* Light Placeholders: soft light neutral background matching ShopziCurious */
+  .szc-sss__placeholder-svg {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+    background-color: #f4f1ec !important;
+    fill: #8b8882 !important;
+    color: #8b8882 !important;
+    opacity: 1 !important;
+  }
+
+  /* ── RIGHT SIDE: Sticky Visual with Hotspots ───────────────────────────── */
+  .szc-sss__right-column {
+    position: relative;
+    width: 100%;
+  }
+
+  .szc-sss__right-stage {
+    position: relative;
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .szc-sss__right-media-wrapper {
+    position: relative;
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .szc-sss__right-media {
+    position: relative;
+    width: 100%;
+    max-width: 100%;
+    height: auto;
+    max-height: 82vh;
+    aspect-ratio: var(--szc-sss-right-aspect, 4/5);
+    border-radius: 18px;
+    overflow: hidden;
+    box-shadow:
+      0 24px 48px -12px rgba(0, 0, 0, 0.2),
+      0 4px 16px rgba(0, 0, 0, 0.08),
+      0 0 0 1px rgba(0, 0, 0, 0.06);
+    background-color: #f4f1ec !important;
+  }
+
+  .szc-sss__right-img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: center;
+    display: block;
+  }
+
+  .szc-sss__right-placeholder {
+    width: 100%;
+    height: 100%;
+    background-color: #f4f1ec !important;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  /* ── Hotspots Layer ────────────────────────────────────────────────────── */
+  .szc-sss__hotspots-layer {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+    z-index: 5;
+  }
+
+  .szc-sss__hotspot {
+    position: absolute;
+    left: var(--hx, 50%);
+    top: var(--hy, 50%);
+    transform: translate(-50%, -50%);
+    pointer-events: auto;
+    z-index: 10;
+  }
+
+  .szc-sss__hotspot:focus-within {
+    z-index: 30;
+  }
+
+  /* Hotspot Pin */
+  .szc-sss__hotspot-pin {
+    position: relative;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 32px;
+    height: 32px;
+    cursor: pointer;
+    text-decoration: none;
+    outline: none;
+    border-radius: 50%;
+  }
+
+  .szc-sss__hotspot-dot {
+    width: 14px;
+    height: 14px;
+    border-radius: 50%;
+    background: #111111;
+    border: 2.5px solid #ffffff;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.35);
+    position: relative;
+    z-index: 2;
+    transition: transform 0.2s cubic-bezier(0.2, 0.8, 0.2, 1), background-color 0.2s;
+  }
+
+  .szc-sss__hotspot:hover .szc-sss__hotspot-dot,
+  .szc-sss__hotspot-pin:focus-visible .szc-sss__hotspot-dot {
+    transform: scale(1.2);
+    background-color: #9c6e3b;
+  }
+
+  .szc-sss__hotspot-pin:focus-visible {
+    outline: 2px solid #111111;
+    outline-offset: 4px;
+  }
+
+  .szc-sss__hotspot-pulse {
+    position: absolute;
+    width: 14px;
+    height: 14px;
+    border-radius: 50%;
+    background: rgba(17, 17, 17, 0.35);
+    animation: szcSssPulse 2.2s cubic-bezier(0.2, 0.8, 0.2, 1) infinite;
+    z-index: 1;
+    pointer-events: none;
+  }
+
+  @keyframes szcSssPulse {
+    0% {
+      transform: scale(1);
+      opacity: 0.8;
+    }
+    60% {
+      transform: scale(2.6);
+      opacity: 0;
+    }
+    100% {
+      transform: scale(2.6);
+      opacity: 0;
+    }
+  }
+
+  /* Light Hotspot Tag Badge */
+  .szc-sss__hotspot-badge {
+    position: absolute;
+    left: calc(100% + 8px);
+    top: 50%;
+    transform: translateY(-50%);
+    padding: 4px 10px;
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: #111111;
+    background: #ffffff;
+    border: 1px solid rgba(0, 0, 0, 0.12);
+    border-radius: 999px;
+    white-space: nowrap;
+    box-shadow: 0 4px 14px rgba(0, 0, 0, 0.12);
+    pointer-events: none;
+    transition: opacity 0.2s, transform 0.2s;
+  }
+
+  /* ── Light Product Info Card / Tooltip ─────────────────────────────────── */
+  .szc-sss__hotspot-card {
+    position: absolute;
+    bottom: calc(100% + 14px);
+    left: 50%;
+    transform: translateX(-50%) translateY(8px) scale(0.96);
+    width: 240px;
+    background: #ffffff;
+    border: 1px solid rgba(0, 0, 0, 0.09);
+    border-radius: 14px;
+    padding: 10px;
+    box-shadow:
+      0 16px 36px -8px rgba(0, 0, 0, 0.15),
+      0 4px 12px rgba(0, 0, 0, 0.05);
+    opacity: 0;
+    visibility: hidden;
+    pointer-events: none;
+    transition: opacity 0.22s ease, transform 0.22s cubic-bezier(0.2, 0.8, 0.2, 1), visibility 0.22s;
+    z-index: 30;
+  }
+
+  .szc-sss__hotspot-card--dir-bottom {
+    bottom: auto;
+    top: calc(100% + 14px);
+  }
+
+  .szc-sss__hotspot-card--align-left {
+    left: 0;
+    transform: translateY(8px) scale(0.96);
+  }
+
+  .szc-sss__hotspot-card--align-right {
+    left: auto;
+    right: 0;
+    transform: translateY(8px) scale(0.96);
+  }
+
+  .szc-sss__hotspot:hover .szc-sss__hotspot-card,
+  .szc-sss__hotspot:focus-within .szc-sss__hotspot-card {
+    opacity: 1;
+    visibility: visible;
+    pointer-events: auto;
+  }
+
+  .szc-sss__hotspot:hover .szc-sss__hotspot-card:not(.szc-sss__hotspot-card--align-left):not(.szc-sss__hotspot-card--align-right),
+  .szc-sss__hotspot:focus-within .szc-sss__hotspot-card:not(.szc-sss__hotspot-card--align-left):not(.szc-sss__hotspot-card--align-right) {
+    transform: translateX(-50%) translateY(0) scale(1);
+  }
+
+  .szc-sss__hotspot:hover .szc-sss__hotspot-card--align-left,
+  .szc-sss__hotspot:focus-within .szc-sss__hotspot-card--align-left {
+    transform: translateY(0) scale(1);
+  }
+
+  .szc-sss__hotspot:hover .szc-sss__hotspot-card--align-right,
+  .szc-sss__hotspot:focus-within .szc-sss__hotspot-card--align-right {
+    transform: translateY(0) scale(1);
+  }
+
+  .szc-sss__hotspot-card-inner {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    text-decoration: none;
+    color: #111111;
+    cursor: pointer;
+  }
+
+  .szc-sss__hotspot-card-thumb {
+    width: 48px;
+    height: 48px;
+    border-radius: 8px;
+    overflow: hidden;
+    flex-shrink: 0;
+    background: #f4f1ec;
+    border: 1px solid rgba(0, 0, 0, 0.06);
+  }
+
+  .szc-sss__hotspot-card-thumb img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+  }
+
+  .szc-sss__hotspot-card-info {
+    display: flex;
+    flex-direction: column;
+    gap: 3px;
+    min-width: 0;
+  }
+
+  .szc-sss__hotspot-card-tag {
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: #9c6e3b;
+  }
+
+  .szc-sss__hotspot-card-title {
+    font-size: 13px;
+    font-weight: 600;
+    line-height: 1.25;
+    color: #111111;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  .szc-sss__hotspot-card-price {
+    font-size: 12.5px;
+    font-weight: 600;
+    color: #444444;
+  }
+
+  .szc-sss__hotspot-card-cta {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    font-size: 11px;
+    font-weight: 600;
+    color: #111111;
+    margin-top: 2px;
+    transition: color 0.2s;
+  }
+
+  .szc-sss__hotspot-card:hover .szc-sss__hotspot-card-cta {
+    color: #9c6e3b;
+  }
+
+  /* ── Mobile Layout (<= 767px) ─────────────────────────────────────────── */
+  @media (max-width: 767px) {
+    .szc-sticky-story-showcase {
+      padding-top: var(--szc-space-8, 32px);
+      padding-bottom: var(--szc-space-10, 40px);
+    }
+
+    .szc-sss__scroll-track {
+      height: auto !important;
+    }
+
+    .szc-sss__sticky-viewport {
+      position: static !important;
+      height: auto !important;
+    }
+
+    .szc-sss__container {
+      padding-left: 16px;
+      padding-right: 16px;
+    }
+
+    .szc-sss__layout {
+      display: flex;
+      flex-direction: column;
+      gap: 36px;
+      width: 100%;
+    }
+
+    .szc-sss__story-column {
+      width: 100%;
+      display: flex;
+      justify-content: center;
+    }
+
+    /* Unified Card Deck on Mobile (Both Autoplay and Scroll modes) */
+    .szc-sss__story-stage {
+      position: relative;
+      width: 100%;
+      max-width: 380px;
+      margin: 0 auto;
+      overflow: hidden; /* Clips horizontal 135% exits to prevent page overflow */
+      padding: 12px 16px 24px;
+      box-sizing: border-box;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .szc-sss__story-cards {
+      position: relative;
+      width: 100%;
+      max-width: 300px;
+      aspect-ratio: var(--szc-sss-story-aspect, 1/1);
+      margin: 0 auto;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transform-style: preserve-3d;
+    }
+
+    .szc-sss__story-card {
+      position: absolute !important;
+      inset: 0 !important;
+      width: 100% !important;
+      height: 100% !important;
+      max-width: 100% !important;
+      aspect-ratio: var(--szc-sss-story-aspect, 1/1) !important;
+      transform-origin: center center;
+      will-change: transform, opacity;
+      pointer-events: none;
+      user-select: none;
+      backface-visibility: hidden;
+      -webkit-backface-visibility: hidden;
+    }
+
+    .szc-sss__story-card.is-active {
+      pointer-events: auto !important;
+    }
+
+    .szc-sss__story-card-inner {
+      box-shadow: 0 10px 24px -6px rgba(0, 0, 0, 0.15);
+    }
+
+    .szc-sss__right-column {
+      width: 100%;
+    }
+
+    .szc-sss__right-media {
+      max-width: 100%;
+      margin: 0 auto;
+    }
+  }
+
+  /* ── RTL Support ───────────────────────────────────────────────────────── */
+  [dir="rtl"] .szc-sss__hotspot-badge {
+    left: auto;
+    right: calc(100% + 8px);
+  }
+
+  /* ── Reduced Motion Accessibility ──────────────────────────────────────── */
+  @media (prefers-reduced-motion: reduce) {
+    .szc-sss__scroll-track {
+      height: auto !important;
+    }
+
+    .szc-sss__sticky-viewport {
+      position: static !important;
+      height: auto !important;
+    }
+
+    .szc-sss__story-stage {
+      /* Keep the image cards as an overlapping deck. Their transforms are
+         owned by the shared scroll/autoplay renderer. */
+      overflow: visible;
+    }
+
+    .szc-sss__hotspot-pulse {
+      animation: none !important;
+      display: none !important;
+    }
+  }
+{% endstylesheet %}
+
+{% javascript %}
+  if (!customElements.get('sticky-story-showcase')) {
+    customElements.define(
+      'sticky-story-showcase',
+      class StickyStoryShowcase extends HTMLElement {
+        constructor() {
+          super();
+          this.stage = this.querySelector('[data-story-stage]');
+          this.cardsWrapper = this.querySelector('[data-story-cards]');
+          this.cards = Array.from(this.querySelectorAll('.szc-sss__story-card'));
+          this.scrollTrack = this.querySelector('.szc-sss__scroll-track');
+          this.stickyViewport = this.querySelector('.szc-sss__sticky-viewport');
+          this.totalImages = this.cards.length;
+          this.scrollStepVh = parseFloat(this.dataset.scrollStep) || 80;
+          this.animationMode = this.dataset.animationMode || 'scroll';
+          this.autoplaySpeed = Math.max(1500, (parseFloat(this.dataset.autoplaySpeed) || 3) * 1000);
+
+          this.isDesktop = window.matchMedia('(min-width: 768px)').matches;
+          this.prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+          this.isIntersecting = false;
+          this.isPaused = false;
+          this.rafPending = false;
+
+          // Card Deck State
+          this.activeCardIndex = 0; // Front card index
+          this.exitCounter = 0;     // Number of completed exits (drives alternating LEFT/RIGHT)
+          this.autoplayTimer = null;
+          this.isAutoplayAnimating = false;
+          this.autoplayAnimFrame = null;
+
+          // Physical card stack fanning matching reference layout
+          this.stackSlots = [
+            // Slot 0: Front active card (straight)
+            { x: 0,   y: 0,   rot: 0,    scale: 1.0,  opacity: 1.0,  z: 10 },
+            // Slot 1: Tilted right (peeking top-right)
+            { x: 22,  y: 6,   rot: 6.5,  scale: 0.96, opacity: 0.95, z: 8 },
+            // Slot 2: Tilted further right (peeking bottom-right)
+            { x: 38,  y: 18,  rot: 11.5, scale: 0.92, opacity: 0.85, z: 6 },
+            // Slot 3: Tilted left (peeking bottom-left)
+            { x: -18, y: -6,  rot: -7.5, scale: 0.94, opacity: 0.90, z: 5 },
+            // Slot 4: Tilted top-left (peeking top)
+            { x: -8,  y: -16, rot: -3.0, scale: 0.90, opacity: 0.70, z: 4 }
+          ];
+          this.baseSlot = { x: 0, y: 16, rot: 0, scale: 0.85, opacity: 0, z: 2 };
+
+          this.onScroll = this.onScroll.bind(this);
+          this.onResize = this.onResize.bind(this);
+          this.updateScrollDeck = this.updateScrollDeck.bind(this);
+          this.stepAutoplay = this.stepAutoplay.bind(this);
+          this.pauseAutoplay = this.pauseAutoplay.bind(this);
+          this.resumeAutoplay = this.resumeAutoplay.bind(this);
+
+          // Touch swipe support
+          this.touchStartX = 0;
+          this.touchStartY = 0;
+          this.onTouchStart = this.onTouchStart.bind(this);
+          this.onTouchEnd = this.onTouchEnd.bind(this);
+        }
+
+        connectedCallback() {
+          if (!this.cards.length) return;
+
+          this.observer = new IntersectionObserver(
+            (entries) => {
+              entries.forEach((entry) => {
+                this.isIntersecting = entry.isIntersecting;
+                if (this.effectiveMode === 'autoplay') {
+                  if (this.isIntersecting && !this.prefersReducedMotion) {
+                    this.startAutoplay();
+                  } else {
+                    this.stopAutoplay();
+                  }
+                } else {
+                  if (this.isIntersecting && this.isDesktop && !this.prefersReducedMotion) {
+                    this.requestScrollDeckUpdate();
+                  }
+                }
+              });
+            },
+            { rootMargin: '120px 0px 120px 0px' }
+          );
+          this.observer.observe(this);
+
+          this.setupLayout();
+
+          window.addEventListener('scroll', this.onScroll, { passive: true });
+          window.addEventListener('resize', this.onResize, { passive: true });
+
+          // Hover / focus pause: ONLY when cursor is over the left-side cards stage
+          if (this.stage) {
+            this.stage.addEventListener('pointerenter', this.pauseAutoplay);
+            this.stage.addEventListener('pointerleave', this.resumeAutoplay);
+            this.stage.addEventListener('focusin', this.pauseAutoplay);
+            this.stage.addEventListener('focusout', this.resumeAutoplay);
+            this.stage.addEventListener('touchstart', this.onTouchStart, { passive: true });
+            this.stage.addEventListener('touchend', this.onTouchEnd, { passive: true });
+          }
+        }
+
+        disconnectedCallback() {
+          this.stopAutoplay();
+          if (this.observer) this.observer.disconnect();
+          window.removeEventListener('scroll', this.onScroll);
+          window.removeEventListener('resize', this.onResize);
+          if (this.stage) {
+            this.stage.removeEventListener('pointerenter', this.pauseAutoplay);
+            this.stage.removeEventListener('pointerleave', this.resumeAutoplay);
+            this.stage.removeEventListener('focusin', this.pauseAutoplay);
+            this.stage.removeEventListener('focusout', this.resumeAutoplay);
+            this.stage.removeEventListener('touchstart', this.onTouchStart);
+            this.stage.removeEventListener('touchend', this.onTouchEnd);
+          }
+        }
+
+        setupLayout() {
+          this.isDesktop = window.matchMedia('(min-width: 768px)').matches;
+          this.prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+          // Mobile view ALWAYS uses autoplay mode, even if 'scroll' is configured!
+          const configuredMode = this.dataset.animationMode || 'scroll';
+          this.effectiveMode = !this.isDesktop ? 'autoplay' : configuredMode;
+
+          if (this.effectiveMode === 'autoplay') {
+            // Autoplay mode: normal flow
+            if (this.scrollTrack) this.scrollTrack.style.height = '';
+            window.removeEventListener('scroll', this.onScroll);
+            this.activeCardIndex = 0;
+            this.exitCounter = 0;
+            this.renderRestingState(0);
+            if (this.isIntersecting && !this.prefersReducedMotion) {
+              this.startAutoplay();
+            }
+          } else {
+            // Desktop Scroll mode
+            this.stopAutoplay();
+            if (!this.prefersReducedMotion) {
+              if (this.totalImages > 1 && this.scrollTrack) {
+                const extraVh = (this.totalImages - 1) * this.scrollStepVh;
+                this.scrollTrack.style.height = `calc(100vh + ${extraVh}vh)`;
+              } else if (this.scrollTrack) {
+                this.scrollTrack.style.height = '100vh';
+              }
+              window.addEventListener('scroll', this.onScroll, { passive: true });
+              this.requestScrollDeckUpdate();
+            } else {
+              if (this.scrollTrack) this.scrollTrack.style.height = '';
+              this.renderRestingState(0);
+            }
+          }
+        }
+
+        onResize() {
+          this.setupLayout();
+        }
+
+        onScroll() {
+          if (this.effectiveMode === 'autoplay') return;
+          if (!this.isDesktop || this.prefersReducedMotion || !this.isIntersecting) return;
+          this.requestScrollDeckUpdate();
+        }
+
+        requestScrollDeckUpdate() {
+          if (!this.rafPending) {
+            this.rafPending = true;
+            requestAnimationFrame(this.updateScrollDeck);
+          }
+        }
+
+        getRtlFactor() {
+          return document.documentElement.getAttribute('dir') === 'rtl' ? -1 : 1;
+        }
+
+        getSlot(depth) {
+          if (depth < this.stackSlots.length) {
+            return this.stackSlots[depth];
+          }
+          return this.baseSlot;
+        }
+
+        lerp(start, end, progress) {
+          return start + (end - start) * progress;
+        }
+
+        applyCardTransform(card, x, y, rot, scale, opacity, z, isFront = false) {
+          const tx = typeof x === 'number' ? `${x.toFixed(1)}px` : x;
+          const ty = typeof y === 'number' ? `${y.toFixed(1)}px` : `${y}px`;
+          card.style.transform = `translate3d(${tx}, ${ty}, 0) rotate(${rot.toFixed(2)}deg) scale(${scale.toFixed(3)})`;
+          card.style.opacity = Math.max(0, Math.min(1, opacity)).toFixed(3);
+          card.style.zIndex = z;
+          card.style.pointerEvents = isFront ? 'auto' : 'none';
+          card.classList.toggle('is-active', isFront);
+        }
+
+        /* ── Shared Card Deck Rendering ────────────────────────────────────── */
+
+        // Resting state: frontIndex is at Slot 0 (Front), others stacked behind
+        renderRestingState(frontIndex) {
+          const rtl = this.getRtlFactor();
+          const N = this.totalImages;
+
+          this.cards.forEach((card, i) => {
+            const depth = (i - frontIndex + N) % N;
+            const slot = this.getSlot(depth);
+            const isFront = depth === 0;
+
+            card.style.transition = 'none';
+            this.applyCardTransform(
+              card,
+              slot.x * rtl,
+              slot.y,
+              slot.rot * rtl,
+              slot.scale,
+              slot.opacity,
+              slot.z,
+              isFront
+            );
+          });
+        }
+
+        // Transitioning state: fromIndex exits in exitDir (-1=LEFT, +1=RIGHT)
+        // at progress t in [0, 1]. Underlying cards move from depth to depth - 1.
+        renderTransition(fromIndex, t, exitDir) {
+          const rtl = this.getRtlFactor();
+          const N = this.totalImages;
+          const clampedT = Math.max(0, Math.min(1, t));
+          const dir = exitDir * rtl; // -1: LEFT, +1: RIGHT
+
+          this.cards.forEach((card, i) => {
+            card.style.transition = 'none';
+
+            if (i === fromIndex) {
+              // Outgoing card slides laterally in exitDir
+              const xPercent = dir * clampedT * 135;
+              const yOffset = -14 * Math.sin(clampedT * Math.PI);
+              const rotDeg = dir * clampedT * 7;
+              const scaleVal = 1.0 - clampedT * 0.06;
+              // Stays visible for first 35% of travel, then fades smoothly out
+              const opacityVal = clampedT <= 0.35 ? 1.0 : Math.max(0, 1.0 - (clampedT - 0.35) / 0.65);
+              const zVal = 20; // Stays above stack during exit
+
+              this.applyCardTransform(
+                card,
+                `${xPercent.toFixed(1)}%`,
+                yOffset,
+                rotDeg,
+                scaleVal,
+                opacityVal,
+                zVal,
+                false
+              );
+            } else {
+              // Underlying cards shift forward 1 slot
+              const depthFrom = (i - fromIndex + N) % N;
+              const depthTo = depthFrom - 1;
+
+              const slotFrom = this.getSlot(depthFrom);
+              const slotTo = this.getSlot(depthTo);
+
+              const x = this.lerp(slotFrom.x, slotTo.x, clampedT) * rtl;
+              const y = this.lerp(slotFrom.y, slotTo.y, clampedT);
+              const rot = this.lerp(slotFrom.rot, slotTo.rot, clampedT) * rtl;
+              const scale = this.lerp(slotFrom.scale, slotTo.scale, clampedT);
+              const opacity = this.lerp(slotFrom.opacity, slotTo.opacity, clampedT);
+              const z = Math.round(this.lerp(slotFrom.z, slotTo.z, clampedT));
+              const isFront = (depthTo === 0 && clampedT >= 0.7);
+
+              this.applyCardTransform(card, x, y, rot, scale, opacity, z, isFront);
+            }
+          });
+        }
+
+        /* ── On Scroll Mode Driver ─────────────────────────────────────────── */
+        updateScrollDeck() {
+          this.rafPending = false;
+          if (!this.scrollTrack || this.totalImages <= 1) return;
+
+          const rect = this.scrollTrack.getBoundingClientRect();
+          const windowHeight = window.innerHeight || document.documentElement.clientHeight;
+          const totalScrollable = this.scrollTrack.offsetHeight - windowHeight;
+
+          let progressRatio = 0;
+          if (totalScrollable > 0) {
+            const scrolled = -rect.top;
+            progressRatio = Math.max(0, Math.min(1, scrolled / totalScrollable));
+          }
+
+          // Continuous progress P from 0 to totalImages - 1
+          const continuousProgress = progressRatio * (this.totalImages - 1);
+          const k = Math.min(Math.floor(continuousProgress), this.totalImages - 2);
+          const t = Math.min(1, Math.max(0, continuousProgress - k));
+
+          // Exit direction strictly alternates: Card 0 LEFT (-1), Card 1 RIGHT (+1), Card 2 LEFT (-1)...
+          const exitDir = k % 2 === 0 ? -1 : 1;
+
+          if (continuousProgress >= this.totalImages - 1) {
+            // At the end: last card is front resting
+            this.renderRestingState(this.totalImages - 1);
+            // All previously exited cards parked safely off-screen
+            for (let j = 0; j < this.totalImages - 1; j++) {
+              const dir = (j % 2 === 0 ? -1 : 1) * this.getRtlFactor();
+              this.applyCardTransform(this.cards[j], `${dir * 135}%`, 0, dir * 7, 0.94, 0, 1, false);
+            }
+          } else {
+            // Render transition between card k and card k + 1
+            this.renderTransition(k, t, exitDir);
+            // Any card j < k has already exited completely:
+            for (let j = 0; j < k; j++) {
+              const dir = (j % 2 === 0 ? -1 : 1) * this.getRtlFactor();
+              this.applyCardTransform(this.cards[j], `${dir * 135}%`, 0, dir * 7, 0.94, 0, 1, false);
+            }
+          }
+        }
+
+        /* ── Auto Play Mode Driver ─────────────────────────────────────────── */
+        startAutoplay() {
+          this.stopAutoplay();
+          if (this.totalImages <= 1 || this.prefersReducedMotion) return;
+          this.autoplayTimer = setInterval(this.stepAutoplay, this.autoplaySpeed);
+        }
+
+        stopAutoplay() {
+          if (this.autoplayTimer) {
+            clearInterval(this.autoplayTimer);
+            this.autoplayTimer = null;
+          }
+          if (this.autoplayAnimFrame) {
+            cancelAnimationFrame(this.autoplayAnimFrame);
+            this.autoplayAnimFrame = null;
+          }
+          this.isAutoplayAnimating = false;
+        }
+
+        pauseAutoplay() {
+          if (this.effectiveMode === 'autoplay') {
+            this.isPaused = true;
+          }
+        }
+
+        resumeAutoplay() {
+          if (this.effectiveMode === 'autoplay') {
+            this.isPaused = false;
+          }
+        }
+
+        stepAutoplay() {
+          if (this.totalImages <= 1 || this.isPaused || this.isAutoplayAnimating || !this.isIntersecting) {
+            return;
+          }
+
+          const fromIdx = this.activeCardIndex;
+          const nextIdx = (fromIdx + 1) % this.totalImages;
+          // Strictly alternate exit direction: Card 0 LEFT (-1), Card 1 RIGHT (+1)...
+          const exitDir = this.exitCounter % 2 === 0 ? -1 : 1;
+
+          this.isAutoplayAnimating = true;
+          const duration = 750; // ms
+          const startTime = performance.now();
+
+          const animateStep = (currentTime) => {
+            const elapsed = currentTime - startTime;
+            const rawProgress = Math.min(1, elapsed / duration);
+            // Premium smooth cubic ease-out
+            const easedProgress = 1 - Math.pow(1 - rawProgress, 3);
+
+            this.renderTransition(fromIdx, easedProgress, exitDir);
+
+            if (rawProgress < 1) {
+              this.autoplayAnimFrame = requestAnimationFrame(animateStep);
+            } else {
+              this.isAutoplayAnimating = false;
+              this.autoplayAnimFrame = null;
+              this.activeCardIndex = nextIdx;
+              this.exitCounter++;
+              this.renderRestingState(this.activeCardIndex);
+            }
+          };
+
+          this.autoplayAnimFrame = requestAnimationFrame(animateStep);
+        }
+
+        /* ── Mobile Touch Swipe Handling ───────────────────────────────────── */
+        onTouchStart(e) {
+          if (!e.touches || e.touches.length === 0) return;
+          this.touchStartX = e.touches[0].clientX;
+          this.touchStartY = e.touches[0].clientY;
+        }
+
+        onTouchEnd(e) {
+          if (!e.changedTouches || e.changedTouches.length === 0) return;
+          const deltaX = e.changedTouches[0].clientX - this.touchStartX;
+          const deltaY = e.changedTouches[0].clientY - this.touchStartY;
+
+          // Horizontal swipe threshold (> 40px and more horizontal than vertical)
+          if (Math.abs(deltaX) > 40 && Math.abs(deltaX) > Math.abs(deltaY)) {
+            if (this.effectiveMode === 'autoplay') {
+              this.stepAutoplay();
+            }
+          }
+        }
+      }
+    );
+  }
+{% endjavascript %}
+
+{% schema %}
+{
+  "name": "Sticky Story Showcase",
+  "tag": "section",
+  "class": "section-sticky-story-showcase",
+  "max_blocks": 8,
+  "settings": [
+    {
+      "type": "header",
+      "content": "Left Side Story Images"
+    },
+    {
+      "type": "select",
+      "id": "story_animation_mode",
+      "label": "Story Image Animation",
+      "options": [
+        {
+          "value": "scroll",
+          "label": "On Scroll"
+        },
+        {
+          "value": "autoplay",
+          "label": "Auto Play"
+        }
+      ],
+      "default": "scroll"
+    },
+    {
+      "type": "range",
+      "id": "autoplay_speed",
+      "min": 2,
+      "max": 8,
+      "step": 1,
+      "unit": "s",
+      "label": "Auto Play Speed",
+      "default": 3,
+      "info": "Applies when Story Image Animation is set to Auto Play"
+    },
+    {
+      "type": "select",
+      "id": "story_image_aspect_ratio",
+      "label": "Story Images Aspect Ratio",
+      "options": [
+        { "value": "1/1", "label": "Square (1:1)" },
+        { "value": "3/4", "label": "Portrait (3:4)" },
+        { "value": "4/3", "label": "Landscape (4:3)" },
+        { "value": "2/3", "label": "Tall (2:3)" }
+      ],
+      "default": "1/1"
+    },
+    {
+      "type": "image_picker",
+      "id": "image_1",
+      "label": "Story Image 1"
+    },
+    {
+      "type": "image_picker",
+      "id": "image_2",
+      "label": "Story Image 2"
+    },
+    {
+      "type": "image_picker",
+      "id": "image_3",
+      "label": "Story Image 3"
+    },
+    {
+      "type": "image_picker",
+      "id": "image_4",
+      "label": "Story Image 4"
+    },
+    {
+      "type": "image_picker",
+      "id": "image_5",
+      "label": "Story Image 5"
+    },
+    {
+      "type": "image_picker",
+      "id": "image_6",
+      "label": "Story Image 6"
+    },
+    {
+      "type": "header",
+      "content": "Right Side Visual"
+    },
+    {
+      "type": "image_picker",
+      "id": "right_image",
+      "label": "Right Side Image"
+    },
+    {
+      "type": "select",
+      "id": "right_image_aspect_ratio",
+      "label": "Right Image Aspect Ratio",
+      "options": [
+        { "value": "3/4", "label": "3:4 (Portrait)" },
+        { "value": "4/5", "label": "4:5 (Editorial)" },
+        { "value": "1/1", "label": "1:1 (Square)" },
+        { "value": "4/3", "label": "4:3 (Landscape)" },
+        { "value": "16/9", "label": "16:9 (Wide)" },
+        { "value": "2/3", "label": "2:3 (Tall)" }
+      ],
+      "default": "4/5"
+    },
+    {
+      "type": "header",
+      "content": "Desktop Scroll Pace"
+    },
+    {
+      "type": "range",
+      "id": "scroll_step",
+      "min": 50,
+      "max": 140,
+      "step": 5,
+      "unit": "vh",
+      "label": "Scroll distance per image",
+      "info": "Applies when Story Image Animation is set to On Scroll",
+      "default": 80
+    },
+    {
+      "type": "header",
+      "content": "Section Padding"
+    },
+    {
+      "type": "range",
+      "id": "padding_top",
+      "min": 0,
+      "max": 100,
+      "step": 4,
+      "unit": "px",
+      "label": "Top Padding",
+      "default": 36
+    },
+    {
+      "type": "range",
+      "id": "padding_bottom",
+      "min": 0,
+      "max": 100,
+      "step": 4,
+      "unit": "px",
+      "label": "Bottom Padding",
+      "default": 36
+    }
+  ],
+  "blocks": [
+    {
+      "type": "hotspot",
+      "name": "Product Hotspot",
+      "settings": [
+        {
+          "type": "product",
+          "id": "product",
+          "label": "Product"
+        },
+        {
+          "type": "range",
+          "id": "position_x",
+          "min": 0,
+          "max": 100,
+          "step": 1,
+          "unit": "%",
+          "label": "Horizontal Position",
+          "default": 50
+        },
+        {
+          "type": "range",
+          "id": "position_y",
+          "min": 0,
+          "max": 100,
+          "step": 1,
+          "unit": "%",
+          "label": "Vertical Position",
+          "default": 50
+        },
+        {
+          "type": "text",
+          "id": "label",
+          "label": "Hotspot Label"
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "Sticky Story Showcase",
+      "blocks": [
+        {
+          "type": "hotspot",
+          "settings": {
+            "position_x": 38,
+            "position_y": 44,
+            "label": "Trench Coat"
+          }
+        },
+        {
+          "type": "hotspot",
+          "settings": {
+            "position_x": 62,
+            "position_y": 76,
+            "label": "Leather Boots"
+          }
+        }
+      ]
+    }
+  ]
+}
+{% endschema %}

@@ -15,20 +15,23 @@
         "slide_LRYi3H": {
           "type": "slide",
           "settings": {
+            "image": "shopify://shop_images/about-hero-bg.jpg",
             "overlay_opacity": 20,
+            "content_backdrop_color": "#FFFFFF",
+            "content_backdrop_opacity": 19,
             "subheading": "New Arrivals",
             "subheading_font_size": 14,
-            "subheading_font_weight": "700",
+            "subheading_font_weight": "500",
             "subheading_color": "#000000",
             "heading": "Elevate Your Style",
             "heading_font_size": 64,
-            "heading_font_weight": "700",
-            "heading_color": "#ffffff",
+            "heading_font_weight": "900",
+            "heading_color": "#000000",
             "text": "<p>Explore our latest seasonal arrivals crafted with premium fabrics.</p>",
             "text_font_size": 16,
             "text_font_weight": "400",
-            "text_color": "#ffffff",
-            "content_alignment": "center",
+            "text_color": "#000000",
+            "content_alignment": "left",
             "button_label_1": "SHOP NOW",
             "button_link_1": "",
             "button_1_style": "primary",
@@ -43,19 +46,22 @@
         "slide_DNCVRj": {
           "type": "slide",
           "settings": {
+            "image": "shopify://shop_images/about-story-4.jpg",
             "overlay_opacity": 20,
+            "content_backdrop_color": "#FFFFFF",
+            "content_backdrop_opacity": 19,
             "subheading": "New Arrivals",
             "subheading_font_size": 14,
-            "subheading_font_weight": "700",
+            "subheading_font_weight": "500",
             "subheading_color": "#000000",
             "heading": "Elevate Your Style",
             "heading_font_size": 64,
-            "heading_font_weight": "700",
-            "heading_color": "#ffffff",
+            "heading_font_weight": "900",
+            "heading_color": "#000000",
             "text": "<p>Explore our latest seasonal arrivals crafted with premium fabrics.</p>",
             "text_font_size": 16,
             "text_font_weight": "400",
-            "text_color": "#ffffff",
+            "text_color": "#000000",
             "content_alignment": "left",
             "button_label_1": "SHOP NOW",
             "button_link_1": "",
@@ -71,20 +77,54 @@
         "slide_3gfGdD": {
           "type": "slide",
           "settings": {
+            "image": "shopify://shop_images/Instapost_4.png",
             "overlay_opacity": 20,
+            "content_backdrop_color": "#FFFFFF",
+            "content_backdrop_opacity": 19,
             "subheading": "New Arrivals",
             "subheading_font_size": 14,
-            "subheading_font_weight": "700",
+            "subheading_font_weight": "500",
             "subheading_color": "#000000",
             "heading": "Elevate Your Style",
             "heading_font_size": 64,
-            "heading_font_weight": "700",
-            "heading_color": "#ffffff",
+            "heading_font_weight": "900",
+            "heading_color": "#000000",
             "text": "<p>Explore our latest seasonal arrivals crafted with premium fabrics.</p>",
             "text_font_size": 16,
             "text_font_weight": "400",
-            "text_color": "#ffffff",
-            "content_alignment": "right",
+            "text_color": "#000000",
+            "content_alignment": "left",
+            "button_label_1": "SHOP NOW",
+            "button_link_1": "",
+            "button_1_style": "primary",
+            "button_1_size": "md",
+            "button_label_2": "View Details",
+            "button_link_2": "",
+            "button_2_style": "outline",
+            "button_2_size": "md",
+            "hide_button_2_mobile": true
+          }
+        },
+        "slide_bdxaG9": {
+          "type": "slide",
+          "settings": {
+            "image": "shopify://shop_images/about-story-3.jpg",
+            "overlay_opacity": 20,
+            "content_backdrop_color": "#FFFFFF",
+            "content_backdrop_opacity": 19,
+            "subheading": "New Arrivals",
+            "subheading_font_size": 14,
+            "subheading_font_weight": "500",
+            "subheading_color": "#000000",
+            "heading": "Elevate Your Style",
+            "heading_font_size": 64,
+            "heading_font_weight": "900",
+            "heading_color": "#000000",
+            "text": "<p>Explore our latest seasonal arrivals crafted with premium fabrics.</p>",
+            "text_font_size": 16,
+            "text_font_weight": "400",
+            "text_color": "#000000",
+            "content_alignment": "left",
             "button_label_1": "SHOP NOW",
             "button_link_1": "",
             "button_1_style": "primary",
@@ -100,7 +140,8 @@
       "block_order": [
         "slide_LRYi3H",
         "slide_DNCVRj",
-        "slide_3gfGdD"
+        "slide_3gfGdD",
+        "slide_bdxaG9"
       ],
       "settings": {
         "hero_style": "hover_panels",
@@ -132,6 +173,8 @@
         "hide_button_2_mobile": true,
         "layout_style": "card",
         "card_border_radius": 16,
+        "hover_backdrop_color": "#121212",
+        "hover_backdrop_opacity": 58,
         "show_container_mobile": false,
         "content_alignment_mobile": "center"
       }
@@ -200,6 +243,50 @@
     },
     "category_cards": {
       "type": "category-cards",
+      "blocks": {
+        "category_7Ejzk9": {
+          "type": "category",
+          "settings": {
+            "collection": "women",
+            "image": "shopify://shop_images/categorycard1.png",
+            "title": "",
+            "button_text": "SHOP NOW"
+          }
+        },
+        "category_HtVBRz": {
+          "type": "category",
+          "settings": {
+            "collection": "men",
+            "image": "shopify://shop_images/Categorycard2.png",
+            "title": "",
+            "button_text": "SHOP NOW"
+          }
+        },
+        "category_7mTyn4": {
+          "type": "category",
+          "settings": {
+            "collection": "accessories",
+            "image": "shopify://shop_images/Categorycard3.png",
+            "title": "",
+            "button_text": "SHOP NOW"
+          }
+        },
+        "category_AqxAii": {
+          "type": "category",
+          "settings": {
+            "collection": "shoes",
+            "image": "shopify://shop_images/Categorycard4.png",
+            "title": "",
+            "button_text": "SHOP NOW"
+          }
+        }
+      },
+      "block_order": [
+        "category_7Ejzk9",
+        "category_HtVBRz",
+        "category_7mTyn4",
+        "category_AqxAii"
+      ],
       "settings": {
         "title": "",
         "image_ratio": "1/1",
@@ -213,7 +300,7 @@
         "subtitle": "NEW ARRIVALS",
         "title": "Handpicked Just For You",
         "heading_alignment": "left",
-        "collection": "",
+        "collection": "new-in",
         "products_to_show": 5,
         "columns_desktop": 5,
         "columns_mobile": "2",
@@ -226,6 +313,8 @@
     "promo_banner": {
       "type": "promo-banner",
       "settings": {
+        "image_1": "shopify://shop_images/Promo_left_side.png",
+        "image_2": "shopify://shop_images/Promo_right_side.png",
         "subtitle": "CRAFTED TO PERFECTION",
         "title": "Modern Fashion, Created to Last",
         "description": "Each piece is a work of art, designed to celebrate life's most precious moments.",
@@ -287,6 +376,112 @@
       ],
       "settings": {}
     },
+    "scroll_reveal_gallery_zcWGRC": {
+      "type": "scroll-reveal-gallery",
+      "blocks": {
+        "gallery_item_Hh9N8B": {
+          "type": "gallery_item",
+          "settings": {
+            "image": "shopify://shop_images/CashmereSweater_4d326118-aa8d-4703-887f-5930d51a724a.png",
+            "badge": "LOOK 01",
+            "subtitle": "SS26 EDITORIAL",
+            "title": "Tailored Trench Coat",
+            "description": "Crafted from double-faced Italian wool with an unstructured drape for effortless layering.",
+            "button_label": "EXPLORE LOOK",
+            "button_link": "shopify://collections/men",
+            "button_style": "primary"
+          }
+        },
+        "gallery_item_gV7UBX": {
+          "type": "gallery_item",
+          "settings": {
+            "image": "shopify://shop_images/ClassicDenimJacket_bd597269-c2ac-4f52-a677-d7f2604902c3.png",
+            "badge": "LOOK 01",
+            "subtitle": "SS26 EDITORIAL",
+            "title": "Tailored Trench Coat",
+            "description": "Crafted from double-faced Italian wool with an unstructured drape for effortless layering.",
+            "button_label": "EXPLORE LOOK",
+            "button_link": "shopify://collections/women",
+            "button_style": "primary"
+          }
+        },
+        "gallery_item_hhzBUr": {
+          "type": "gallery_item",
+          "settings": {
+            "image": "shopify://shop_images/TailoredBlazer_58868705-dbf3-4f38-ae90-493ca2937274.png",
+            "badge": "LOOK 02",
+            "subtitle": "BESPOKE TAILORING",
+            "title": "Structured Wool Blazer",
+            "description": "Sharp architectural silhouette with bespoke horn buttons and a contoured waistline.",
+            "button_label": "SHOP THE BLAZER",
+            "button_link": "shopify://products/tailored-blazer-premium-formal-business-blazer",
+            "button_style": "primary"
+          }
+        },
+        "gallery_item_HjCnc9": {
+          "type": "gallery_item",
+          "settings": {
+            "image": "shopify://shop_images/OversizedKnitSweater_199ef7ef-06f6-4497-8352-f71cf1f0649c.png",
+            "badge": "LOOK 03",
+            "subtitle": "SUSTAINABLE LUXURY",
+            "title": "Pure Cashmere Knitwear",
+            "description": "Grade-A Mongolian cashmere spun into an ultra-soft, relaxed crewneck for year-round comfort.",
+            "button_label": "VIEW KNITWEAR",
+            "button_link": "shopify://products/oversized-knit-sweater-womens-soft-relaxed-fit-knit-pullover",
+            "button_style": "primary"
+          }
+        },
+        "gallery_item_Ab3tde": {
+          "type": "gallery_item",
+          "settings": {
+            "image": "shopify://shop_images/Pink_Wide_Leg_Trousers.png",
+            "badge": "LOOK 04",
+            "subtitle": "TIMELESS SILHOUETTES",
+            "title": "Pleated Wide-Leg Trouser",
+            "description": "Fluid drape featuring subtle reverse pleats, tailored to transition effortlessly from day to evening.",
+            "button_label": "EXPLORE TROUSERS",
+            "button_link": "shopify://products/wide-leg-trousers-womens-high-rise-wide-leg-pants",
+            "button_style": "primary"
+          }
+        }
+      },
+      "block_order": [
+        "gallery_item_Hh9N8B",
+        "gallery_item_gV7UBX",
+        "gallery_item_hhzBUr",
+        "gallery_item_HjCnc9",
+        "gallery_item_Ab3tde"
+      ],
+      "name": "Scroll Reveal Gallery",
+      "settings": {
+        "subheading": "CURATED EDITORIAL",
+        "title": "Scroll Reveal Gallery",
+        "description": "<p>Experience our signature silhouettes in motion. Scroll to explore each elevated look from the new collection.</p>",
+        "scroll_hint_text": "Scroll down to reveal",
+        "scroll_step": 85,
+        "diagonal_offset_x": 55,
+        "diagonal_offset_y": 22,
+        "diagonal_rotation": 4,
+        "bg_color": "#ece8e8",
+        "background_image": "shopify://shop_images/Promo_right_side.png",
+        "background_overlay_color": "#FFFFFF",
+        "background_overlay_opacity": 45,
+        "show_editorial_header": true,
+        "show_progress": true,
+        "show_scroll_hint": true,
+        "show_mobile_arrows": true,
+        "mobile_arrow_bg": "#ffffff",
+        "mobile_arrow_color": "#111111",
+        "mobile_arrow_border": "#ffffff",
+        "text_color": "#000000",
+        "text_muted_color": "#000000",
+        "accent_color": "#000000",
+        "card_bg": "#000000",
+        "card_text": "#ffffff",
+        "padding_top": 0,
+        "padding_bottom": 0
+      }
+    },
     "explore_collections": {
       "type": "explore-collections",
       "blocks": {
@@ -294,6 +489,7 @@
           "type": "collection",
           "settings": {
             "collection": "",
+            "image": "shopify://shop_images/ExploreColletion1.png",
             "title": "Everyday Essentials",
             "subtitle": "Effortless & Comfortable"
           }
@@ -302,6 +498,7 @@
           "type": "collection",
           "settings": {
             "collection": "",
+            "image": "shopify://shop_images/ExploreColletion2.png",
             "title": "New Arrivals",
             "subtitle": "Fresh Styles Weekly"
           }
@@ -310,6 +507,7 @@
           "type": "collection",
           "settings": {
             "collection": "",
+            "image": "shopify://shop_images/ExploreColletion3.png",
             "title": "Summer Collection",
             "subtitle": "Light, Breezy & Chic"
           }
@@ -318,6 +516,7 @@
           "type": "collection",
           "settings": {
             "collection": "",
+            "image": "shopify://shop_images/ExploreColletion4.png",
             "title": "Denim Edit",
             "subtitle": "Timeless & Versatile"
           }
@@ -326,6 +525,7 @@
           "type": "collection",
           "settings": {
             "collection": "",
+            "image": "shopify://shop_images/ExploreColletion5.png",
             "title": "Accessories",
             "subtitle": "Complete Your Look"
           }
@@ -351,6 +551,7 @@
       "type": "newsletter",
       "custom_css": [],
       "settings": {
+        "image": "shopify://shop_images/Newsletter.png",
         "subtitle": "JOIN THE LUMIÈRE CLUB",
         "title": "Be the First to Know",
         "description": "Get early access to new collections, exclusive offers, and insider updates.",
@@ -369,12 +570,77 @@
         "badge_3": "Style Inspiration"
       }
     },
+    "countdown_timer_Dhypnc": {
+      "type": "countdown-timer",
+      "name": "Countdown banner",
+      "settings": {
+        "bg_image": "shopify://shop_images/about-hero-bg.jpg",
+        "target_date": "2026-12-31",
+        "target_time": "23:59:59",
+        "heading": "Limited Time Offer",
+        "subheading": "Don't miss out! Special discounts end soon.",
+        "button_label": "SHOP THE SALE",
+        "button_link": "",
+        "expired_message": "This promotion has ended.",
+        "bg_color": "#111111",
+        "text_color": "#FFFFFF",
+        "accent_color": "#D4A373",
+        "digit_bg_color": "rgba(255, 255, 255, 0.1)",
+        "padding_top": 48,
+        "padding_bottom": 48
+      }
+    },
+    "sticky_story_showcase_QErXnH": {
+      "type": "sticky-story-showcase",
+      "blocks": {
+        "hotspot_awbBww": {
+          "type": "hotspot",
+          "settings": {
+            "product": "tailored-blazer-womens-elegant-office-formal-blazer",
+            "position_x": 38,
+            "position_y": 44,
+            "label": "Trench Coat"
+          }
+        },
+        "hotspot_ncyKbk": {
+          "type": "hotspot",
+          "settings": {
+            "product": "leather-loafers-premium-genuine-leather-slip-on-shoes",
+            "position_x": 62,
+            "position_y": 76,
+            "label": "Leather Boots"
+          }
+        }
+      },
+      "block_order": [
+        "hotspot_awbBww",
+        "hotspot_ncyKbk"
+      ],
+      "name": "Sticky Story Showcase",
+      "settings": {
+        "story_animation_mode": "autoplay",
+        "autoplay_speed": 2,
+        "story_image_aspect_ratio": "1/1",
+        "image_1": "shopify://shop_images/Instapost_1.png",
+        "image_2": "shopify://shop_images/OversizedKnitSweater_199ef7ef-06f6-4497-8352-f71cf1f0649c.png",
+        "image_3": "shopify://shop_images/Instapost_3.png",
+        "image_4": "shopify://shop_images/QuarterZipSweater.png",
+        "image_5": "shopify://shop_images/Oxford_Cotton_Shirt.png",
+        "image_6": "shopify://shop_images/Sunglassesforwomen1.png",
+        "right_image": "shopify://shop_images/about-hero-bg.jpg",
+        "right_image_aspect_ratio": "4/5",
+        "scroll_step": 80,
+        "padding_top": 0,
+        "padding_bottom": 0
+      }
+    },
     "instagram_gallery": {
       "type": "instagram-gallery",
       "blocks": {
         "insta_1": {
           "type": "instagram_post",
           "settings": {
+            "image": "shopify://shop_images/Instapost_1.png",
             "link": "",
             "caption": ""
           }
@@ -382,6 +648,7 @@
         "insta_2": {
           "type": "instagram_post",
           "settings": {
+            "image": "shopify://shop_images/Instapost_2.png",
             "link": "",
             "caption": ""
           }
@@ -389,6 +656,7 @@
         "insta_3": {
           "type": "instagram_post",
           "settings": {
+            "image": "shopify://shop_images/Instapost_3.png",
             "link": "",
             "caption": ""
           }
@@ -396,6 +664,7 @@
         "insta_4": {
           "type": "instagram_post",
           "settings": {
+            "image": "shopify://shop_images/Instapost_4.png",
             "link": "",
             "caption": ""
           }
@@ -403,6 +672,7 @@
         "insta_5": {
           "type": "instagram_post",
           "settings": {
+            "image": "shopify://shop_images/Instapost_5.png",
             "link": "",
             "caption": ""
           }
@@ -410,6 +680,7 @@
         "instagram_post_cKbjhQ": {
           "type": "instagram_post",
           "settings": {
+            "image": "shopify://shop_images/Instapost_6.png",
             "link": "",
             "caption": ""
           }
@@ -433,16 +704,6 @@
         "columns_mobile": "2"
       }
     },
-    "recent_blog_posts_TxPkBy": {
-      "type": "recent-blog-posts",
-      "name": "Recent Blog Posts",
-      "settings": {
-        "heading": "Recently Viewed Articles",
-        "subtitle": "Articles you've recently read",
-        "articles_to_show": 4,
-        "columns_desktop": 4
-      }
-    },
     "recently_viewed_products": {
       "type": "recently-viewed-products",
       "settings": {
@@ -455,6 +716,16 @@
         "border_radius": 12,
         "padding_top": 32,
         "padding_bottom": 32
+      }
+    },
+    "recent_blog_posts_TxPkBy": {
+      "type": "recent-blog-posts",
+      "name": "Recent Blog Posts",
+      "settings": {
+        "heading": "Recently Viewed Articles",
+        "subtitle": "Articles you've recently read",
+        "articles_to_show": 4,
+        "columns_desktop": 4
       }
     },
     "bottom_usp_bar": {
@@ -509,8 +780,11 @@
     "featured_collection",
     "promo_banner",
     "brand_features",
+    "scroll_reveal_gallery_zcWGRC",
     "explore_collections",
     "newsletter",
+    "countdown_timer_Dhypnc",
+    "sticky_story_showcase_QErXnH",
     "instagram_gallery",
     "recently_viewed_products",
     "recent_blog_posts_TxPkBy",

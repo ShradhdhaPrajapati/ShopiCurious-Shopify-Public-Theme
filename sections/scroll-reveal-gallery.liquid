@@ -1,0 +1,1731 @@
+{%- comment -%}
+  ShopziCurious - Scroll Reveal Gallery Section
+  Desktop: Controlled by PAGE SCROLL with a diagonal layered card deck (inspired by CodePen wBooYGr).
+  Mobile: Horizontal touch carousel with CSS scroll snap, swipe guard, prev/next arrows, and pagination dots.
+{%- endcomment -%}
+
+{%- liquid
+  assign items_count = section.blocks.size
+  if items_count == 0
+    assign items_count = 4
+  endif
+
+  if items_count < 10
+    assign formatted_total = '0' | append: items_count
+  else
+    assign formatted_total = items_count | append: ''
+  endif
+
+  assign scroll_step = section.settings.scroll_step | default: 85
+  assign diag_x = section.settings.diagonal_offset_x | default: 55
+  assign diag_y = section.settings.diagonal_offset_y | default: 22
+  assign diag_rot = section.settings.diagonal_rotation | default: 4
+  assign diag_scale = section.settings.diagonal_scale_step | default: 0.07
+
+  assign has_editorial_header = section.settings.show_editorial_header
+  assign has_progress_or_hint = false
+  if section.settings.show_progress or section.settings.show_scroll_hint
+    assign has_progress_or_hint = true
+  endif
+
+  assign container_classes = 'szc-srg__container page-width'
+  if has_editorial_header == false and has_progress_or_hint == false
+    assign container_classes = container_classes | append: ' szc-srg__container--cards-only'
+  elsif has_editorial_header == false
+    assign container_classes = container_classes | append: ' szc-srg__container--no-header'
+  endif
+-%}
+
+<section
+  id="ScrollRevealGallery-{{ section.id }}"
+  class="szc-scroll-reveal-gallery"
+  data-section-id="{{ section.id }}"
+  style="
+    --szc-srg-bg: {{ section.settings.bg_color | default: '#0d0f12' }};
+    --szc-srg-text: {{ section.settings.text_color | default: '#ffffff' }};
+    --szc-srg-text-muted: {{ section.settings.text_muted_color | default: '#a0a0a0' }};
+    --szc-srg-accent: {{ section.settings.accent_color | default: '#d4a373' }};
+    --szc-srg-card-bg: {{ section.settings.card_bg | default: '#161920' }};
+    --szc-srg-card-text: {{ section.settings.card_text | default: '#ffffff' }};
+    --szc-srg-card-aspect: {{ section.settings.card_aspect_ratio | default: '3/4' }};
+    --szc-srg-diag-x: {{ diag_x }}px;
+    --szc-srg-diag-y: {{ diag_y }}px;
+    --szc-srg-diag-rot: {{ diag_rot }}deg;
+    --szc-srg-diag-scale: {{ diag_scale }};
+    --szc-srg-mobile-arrow-bg: {{ section.settings.mobile_arrow_bg | default: '#ffffff' }};
+    --szc-srg-mobile-arrow-color: {{ section.settings.mobile_arrow_color | default: '#111111' }};
+    --szc-srg-mobile-arrow-border: {{ section.settings.mobile_arrow_border | default: '#ffffff' }};
+    --szc-srg-overlay-bg: {{ section.settings.background_overlay_color | default: '#000000' }};
+    --szc-srg-overlay-opacity: {{ section.settings.background_overlay_opacity | default: 0 | divided_by: 100.0 }};
+    --szc-srg-pt: {{ section.settings.padding_top | default: 0 }}px;
+    --szc-srg-pb: {{ section.settings.padding_bottom | default: 0 }}px;
+  "
+>
+  <scroll-reveal-gallery
+    class="szc-srg"
+    data-items-count="{{ items_count }}"
+    data-scroll-step="{{ scroll_step }}"
+    data-diag-x="{{ diag_x }}"
+    data-diag-y="{{ diag_y }}"
+    data-diag-rot="{{ diag_rot }}"
+    data-diag-scale="{{ diag_scale }}"
+  >
+    <!-- Outer Scroll Track (Defines total scroll distance on desktop) -->
+    <div class="szc-srg__scroll-track">
+      <!-- Sticky Viewport Stage (Pins to top of viewport during desktop scroll) -->
+      <div class="szc-srg__sticky-viewport">
+        <!-- Background Image & Overlay -->
+        {%- if section.settings.background_image != blank -%}
+          <div class="szc-srg__bg" aria-hidden="true">
+            {{
+              section.settings.background_image
+              | image_url: width: 2800
+              | image_tag:
+                loading: 'lazy',
+                class: 'szc-srg__bg-img',
+                alt: section.settings.background_image.alt | default: section.settings.title | escape
+            }}
+            {%- if section.settings.background_overlay_opacity > 0 -%}
+              <div class="szc-srg__bg-overlay"></div>
+            {%- endif -%}
+          </div>
+        {%- elsif section.settings.background_overlay_opacity > 0 -%}
+          <div class="szc-srg__bg" aria-hidden="true">
+            <div class="szc-srg__bg-overlay"></div>
+          </div>
+        {%- endif -%}
+
+        <div class="{{ container_classes }}">
+
+          <!-- Sticky Editorial Header & Scroll Progress -->
+          {%- if has_editorial_header or has_progress_or_hint -%}
+            <div class="szc-srg__editorial">
+              {%- if has_editorial_header -%}
+                <div class="szc-srg__editorial-header">
+                  {%- if section.settings.subheading != blank -%}
+                    <div class="szc-srg__eyebrow">
+                      <span class="szc-srg__eyebrow-dot" aria-hidden="true"></span>
+                      <span class="szc-srg__eyebrow-text">{{ section.settings.subheading }}</span>
+                    </div>
+                  {%- endif -%}
+
+                  {%- if section.settings.title != blank -%}
+                    <h2 class="szc-srg__heading">{{ section.settings.title }}</h2>
+                  {%- endif -%}
+
+                  {%- if section.settings.description != blank -%}
+                    <div class="szc-srg__description">
+                      {{ section.settings.description }}
+                    </div>
+                  {%- endif -%}
+                </div>
+              {%- endif -%}
+
+              <!-- Desktop Progress Bar & Counter -->
+              {%- if has_progress_or_hint -%}
+                <div class="szc-srg__progress" aria-hidden="true">
+                  {%- if section.settings.show_progress -%}
+                    <div class="szc-srg__counter">
+                      <span class="szc-srg__counter-current" data-counter-current>01</span>
+                      <span class="szc-srg__counter-divider">/</span>
+                      <span class="szc-srg__counter-total">{{ formatted_total }}</span>
+                    </div>
+
+                    <div class="szc-srg__progress-track">
+                      <div class="szc-srg__progress-bar" data-progress-bar style="width: calc(100% / {{ items_count }});"></div>
+                    </div>
+                  {%- endif -%}
+
+                  <!-- Animated Desktop Scroll Cue -->
+                  {%- if section.settings.show_scroll_hint -%}
+                    <div class="szc-srg__scroll-hint">
+                      <span class="szc-srg__scroll-hint-mouse" aria-hidden="true">
+                        <span class="szc-srg__scroll-hint-wheel"></span>
+                      </span>
+                      <span class="szc-srg__scroll-hint-label">
+                        {{ section.settings.scroll_hint_text | default: 'Scroll down to reveal' }}
+                      </span>
+                    </div>
+                  {%- endif -%}
+                </div>
+              {%- endif -%}
+            </div>
+          {%- endif -%}
+
+          <!-- Cards Stage (Diagonal 3D Deck on Desktop, Scroll-Snap Track on Mobile) -->
+          <div class="szc-srg__stage" data-gallery-stage>
+            <div
+              class="szc-srg__cards"
+              data-cards-track
+              role="region"
+              aria-label="{{ section.settings.title | default: 'Scroll Reveal Gallery' | escape }}"
+            >
+              {%- if section.blocks.size > 0 -%}
+                {%- for block in section.blocks -%}
+                  {%- liquid
+                    if forloop.index < 10
+                      assign card_num = '0' | append: forloop.index
+                    else
+                      assign card_num = forloop.index | append: ''
+                    endif
+                  -%}
+                  <article
+                    class="szc-srg__card{% if forloop.first %} is-active{% endif %}"
+                    data-card-index="{{ forloop.index0 }}"
+                    {{ block.shopify_attributes }}
+                  >
+                    <div class="szc-srg__card-inner">
+                      <!-- Card Image / Media -->
+                      <div class="szc-srg__card-media">
+                        {%- if block.settings.image != blank -%}
+                          {{
+                            block.settings.image
+                            | image_url: width: 1400
+                            | image_tag:
+                              loading: 'lazy',
+                              class: 'szc-srg__card-image',
+                              alt: block.settings.image.alt | default: block.settings.title | escape
+                          }}
+                        {%- else -%}
+                          {%- capture placeholder_idx -%}{% cycle 1, 2, 3, 4 %}{%- endcapture -%}
+                          {%- capture placeholder_svg -%}collection-{{ placeholder_idx }}{%- endcapture -%}
+                          <div class="szc-srg__card-placeholder">
+                            {{ placeholder_svg | placeholder_svg_tag: 'szc-placeholder-svg szc-srg__placeholder-svg' }}
+                          </div>
+                        {%- endif -%}
+                        <div class="szc-srg__card-scrim" aria-hidden="true"></div>
+                      </div>
+
+                      <!-- Card Top Header Tag -->
+                      <div class="szc-srg__card-badge-row">
+                        {%- if block.settings.badge != blank -%}
+                          <span class="szc-srg__card-badge">{{ block.settings.badge }}</span>
+                        {%- endif -%}
+                        <span class="szc-srg__card-index-tag">{{ card_num }}</span>
+                      </div>
+
+                      <!-- Card Bottom Content Overlay -->
+                      <div class="szc-srg__card-content">
+                        {%- if block.settings.subtitle != blank -%}
+                          <p class="szc-srg__card-subtitle">{{ block.settings.subtitle }}</p>
+                        {%- endif -%}
+
+                        {%- if block.settings.title != blank -%}
+                          <h3 class="szc-srg__card-title">{{ block.settings.title }}</h3>
+                        {%- endif -%}
+
+                        {%- if block.settings.description != blank -%}
+                          <p class="szc-srg__card-desc">{{ block.settings.description }}</p>
+                        {%- endif -%}
+
+                        {%- if block.settings.button_label != blank -%}
+                          <div class="szc-srg__card-action">
+                            {% render 'button',
+                              label: block.settings.button_label,
+                              url: block.settings.button_link,
+                              style: block.settings.button_style | default: 'primary',
+                              class: 'szc-srg__card-btn'
+                            %}
+                          </div>
+                        {%- endif -%}
+                      </div>
+                    </div>
+                  </article>
+                {%- endfor -%}
+              {%- else -%}
+                <!-- Default 4 Luxury Editorial Demo Cards -->
+                {%- for i in (1..4) -%}
+                  {%- liquid
+                    assign demo_num = '0' | append: i
+                    case i
+                      when 1
+                        assign demo_badge = 'LOOK 01'
+                        assign demo_sub = 'SS26 EDITORIAL'
+                        assign demo_title = 'Tailored Trench Coat'
+                        assign demo_desc = 'Engineered from double-faced bonded wool with an unstructured drape for effortless layering.'
+                        assign demo_btn = 'DISCOVER LOOK'
+                      when 2
+                        assign demo_badge = 'LOOK 02'
+                        assign demo_sub = 'BESPOKE TAILORING'
+                        assign demo_title = 'Structured Wool Blazer'
+                        assign demo_desc = 'Clean architectural shoulders with bespoke horn button detailing and a tailored waistline.'
+                        assign demo_btn = 'SHOP THE BLAZER'
+                      when 3
+                        assign demo_badge = 'LOOK 03'
+                        assign demo_sub = 'SUSTAINABLE LUXURY'
+                        assign demo_title = 'Pure Cashmere Knitwear'
+                        assign demo_desc = 'Grade-A Mongolian cashmere spun into an ultra-soft, relaxed crewneck for year-round warmth.'
+                        assign demo_btn = 'VIEW KNITWEAR'
+                      when 4
+                        assign demo_badge = 'LOOK 04'
+                        assign demo_sub = 'TIMELESS SILHOUETTE'
+                        assign demo_title = 'Pleated Wide-Leg Trouser'
+                        assign demo_desc = 'Fluid drape featuring subtle reverse pleats, designed to transition gracefully from desk to dinner.'
+                        assign demo_btn = 'EXPLORE TROUSERS'
+                    endcase
+                  -%}
+                  <article class="szc-srg__card{% if forloop.first %} is-active{% endif %}" data-card-index="{{ forloop.index0 }}">
+                    <div class="szc-srg__card-inner">
+                      <div class="szc-srg__card-media">
+                        {%- capture demo_placeholder -%}collection-{{ i }}{%- endcapture -%}
+                        <div class="szc-srg__card-placeholder">
+                          {{ demo_placeholder | placeholder_svg_tag: 'szc-placeholder-svg szc-srg__placeholder-svg' }}
+                        </div>
+                        <div class="szc-srg__card-scrim" aria-hidden="true"></div>
+                      </div>
+
+                      <div class="szc-srg__card-badge-row">
+                        <span class="szc-srg__card-badge">{{ demo_badge }}</span>
+                        <span class="szc-srg__card-index-tag">{{ demo_num }}</span>
+                      </div>
+
+                      <div class="szc-srg__card-content">
+                        <p class="szc-srg__card-subtitle">{{ demo_sub }}</p>
+                        <h3 class="szc-srg__card-title">{{ demo_title }}</h3>
+                        <p class="szc-srg__card-desc">{{ demo_desc }}</p>
+                        <div class="szc-srg__card-action">
+                          {% render 'button',
+                            label: demo_btn,
+                            url: '/collections/all',
+                            style: 'primary',
+                            class: 'szc-srg__card-btn'
+                          %}
+                        </div>
+                      </div>
+                    </div>
+                  </article>
+                {%- endfor -%}
+              {%- endif -%}
+            </div>
+          </div>
+
+          <!-- Mobile Controls (Arrows, Pagination Dots & Counter) -->
+          <div class="szc-srg__mobile-controls">
+            {%- if section.settings.show_mobile_arrows -%}
+              <button
+                type="button"
+                class="szc-srg__nav-btn szc-srg__nav-btn--prev"
+                data-mobile-prev
+                aria-label="{{ 'general.pagination.previous' | t: default: 'Previous card' }}"
+              >
+                {% render 'icon', icon: 'chevron-left', class: 'szc-srg__nav-icon' %}
+              </button>
+            {%- endif -%}
+
+            <div class="szc-srg__dots" data-mobile-dots role="tablist" aria-label="Gallery slides">
+              {%- for i in (1..items_count) -%}
+                <button
+                  type="button"
+                  class="szc-srg__dot{% if forloop.first %} is-active{% endif %}"
+                  data-dot-index="{{ forloop.index0 }}"
+                  role="tab"
+                  aria-selected="{% if forloop.first %}true{% else %}false{% endif %}"
+                  aria-label="Slide {{ forloop.index }} of {{ items_count }}"
+                >
+                  <span class="visually-hidden">Slide {{ forloop.index }}</span>
+                </button>
+              {%- endfor -%}
+            </div>
+
+            {%- if section.settings.show_mobile_arrows -%}
+              <button
+                type="button"
+                class="szc-srg__nav-btn szc-srg__nav-btn--next"
+                data-mobile-next
+                aria-label="{{ 'general.pagination.next' | t: default: 'Next card' }}"
+              >
+                {% render 'icon', icon: 'chevron-right', class: 'szc-srg__nav-icon' %}
+              </button>
+            {%- endif -%}
+
+            <div class="szc-srg__mobile-counter" aria-hidden="true">
+              <span data-mobile-counter-current>01</span> / <span>{{ formatted_total }}</span>
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </div>
+  </scroll-reveal-gallery>
+</section>
+
+{% stylesheet %}
+  /* ==========================================================================
+     Scroll Reveal Gallery Component Styles
+     ========================================================================== */
+
+  .szc-scroll-reveal-gallery {
+    position: relative;
+    background-color: var(--szc-srg-bg, #0d0f12);
+    color: var(--szc-srg-text, #ffffff);
+    padding-top: var(--szc-srg-pt, 0);
+    padding-bottom: var(--szc-srg-pb, 0);
+    overflow: clip;
+  }
+
+  .szc-srg {
+    display: block;
+    position: relative;
+    width: 100%;
+  }
+
+  /* ── Background Media & Overlay ────────────────────────────────────────── */
+  .szc-srg__bg {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+    pointer-events: none;
+    z-index: 0;
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+  }
+
+  .szc-srg__bg-img {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: center;
+    display: block;
+    pointer-events: none;
+  }
+
+  .szc-srg__bg-overlay {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    background-color: var(--szc-srg-overlay-bg, #000000);
+    opacity: var(--szc-srg-overlay-opacity, 0);
+    pointer-events: none;
+  }
+
+  /* ── Desktop Scroll Track & Sticky Viewport ────────────────────────────── */
+  .szc-srg__scroll-track {
+    position: relative;
+    width: 100%;
+  }
+
+  .szc-srg__sticky-viewport {
+    position: relative;
+    width: 100%;
+  }
+
+  @media (min-width: 768px) {
+    .szc-srg__sticky-viewport {
+      position: sticky;
+      top: 0;
+      height: 100vh;
+      min-height: 600px;
+      display: flex;
+      align-items: center;
+      overflow: hidden;
+    }
+  }
+
+  .szc-srg__container {
+    position: relative;
+    z-index: 2;
+    width: 100%;
+    margin-left: auto;
+    margin-right: auto;
+    box-sizing: border-box;
+  }
+
+  @media (min-width: 768px) {
+    .szc-srg__container {
+      display: grid;
+      grid-template-columns: minmax(320px, 420px) 1fr;
+      column-gap: 48px;
+      align-items: center;
+      height: 100%;
+      padding-top: var(--szc-space-6, 24px);
+      padding-bottom: var(--szc-space-6, 24px);
+    }
+
+    .szc-srg__container--no-header {
+      grid-template-columns: 240px 1fr;
+      column-gap: 40px;
+    }
+
+    .szc-srg__container--cards-only {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+
+    .szc-srg__container--cards-only .szc-srg__stage {
+      max-width: 700px;
+      margin: 0 auto;
+    }
+  }
+
+  @media (min-width: 1200px) {
+    .szc-srg__container:not(.szc-srg__container--no-header):not(.szc-srg__container--cards-only) {
+      grid-template-columns: 440px 1fr;
+      column-gap: 72px;
+    }
+  }
+
+  /* ── Editorial / Header Column ─────────────────────────────────────────── */
+  .szc-srg__editorial {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    position: relative;
+    z-index: 5;
+  }
+
+  .szc-srg__editorial-header {
+    display: flex;
+    flex-direction: column;
+    gap: var(--szc-space-3, 12px);
+  }
+
+  .szc-srg__eyebrow {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    font-size: var(--szc-font-size-xs, 12px);
+    font-weight: 700;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: var(--szc-srg-accent, #d4a373);
+  }
+
+  .szc-srg__eyebrow-dot {
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background-color: var(--szc-srg-accent, #d4a373);
+    box-shadow: 0 0 10px var(--szc-srg-accent, #d4a373);
+  }
+
+  .szc-srg__heading {
+    font-size: clamp(28px, 4vw, 44px);
+    font-weight: 600;
+    line-height: 1.15;
+    letter-spacing: -0.02em;
+    color: var(--szc-srg-text, #ffffff);
+    margin: 0;
+  }
+
+  .szc-srg__description {
+    font-size: var(--szc-font-size-base, 15px);
+    line-height: 1.6;
+    color: var(--szc-srg-text-muted, #a0a0a0);
+    max-width: 440px;
+    margin: 0;
+  }
+
+  .szc-srg__description p {
+    margin: 0 0 8px;
+  }
+
+  .szc-srg__description p:last-child {
+    margin-bottom: 0;
+  }
+
+  /* ── Desktop Progress & Counter ────────────────────────────────────────── */
+  .szc-srg__progress {
+    display: none;
+  }
+
+  @media (min-width: 768px) {
+    .szc-srg__progress {
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+      margin-top: 36px;
+      max-width: 320px;
+    }
+  }
+
+  .szc-srg__counter {
+    display: inline-flex;
+    align-items: baseline;
+    gap: 6px;
+    font-family: monospace, sans-serif;
+    font-variant-numeric: tabular-nums;
+  }
+
+  .szc-srg__counter-current {
+    font-size: 32px;
+    font-weight: 700;
+    line-height: 1;
+    color: var(--szc-srg-text, #ffffff);
+  }
+
+  .szc-srg__counter-divider {
+    font-size: 18px;
+    color: var(--szc-srg-text-muted, rgba(255, 255, 255, 0.4));
+  }
+
+  .szc-srg__counter-total {
+    font-size: 18px;
+    font-weight: 600;
+    color: var(--szc-srg-text-muted, rgba(255, 255, 255, 0.6));
+  }
+
+  .szc-srg__progress-track {
+    width: 100%;
+    height: 3px;
+    background-color: rgba(255, 255, 255, 0.15);
+    border-radius: 2px;
+    overflow: hidden;
+  }
+
+  .szc-srg__progress-bar {
+    height: 100%;
+    background: linear-gradient(90deg, var(--szc-srg-accent, #d4a373), #f3c292);
+    border-radius: 2px;
+    transform-origin: left center;
+    transition: width 0.12s linear;
+  }
+
+  /* Scroll cue mouse animation */
+  .szc-srg__scroll-hint {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    font-size: 11px;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--szc-srg-text-muted, rgba(255, 255, 255, 0.5));
+    margin-top: 8px;
+  }
+
+  .szc-srg__scroll-hint-mouse {
+    display: inline-block;
+    width: 14px;
+    height: 22px;
+    border: 1.5px solid rgba(255, 255, 255, 0.4);
+    border-radius: 10px;
+    position: relative;
+    flex-shrink: 0;
+  }
+
+  .szc-srg__scroll-hint-wheel {
+    position: absolute;
+    top: 4px;
+    left: 50%;
+    width: 2px;
+    height: 5px;
+    background-color: var(--szc-srg-accent, #d4a373);
+    border-radius: 2px;
+    transform: translateX(-50%);
+    animation: szcSrgPulse 1.8s cubic-bezier(0.65, 0, 0.35, 1) infinite;
+  }
+
+  @keyframes szcSrgPulse {
+    0% {
+      opacity: 1;
+      transform: translateX(-50%) translateY(0);
+    }
+    60% {
+      opacity: 0.2;
+      transform: translateX(-50%) translateY(7px);
+    }
+    100% {
+      opacity: 0;
+      transform: translateX(-50%) translateY(7px);
+    }
+  }
+
+  /* ── Stage & Cards Track ───────────────────────────────────────────────── */
+  .szc-srg__stage {
+    position: relative;
+    width: 100%;
+  }
+
+  @media (min-width: 768px) {
+    .szc-srg__stage {
+      perspective: 1400px;
+      height: 600px;
+      max-height: 82vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+  }
+
+  .szc-srg__cards {
+    width: 100%;
+  }
+
+  @media (min-width: 768px) {
+    .szc-srg__cards {
+      position: relative;
+      width: 100%;
+      height: 100%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transform-style: preserve-3d;
+    }
+  }
+
+  /* ── Card Styles ───────────────────────────────────────────────────────── */
+  .szc-srg__card {
+    box-sizing: border-box;
+  }
+
+  @media (min-width: 768px) {
+    .szc-srg__card {
+      position: absolute;
+      width: 440px;
+      max-width: 90%;
+      height: 580px;
+      max-height: 82vh;
+      transform-origin: center center;
+      will-change: transform, opacity;
+      pointer-events: none;
+      user-select: none;
+    }
+
+    .szc-srg__card.is-active {
+      pointer-events: auto;
+    }
+  }
+
+  @media (min-width: 1200px) {
+    .szc-srg__card {
+      width: 480px;
+      height: 620px;
+    }
+  }
+
+  .szc-srg__card-inner {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    background-color: var(--szc-srg-card-bg, #161920);
+    border-radius: 20px;
+    overflow: hidden;
+    box-shadow:
+      0 24px 48px -12px rgba(0, 0, 0, 0.5),
+      0 4px 16px rgba(0, 0, 0, 0.25),
+      0 0 0 1px rgba(255, 255, 255, 0.09);
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    transition: box-shadow 0.3s ease;
+  }
+
+  .szc-srg__card:hover .szc-srg__card-inner {
+    box-shadow:
+      0 32px 64px -12px rgba(0, 0, 0, 0.65),
+      0 6px 20px rgba(0, 0, 0, 0.3),
+      0 0 0 1px rgba(255, 255, 255, 0.16);
+  }
+
+  /* ── Card Media ────────────────────────────────────────────────────────── */
+  .szc-srg__card-media {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+    z-index: 1;
+  }
+
+  .szc-srg__card-image {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: center;
+    display: block;
+    transition: transform 0.8s cubic-bezier(0.2, 0.8, 0.2, 1);
+  }
+
+  .szc-srg__card:hover .szc-srg__card-image {
+    transform: scale(1.04);
+  }
+
+  .szc-srg__card-placeholder {
+    width: 100%;
+    height: 100%;
+    background-color: #1a1d24;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .szc-srg__placeholder-svg {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    opacity: 0.75;
+  }
+
+  .szc-srg__card-scrim {
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(
+      180deg,
+      rgba(13, 15, 18, 0.35) 0%,
+      rgba(13, 15, 18, 0.05) 30%,
+      rgba(13, 15, 18, 0.5) 60%,
+      rgba(13, 15, 18, 0.95) 100%
+    );
+    z-index: 2;
+    pointer-events: none;
+  }
+
+  /* ── Card Top Header ───────────────────────────────────────────────────── */
+  .szc-srg__card-badge-row {
+    position: relative;
+    z-index: 3;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 20px 24px;
+  }
+
+  .szc-srg__card-badge {
+    display: inline-flex;
+    align-items: center;
+    padding: 5px 12px;
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: #ffffff;
+    background: rgba(255, 255, 255, 0.14);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    border: 1px solid rgba(255, 255, 255, 0.22);
+    border-radius: 999px;
+  }
+
+  .szc-srg__card-index-tag {
+    font-family: monospace, sans-serif;
+    font-size: 13px;
+    font-weight: 600;
+    letter-spacing: 0.06em;
+    color: rgba(255, 255, 255, 0.7);
+  }
+
+  /* ── Card Bottom Content ───────────────────────────────────────────────── */
+  .szc-srg__card-content {
+    position: relative;
+    z-index: 3;
+    padding: 24px 24px 28px;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    color: var(--szc-srg-card-text, #ffffff);
+  }
+
+  .szc-srg__card-subtitle {
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--szc-srg-accent, #d4a373);
+    margin: 0;
+  }
+
+  .szc-srg__card-title {
+    font-size: clamp(20px, 2.2vw, 26px);
+    font-weight: 600;
+    line-height: 1.25;
+    color: var(--szc-srg-card-text, #ffffff);
+    margin: 0;
+  }
+
+  .szc-srg__card-desc {
+    font-size: 13.5px;
+    line-height: 1.5;
+    color: rgba(255, 255, 255, 0.75);
+    margin: 0;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+
+  .szc-srg__card-action {
+    margin-top: 10px;
+  }
+
+  .szc-srg__card-btn {
+    border-radius: 999px;
+  }
+
+  /* ── Mobile View & Carousel Controls (<= 767px) ────────────────────────── */
+  .szc-srg__mobile-controls {
+    display: none;
+  }
+
+  @media (max-width: 767px) {
+    .szc-scroll-reveal-gallery {
+      /* padding-top: var(--szc-space-8, 32px);
+      padding-bottom: var(--szc-space-10, 40px); */
+    }
+
+    .szc-srg__scroll-track {
+      height: auto !important;
+    }
+
+    .szc-srg__sticky-viewport {
+      position: relative !important;
+      height: auto !important;
+    }
+
+    .szc-srg__container {
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+      /* padding-left: 16px;
+      padding-right: 16px; */
+      padding: 16px;
+    }
+
+    .szc-srg__editorial {
+      text-align: center;
+      align-items: center;
+    }
+
+    .szc-srg__editorial-header {
+      align-items: center;
+    }
+
+    .szc-srg__eyebrow {
+      justify-content: center;
+    }
+
+    .szc-srg__description {
+      max-width: 100%;
+    }
+
+    .szc-srg__stage {
+      overflow: visible;
+    }
+
+    /* Horizontal scroll snap track */
+    .szc-srg__cards {
+      display: flex;
+      flex-direction: row;
+      gap: 8px;
+      overflow-x: auto;
+      scroll-snap-type: x mandatory;
+      -webkit-overflow-scrolling: touch;
+      scrollbar-width: none;
+      /* padding: 12px 16px 20px;
+      margin-left: -16px;
+      margin-right: -16px; */
+    }
+
+    .szc-srg__cards::-webkit-scrollbar {
+      display: none;
+    }
+
+    .szc-srg__card {
+      position: relative !important;
+      width: 86vw !important;
+      max-width: 360px !important;
+      height: 490px !important;
+      max-height: 70vh !important;
+      flex: 0 0 86vw !important;
+      scroll-snap-align: center;
+      transform: none !important;
+      opacity: 1 !important;
+      z-index: 1 !important;
+      pointer-events: auto !important;
+    }
+
+    /* Mobile Controls Bar */
+    .szc-srg__mobile-controls {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 16px;
+      margin-top: 4px;
+    }
+
+    .szc-srg__nav-btn {
+      width: 42px;
+      height: 42px;
+      border-radius: 50%;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      background-color: var(--szc-srg-mobile-arrow-bg, #ffffff);
+      border: 1px solid var(--szc-srg-mobile-arrow-border, #ffffff);
+      color: var(--szc-srg-mobile-arrow-color, #111111);
+      cursor: pointer;
+      padding: 0;
+      transition: transform 0.2s ease, opacity 0.2s ease;
+    }
+
+    .szc-srg__nav-btn:active {
+      transform: scale(0.92);
+      opacity: 0.85;
+    }
+
+    .szc-srg__nav-icon {
+      width: 18px;
+      height: 18px;
+      display: block;
+    }
+
+    .szc-srg__dots {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .szc-srg__dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 999px;
+      background-color: rgba(255, 255, 255, 0.24);
+      border: none;
+      padding: 0;
+      cursor: pointer;
+      transition: all 0.3s cubic-bezier(0.2, 0.8, 0.2, 1);
+    }
+
+    .szc-srg__dot.is-active {
+      width: 24px;
+      background-color: var(--szc-srg-accent, #d4a373);
+    }
+
+    .szc-srg__mobile-counter {
+      font-family: monospace, sans-serif;
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--szc-srg-text-muted, rgba(255, 255, 255, 0.6));
+      margin-left: 4px;
+    }
+  }
+
+  /* ── RTL Support ───────────────────────────────────────────────────────── */
+  [dir="rtl"] .szc-srg__progress-bar {
+    transform-origin: right center;
+  }
+
+  /* ── Reduced Motion Accessibility ──────────────────────────────────────── */
+  @media (prefers-reduced-motion: reduce) {
+    .szc-srg__scroll-track {
+      height: auto !important;
+    }
+
+    .szc-srg__sticky-viewport {
+      position: relative !important;
+      height: auto !important;
+      overflow: visible !important;
+    }
+
+    .szc-srg__scroll-hint {
+      display: none !important;
+    }
+
+    .szc-srg__progress-bar {
+      transition: none !important;
+    }
+
+    .szc-srg__scroll-hint-wheel {
+      animation: none !important;
+    }
+
+    .szc-srg__stage {
+      perspective: none !important;
+      height: auto !important;
+      max-height: none !important;
+    }
+
+    .szc-srg__cards {
+      display: grid !important;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)) !important;
+      gap: 24px !important;
+      height: auto !important;
+      transform: none !important;
+    }
+
+    .szc-srg__card {
+      position: relative !important;
+      width: 100% !important;
+      max-width: none !important;
+      height: 480px !important;
+      max-height: none !important;
+      transform: none !important;
+      opacity: 1 !important;
+      z-index: 1 !important;
+      pointer-events: auto !important;
+    }
+
+    .szc-srg__mobile-controls {
+      display: none !important;
+    }
+  }
+{% endstylesheet %}
+
+{% javascript %}
+  if (!customElements.get('scroll-reveal-gallery')) {
+    customElements.define(
+      'scroll-reveal-gallery',
+      class ScrollRevealGallery extends HTMLElement {
+        constructor() {
+          super();
+          this.track = this.querySelector('[data-cards-track]');
+          this.cards = Array.from(this.querySelectorAll('.szc-srg__card'));
+          this.scrollTrack = this.querySelector('.szc-srg__scroll-track');
+          this.counterCurrent = this.querySelector('[data-counter-current]');
+          this.mobileCounterCurrent = this.querySelector('[data-mobile-counter-current]');
+          this.progressBar = this.querySelector('[data-progress-bar]');
+          this.dots = Array.from(this.querySelectorAll('.szc-srg__dot'));
+          this.prevBtn = this.querySelector('[data-mobile-prev]');
+          this.nextBtn = this.querySelector('[data-mobile-next]');
+
+          this.totalCards = this.cards.length;
+          this.scrollStepVh = parseFloat(this.dataset.scrollStep) || 85;
+          this.diagX = parseFloat(this.dataset.diagX) || 55;
+          this.diagY = parseFloat(this.dataset.diagY) || 22;
+          this.diagRot = parseFloat(this.dataset.diagRot) || 4;
+          this.diagScale = parseFloat(this.dataset.diagScale) || 0.07;
+
+          this.isDesktop = window.matchMedia('(min-width: 768px)').matches;
+          this.prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+          this.isIntersecting = false;
+          this.rafPending = false;
+          this.currentActiveIndex = 0;
+          this.currentMobileIndex = 0;
+
+          // Mobile swipe guard variables
+          this._wasSwiping = false;
+          this._touchStartX = 0;
+          this._touchStartY = 0;
+
+          // Bound handlers
+          this.onScroll = this.onScroll.bind(this);
+          this.onResize = this.onResize.bind(this);
+          this.onTrackScroll = this.onTrackScroll.bind(this);
+          this.updateDeck = this.updateDeck.bind(this);
+        }
+
+        connectedCallback() {
+          if (!this.cards.length) return;
+
+          // Initialize IntersectionObserver for scroll performance
+          this.observer = new IntersectionObserver(
+            (entries) => {
+              entries.forEach((entry) => {
+                this.isIntersecting = entry.isIntersecting;
+                if (this.isIntersecting && this.isDesktop && !this.prefersReducedMotion) {
+                  this.requestDeckUpdate();
+                }
+              });
+            },
+            { rootMargin: '150px 0px 150px 0px' }
+          );
+          this.observer.observe(this);
+
+          // Setup initial layout
+          this.setupLayout();
+
+          // Global listeners
+          window.addEventListener('scroll', this.onScroll, { passive: true });
+          window.addEventListener('resize', this.onResize, { passive: true });
+
+          // Mobile swipe and navigation controls
+          this.initMobileControls();
+
+          // Shopify theme editor integration
+          this.initShopifyEvents();
+        }
+
+        disconnectedCallback() {
+          if (this.observer) this.observer.disconnect();
+          window.removeEventListener('scroll', this.onScroll);
+          window.removeEventListener('resize', this.onResize);
+          if (this.track) {
+            this.track.removeEventListener('scroll', this.onTrackScroll);
+          }
+        }
+
+        setupLayout() {
+          this.isDesktop = window.matchMedia('(min-width: 768px)').matches;
+          this.prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+          if (this.isDesktop && !this.prefersReducedMotion) {
+            // Calculate scroll height on desktop
+            if (this.totalCards > 1 && this.scrollTrack) {
+              const extraHeightVh = (this.totalCards - 1) * this.scrollStepVh;
+              this.scrollTrack.style.height = `calc(100vh + ${extraHeightVh}vh)`;
+            } else if (this.scrollTrack) {
+              this.scrollTrack.style.height = '100vh';
+            }
+            this.requestDeckUpdate();
+          } else {
+            // Reset styles for mobile/reduced-motion
+            if (this.scrollTrack) this.scrollTrack.style.height = '';
+            this.cards.forEach((card) => {
+              card.style.transform = '';
+              card.style.opacity = '';
+              card.style.zIndex = '';
+              card.style.pointerEvents = '';
+            });
+            this.updateMobileDots(this.currentMobileIndex);
+          }
+        }
+
+        onResize() {
+          this.setupLayout();
+        }
+
+        onScroll() {
+          if (!this.isDesktop || this.prefersReducedMotion || !this.isIntersecting) return;
+          this.requestDeckUpdate();
+        }
+
+        requestDeckUpdate() {
+          if (!this.rafPending) {
+            this.rafPending = true;
+            requestAnimationFrame(this.updateDeck);
+          }
+        }
+
+        updateDeck() {
+          this.rafPending = false;
+          if (!this.scrollTrack || this.totalCards <= 0) return;
+
+          const rect = this.scrollTrack.getBoundingClientRect();
+          const windowHeight = window.innerHeight || document.documentElement.clientHeight;
+          const totalScrollable = this.scrollTrack.offsetHeight - windowHeight;
+
+          let progressRatio = 0;
+          if (totalScrollable > 0) {
+            const scrolled = -rect.top;
+            progressRatio = Math.max(0, Math.min(1, scrolled / totalScrollable));
+          }
+
+          const continuousProgress = progressRatio * (this.totalCards - 1);
+          const isRtl = document.documentElement.getAttribute('dir') === 'rtl';
+          const dir = isRtl ? -1 : 1;
+
+          this.cards.forEach((card, index) => {
+            const delta = index - continuousProgress;
+
+            if (delta >= 0) {
+              // Active card (delta == 0) or waiting in the diagonal deck behind (delta > 0)
+              const clampedDelta = Math.min(delta, 4);
+              const tx = clampedDelta * this.diagX * dir;
+              const ty = -clampedDelta * this.diagY;
+              const rot = clampedDelta * this.diagRot * dir;
+              const scale = Math.max(0.68, 1 - clampedDelta * this.diagScale);
+              const opacity = Math.max(0, 1 - clampedDelta * 0.22);
+              const zIndex = Math.round(100 - clampedDelta * 10);
+              const canInteract = delta < 0.45;
+
+              card.style.transform = `translate3d(${tx.toFixed(1)}px, ${ty.toFixed(1)}px, 0) rotate(${rot.toFixed(2)}deg) scale(${scale.toFixed(3)})`;
+              card.style.opacity = opacity.toFixed(3);
+              card.style.zIndex = zIndex;
+              card.style.pointerEvents = canInteract ? 'auto' : 'none';
+            } else {
+              // Card has exited to the left/foreground
+              const exitU = -delta;
+              const tx = -exitU * 115 * dir;
+              const ty = exitU * 35;
+              const rot = -exitU * 7 * dir;
+              const scale = Math.max(0.85, 1 - exitU * 0.08);
+              const opacity = Math.max(0, 1 - exitU * 1.35);
+              const zIndex = Math.round(100 - exitU * 5);
+
+              card.style.transform = `translate3d(${tx.toFixed(1)}%, ${ty.toFixed(1)}px, 0) rotate(${rot.toFixed(2)}deg) scale(${scale.toFixed(3)})`;
+              card.style.opacity = opacity.toFixed(3);
+              card.style.zIndex = zIndex;
+              card.style.pointerEvents = 'none';
+            }
+          });
+
+          // Active indicator and progress fill
+          const activeIndex = Math.round(continuousProgress);
+          if (activeIndex !== this.currentActiveIndex) {
+            this.currentActiveIndex = activeIndex;
+            const displayIndex = String(activeIndex + 1).padStart(2, '0');
+            if (this.counterCurrent) this.counterCurrent.textContent = displayIndex;
+            if (this.mobileCounterCurrent) this.mobileCounterCurrent.textContent = displayIndex;
+
+            this.cards.forEach((card, idx) => {
+              card.classList.toggle('is-active', idx === activeIndex);
+            });
+          }
+
+          if (this.progressBar) {
+            const percent = ((progressRatio * 100 * (this.totalCards - 1) + 100) / this.totalCards).toFixed(1);
+            this.progressBar.style.width = `${percent}%`;
+          }
+        }
+
+        /* ── Mobile Controls & Swipe Guard ───────────────────────────────── */
+        initMobileControls() {
+          if (this.track) {
+            this.track.addEventListener('scroll', this.onTrackScroll, { passive: true });
+
+            // Swipe detection to prevent accidental CTA clicks during mobile swipe
+            this.track.addEventListener(
+              'touchstart',
+              (e) => {
+                this._touchStartX = e.touches[0].clientX;
+                this._touchStartY = e.touches[0].clientY;
+                this._wasSwiping = false;
+              },
+              { passive: true }
+            );
+
+            this.track.addEventListener(
+              'touchmove',
+              (e) => {
+                const diffX = Math.abs(e.touches[0].clientX - this._touchStartX);
+                const diffY = Math.abs(e.touches[0].clientY - this._touchStartY);
+                if (diffX > 8 || diffY > 8) {
+                  this._wasSwiping = true;
+                }
+              },
+              { passive: true }
+            );
+
+            this.track.addEventListener(
+              'touchend',
+              () => {
+                setTimeout(() => {
+                  this._wasSwiping = false;
+                }, 80);
+              },
+              { passive: true }
+            );
+          }
+
+          // Mobile click suppression on link/button if swiping
+          this.cards.forEach((card) => {
+            card.addEventListener('click', (e) => {
+              if (this._wasSwiping) {
+                e.preventDefault();
+                e.stopPropagation();
+              }
+            });
+          });
+
+          // Dots navigation
+          this.dots.forEach((dot, index) => {
+            dot.addEventListener('click', () => {
+              this.goToMobileSlide(index);
+            });
+          });
+
+          // Arrow buttons
+          if (this.prevBtn) {
+            this.prevBtn.addEventListener('click', () => {
+              this.goToMobileSlide(this.currentMobileIndex - 1);
+            });
+          }
+
+          if (this.nextBtn) {
+            this.nextBtn.addEventListener('click', () => {
+              this.goToMobileSlide(this.currentMobileIndex + 1);
+            });
+          }
+        }
+
+        onTrackScroll() {
+          if (this.isDesktop) return;
+          if (this._scrollTimer) clearTimeout(this._scrollTimer);
+
+          this._scrollTimer = setTimeout(() => {
+            if (!this.track || !this.cards.length) return;
+            const trackLeft = this.track.scrollLeft;
+            const cardWidth = this.cards[0].offsetWidth || 1;
+            const index = Math.round(trackLeft / cardWidth);
+            const clamped = Math.max(0, Math.min(this.totalCards - 1, index));
+            this.updateMobileDots(clamped);
+          }, 40);
+        }
+
+        goToMobileSlide(index) {
+          const targetIndex = Math.max(0, Math.min(this.totalCards - 1, index));
+          const targetCard = this.cards[targetIndex];
+          if (!targetCard || !this.track) return;
+
+          const scrollTarget = targetCard.offsetLeft - (this.track.offsetWidth - targetCard.offsetWidth) / 2;
+          this.track.scrollTo({
+            left: Math.max(0, scrollTarget),
+            behavior: 'smooth'
+          });
+
+          this.updateMobileDots(targetIndex);
+        }
+
+        updateMobileDots(index) {
+          this.currentMobileIndex = index;
+          this.dots.forEach((dot, idx) => {
+            const isActive = idx === index;
+            dot.classList.toggle('is-active', isActive);
+            dot.setAttribute('aria-selected', isActive ? 'true' : 'false');
+          });
+
+          const displayNum = String(index + 1).padStart(2, '0');
+          if (this.mobileCounterCurrent) {
+            this.mobileCounterCurrent.textContent = displayNum;
+          }
+        }
+
+        /* ── Shopify Theme Editor Events ─────────────────────────────────── */
+        initShopifyEvents() {
+          document.addEventListener('shopify:block:select', (e) => {
+            if (!this.contains(e.target)) return;
+            const blockIndex = this.cards.indexOf(e.target);
+            if (blockIndex === -1) return;
+
+            if (this.isDesktop && !this.prefersReducedMotion && this.scrollTrack) {
+              const windowHeight = window.innerHeight || document.documentElement.clientHeight;
+              const totalScrollable = this.scrollTrack.offsetHeight - windowHeight;
+              if (totalScrollable > 0) {
+                const targetScrollY =
+                  this.scrollTrack.getBoundingClientRect().top +
+                  window.scrollY +
+                  (blockIndex / (this.totalCards - 1)) * totalScrollable;
+                window.scrollTo({ top: targetScrollY, behavior: 'smooth' });
+              }
+            } else {
+              this.goToMobileSlide(blockIndex);
+            }
+          });
+        }
+      }
+    );
+  }
+{% endjavascript %}
+
+{% schema %}
+{
+  "name": "Scroll Reveal Gallery",
+  "tag": "section",
+  "class": "section-scroll-reveal-gallery",
+  "settings": [
+    {
+      "type": "header",
+      "content": "Section Header"
+    },
+    {
+      "type": "text",
+      "id": "subheading",
+      "label": "Eyebrow / Subheading",
+      "default": "CURATED EDITORIAL"
+    },
+    {
+      "type": "text",
+      "id": "title",
+      "label": "Heading",
+      "default": "Scroll Reveal Gallery"
+    },
+    {
+      "type": "richtext",
+      "id": "description",
+      "label": "Description",
+      "default": "<p>Experience our signature silhouettes in motion. Scroll to explore each elevated look from the new collection.</p>"
+    },
+    {
+      "type": "text",
+      "id": "scroll_hint_text",
+      "label": "Desktop Scroll Hint",
+      "default": "Scroll down to reveal"
+    },
+    {
+      "type": "header",
+      "content": "Desktop Scroll Pace & 3D Deck"
+    },
+    {
+      "type": "range",
+      "id": "scroll_step",
+      "min": 50,
+      "max": 140,
+      "step": 5,
+      "unit": "vh",
+      "label": "Scroll distance per card",
+      "info": "Higher values make the transition feel slower and more deliberate",
+      "default": 85
+    },
+    {
+      "type": "range",
+      "id": "diagonal_offset_x",
+      "min": 25,
+      "max": 100,
+      "step": 5,
+      "unit": "px",
+      "label": "Diagonal horizontal offset",
+      "default": 55
+    },
+    {
+      "type": "range",
+      "id": "diagonal_offset_y",
+      "min": 10,
+      "max": 50,
+      "step": 2,
+      "unit": "px",
+      "label": "Diagonal vertical offset",
+      "default": 22
+    },
+    {
+      "type": "range",
+      "id": "diagonal_rotation",
+      "min": 0,
+      "max": 10,
+      "step": 1,
+      "unit": "deg",
+      "label": "Diagonal rotation per card",
+      "default": 4
+    },
+    {
+      "type": "header",
+      "content": "Background"
+    },
+    {
+      "type": "color",
+      "id": "bg_color",
+      "label": "Section Background Color",
+      "default": "#0D0F12"
+    },
+    {
+      "type": "image_picker",
+      "id": "background_image",
+      "label": "Background Image"
+    },
+    {
+      "type": "color",
+      "id": "background_overlay_color",
+      "label": "Background Overlay Color",
+      "default": "#000000"
+    },
+    {
+      "type": "range",
+      "id": "background_overlay_opacity",
+      "min": 0,
+      "max": 100,
+      "step": 5,
+      "unit": "%",
+      "label": "Background Overlay Opacity",
+      "default": 0
+    },
+    {
+      "type": "header",
+      "content": "Display Options"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_editorial_header",
+      "label": "Show Editorial Header",
+      "default": true
+    },
+    {
+      "type": "checkbox",
+      "id": "show_progress",
+      "label": "Show Progress",
+      "default": true
+    },
+    {
+      "type": "checkbox",
+      "id": "show_scroll_hint",
+      "label": "Show Scroll Hint",
+      "default": true
+    },
+    {
+      "type": "checkbox",
+      "id": "show_mobile_arrows",
+      "label": "Show Mobile Navigation Arrows",
+      "default": true
+    },
+    {
+      "type": "header",
+      "content": "Mobile Navigation"
+    },
+    {
+      "type": "color",
+      "id": "mobile_arrow_bg",
+      "label": "Mobile Arrow Background",
+      "default": "#FFFFFF"
+    },
+    {
+      "type": "color",
+      "id": "mobile_arrow_color",
+      "label": "Mobile Arrow Icon",
+      "default": "#111111"
+    },
+    {
+      "type": "color",
+      "id": "mobile_arrow_border",
+      "label": "Mobile Arrow Border",
+      "default": "#FFFFFF"
+    },
+    {
+      "type": "header",
+      "content": "Colors & Aesthetics"
+    },
+    {
+      "type": "color",
+      "id": "text_color",
+      "label": "Heading & Text Color",
+      "default": "#FFFFFF"
+    },
+    {
+      "type": "color",
+      "id": "text_muted_color",
+      "label": "Muted Description Color",
+      "default": "#A0A0A0"
+    },
+    {
+      "type": "color",
+      "id": "accent_color",
+      "label": "Accent Color",
+      "default": "#D4A373"
+    },
+    {
+      "type": "color",
+      "id": "card_bg",
+      "label": "Card Background",
+      "default": "#161920"
+    },
+    {
+      "type": "color",
+      "id": "card_text",
+      "label": "Card Text Color",
+      "default": "#FFFFFF"
+    },
+    {
+      "type": "header",
+      "content": "Section Padding"
+    },
+    {
+      "type": "range",
+      "id": "padding_top",
+      "min": 0,
+      "max": 100,
+      "step": 4,
+      "unit": "px",
+      "label": "Top Padding",
+      "default": 0
+    },
+    {
+      "type": "range",
+      "id": "padding_bottom",
+      "min": 0,
+      "max": 100,
+      "step": 4,
+      "unit": "px",
+      "label": "Bottom Padding",
+      "default": 0
+    }
+  ],
+  "blocks": [
+    {
+      "type": "gallery_item",
+      "name": "Gallery Card",
+      "settings": [
+        {
+          "type": "image_picker",
+          "id": "image",
+          "label": "Card Image"
+        },
+        {
+          "type": "text",
+          "id": "badge",
+          "label": "Badge / Tag",
+          "default": "LOOK 01"
+        },
+        {
+          "type": "text",
+          "id": "subtitle",
+          "label": "Subtitle",
+          "default": "SS26 EDITORIAL"
+        },
+        {
+          "type": "text",
+          "id": "title",
+          "label": "Card Title",
+          "default": "Tailored Trench Coat"
+        },
+        {
+          "type": "textarea",
+          "id": "description",
+          "label": "Description",
+          "default": "Crafted from double-faced Italian wool with an unstructured drape for effortless layering."
+        },
+        {
+          "type": "text",
+          "id": "button_label",
+          "label": "Button Label",
+          "default": "EXPLORE LOOK"
+        },
+        {
+          "type": "url",
+          "id": "button_link",
+          "label": "Button Link"
+        },
+        {
+          "type": "select",
+          "id": "button_style",
+          "label": "Button Style",
+          "options": [
+            { "value": "primary", "label": "Primary" },
+            { "value": "secondary", "label": "Secondary" },
+            { "value": "outline", "label": "Outline" }
+          ],
+          "default": "primary"
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "Scroll Reveal Gallery",
+      "blocks": [
+        {
+          "type": "gallery_item",
+          "settings": {
+            "badge": "LOOK 01",
+            "subtitle": "SS26 EDITORIAL",
+            "title": "Tailored Trench Coat",
+            "description": "Crafted from double-faced Italian wool with an unstructured drape for effortless layering.",
+            "button_label": "EXPLORE LOOK"
+          }
+        },
+        {
+          "type": "gallery_item",
+          "settings": {
+            "badge": "LOOK 02",
+            "subtitle": "BESPOKE TAILORING",
+            "title": "Structured Wool Blazer",
+            "description": "Sharp architectural silhouette with bespoke horn buttons and a contoured waistline.",
+            "button_label": "SHOP THE BLAZER"
+          }
+        },
+        {
+          "type": "gallery_item",
+          "settings": {
+            "badge": "LOOK 03",
+            "subtitle": "SUSTAINABLE LUXURY",
+            "title": "Pure Cashmere Knitwear",
+            "description": "Grade-A Mongolian cashmere spun into an ultra-soft, relaxed crewneck for year-round comfort.",
+            "button_label": "VIEW KNITWEAR"
+          }
+        },
+        {
+          "type": "gallery_item",
+          "settings": {
+            "badge": "LOOK 04",
+            "subtitle": "TIMELESS SILHOUETTES",
+            "title": "Pleated Wide-Leg Trouser",
+            "description": "Fluid drape featuring subtle reverse pleats, tailored to transition effortlessly from day to evening.",
+            "button_label": "EXPLORE TROUSERS"
+          }
+        }
+      ]
+    }
+  ]
+}
+{% endschema %}

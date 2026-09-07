@@ -1479,7 +1479,7 @@
     .szc-hover-panels-dot.is-active {
       width: 22px;
       background-color: rgba(0, 0, 0, 0.6);
-}
+    }
   }
 
   /* Reduced Motion Support */
@@ -1523,7 +1523,7 @@
             });
           });
 
-          // ── Mobile carousel (≤ 767px) ───────────────────────────────────────
+          // Mobile carousel (≤ 767px)
           this._initMobileCarousel();
 
           // Re-initialise if viewport crosses the breakpoint (e.g. rotation)
@@ -1536,7 +1536,7 @@
           targetPanel.classList.add('is-active');
         }
 
-        // ── Mobile carousel helpers ──────────────────────────────────────────
+        //Mobile carousel helpers
         _initMobileCarousel() {
           const grid = this.querySelector('.szc-hero-hover-panels__grid');
           const dotsContainer = this.querySelector('[data-hover-panels-dots]');
@@ -1555,7 +1555,7 @@
             return;
           }
 
-          // ── Build dot buttons ──
+          // Build dot buttons 
           if (dotsContainer && this.panels.length > 1) {
             dotsContainer.innerHTML = '';
             this.panels.forEach((_, i) => {
