@@ -264,6 +264,9 @@
           </div>
         {%- endif -%}
       </div>
+      {%- if section.blocks.size > 1 -%}
+        <div class="szc-hover-panels-dots" aria-hidden="true" data-hover-panels-dots></div>
+      {%- endif -%}
     </div>
   </hero-hover-panels>
 {%- else -%}
@@ -1352,48 +1355,74 @@
     }
   }
 
-  /* Mobile Layout (320px – 767px) */
+  /* Mobile Layout (320px – 767px) — Horizontal swipe carousel */
   @media (max-width: 767px) {
+    /* Outer element: clip to viewport, never overflow page */
     .szc-hero-hover-panels {
       height: auto !important;
       padding: 0;
       margin: 0;
-      overflow: hidden;
+      overflow: hidden; /* hide the scroll bar at the component level */
       width: 100%;
-      max-width: 100%;
+      max-width: 100vw;
+      box-sizing: border-box;
     }
 
+    /* Container becomes the actual scrolling track */
     .szc-hero-hover-panels__container {
       width: 100%;
       max-width: 100%;
-      padding-inline: 16px;
-      margin: 0 auto;
+      padding: 0;
+      margin: 0;
       box-sizing: border-box;
+      overflow: hidden; /* safety: never let this add page-level scroll */
     }
 
+    /* Carousel track */
     .szc-hero-hover-panels__grid {
       display: flex;
-      flex-direction: column;
-      gap: 20px;
+      flex-direction: row;          /* horizontal row of panels */
+      flex-wrap: nowrap;
+      gap: 0;
       height: auto;
       width: 100%;
-      max-width: 100%;
       margin: 0;
       padding: 0;
       box-sizing: border-box;
+
+      /* CSS Scroll Snap – horizontal, one panel at a time */
+      overflow-x: auto;
+      overflow-y: hidden;
+      scroll-snap-type: x mandatory;
+      scroll-behavior: smooth;
+      -webkit-overflow-scrolling: touch;
+
+      /* Hide scrollbar visually on all browsers */
+      scrollbar-width: none;
+      -ms-overflow-style: none;
     }
 
+    .szc-hero-hover-panels__grid::-webkit-scrollbar {
+      display: none;
+    }
+
+    /* Each panel = one full-viewport-width slide */
     .szc-hero-hover-panels__panel {
-      flex: none;
+      flex: 0 0 100%;           /* exactly one panel per viewport */
       width: 100%;
       max-width: 100%;
-      height: 380px;
-      min-height: 340px;
-      border-radius: var(--szc-banner-radius, 16px);
-      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.18);
+      height: 420px;
+      min-height: 360px;
+      border-radius: 0;         /* edge-to-edge on mobile */
+      box-shadow: none;
       box-sizing: border-box;
+
+      /* Snap to the start of each panel */
+      scroll-snap-align: start;
+      scroll-snap-stop: always;
     }
 
+    /* Content is always visible (no hover-reveal on mobile) */
     .szc-hero-hover-panels__content-wrapper {
       padding: 16px;
       overflow: visible;
@@ -1423,6 +1452,34 @@
     .szc-hero-hover-panels__btn-2-mobile-hide {
       display: none !important;
     }
+
+    /* Dot indicators for the mobile carousel */
+    .szc-hover-panels-dots {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      gap: 8px;
+      padding: 12px 0 4px;
+    }
+
+    .szc-hover-panels-dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 9999px;
+      background-color: rgba(0, 0, 0, 0.22);
+      border: none;
+      cursor: pointer;
+      padding: 0;
+      margin: 0;
+      outline: none;
+      flex-shrink: 0;
+      transition: all 250ms ease;
+    }
+
+    .szc-hover-panels-dot.is-active {
+      width: 22px;
+      background-color: rgba(0, 0, 0, 0.6);
+}
   }
 
   /* Reduced Motion Support */
@@ -1452,24 +1509,116 @@
           this.panels = Array.from(this.querySelectorAll('.szc-hero-hover-panels__panel'));
           if (!this.panels.length) return;
 
+          // ── Desktop behaviour (mouseenter / focus / click) ─────────────────
+          // Completely unchanged from original implementation.
           this.panels.forEach((panel) => {
             panel.addEventListener('mouseenter', () => this.setActive(panel));
             panel.addEventListener('focus', () => this.setActive(panel));
             panel.addEventListener('click', (e) => {
+              // On mobile, suppress click when the user was swiping
+              if (this._wasSwiping) return;
               if (e.target.closest('a, button')) return;
               const primaryBtn = panel.querySelector('.szc-hero-hover-panels__buttons a, .szc-hero-hover-panels__buttons button');
               if (primaryBtn) primaryBtn.click();
             });
           });
+
+          // ── Mobile carousel (≤ 767px) ───────────────────────────────────────
+          this._initMobileCarousel();
+
+          // Re-initialise if viewport crosses the breakpoint (e.g. rotation)
+          this._mq = window.matchMedia('(max-width: 767px)');
+          this._mq.addEventListener('change', () => this._initMobileCarousel());
         }
 
         setActive(targetPanel) {
           this.panels.forEach((p) => p.classList.remove('is-active'));
           targetPanel.classList.add('is-active');
         }
+
+        // ── Mobile carousel helpers ──────────────────────────────────────────
+        _initMobileCarousel() {
+          const grid = this.querySelector('.szc-hero-hover-panels__grid');
+          const dotsContainer = this.querySelector('[data-hover-panels-dots]');
+          if (!grid) return;
+
+          const isMobile = window.matchMedia('(max-width: 767px)').matches;
+
+          if (!isMobile) {
+            // Desktop: dots hidden, swipe guards not needed
+            if (dotsContainer) dotsContainer.innerHTML = '';
+            // Disconnect any existing observer
+            if (this._scrollObserver) {
+              this._scrollObserver.disconnect();
+              this._scrollObserver = null;
+            }
+            return;
+          }
+
+          // ── Build dot buttons ──
+          if (dotsContainer && this.panels.length > 1) {
+            dotsContainer.innerHTML = '';
+            this.panels.forEach((_, i) => {
+              const btn = document.createElement('button');
+              btn.type = 'button';
+              btn.className = 'szc-hover-panels-dot' + (i === 0 ? ' is-active' : '');
+              btn.setAttribute('aria-label', 'Go to panel ' + (i + 1));
+              btn.addEventListener('click', () => {
+                grid.scrollTo({ left: grid.offsetWidth * i, behavior: 'smooth' });
+              });
+              dotsContainer.appendChild(btn);
+            });
+          }
+
+          // ── Sync active dot on scroll (IntersectionObserver) ──
+          if (this._scrollObserver) this._scrollObserver.disconnect();
+
+          if (dotsContainer && this.panels.length > 1) {
+            this._scrollObserver = new IntersectionObserver(
+              (entries) => {
+                entries.forEach((entry) => {
+                  if (entry.isIntersecting && entry.intersectionRatio >= 0.5) {
+                    const idx = this.panels.indexOf(entry.target);
+                    if (idx < 0) return;
+                    const dots = dotsContainer.querySelectorAll('.szc-hover-panels-dot');
+                    dots.forEach((d, i) => d.classList.toggle('is-active', i === idx));
+                  }
+                });
+              },
+              { root: grid, threshold: 0.5 }
+            );
+            this.panels.forEach((p) => this._scrollObserver.observe(p));
+          }
+
+          // ── Swipe guard: prevent click from firing after a swipe ──
+          // Tracks touch start X; if the finger moved > 8px horizontally before
+          // touchend, mark _wasSwiping=true so the click handler above no-ops.
+          this._wasSwiping = false;
+          this._touchStartX = 0;
+
+          if (!this._touchListenersAdded) {
+            this._touchListenersAdded = true;
+
+            grid.addEventListener('touchstart', (e) => {
+              this._touchStartX = e.touches[0].clientX;
+              this._wasSwiping = false;
+            }, { passive: true });
+
+            grid.addEventListener('touchmove', (e) => {
+              const deltaX = Math.abs(e.touches[0].clientX - this._touchStartX);
+              if (deltaX > 8) this._wasSwiping = true;
+            }, { passive: true });
+
+            // Reset swipe flag after click has had a chance to fire
+            grid.addEventListener('touchend', () => {
+              setTimeout(() => { this._wasSwiping = false; }, 350);
+            }, { passive: true });
+          }
+        }
       }
     );
   }
+
 
   if (!customElements.get('hero-slider')) {
     customElements.define(
