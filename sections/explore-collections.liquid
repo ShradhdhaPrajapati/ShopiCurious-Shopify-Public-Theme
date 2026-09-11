@@ -1,315 +1,1472 @@
 {%- comment -%}
-  ShopziCurious - Explore Collections Section (Part 09)
-  Displays a 5-column collection grid with bottom frosted glass text cards matching the approved UI screenshot.
+  ShopziCurious - Explore Collections Section
+  Premium fashion editorial hanging-card collection carousel with curved clothesline and dynamic fanned cards.
+  Strictly isolated namespace (szc-expcol-) to guarantee zero impact on any other theme cards or sections.
 {%- endcomment -%}
 
 {%- liquid
   assign subtitle = section.settings.subtitle | default: 'EXPLORE COLLECTIONS'
   assign title = section.settings.title | default: 'Find Your Perfect Piece'
+  assign highlight_text = section.settings.highlight_text | default: 'Perfect'
+  assign highlight_color = section.settings.highlight_color | default: '#9e6f3d'
+  assign highlight_brush_color = section.settings.highlight_brush_color | default: '#cfa77d'
+  assign description = section.settings.description | default: 'Curated styles for every mood, moment and you.'
+  assign heading_alignment = section.settings.heading_alignment | default: 'center'
+
   assign cols_desktop = section.settings.columns_desktop | default: 5
-  assign cols_mobile = section.settings.columns_mobile | default: '2'
-  assign aspect_ratio = section.settings.image_ratio | default: '3/4'
+  assign cols_mobile = section.settings.columns_mobile | default: '1'
+  assign aspect_ratio = section.settings.image_ratio | default: '1/1'
+  assign card_gap = section.settings.card_gap | default: 22
+  assign card_rotation = section.settings.card_rotation | default: 'subtle'
+
+  assign bg_color = section.settings.bg_color | default: '#faf8f5'
+  assign padding_top = section.settings.padding_top | default: 56
+  assign padding_bottom = section.settings.padding_bottom | default: 56
+
+  assign show_string = true
+  if section.settings.show_string == false
+    assign show_string = false
+  endif
+
+  assign show_clips = true
+  if section.settings.show_clips == false
+    assign show_clips = false
+  endif
+
+  assign clip_color = section.settings.clip_color | default: '#175429'
+
+  assign show_leaf_shadows = true
+  if section.settings.show_leaf_shadows == false
+    assign show_leaf_shadows = false
+  endif
+
+  assign show_dots = true
+  if section.settings.show_dots == false
+    assign show_dots = false
+  endif
+
+  assign show_button = true
+  if section.settings.show_button == false
+    assign show_button = false
+  endif
+
+  assign show_script_badge = true
+  if section.settings.show_script_badge == false
+    assign show_script_badge = false
+  endif
+
+  assign show_script_badge_mobile = true
+  if section.settings.show_script_badge_mobile == false
+    assign show_script_badge_mobile = false
+  endif
+
+  assign badge_color = section.settings.script_badge_color | default: '#b89270'
+  assign badge_text = section.settings.script_badge_text | default: "Style\nIn Every\nStory"
+  assign badge_icon = section.settings.script_badge_icon | default: '♡'
+
+  assign button_label = section.settings.button_label | default: 'VIEW ALL COLLECTIONS'
+  assign button_link = section.settings.button_link | default: routes.collections_url
+
+  assign total_cards = section.blocks.size
+  if total_cards == 0
+    assign total_cards = 5
+  endif
+
+  assign has_overflow = false
+  if total_cards > cols_desktop
+    assign has_overflow = true
+  endif
+
+  assign max_rot = 8.5
+  if card_rotation == 'none'
+    assign max_rot = 0
+  endif
+  if card_rotation == 'medium'
+    assign max_rot = 12
+  endif
 -%}
 
 <section
   id="ExploreCollections-{{ section.id }}"
-  class="szc-explore-collections-section page-width"
-  style="--cols-desktop: {{ cols_desktop }}; --cols-mobile: {{ cols_mobile }};"
-  data-animate="slide-up"
+  class="szc-expcol-section szc-expcol-rot--{{ card_rotation }}{% unless has_overflow %} szc-expcol--no-desktop-scroll{% endunless %}"
+  style="
+    --szc-expcol-bg: {{ bg_color }};
+    --szc-expcol-pt: {{ padding_top }}px;
+    --szc-expcol-pb: {{ padding_bottom }}px;
+    --szc-expcol-cols-desktop: {{ cols_desktop }};
+    --szc-expcol-gap: {{ card_gap }}px;
+    --szc-expcol-clip-color: {{ clip_color }};
+    --szc-expcol-card-ratio: {{ aspect_ratio }};
+    --szc-expcol-max-rot: {{ max_rot }}deg;
+    --szc-expcol-highlight-color: {{ highlight_color }};
+    --szc-expcol-brush-color: {{ highlight_brush_color }};
+    --szc-expcol-badge-color: {{ badge_color }};
+  "
 >
-  <!-- Section Header -->
-  {%- if title != blank or subtitle != blank -%}
-    {%- assign align_class = section.settings.heading_alignment | default: 'center' -%}
-    <div class="szc-section-header szc-section-header--{{ align_class }}">
-      <div class="szc-section-header__text">
-        {%- if subtitle != blank -%}
-          <span class="szc-section-header__subtitle">{{ subtitle }}</span>
-        {%- endif -%}
-        {%- if title != blank -%}
-          <h2 class="szc-section-header__title">{{ title }}</h2>
-        {%- endif -%}
-      </div>
+  {%- if show_leaf_shadows -%}
+    <!-- Decorative Soft Leaf Silhouettes (Foliage Light Effect) -->
+    <div class="szc-expcol-leaf szc-expcol-leaf--tl" aria-hidden="true">
+      <svg viewBox="0 0 320 260" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <path d="M-30 -30 C30 50 110 70 160 40 C130 90 190 130 250 110 C190 150 150 210 200 240 C140 210 80 190 30 220 C50 160 0 120 -40 130 Z" fill="rgba(80, 75, 65, 0.05)"/>
+        <path d="M-50 -10 C60 30 130 40 190 0 C150 60 210 100 270 80 C220 120 170 170 230 210 C160 180 100 160 50 190 C70 130 10 90 -30 100 Z" fill="rgba(60, 55, 45, 0.04)"/>
+      </svg>
+    </div>
+    <div class="szc-expcol-leaf szc-expcol-leaf--br" aria-hidden="true">
+      <svg viewBox="0 0 320 260" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <path d="M350 290 C290 210 210 190 160 220 C190 170 130 130 70 150 C130 110 170 50 120 20 C180 50 240 70 290 40 C270 100 320 140 360 130 Z" fill="rgba(80, 75, 65, 0.05)"/>
+        <path d="M370 270 C260 230 190 220 130 260 C170 200 110 160 50 180 C100 140 150 90 90 50 C160 80 220 100 270 70 C250 130 310 170 350 160 Z" fill="rgba(60, 55, 45, 0.04)"/>
+      </svg>
     </div>
   {%- endif -%}
 
-  <!-- Collection Grid -->
-  <div class="szc-explore-collections__grid">
-    {%- for block in section.blocks -%}
-      {%- liquid
-        assign collection = block.settings.collection
-        assign custom_title = block.settings.title
-        assign custom_subtitle = block.settings.subtitle
-        assign custom_image = block.settings.image
+  <div class="szc-expcol-inner">
+    {%- if show_script_badge and badge_text != blank -%}
+      <!-- Editorial Script Callout: Positioned at Top-Right of Section (Red Marked Area) -->
+      <div class="szc-expcol-script-badge{% unless show_script_badge_mobile %} szc-expcol-script-badge--hide-mobile{% endunless %}" aria-hidden="true">
+        {%- assign badge_lines = badge_text | newline_to_br | split: '<br />' -%}
+        {%- for line in badge_lines -%}
+          {%- assign clean_line = line | strip -%}
+          {%- if clean_line != blank -%}
+            <span class="szc-expcol-script-badge__line">{{ clean_line }}</span>
+          {%- endif -%}
+        {%- endfor -%}
+        {%- if badge_icon != blank -%}
+          <span class="szc-expcol-script-badge__heart">{{ badge_icon }}</span>
+        {%- endif -%}
+      </div>
+    {%- endif -%}
 
-        assign card_title = custom_title | default: collection.title | default: 'Collection'
-        assign card_img = custom_image | default: collection.featured_image
-        assign card_url = collection.url | default: '#'
-      -%}
+    <!-- Section Header -->
+    {%- if title != blank or subtitle != blank or description != blank -%}
+      <header class="szc-expcol-header szc-expcol-header--{{ heading_alignment }}">
+        {%- if subtitle != blank -%}
+          <div class="szc-expcol-header__eyebrow-wrap">
+            <span class="szc-expcol-header__eyebrow">{{ subtitle }}</span>
+          </div>
+        {%- endif -%}
 
-      <div class="szc-explore-collections__item" {{ block.shopify_attributes }}>
-        <a href="{{ card_url }}" class="szc-explore-card" style="aspect-ratio: {{ aspect_ratio }};">
-          <div class="szc-explore-card__media">
-            {%- if card_img != blank -%}
-              {% render 'image',
-                image: card_img,
-                aspect_ratio: aspect_ratio,
-                loading: 'lazy',
-                class: 'szc-explore-card__image'
-              %}
+        {%- if title != blank -%}
+          <h2 class="szc-expcol-header__title">
+            {%- if highlight_text != blank and title contains highlight_text -%}
+              {%- capture highlighted_word -%}
+                <span class="szc-expcol-heading__highlight">
+                  <span class="szc-expcol-heading__highlight-text">{{ highlight_text }}</span>
+                  <svg class="szc-expcol-heading__brush" viewBox="0 0 170 32" fill="none" preserveAspectRatio="none" aria-hidden="true">
+                    <path d="M6 16C40 9 125 7 164 15C136 21 68 27 10 22" stroke="var(--szc-expcol-brush-color, {{ highlight_brush_color }})" stroke-width="18" stroke-linecap="round" stroke-linejoin="round" opacity="0.45"/>
+                  </svg>
+                </span>
+              {%- endcapture -%}
+              {{ title | replace: highlight_text, highlighted_word }}
             {%- else -%}
-              <div class="szc-explore-card__placeholder">
-                {{ 'collection-1' | placeholder_svg_tag: 'szc-placeholder-svg' }}
-              </div>
+              {{ title }}
+            {%- endif -%}
+          </h2>
+        {%- endif -%}
+
+        {%- if description != blank -%}
+          <p class="szc-expcol-header__description">{{ description }}</p>
+        {%- endif -%}
+      </header>
+    {%- endif -%}
+
+    <!-- Main Hanging Carousel Container (Full Width, Pure Swiper + Dots) -->
+    <div
+      class="szc-expcol-carousel szc-expcol--mobile-cols-{{ cols_mobile }}"
+      data-cols-desktop="{{ cols_desktop }}"
+      data-cols-mobile="{{ cols_mobile }}"
+      data-total-cards="{{ total_cards }}"
+      data-max-rot="{{ max_rot }}"
+    >
+      <div class="szc-expcol-stage">
+        {%- if show_string -%}
+          <!-- Curved Clothesline / String (Exact Parabola matching clips) -->
+          <div class="szc-expcol-string-wrap" aria-hidden="true">
+            <svg class="szc-expcol-string-svg" viewBox="0 0 1440 120" preserveAspectRatio="none">
+              <path class="szc-expcol-string-path" d="M -50 20 Q 720 134 1490 20" fill="none" stroke="#5a6156" stroke-width="2.2" stroke-linecap="round" />
+            </svg>
+          </div>
+        {%- endif -%}
+
+        <!-- Carousel Viewport -->
+        <div class="szc-expcol-viewport">
+          <div class="szc-expcol-track" data-expcol-track tabindex="0" role="region" aria-label="Collections carousel">
+            {%- if section.blocks.size > 0 -%}
+              {%- for block in section.blocks -%}
+                {%- liquid
+                  assign collection = block.settings.collection
+                  assign custom_title = block.settings.title
+                  assign custom_subtitle = block.settings.subtitle
+                  assign custom_image = block.settings.image
+
+                  assign card_title = custom_title | default: collection.title | default: 'Collection'
+                  assign card_img = custom_image | default: collection.featured_image
+                  assign card_url = collection.url | default: '#'
+                -%}
+
+                <div
+                  class="szc-expcol-slide"
+                  data-slide-index="{{ forloop.index0 }}"
+                  {{ block.shopify_attributes }}
+                >
+                  <a href="{{ card_url }}" class="szc-expcol-card" draggable="false" aria-label="{{ card_title | escape }}">
+                    {%- if show_clips -%}
+                      <div class="szc-expcol-card__clip" aria-hidden="true">
+                        <span class="szc-expcol-card__clip-hole"></span>
+                      </div>
+                    {%- endif -%}
+
+                    <div class="szc-expcol-card__media-wrap">
+                      <div class="szc-expcol-card__media" style="aspect-ratio: {{ aspect_ratio }};">
+                        {%- if card_img != blank -%}
+                          {{
+                            card_img
+                            | image_url: width: 800
+                            | image_tag:
+                              loading: 'lazy',
+                              draggable: false,
+                              class: 'szc-expcol-card__img',
+                              sizes: '(min-width: 1024px) 280px, (min-width: 768px) 35vw, 75vw',
+                              widths: '240, 360, 480, 640, 800',
+                              alt: card_title
+                          }}
+                        {%- else -%}
+                          <div class="szc-expcol-card__placeholder">
+                            {%- assign placeholder_idx = forloop.index | modulo: 6 | plus: 1 -%}
+                            {{ 'collection-' | append: placeholder_idx | placeholder_svg_tag: 'szc-placeholder-svg' }}
+                          </div>
+                        {%- endif -%}
+                      </div>
+                    </div>
+
+                    <div class="szc-expcol-card__footer">
+                      <div class="szc-expcol-card__info">
+                        <h3 class="szc-expcol-card__title">{{ card_title }}</h3>
+                        {%- if custom_subtitle != blank -%}
+                          <p class="szc-expcol-card__subtitle">{{ custom_subtitle }}</p>
+                        {%- endif -%}
+                      </div>
+                      <div class="szc-expcol-card__arrow-btn" aria-hidden="true">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                          <path d="M5 12h14"/><path d="m12 5 7 7-7 7"/>
+                        </svg>
+                      </div>
+                    </div>
+                  </a>
+                </div>
+              {%- endfor -%}
+            {%- else -%}
+              <!-- Default Demo Collections matching reference image -->
+              {%- assign default_titles = 'Everyday Essentials|New Arrivals|Summer Collection|Denim Edit|Accessories' | split: '|' -%}
+              {%- assign default_subtitles = 'Effortless & Comfortable|Fresh Styles Weekly|Light, Breezy & Chic|Timeless & Versatile|Complete Your Look' | split: '|' -%}
+
+              {%- for def_title in default_titles -%}
+                {%- assign def_sub = default_subtitles[forloop.index0] -%}
+                {%- assign p_num = forloop.index | modulo: 6 | plus: 1 -%}
+                <div class="szc-expcol-slide" data-slide-index="{{ forloop.index0 }}">
+                  <a href="#" class="szc-expcol-card" draggable="false" aria-label="{{ def_title | escape }}">
+                    {%- if show_clips -%}
+                      <div class="szc-expcol-card__clip" aria-hidden="true">
+                        <span class="szc-expcol-card__clip-hole"></span>
+                      </div>
+                    {%- endif -%}
+
+                    <div class="szc-expcol-card__media-wrap">
+                      <div class="szc-expcol-card__media" style="aspect-ratio: {{ aspect_ratio }};">
+                        <div class="szc-expcol-card__placeholder">
+                          {{ 'collection-' | append: p_num | placeholder_svg_tag: 'szc-placeholder-svg' }}
+                        </div>
+                      </div>
+                    </div>
+
+                    <div class="szc-expcol-card__footer">
+                      <div class="szc-expcol-card__info">
+                        <h3 class="szc-expcol-card__title">{{ def_title }}</h3>
+                        <p class="szc-expcol-card__subtitle">{{ def_sub }}</p>
+                      </div>
+                      <div class="szc-expcol-card__arrow-btn" aria-hidden="true">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                          <path d="M5 12h14"/><path d="m12 5 7 7-7 7"/>
+                        </svg>
+                      </div>
+                    </div>
+                  </a>
+                </div>
+              {%- endfor -%}
             {%- endif -%}
           </div>
+        </div>
 
-          <!-- Bottom Frosted Glass Overlay -->
-          <div class="szc-explore-card__overlay">
-            <h3 class="szc-explore-card__title">{{ card_title }}</h3>
-            {%- if custom_subtitle != blank -%}
-              <p class="szc-explore-card__subtitle">{{ custom_subtitle }}</p>
+        {%- if show_dots -%}
+          <!-- Pagination Dots -->
+          <div class="szc-expcol-dots" data-expcol-dots aria-label="Collections navigation dots">
+            {%- assign dots_count = section.blocks.size -%}
+            {%- if dots_count == 0 -%}
+              {%- assign dots_count = 5 -%}
             {%- endif -%}
+            {%- for i in (1..dots_count) -%}
+              <button
+                type="button"
+                class="szc-expcol-dot{% if forloop.first %} is-active{% endif %}"
+                data-dot-index="{{ forloop.index0 }}"
+                aria-label="Go to collection {{ forloop.index }}"
+              ></button>
+            {%- endfor -%}
           </div>
-        </a>
-      </div>
-    {%- else -%}
-      <!-- Default 5 Items matching approved UI screenshot pixel-for-pixel -->
-      <div class="szc-explore-collections__item">
-        <a href="#" class="szc-explore-card" style="aspect-ratio: {{ aspect_ratio }};">
-          <div class="szc-explore-card__media">
-            <div class="szc-explore-card__placeholder">
-              {{ 'collection-1' | placeholder_svg_tag: 'szc-placeholder-svg' }}
-            </div>
-          </div>
-          <div class="szc-explore-card__overlay">
-            <h3 class="szc-explore-card__title">Everyday Essentials</h3>
-            <p class="szc-explore-card__subtitle">Effortless & Comfortable</p>
-          </div>
-        </a>
-      </div>
+        {%- endif -%}
 
-      <div class="szc-explore-collections__item">
-        <a href="#" class="szc-explore-card" style="aspect-ratio: {{ aspect_ratio }};">
-          <div class="szc-explore-card__media">
-            <div class="szc-explore-card__placeholder">
-              {{ 'collection-2' | placeholder_svg_tag: 'szc-placeholder-svg' }}
-            </div>
+        {%- if show_button and button_label != blank -%}
+          <!-- Bottom View All Button -->
+          <div class="szc-expcol-cta">
+            <a href="{{ button_link }}" class="szc-expcol-btn">
+              <span>{{ button_label }}</span>
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                <path d="M5 12h14"/><path d="m12 5 7 7-7 7"/>
+              </svg>
+            </a>
           </div>
-          <div class="szc-explore-card__overlay">
-            <h3 class="szc-explore-card__title">New Arrivals</h3>
-            <p class="szc-explore-card__subtitle">Fresh Styles Weekly</p>
-          </div>
-        </a>
+        {%- endif -%}
       </div>
-
-      <div class="szc-explore-collections__item">
-        <a href="#" class="szc-explore-card" style="aspect-ratio: {{ aspect_ratio }};">
-          <div class="szc-explore-card__media">
-            <div class="szc-explore-card__placeholder">
-              {{ 'collection-3' | placeholder_svg_tag: 'szc-placeholder-svg' }}
-            </div>
-          </div>
-          <div class="szc-explore-card__overlay">
-            <h3 class="szc-explore-card__title">Summer Collection</h3>
-            <p class="szc-explore-card__subtitle">Light, Breezy & Chic</p>
-          </div>
-        </a>
-      </div>
-
-      <div class="szc-explore-collections__item">
-        <a href="#" class="szc-explore-card" style="aspect-ratio: {{ aspect_ratio }};">
-          <div class="szc-explore-card__media">
-            <div class="szc-explore-card__placeholder">
-              {{ 'collection-4' | placeholder_svg_tag: 'szc-placeholder-svg' }}
-            </div>
-          </div>
-          <div class="szc-explore-card__overlay">
-            <h3 class="szc-explore-card__title">Denim Edit</h3>
-            <p class="szc-explore-card__subtitle">Timeless & Versatile</p>
-          </div>
-        </a>
-      </div>
-
-      <div class="szc-explore-collections__item">
-        <a href="#" class="szc-explore-card" style="aspect-ratio: {{ aspect_ratio }};">
-          <div class="szc-explore-card__media">
-            <div class="szc-explore-card__placeholder">
-              {{ 'collection-5' | placeholder_svg_tag: 'szc-placeholder-svg' }}
-            </div>
-          </div>
-          <div class="szc-explore-card__overlay">
-            <h3 class="szc-explore-card__title">Accessories</h3>
-            <p class="szc-explore-card__subtitle">Complete Your Look</p>
-          </div>
-        </a>
-      </div>
-    {%- endfor -%}
+    </div>
   </div>
 </section>
 
 {% stylesheet %}
-  .szc-explore-collections-section {
-    padding-top: var(--szc-space-12, 48px);
-    padding-bottom: var(--szc-space-12, 48px);
-    max-width: var(--szc-page-max-width, 1400px);
+  /* ───────────────────────────────────────────────────────────────────────────
+     Explore Collections Section Styles (Strictly Isolated szc-expcol Namespace)
+     ─────────────────────────────────────────────────────────────────────────── */
+
+  .szc-expcol-section {
+    position: relative;
+    background-color: var(--szc-expcol-bg, #faf8f5);
+    padding-top: var(--szc-expcol-pt, 56px);
+    padding-bottom: var(--szc-expcol-pb, 56px);
+    overflow: hidden;
+    width: 100%;
+  }
+
+  .szc-expcol-inner {
+    max-width: 100%;
     margin: 0 auto;
-    padding-left: var(--szc-space-6, 24px);
-    padding-right: var(--szc-space-6, 24px);
+    position: relative;
+    z-index: 2;
   }
 
-  .szc-section-header {
-    margin-bottom: var(--szc-space-8, 32px);
+  /* Decorative Foliage Light/Shadows */
+  .szc-expcol-leaf {
+    position: absolute;
+    pointer-events: none;
+    z-index: 1;
+    opacity: 0.8;
   }
 
-  .szc-section-header--left {
-    text-align: left;
+  .szc-expcol-leaf--tl {
+    top: 0;
+    left: 0;
+    width: clamp(160px, 22vw, 320px);
+    transform: translate(-10%, -10%);
   }
 
-  .szc-section-header--center {
-    text-align: center;
+  .szc-expcol-leaf--br {
+    bottom: 0;
+    right: 0;
+    width: clamp(160px, 22vw, 320px);
+    transform: translate(10%, 10%);
   }
 
-  .szc-section-header--right {
-    text-align: right;
+  /* Editorial Script Badge (Style In Every Story ♡ - Red Marked Area) */
+  .szc-expcol-script-badge {
+    position: absolute;
+    top: 8px;
+    right: clamp(20px, 4.5vw, 75px);
+    font-family: 'Playfair Display', Georgia, 'Caveat', cursive, serif;
+    font-style: italic;
+    font-weight: 400;
+    font-size: clamp(16px, 1.8vw, 22px);
+    line-height: 1.18;
+    color: var(--szc-expcol-badge-color, #b89270);
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    pointer-events: none;
+    z-index: 6;
+    transform: rotate(3deg);
+    opacity: 0.95;
+    user-select: none;
   }
 
-  .szc-section-header__subtitle {
+  .szc-expcol-script-badge__line {
     display: block;
-    font-family: var(--szc-font-family-body, sans-serif);
-    font-size: 11px;
-    font-weight: 600;
-    text-transform: uppercase;
-    letter-spacing: 0.12em;
-    color: var(--szc-color-text-muted, #666666);
-    margin-bottom: 6px;
+    white-space: nowrap;
   }
 
-  .szc-section-header__title {
-    margin: 0;
-    font-family: var(--szc-font-family-heading, Georgia, 'Playfair Display', serif);
-    font-size: clamp(24px, 3vw, 34px);
-    font-weight: 500;
-    color: var(--szc-color-heading, #111111);
-    line-height: 1.2;
+  .szc-expcol-script-badge__heart {
+    font-size: 15px;
+    margin-top: 2px;
+    color: inherit;
   }
 
-  .szc-explore-collections__grid {
-    display: grid;
-    grid-template-columns: repeat(var(--cols-mobile, 2), 1fr);
-    gap: var(--szc-space-4, 16px);
-  }
+  @media (max-width: 767px) {
+    .szc-expcol-script-badge {
+      top: -4px;
+      right: 14px;
+      font-size: 12px;
+      line-height: 1.15;
+    }
 
-  @media (min-width: 990px) {
-    .szc-explore-collections__grid {
-      grid-template-columns: repeat(var(--cols-desktop, 5), 1fr);
-      gap: var(--szc-space-5, 20px);
+    .szc-expcol-script-badge__heart {
+      font-size: 11px;
+    }
+
+    .szc-expcol-script-badge--hide-mobile {
+      display: none !important;
     }
   }
 
-  /* Explore Card Design */
-  .szc-explore-card {
+  /* ── Section Header ─────────────────────────────────────────────────────── */
+  .szc-expcol-header {
+    margin-bottom: clamp(24px, 3.5vw, 36px);
+    padding: 0 20px;
+    position: relative;
+    z-index: 4;
+  }
+
+  .szc-expcol-header--left {
+    text-align: left;
+  }
+  .szc-expcol-header--center {
+    text-align: center;
+  }
+  .szc-expcol-header--right {
+    text-align: right;
+  }
+
+  .szc-expcol-header__eyebrow-wrap {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 12px;
+  }
+
+  .szc-expcol-header--left .szc-expcol-header__eyebrow-wrap {
+    justify-content: flex-start;
+  }
+  .szc-expcol-header--right .szc-expcol-header__eyebrow-wrap {
+    justify-content: flex-end;
+  }
+
+  .szc-expcol-header__eyebrow {
+    display: inline-flex;
+    align-items: center;
+    gap: 16px;
+    font-family: var(--szc-font-family-body, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif);
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.22em;
+    text-transform: uppercase;
+    color: var(--szc-color-text-muted, #555555);
+  }
+
+  .szc-expcol-header__eyebrow::before,
+  .szc-expcol-header__eyebrow::after {
+    content: '';
+    display: inline-block;
+    width: 36px;
+    height: 1px;
+    background-color: currentColor;
+    opacity: 0.45;
+  }
+
+  .szc-expcol-header__title {
+    margin: 0;
+    font-family: var(--szc-font-family-heading, Georgia, 'Playfair Display', serif);
+    font-size: clamp(28px, 4.2vw, 48px);
+    font-weight: 800;
+    line-height: 1.15;
+    color: var(--szc-color-heading, #121212);
+    letter-spacing: -0.02em;
+  }
+
+  .szc-expcol-heading__highlight {
+    position: relative;
+    display: inline-block;
+    color: var(--szc-expcol-highlight-color, #9e6f3d);
+  }
+
+  .szc-expcol-heading__highlight-text {
+    position: relative;
+    z-index: 2;
+  }
+
+  .szc-expcol-heading__brush {
+    position: absolute;
+    left: -5%;
+    bottom: -2px;
+    width: 110%;
+    height: 22px;
+    z-index: 1;
+    pointer-events: none;
+  }
+
+  .szc-expcol-heading__brush path {
+    stroke: var(--szc-expcol-brush-color, #cfa77d);
+  }
+
+  .szc-expcol-header__description {
+    margin: 12px auto 0 auto;
+    font-family: var(--szc-font-family-body, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif);
+    font-size: clamp(13px, 1.4vw, 15px);
+    font-weight: 400;
+    line-height: 1.5;
+    color: var(--szc-color-text-muted, #666666);
+    max-width: 560px;
+  }
+
+  /* ── Stage & Hanging Structure (Full Width) ────────────────────────────── */
+  .szc-expcol-carousel {
+    display: block;
+    width: 100%;
+    max-width: 100%;
+    margin: 0;
+    position: relative;
+    padding: 0;
+    box-sizing: border-box;
+  }
+
+  .szc-expcol-stage {
+    position: relative;
+    width: 100%;
+    padding-top: 0;
+    padding-bottom: 24px;
+  }
+
+  /* Curved Clothesline Behind Cards */
+  .szc-expcol-string-wrap {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    width: 100%;
+    height: 120px;
+    z-index: 2;
+    pointer-events: none;
+    overflow: visible;
+  }
+
+  .szc-expcol-string-svg {
+    width: 100%;
+    height: 100%;
+    display: block;
+    overflow: visible;
+  }
+
+  .szc-expcol-string-path {
+    stroke: #5a6156;
+    stroke-width: 2.2;
+    opacity: 0.95;
+  }
+
+  /* ── Carousel Viewport & Track ─────────────────────────────────────────── */
+  .szc-expcol-viewport {
+    position: relative;
+    width: 100%;
+    z-index: 3;
+    overflow: hidden;
+  }
+
+  .szc-expcol-track {
+    display: flex;
+    gap: var(--szc-expcol-gap, 22px);
+    overflow-x: auto;
+    overflow-y: visible;
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+    scroll-behavior: smooth;
+    padding: 10px 4vw 135px 4vw;
+    margin: 0;
+    box-sizing: border-box;
+    align-items: flex-start;
+    cursor: grab;
+    user-select: none;
+    -webkit-user-select: none;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  .szc-expcol-track::-webkit-scrollbar {
+    display: none;
+  }
+
+  .szc-expcol-track.is-dragging {
+    cursor: grabbing !important;
+    scroll-behavior: auto !important;
+  }
+
+  .szc-expcol-track img,
+  .szc-expcol-track a {
+    -webkit-user-drag: none;
+    user-drag: none;
+    user-select: none;
+    -webkit-user-select: none;
+  }
+
+  /* When all cards fit on desktop */
+  @media (min-width: 768px) {
+    .szc-expcol--no-desktop-scroll .szc-expcol-dots {
+      display: none !important;
+    }
+
+    .szc-expcol--no-desktop-scroll .szc-expcol-track {
+      justify-content: center;
+      overflow-x: hidden;
+      padding: 10px 4vw 135px 4vw;
+    }
+  }
+
+  /* ── Slide Container & Exact Fanned Coordinates ─────────────────────────── */
+  .szc-expcol-slide {
+    flex: 0 0 clamp(220px, calc((100vw - 8vw - (var(--szc-expcol-cols-desktop, 5) - 1) * var(--szc-expcol-gap, 22px)) / var(--szc-expcol-cols-desktop, 5)), 320px);
+    width: clamp(220px, calc((100vw - 8vw - (var(--szc-expcol-cols-desktop, 5) - 1) * var(--szc-expcol-gap, 22px)) / var(--szc-expcol-cols-desktop, 5)), 320px);
+    box-sizing: border-box;
+    position: relative;
+    --card-rot: 0deg;
+    --card-offset-y: 73px;
+    transform: translate3d(0, var(--card-offset-y), 0) rotate(var(--card-rot));
+    transform-origin: 50% -6px;
+    will-change: transform;
+    transition: transform 380ms cubic-bezier(0.25, 1, 0.5, 1);
+  }
+
+  .szc-expcol-track.is-scrolling .szc-expcol-slide,
+  .szc-expcol-track.is-swiping .szc-expcol-slide,
+  .szc-expcol-track.is-dragging .szc-expcol-slide {
+    transition: none !important;
+  }
+
+  /* Exact static hanging curve coordinates matching SVG curve */
+  .szc-expcol-slide:nth-child(1) { --card-rot: 6.5deg;   --card-offset-y: 41px; }
+  .szc-expcol-slide:nth-child(2) { --card-rot: 3.2deg;   --card-offset-y: 65px; }
+  .szc-expcol-slide:nth-child(3) { --card-rot: 0deg;     --card-offset-y: 73px; }
+  .szc-expcol-slide:nth-child(4) { --card-rot: -3.2deg;  --card-offset-y: 65px; }
+  .szc-expcol-slide:nth-child(5) { --card-rot: -6.5deg;  --card-offset-y: 41px; }
+
+  .szc-expcol-rot--none .szc-expcol-slide {
+    --card-rot: 0deg !important;
+  }
+
+  /* ── Physical Photo Print Card (Unique szc-expcol-card namespace) ───────── */
+  .szc-expcol-card {
     position: relative;
     display: flex;
     flex-direction: column;
     width: 100%;
-    border-radius: var(--szc-radius-card, 14px);
-    overflow: hidden;
+    background-color: #ffffff;
+    border-radius: 18px;
+    padding: 12px 12px 18px 12px;
+    box-sizing: border-box;
     text-decoration: none;
-    background-color: var(--szc-color-surface, #f7f4ee);
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.03);
-    transition: transform 300ms ease, box-shadow 300ms ease;
+    box-shadow: 0 16px 36px -8px rgba(0, 0, 0, 0.11), 0 4px 12px rgba(0, 0, 0, 0.04);
+    transition: box-shadow 350ms ease, transform 350ms cubic-bezier(0.25, 1, 0.5, 1);
+    border: 1px solid rgba(0, 0, 0, 0.04);
+    cursor: pointer;
   }
 
-  .szc-explore-card:hover {
-    transform: translateY(-4px);
-    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.08);
+  .szc-expcol-card:hover {
+    box-shadow: 0 22px 48px -10px rgba(0, 0, 0, 0.18), 0 8px 18px rgba(0, 0, 0, 0.06);
+    transform: translateY(-6px);
   }
 
-  .szc-explore-card__media {
+  /* Decorative Clip / Tag at Top Center */
+  .szc-expcol-card__clip {
     position: absolute;
-    top: 0;
-    left: 0;
+    top: -14px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 18px;
+    height: 30px;
+    background-color: var(--szc-expcol-clip-color, #175429);
+    border-radius: 4px;
+    z-index: 6;
+    box-shadow: 0 3px 6px rgba(0, 0, 0, 0.25);
+    display: flex;
+    align-items: flex-start;
+    justify-content: center;
+    padding-top: 5px;
+    box-sizing: border-box;
+    pointer-events: none;
+  }
+
+  .szc-expcol-card__clip-hole {
+    display: block;
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background-color: #ffffff;
+    box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.35);
+  }
+
+  /* Card Media / Image */
+  .szc-expcol-card__media-wrap {
     width: 100%;
-    height: 100%;
+    border-radius: 14px;
+    overflow: hidden;
+    position: relative;
+    background-color: #f2efe9;
+  }
+
+  .szc-expcol-card__media {
+    width: 100%;
+    aspect-ratio: var(--szc-expcol-card-ratio, 3/4);
+    position: relative;
     overflow: hidden;
   }
 
-  .szc-explore-card__image {
+  .szc-expcol-card__img {
+    position: absolute;
+    inset: 0;
     width: 100%;
     height: 100%;
     object-fit: cover;
-    transition: transform 600ms ease;
+    object-position: center;
+    display: block;
+    pointer-events: none;
+    transition: transform 600ms cubic-bezier(0.25, 1, 0.5, 1);
   }
 
-  .szc-explore-card:hover .szc-explore-card__image {
+  .szc-expcol-card:hover .szc-expcol-card__img {
     transform: scale(1.05);
   }
 
-  .szc-explore-card__placeholder {
+  .szc-expcol-card__placeholder {
     width: 100%;
     height: 100%;
     display: flex;
     align-items: center;
     justify-content: center;
-    background-color: var(--szc-color-surface-subtle, #eee9df);
-    color: var(--szc-color-text-muted, #a8a090);
+    background-color: #eee9df;
+    color: #a8a090;
   }
 
-  /* Bottom Frosted Glass Overlay */
-  .szc-explore-card__overlay {
-    position: absolute;
-    bottom: 0;
-    left: 0;
-    right: 0;
-    padding: 14px 12px;
-    text-align: center;
-    background: rgba(247, 244, 238, 0.92);
-    backdrop-filter: blur(8px);
-    -webkit-backdrop-filter: blur(8px);
-    border-top: 1px solid rgba(255, 255, 255, 0.4);
-    transition: background-color 250ms ease;
+  .szc-expcol-card__placeholder svg {
+    width: 65%;
+    height: 65%;
+    opacity: 0.6;
   }
 
-  .szc-explore-card:hover .szc-explore-card__overlay {
-    background: rgba(255, 255, 255, 0.96);
+  /* Card Info & Circular Arrow */
+  .szc-expcol-card__footer {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 10px;
+    margin-top: 14px;
+    padding: 0 4px;
   }
 
-  .szc-explore-card__title {
+  .szc-expcol-card__info {
+    flex: 1 1 auto;
+    min-width: 0;
+  }
+
+  .szc-expcol-card__title {
     margin: 0;
-    font-family: var(--szc-font-family-body, sans-serif);
+    font-family: var(--szc-font-family-body, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif);
     font-size: 14px;
     font-weight: 700;
     color: var(--szc-color-heading, #111111);
-    line-height: 1.3;
+    line-height: 1.25;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
   }
 
-  .szc-explore-card__subtitle {
+  .szc-expcol-card__subtitle {
     margin: 3px 0 0 0;
-    font-family: var(--szc-font-family-body, sans-serif);
+    font-family: var(--szc-font-family-body, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif);
     font-size: 11px;
-    color: var(--szc-color-text-muted, #666666);
-    line-height: 1.3;
+    font-weight: 400;
+    color: var(--szc-color-text-muted, #777777);
+    line-height: 1.35;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  .szc-expcol-card__arrow-btn {
+    flex: 0 0 32px;
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    border: 1px solid #dedad3;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: #ffffff;
+    color: #222222;
+    transition: all 250ms ease;
+  }
+
+  .szc-expcol-card:hover .szc-expcol-card__arrow-btn {
+    background-color: #111111;
+    color: #ffffff;
+    border-color: #111111;
+    transform: scale(1.05);
+  }
+
+  /* ── Pagination Dots ────────────────────────────────────────────────────── */
+  .szc-expcol-dots {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    margin-top: 14px;
+    padding: 0 16px;
+  }
+
+  .szc-expcol-dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 4px;
+    background-color: #dedcd7;
+    border: none;
+    padding: 0;
+    cursor: pointer;
+    transition: all 300ms cubic-bezier(0.25, 1, 0.5, 1);
+  }
+
+  .szc-expcol-dot.is-active {
+    width: 60px;
+    background-color: #b37d4e;
+    border-radius: 4px;
+  }
+
+  .szc-expcol-dot:hover:not(.is-active) {
+    background-color: #b8b5ae;
+  }
+
+  /* Bottom View All Button */
+  .szc-expcol-cta {
+    display: flex;
+    justify-content: center;
+    margin-top: 28px;
+  }
+
+  .szc-expcol-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    padding: 12px 28px;
+    border-radius: 9999px;
+    border: 1px solid #2b2b2b;
+    background-color: transparent;
+    color: #222222;
+    text-decoration: none;
+    font-family: var(--szc-font-family-body, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif);
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    transition: all 300ms ease;
+    box-sizing: border-box;
+  }
+
+  .szc-expcol-btn:hover {
+    background-color: #1a1a1a;
+    color: #ffffff;
+    border-color: #1a1a1a;
+    box-shadow: 0 6px 18px rgba(0, 0, 0, 0.12);
+  }
+
+  .szc-expcol-btn svg {
+    transition: transform 250ms ease;
+  }
+
+  .szc-expcol-btn:hover svg {
+    transform: translateX(3px);
+  }
+
+  /* ── Mobile Layout (Touch Swipe Carousel ≤ 767px) ───────────────────────── */
+  @media (max-width: 767px) {
+    .szc-expcol-section {
+      padding-top: calc(var(--szc-expcol-pt, 56px) * 0.75);
+      padding-bottom: calc(var(--szc-expcol-pb, 56px) * 0.75);
+    }
+
+    .szc-expcol-carousel {
+      padding: 0;
+    }
+
+    .szc-expcol-nav-btn {
+      display: none !important;
+    }
+
+    .szc-expcol-header {
+      margin-bottom: 20px;
+      padding: 0 16px;
+    }
+
+    .szc-expcol-header__eyebrow {
+      font-size: 10px;
+      gap: 10px;
+    }
+
+    .szc-expcol-header__eyebrow::before,
+    .szc-expcol-header__eyebrow::after {
+      width: 24px;
+    }
+
+    .szc-expcol-string-wrap {
+      top: 0;
+      height: 70px;
+    }
+
+    .szc-expcol-viewport {
+      overflow: visible;
+    }
+
+    .szc-expcol-track {
+      padding: 10px 14vw 90px 14vw;
+      gap: 16px;
+      scroll-snap-type: x mandatory;
+      -webkit-overflow-scrolling: touch;
+    }
+
+    .szc-expcol-slide {
+      flex: 0 0 72vw;
+      width: 72vw;
+      min-width: 220px;
+      max-width: 290px;
+      scroll-snap-align: center;
+      --card-rot: 0deg;
+      --card-offset-y: 48px;
+    }
+
+    .szc-expcol-card {
+      padding: 10px 10px 14px 10px;
+      border-radius: 16px;
+    }
+
+    .szc-expcol-card__clip {
+      width: 16px;
+      height: 26px;
+      top: -12px;
+    }
+
+    .szc-expcol-card__clip-hole {
+      width: 5px;
+      height: 5px;
+    }
+
+    .szc-expcol-card__media-wrap {
+      border-radius: 12px;
+    }
+
+    .szc-expcol-card__title {
+      font-size: 13px;
+    }
+
+    .szc-expcol-card__subtitle {
+      font-size: 10.5px;
+    }
+
+    .szc-expcol-card__arrow-btn {
+      width: 28px;
+      height: 28px;
+      flex: 0 0 28px;
+    }
+
+    .szc-expcol-card__arrow-btn svg {
+      width: 12px;
+      height: 12px;
+    }
+
+    .szc-expcol-dots {
+      margin-top: 14px;
+    }
+
+    .szc-expcol-cta {
+      margin-top: 20px;
+    }
+
+    /* 2 Columns on Mobile */
+    .szc-expcol--mobile-cols-2 .szc-expcol-track {
+      padding: 10px 16px 80px 16px;
+      gap: 12px;
+      scroll-snap-type: none;
+    }
+
+    .szc-expcol--mobile-cols-2 .szc-expcol-slide {
+      flex: 0 0 calc((100% - 12px) / 2);
+      width: calc((100% - 12px) / 2);
+      min-width: 145px;
+      max-width: 200px;
+    }
+
+    .szc-expcol--mobile-cols-2 .szc-expcol-card {
+      padding: 8px 8px 12px 8px;
+      border-radius: 14px;
+    }
+
+    .szc-expcol--mobile-cols-2 .szc-expcol-card__title {
+      font-size: 11.5px;
+    }
+
+    .szc-expcol--mobile-cols-2 .szc-expcol-card__subtitle {
+      font-size: 9.5px;
+    }
+
+    .szc-expcol--mobile-cols-2 .szc-expcol-card__arrow-btn {
+      width: 24px;
+      height: 24px;
+      flex: 0 0 24px;
+    }
+  }
+
+  /* ── Tablet Viewport (768px – 1023px) ───────────────────────────────────── */
+  @media (min-width: 768px) and (max-width: 1023px) {
+    .szc-expcol-carousel {
+      padding: 0;
+    }
+
+    .szc-expcol-track {
+      padding: 10px 4vw 120px 4vw;
+      gap: 16px;
+    }
+
+    .szc-expcol-slide {
+      flex: 0 0 clamp(220px, calc((100vw - 8vw - 2 * 16px) / 3), 290px);
+      width: clamp(220px, calc((100vw - 8vw - 2 * 16px) / 3), 290px);
+      min-width: 200px;
+    }
+
+    .szc-expcol-script-badge {
+      right: 24px;
+      font-size: 15px;
+    }
+  }
+
+  /* ── Reduced Motion Support ─────────────────────────────────────────────── */
+  @media (prefers-reduced-motion: reduce) {
+    .szc-expcol-slide,
+    .szc-expcol-card,
+    .szc-expcol-card__img,
+    .szc-expcol-dot,
+    .szc-expcol-btn {
+      transition: none !important;
+      animation: none !important;
+      transform: none !important;
+    }
+
+    .szc-expcol-track {
+      scroll-behavior: auto !important;
+    }
   }
 {% endstylesheet %}
+
+<script>
+  (function() {
+    function initExplore() {
+      var section = document.getElementById('ExploreCollections-{{ section.id }}');
+      if (!section || section.dataset.initialized === 'true') return;
+      section.dataset.initialized = 'true';
+
+      var track = section.querySelector('[data-expcol-track]');
+      if (!track) return;
+
+      var slides = Array.from(section.querySelectorAll('.szc-expcol-slide'));
+      var dots = Array.from(section.querySelectorAll('.szc-expcol-dot'));
+      var cards = Array.from(section.querySelectorAll('.szc-expcol-card'));
+
+      var isMobile = window.matchMedia('(max-width: 767px)').matches;
+      var prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+      var wasSwiping = false;
+      var touchStartX = 0;
+      var touchStartY = 0;
+      var rafId = null;
+      var scrollTimeout = null;
+      var currentActiveIdx = 0;
+
+      /* Mouse drag-to-swipe state */
+      var isMouseDown = false;
+      var mouseStartX = 0;
+      var mouseStartScrollLeft = 0;
+      var wasMouseDragging = false;
+
+      function updateDots() {
+        if (!dots.length) return;
+        var maxScroll = track.scrollWidth - track.clientWidth;
+        var activeIdx = 0;
+        if (maxScroll > 8 && dots.length > 1) {
+          var ratio = Math.max(0, Math.min(1, track.scrollLeft / maxScroll));
+          activeIdx = Math.min(dots.length - 1, Math.max(0, Math.round(ratio * (dots.length - 1))));
+        } else if (slides.length > 0) {
+          var trackRect = track.getBoundingClientRect();
+          var centerX = trackRect.left + trackRect.width / 2;
+          var minD = Infinity;
+          slides.forEach(function(s, idx) {
+            var r = s.getBoundingClientRect();
+            var d = Math.abs(r.left + r.width / 2 - centerX);
+            if (d < minD) {
+              minD = d;
+              activeIdx = idx;
+            }
+          });
+        }
+        currentActiveIdx = activeIdx;
+        dots.forEach(function(dot, i) {
+          dot.classList.toggle('is-active', i === activeIdx);
+        });
+      }
+
+      function updateNavState() {
+        var isScrollable = track.scrollWidth > track.clientWidth + 8;
+        section.classList.toggle('has-scroll-overflow', isScrollable);
+
+        var dotsWrapAll = section.querySelector('[data-expcol-dots]');
+        if (dotsWrapAll) {
+          if (!isScrollable) {
+            dotsWrapAll.style.display = 'none';
+          } else {
+            dotsWrapAll.style.display = 'flex';
+          }
+        }
+      }
+
+      function updateFannedCards() {
+        if (prefersReducedMotion) return;
+
+        var isScrollable = track.scrollWidth > track.clientWidth + 8;
+        if (!isMobile && !isScrollable && slides.length === 5) {
+          var staticOffsets = [41, 65, 73, 65, 41];
+          var staticRots = [6.5, 3.2, 0, -3.2, -6.5];
+          slides.forEach(function(slide, idx) {
+            if (idx < 5) {
+              slide.style.setProperty('--card-offset-y', staticOffsets[idx] + 'px');
+              slide.style.setProperty('--card-rot', staticRots[idx] + 'deg');
+            }
+          });
+          updateDots();
+          return;
+        }
+
+        var stage = section.querySelector('.szc-expcol-stage') || track;
+        var stageRect = stage.getBoundingClientRect();
+        var stageWidth = stageRect.width || window.innerWidth || 1;
+        var svgHeight = isMobile ? 70 : 120;
+        var rotSetting = section.getAttribute('data-max-rot');
+        var maxRot = rotSetting !== null ? parseFloat(rotSetting) : (isMobile ? 5 : 8.5);
+        if (isNaN(maxRot)) maxRot = 8.5;
+
+        slides.forEach(function(slide) {
+          var slideRect = slide.getBoundingClientRect();
+          var slideCenterX = slideRect.left + slideRect.width / 2;
+          var relX = slideCenterX - stageRect.left;
+          var normX = Math.max(0, Math.min(1, relX / stageWidth));
+
+          // Map to SVG coordinates (0 to 1440)
+          var xSvg = normX * 1440;
+          // SVG Quadratic Bézier formula: d="M -50 20 Q 720 134 1490 20"
+          // X(t) = -50 + 1540*t  =>  t = (xSvg + 50) / 1540
+          var t = Math.max(0, Math.min(1, (xSvg + 50) / 1540));
+          // Y(t) = 20 + 228 * t * (1 - t)
+          var ySvg = 20 + 228 * t * (1 - t);
+          // Scale to actual rendered SVG height
+          var stringY = ySvg * (svgHeight / 120);
+
+          // Card clip hole is at stage Y = 10 (track padding) + cardTop - 6 = cardTop + 4
+          // Setting cardTop = stringY - 4 locks the clip hole exactly onto the curve line
+          var cardTop = Math.max(4, stringY - 4);
+
+          // Rotate card to match curve slope (-u * maxRot)
+          var u = (normX - 0.5) * 2;
+          var rot = -u * maxRot;
+
+          slide.style.setProperty('--card-offset-y', cardTop.toFixed(1) + 'px');
+          slide.style.setProperty('--card-rot', rot.toFixed(2) + 'deg');
+        });
+
+        updateDots();
+      }
+
+      function onScroll() {
+        if (rafId) return;
+        rafId = requestAnimationFrame(function() {
+          updateFannedCards();
+          updateNavState();
+          rafId = null;
+        });
+      }
+
+      function getScrollStep() {
+        if (!slides.length) return 300;
+        var slideWidth = slides[0].offsetWidth;
+        var gap = parseFloat(getComputedStyle(track).gap) || 20;
+        return slideWidth + gap;
+      }
+
+      function goToIndex(index) {
+        if (index < 0 || index >= slides.length) return;
+        var maxScroll = track.scrollWidth - track.clientWidth;
+        if (maxScroll <= 0) return;
+        var targetSlide = slides[index];
+        var trackRect = track.getBoundingClientRect();
+        var targetRect = targetSlide.getBoundingClientRect();
+        var currentScroll = track.scrollLeft;
+        var targetCenter = targetRect.left - trackRect.left + currentScroll + targetRect.width / 2;
+        var offset = targetCenter - trackRect.width / 2;
+        var clampedOffset = Math.max(0, Math.min(maxScroll, offset));
+        track.scrollTo({ left: clampedOffset, behavior: 'smooth' });
+      }
+
+      track.addEventListener('scroll', function() {
+        track.classList.add('is-scrolling');
+        onScroll();
+        clearTimeout(scrollTimeout);
+        scrollTimeout = setTimeout(function() {
+          track.classList.remove('is-scrolling');
+        }, 120);
+      }, { passive: true });
+
+      window.addEventListener('resize', function() {
+        isMobile = window.matchMedia('(max-width: 767px)').matches;
+        updateFannedCards();
+        updateNavState();
+      }, { passive: true });
+
+      /* ── Click on Dots to Navigate ── */
+      dots.forEach(function(dot, index) {
+        dot.addEventListener('click', function(e) {
+          e.preventDefault();
+          var maxScroll = track.scrollWidth - track.clientWidth;
+          if (maxScroll <= 0) return;
+          if (index === 0) {
+            track.scrollTo({ left: 0, behavior: 'smooth' });
+          } else if (index === dots.length - 1) {
+            track.scrollTo({ left: maxScroll, behavior: 'smooth' });
+          } else {
+            goToIndex(index);
+          }
+        });
+      });
+
+      /* ── Click on Card to Center/Swipe OR Open ── */
+      slides.forEach(function(slide) {
+        slide.addEventListener('click', function(e) {
+          if (wasMouseDragging || wasSwiping) {
+            e.preventDefault();
+            e.stopPropagation();
+            return;
+          }
+
+          var slideIdx = parseInt(slide.dataset.slideIndex, 10);
+          // If clicking the small arrow button, always allow link navigation
+          if (e.target.closest('.szc-expcol-card__arrow-btn')) {
+            return;
+          }
+
+          // If the clicked card is NOT the active card and track is scrollable, click to swipe to it
+          var isScrollable = track.scrollWidth > track.clientWidth + 8;
+          if (isScrollable && slideIdx !== currentActiveIdx) {
+            e.preventDefault();
+            goToIndex(slideIdx);
+          }
+        });
+      });
+
+      /* ── Prevent Native HTML5 Dragging on Images and Links ── */
+      track.addEventListener('dragstart', function(e) {
+        e.preventDefault();
+      });
+
+      /* ── Mouse Click-and-Drag to Swipe (Desktop) ── */
+      track.addEventListener('mousedown', function(e) {
+        if (e.button !== 0) return;
+        isMouseDown = true;
+        wasMouseDragging = false;
+        mouseStartX = e.clientX;
+        mouseStartScrollLeft = track.scrollLeft;
+        track.style.scrollBehavior = 'auto';
+        track.classList.add('is-dragging');
+      });
+
+      window.addEventListener('mousemove', function(e) {
+        if (!isMouseDown) return;
+        var diffX = e.clientX - mouseStartX;
+        if (Math.abs(diffX) > 5) {
+          wasMouseDragging = true;
+          track.classList.add('is-swiping');
+        }
+        track.scrollLeft = mouseStartScrollLeft - diffX;
+        onScroll();
+      });
+
+      function onMouseUp() {
+        if (!isMouseDown) return;
+        isMouseDown = false;
+        track.style.scrollBehavior = '';
+        track.classList.remove('is-dragging');
+        track.classList.remove('is-swiping');
+        setTimeout(function() {
+          wasMouseDragging = false;
+        }, 80);
+      }
+
+      window.addEventListener('mouseup', onMouseUp);
+
+      /* Global capture-phase click guard while dragging */
+      track.addEventListener('click', function(e) {
+        if (wasMouseDragging || wasSwiping) {
+          e.preventDefault();
+          e.stopPropagation();
+        }
+      }, true);
+
+      /* ── Touch Swipe (Mobile) ── */
+      track.addEventListener('touchstart', function(e) {
+        touchStartX = e.touches[0].clientX;
+        touchStartY = e.touches[0].clientY;
+        wasSwiping = false;
+        track.classList.add('is-swiping');
+      }, { passive: true });
+
+      track.addEventListener('touchmove', function(e) {
+        var diffX = Math.abs(e.touches[0].clientX - touchStartX);
+        var diffY = Math.abs(e.touches[0].clientY - touchStartY);
+        if (diffX > 8 || diffY > 8) {
+          wasSwiping = true;
+        }
+      }, { passive: true });
+
+      track.addEventListener('touchend', function() {
+        track.classList.remove('is-swiping');
+        setTimeout(function() {
+          wasSwiping = false;
+        }, 90);
+      }, { passive: true });
+
+      /* ── Keyboard Left/Right Navigation ── */
+      track.addEventListener('keydown', function(e) {
+        var step = getScrollStep();
+        if (e.key === 'ArrowLeft') {
+          e.preventDefault();
+          track.scrollBy({ left: -step, behavior: 'smooth' });
+        } else if (e.key === 'ArrowRight') {
+          e.preventDefault();
+          track.scrollBy({ left: step, behavior: 'smooth' });
+        }
+      });
+
+      /* ── Shopify Theme Editor Block Selection ── */
+      if (window.Shopify && window.Shopify.designMode) {
+        document.addEventListener('shopify:block:select', function(e) {
+          var blockId = e.detail.blockId;
+          var targetSlide = section.querySelector('[data-shopify-editor-block*="' + blockId + '"]');
+          if (targetSlide) {
+            var idx = parseInt(targetSlide.dataset.slideIndex, 10);
+            if (!isNaN(idx)) goToIndex(idx);
+          }
+        });
+      }
+
+      updateFannedCards();
+      updateNavState();
+    }
+
+    if (document.readyState === 'loading') {
+      document.addEventListener('DOMContentLoaded', initExplore);
+    } else {
+      initExplore();
+    }
+
+    document.addEventListener('shopify:section:load', function(e) {
+      if (e.target.id === 'shopify-section-{{ section.id }}') {
+        initExplore();
+      }
+    });
+  })();
+</script>
 
 {% schema %}
 {
   "name": "Explore Collections",
   "tag": "section",
   "class": "section-explore-collections",
-  "max_blocks": 10,
+  "max_blocks": 12,
   "settings": [
+    {
+      "type": "header",
+      "content": "Section Header"
+    },
     {
       "type": "text",
       "id": "subtitle",
       "default": "EXPLORE COLLECTIONS",
-      "label": "Subtitle"
+      "label": "Eyebrow Subtitle"
     },
     {
       "type": "text",
       "id": "title",
       "default": "Find Your Perfect Piece",
-      "label": "Title"
+      "label": "Heading"
+    },
+    {
+      "type": "text",
+      "id": "highlight_text",
+      "default": "Perfect",
+      "label": "Highlighted word in heading",
+      "info": "Applies a warm editorial brush-stroke highlight"
+    },
+    {
+      "type": "color",
+      "id": "highlight_color",
+      "label": "Highlighted word color",
+      "default": "#9e6f3d"
+    },
+    {
+      "type": "color",
+      "id": "highlight_brush_color",
+      "label": "Highlight brush stroke color",
+      "default": "#cfa77d"
+    },
+    {
+      "type": "text",
+      "id": "description",
+      "default": "Curated styles for every mood, moment and you.",
+      "label": "Description"
+    },
+    {
+      "type": "header",
+      "content": "Editorial Callout Badge"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_script_badge",
+      "label": "Show callout badge",
+      "default": true
+    },
+    {
+      "type": "checkbox",
+      "id": "show_script_badge_mobile",
+      "label": "Show callout badge on mobile",
+      "default": true
+    },
+    {
+      "type": "color",
+      "id": "script_badge_color",
+      "label": "Callout badge color",
+      "default": "#b89270"
+    },
+    {
+      "type": "textarea",
+      "id": "script_badge_text",
+      "label": "Callout text",
+      "default": "Style\nIn Every\nStory",
+      "info": "Press Enter for a new line"
+    },
+    {
+      "type": "text",
+      "id": "script_badge_icon",
+      "label": "Callout icon / symbol",
+      "default": "♡",
+      "info": "e.g. ♡, ★, ✦, ❀, or leave blank"
     },
     {
       "type": "select",
@@ -323,34 +1480,144 @@
       "default": "center"
     },
     {
+      "type": "header",
+      "content": "Hanging Clothesline & Cards Design"
+    },
+    {
       "type": "select",
       "id": "image_ratio",
-      "label": "Image aspect ratio",
+      "label": "Card image aspect ratio",
       "options": [
+        { "value": "1/1", "label": "Square (1:1)" },
         { "value": "3/4", "label": "Portrait (3:4)" },
-        { "value": "4/5", "label": "Tall (4:5)" },
-        { "value": "1/1", "label": "Square (1:1)" }
+        { "value": "4/5", "label": "Tall (4:5)" }
       ],
-      "default": "3/4"
+      "default": "1/1"
     },
     {
       "type": "range",
       "id": "columns_desktop",
-      "min": 2,
+      "min": 3,
       "max": 6,
       "step": 1,
       "default": 5,
-      "label": "Desktop columns"
+      "label": "Visible cards on desktop"
     },
     {
       "type": "select",
       "id": "columns_mobile",
       "label": "Mobile columns",
       "options": [
-        { "value": "1", "label": "1 Column" },
+        { "value": "1", "label": "1 Card Swipe (Recommended)" },
         { "value": "2", "label": "2 Columns" }
       ],
-      "default": "2"
+      "default": "1"
+    },
+    {
+      "type": "range",
+      "id": "card_gap",
+      "min": 12,
+      "max": 36,
+      "step": 2,
+      "default": 20,
+      "unit": "px",
+      "label": "Gap between cards"
+    },
+    {
+      "type": "select",
+      "id": "card_rotation",
+      "label": "Card hanging rotation",
+      "options": [
+        { "value": "none", "label": "None (Straight)" },
+        { "value": "subtle", "label": "Subtle (Recommended)" },
+        { "value": "medium", "label": "Medium" }
+      ],
+      "default": "subtle"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_string",
+      "label": "Show hanging clothesline string",
+      "default": true
+    },
+    {
+      "type": "checkbox",
+      "id": "show_clips",
+      "label": "Show decorative clips/pegs",
+      "default": true
+    },
+    {
+      "type": "color",
+      "id": "clip_color",
+      "label": "Clip color",
+      "default": "#175429"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_leaf_shadows",
+      "label": "Show decorative leaf shadows",
+      "default": true
+    },
+    {
+      "type": "header",
+      "content": "Pagination"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_dots",
+      "label": "Show pagination dots",
+      "default": true
+    },
+    {
+      "type": "header",
+      "content": "Footer Button"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_button",
+      "label": "Show footer button",
+      "default": true
+    },
+    {
+      "type": "text",
+      "id": "button_label",
+      "default": "VIEW ALL COLLECTIONS",
+      "label": "Button label"
+    },
+    {
+      "type": "url",
+      "id": "button_link",
+      "label": "Button link"
+    },
+    {
+      "type": "header",
+      "content": "Colors & Spacing"
+    },
+    {
+      "type": "color",
+      "id": "bg_color",
+      "label": "Background color",
+      "default": "#faf8f5"
+    },
+    {
+      "type": "range",
+      "id": "padding_top",
+      "min": 0,
+      "max": 120,
+      "step": 4,
+      "default": 56,
+      "unit": "px",
+      "label": "Top padding"
+    },
+    {
+      "type": "range",
+      "id": "padding_bottom",
+      "min": 0,
+      "max": 120,
+      "step": 4,
+      "default": 56,
+      "unit": "px",
+      "label": "Bottom padding"
     }
   ],
   "blocks": [
@@ -367,7 +1634,7 @@
           "type": "image_picker",
           "id": "image",
           "label": "Custom Image",
-          "info": "Overrides Collection Featured Image if selected"
+          "info": "Overrides collection featured image if selected"
         },
         {
           "type": "text",

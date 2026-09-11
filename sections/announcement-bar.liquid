@@ -1,6 +1,7 @@
 {%- comment -%}
   ShopziCurious - Announcement Bar Section
-  Displays top announcements with dynamic auto-slide functionality.
+  Displays customizable social media icons on left, rotating promotional announcements in center,
+  and Country/Currency localization selector on right.
 {%- endcomment -%}
 
 {%- liquid
@@ -8,55 +9,150 @@
   assign text_color = section.settings.text_color | default: '#2b2b2b'
   assign border_color = section.settings.border_color | default: '#e8e6e1'
   assign enable_auto_slide = section.settings.enable_auto_slide
+  if enable_auto_slide == nil
+    assign enable_auto_slide = true
+  endif
   assign slide_speed = section.settings.auto_slide_speed | default: 4 | times: 1000
+  assign show_country_selector = section.settings.show_country_selector
+  if show_country_selector == nil
+    assign show_country_selector = true
+  endif
+  assign alignment = section.settings.announcement_alignment | default: 'center'
+
+  assign show_social_icons = section.settings.show_social_icons
+  if show_social_icons == nil
+    assign show_social_icons = true
+  endif
+  assign show_social_mobile = section.settings.show_social_mobile
+  assign social_icon_size = section.settings.social_icon_size | default: 14
+
+  assign social_blocks = section.blocks | where: 'type', 'social_link'
+  assign announcement_blocks = section.blocks | where: 'type', 'announcement'
+
+  assign announcement_count = announcement_blocks.size
+  if announcement_count == 0 and section.blocks.size == 0
+    assign announcement_count = 4
+  endif
+
+  assign is_slider = false
+  if enable_auto_slide and announcement_count > 1
+    assign is_slider = true
+  endif
 -%}
 
 <div
   id="AnnouncementBar-{{ section.id }}"
-  class="szc-announcement-bar {% if enable_auto_slide %}is-auto-slider{% endif %}"
-  style="--szc-announcement-bg: {{ bg_color }}; --szc-announcement-text: {{ text_color }}; --szc-announcement-border: {{ border_color }};"
-  data-auto-slide="{{ enable_auto_slide }}"
+  class="szc-announcement-bar {% if is_slider %}is-auto-slider{% endif %}"
+  style="
+    --szc-announcement-bg: {{ bg_color }};
+    --szc-announcement-text: {{ text_color }};
+    --szc-announcement-border: {{ border_color }};
+    --szc-announcement-social-size: {{ social_icon_size }}px;
+  "
+  data-auto-slide="{% if is_slider %}true{% else %}false{% endif %}"
   data-speed="{{ slide_speed }}"
   role="region"
   aria-label="{{ 'sections.announcement-bar.name' | t | default: 'Announcement Bar' }}"
 >
   <div class="szc-announcement-bar__container">
-    <div class="szc-announcement-bar__items">
-      {%- for block in section.blocks -%}
-        {%- case block.type -%}
-          {%- when 'announcement' -%}
-            <div class="szc-announcement-bar__item {% if forloop.first %}is-active{% endif %}" data-slide-index="{{ forloop.index0 }}" {{ block.shopify_attributes }}>
-              {%- if block.settings.link != blank -%}
-                <a href="{{ block.settings.link }}" class="szc-announcement-bar__link">
-              {%- endif -%}
-
-              {%- if block.settings.icon != blank and block.settings.icon != 'none' -%}
-                {% render 'icon', icon: block.settings.icon, class: 'szc-announcement-bar__icon' %}
-              {%- endif -%}
-
-              <span class="szc-announcement-bar__text">
-                {{ block.settings.text | escape }}
-              </span>
-
-              {%- if block.settings.link != blank -%}
-                </a>
-              {%- endif -%}
-            </div>
-        {%- endcase -%}
+    {%- comment -%} Left Side: Social Media Icons or Balance Spacer {%- endcomment -%}
+    <div class="szc-announcement-bar__left">
+      {%- if show_social_icons -%}
+        <div class="szc-announcement-bar__socials {% unless show_social_mobile %}desktop-only{% endunless %}" role="list" aria-label="Social media links">
+          {%- if social_blocks.size > 0 -%}
+            {%- for block in social_blocks -%}
+              <a
+                href="{{ block.settings.link | default: '#' }}"
+                target="_blank"
+                rel="noopener noreferrer"
+                class="szc-announcement-bar__social-link"
+                aria-label="{{ block.settings.aria_label | default: block.settings.platform | capitalize }}"
+                role="listitem"
+                {{ block.shopify_attributes }}
+              >
+                {%- if block.settings.custom_icon != blank -%}
+                  {{ block.settings.custom_icon | image_url: width: 40 | image_tag:
+                    class: 'szc-announcement-bar__social-custom-img',
+                    loading: 'lazy',
+                    alt: block.settings.aria_label | default: block.settings.platform
+                  }}
+                {%- else -%}
+                  {% render 'icon', icon: block.settings.platform, class: 'szc-announcement-bar__social-svg' %}
+                {%- endif -%}
+              </a>
+            {%- endfor -%}
+          {%- else -%}
+            {%- comment -%} Default fallback social icons when enabled but no blocks configured {%- endcomment -%}
+            <a href="#" class="szc-announcement-bar__social-link" aria-label="Instagram" role="listitem">
+              {% render 'icon', icon: 'instagram', class: 'szc-announcement-bar__social-svg' %}
+            </a>
+            <a href="#" class="szc-announcement-bar__social-link" aria-label="Facebook" role="listitem">
+              {% render 'icon', icon: 'facebook', class: 'szc-announcement-bar__social-svg' %}
+            </a>
+            <a href="#" class="szc-announcement-bar__social-link" aria-label="X / Twitter" role="listitem">
+              {% render 'icon', icon: 'twitter', class: 'szc-announcement-bar__social-svg' %}
+            </a>
+            <a href="#" class="szc-announcement-bar__social-link" aria-label="Pinterest" role="listitem">
+              {% render 'icon', icon: 'pinterest', class: 'szc-announcement-bar__social-svg' %}
+            </a>
+          {%- endif -%}
+        </div>
       {%- else -%}
-        <div class="szc-announcement-bar__item is-active" data-slide-index="0">
-          {% render 'icon', icon: 'truck', class: 'szc-announcement-bar__icon' %}
-          <span class="szc-announcement-bar__text">FREE SHIPPING ON ORDERS OVER $100</span>
+        <div class="szc-announcement-bar__spacer desktop-only" aria-hidden="true"></div>
+      {%- endif -%}
+    </div>
+
+    {%- comment -%} Center Announcement Messages Slider {%- endcomment -%}
+    <div class="szc-announcement-bar__slider szc-announcement-bar__slider--{{ alignment }}" aria-live="polite">
+      {%- if announcement_blocks.size > 0 -%}
+        {%- for block in announcement_blocks -%}
+          <div
+            class="szc-announcement-bar__item {% if forloop.first %}is-active{% endif %}"
+            data-slide-index="{{ forloop.index0 }}"
+            aria-hidden="{% if forloop.first %}false{% else %}true{% endif %}"
+            {{ block.shopify_attributes }}
+          >
+            {%- if block.settings.link != blank -%}
+              <a href="{{ block.settings.link }}" class="szc-announcement-bar__link">
+            {%- endif -%}
+
+            {%- if block.settings.icon != blank and block.settings.icon != 'none' -%}
+              {% render 'icon', icon: block.settings.icon, class: 'szc-announcement-bar__icon' %}
+            {%- endif -%}
+
+            <span class="szc-announcement-bar__text">
+              {{ block.settings.text | escape }}
+            </span>
+
+            {%- if block.settings.link != blank -%}
+              </a>
+            {%- endif -%}
+          </div>
+        {%- endfor -%}
+      {%- elsif section.blocks.size == 0 -%}
+        <div class="szc-announcement-bar__item is-active" data-slide-index="0" aria-hidden="false">
+          <span class="szc-announcement-bar__text">New Arrivals — Explore the Latest Trends</span>
         </div>
-        <div class="szc-announcement-bar__item" data-slide-index="1">
-          {% render 'icon', icon: 'award', class: 'szc-announcement-bar__icon' %}
-          <span class="szc-announcement-bar__text">LIFETIME WARRANTY</span>
+        <div class="szc-announcement-bar__item" data-slide-index="1" aria-hidden="true">
+          <span class="szc-announcement-bar__text">Limited Time Offers — Up to 40% Off</span>
         </div>
-        <div class="szc-announcement-bar__item" data-slide-index="2">
-          {% render 'icon', icon: 'returns', class: 'szc-announcement-bar__icon' %}
-          <span class="szc-announcement-bar__text">30-DAY EASY RETURNS</span>
+        <div class="szc-announcement-bar__item" data-slide-index="2" aria-hidden="true">
+          <span class="szc-announcement-bar__text">Free Shipping on Orders Over $100</span>
         </div>
-      {%- endfor -%}
+        <div class="szc-announcement-bar__item" data-slide-index="3" aria-hidden="true">
+          <span class="szc-announcement-bar__text">Shop the Latest Collection</span>
+        </div>
+      {%- endif -%}
+    </div>
+
+    {%- comment -%} Right Actions: Country / Currency Selector {%- endcomment -%}
+    <div class="szc-announcement-bar__actions">
+      {%- if show_country_selector -%}
+        {% render 'country-selector',
+          id_prefix: 'AnnouncementBar',
+          display_format: section.settings.country_format
+        %}
+      {%- endif -%}
     </div>
   </div>
 </div>
@@ -69,34 +165,123 @@
     font-family: var(--szc-font-family-body, inherit);
     font-size: 11px;
     font-weight: 500;
-    letter-spacing: 0.06em;
+    letter-spacing: 0.05em;
     text-transform: uppercase;
     position: relative;
-    z-index: 40;
+    z-index: 1001;
     width: 100%;
-    overflow: hidden;
+    overflow: visible !important;
+  }
+
+  .szc-announcement-bar.is-dropdown-open {
+    z-index: 1005 !important;
   }
 
   .szc-announcement-bar__container {
-    max-width: 1400px;
+    max-width: var(--szc-page-max-width, 1400px);
     margin: 0 auto;
-    padding: 0 var(--szc-space-4, 16px);
+    padding: 0 var(--szc-space-6, 24px);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    min-height: 38px;
+    position: relative;
+    box-sizing: border-box;
+    gap: 16px;
   }
 
-  .szc-announcement-bar__items {
+  .szc-announcement-bar__left {
+    flex: 0 0 auto;
+    min-width: 150px;
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+  }
+
+  .szc-announcement-bar__socials {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+
+  .szc-announcement-bar__social-link {
+    color: var(--szc-announcement-text, #2b2b2b);
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    line-height: 1;
+    transition: opacity 150ms ease, transform 150ms ease, color 150ms ease;
+    text-decoration: none;
+  }
+
+  .szc-announcement-bar__social-link:hover {
+    opacity: 0.65;
+    transform: translateY(-1px);
+  }
+
+  .szc-announcement-bar__social-svg {
+    width: var(--szc-announcement-social-size, 14px);
+    height: var(--szc-announcement-social-size, 14px);
+    display: block;
+  }
+
+  .szc-announcement-bar__social-custom-img {
+    width: var(--szc-announcement-social-size, 14px);
+    height: var(--szc-announcement-social-size, 14px);
+    object-fit: contain;
+    display: block;
+  }
+
+  .szc-announcement-bar__spacer {
+    width: 100%;
+    pointer-events: none;
+    visibility: hidden;
+  }
+
+  .szc-announcement-bar__slider {
+    flex: 1;
+    min-width: 0;
+    height: 38px;
     position: relative;
+    overflow: hidden;
     display: flex;
     align-items: center;
     justify-content: center;
-    min-height: 38px;
+  }
+
+  .szc-announcement-bar__slider--left {
+    justify-content: flex-start;
+  }
+
+  .szc-announcement-bar__slider--center {
+    justify-content: center;
+  }
+
+  .szc-announcement-bar__actions {
+    flex: 0 0 auto;
+    min-width: 150px;
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    position: relative;
+    z-index: 1002;
+  }
+
+  /* Items styling */
+  .szc-announcement-bar__item {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    width: 100%;
+    box-sizing: border-box;
+  }
+
+  .szc-announcement-bar__slider--left .szc-announcement-bar__item {
+    justify-content: flex-start;
   }
 
   /* Auto-slide transition styling */
-  .szc-announcement-bar.is-auto-slider .szc-announcement-bar__items {
-    height: 38px;
-    overflow: hidden;
-  }
-
   .szc-announcement-bar.is-auto-slider .szc-announcement-bar__item {
     position: absolute;
     top: 0;
@@ -108,8 +293,8 @@
     justify-content: center;
     gap: 8px;
     opacity: 0;
-    transform: translateY(100%);
-    transition: opacity 500ms cubic-bezier(0.16, 1, 0.3, 1), transform 500ms cubic-bezier(0.16, 1, 0.3, 1);
+    transform: translateY(12px);
+    transition: opacity 450ms cubic-bezier(0.2, 0.8, 0.2, 1), transform 450ms cubic-bezier(0.2, 0.8, 0.2, 1);
     pointer-events: none;
   }
 
@@ -123,16 +308,11 @@
   .szc-announcement-bar.is-auto-slider .szc-announcement-bar__item.is-exiting {
     position: absolute;
     opacity: 0;
-    transform: translateY(-100%);
+    transform: translateY(-12px);
     pointer-events: none;
   }
 
-  /* Static fallback list styling if auto-slide disabled */
-  .szc-announcement-bar:not(.is-auto-slider) .szc-announcement-bar__items {
-    justify-content: space-between;
-    gap: var(--szc-space-4, 16px);
-  }
-
+  /* Static fallback styling if auto-slide disabled or single item */
   .szc-announcement-bar:not(.is-auto-slider) .szc-announcement-bar__item {
     display: inline-flex;
     align-items: center;
@@ -140,6 +320,7 @@
     gap: 8px;
     flex: 1;
     text-align: center;
+    position: relative;
     opacity: 1;
     transform: none;
   }
@@ -151,6 +332,7 @@
     align-items: center;
     gap: 8px;
     transition: opacity 150ms ease;
+    max-width: 100%;
   }
 
   .szc-announcement-bar__link:hover {
@@ -164,76 +346,185 @@
   }
 
   .szc-announcement-bar__text {
-    line-height: 1;
+    line-height: 1.2;
     white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
   }
 
+  /* Mobile Responsive */
   @media (max-width: 768px) {
-    .szc-announcement-bar:not(.is-auto-slider) .szc-announcement-bar__items {
-      overflow-x: auto;
+    .szc-announcement-bar__container {
+      padding: 0 var(--szc-space-3, 12px);
+      min-height: 36px;
+      gap: 10px;
+    }
+
+    .szc-announcement-bar__left {
+      min-width: auto;
+    }
+
+    .szc-announcement-bar__actions {
+      min-width: auto;
+      flex-shrink: 0;
+    }
+
+    .szc-announcement-bar__socials:not(.desktop-only) {
+      gap: 8px;
+    }
+
+    .szc-announcement-bar__social-svg,
+    .szc-announcement-bar__social-custom-img {
+      width: 13px;
+      height: 13px;
+    }
+
+    .szc-announcement-bar__slider {
+      height: 36px;
       justify-content: flex-start;
-      scrollbar-width: none;
-      padding: 8px 0;
+      flex: 1 1 auto;
+      min-width: 0;
     }
 
-    .szc-announcement-bar:not(.is-auto-slider) .szc-announcement-bar__items::-webkit-scrollbar {
-      display: none;
+    .szc-announcement-bar.is-auto-slider .szc-announcement-bar__item {
+      justify-content: flex-start;
+      padding-right: 4px;
     }
 
-    .szc-announcement-bar:not(.is-auto-slider) .szc-announcement-bar__item {
-      flex: 0 0 auto;
-      padding: 0 12px;
+    .szc-announcement-bar__text {
+      font-size: 10px;
+      letter-spacing: 0.02em;
+    }
+  }
+
+  /* Extra Small Mobile (320px - 360px) */
+  @media (max-width: 360px) {
+    .szc-announcement-bar__container {
+      padding: 0 8px;
+      gap: 6px;
+    }
+
+    .szc-announcement-bar__text {
+      font-size: 9.5px;
+    }
+  }
+
+  /* Reduced Motion Support */
+  @media (prefers-reduced-motion: reduce) {
+    .szc-announcement-bar.is-auto-slider .szc-announcement-bar__item {
+      transition: opacity 300ms ease;
+      transform: none !important;
     }
   }
 {% endstylesheet %}
 
 {% javascript %}
-  document.addEventListener('DOMContentLoaded', function() {
-    const announcementBars = document.querySelectorAll('.szc-announcement-bar[data-auto-slide="true"]');
+  function initAnnouncementBar() {
+    const bars = document.querySelectorAll('.szc-announcement-bar[data-auto-slide="true"]');
 
-    announcementBars.forEach(function(bar) {
+    bars.forEach(function(bar) {
+      if (bar.dataset.initialized === 'true') return;
+      bar.dataset.initialized = 'true';
+
       const items = bar.querySelectorAll('.szc-announcement-bar__item');
       if (items.length <= 1) return;
 
       const speed = parseInt(bar.getAttribute('data-speed'), 10) || 4000;
       let currentIndex = 0;
       let timer = null;
+      let isPaused = false;
 
-      function showNextSlide() {
+      function goToSlide(index) {
         const currentItem = items[currentIndex];
-        currentIndex = (currentIndex + 1) % items.length;
+        currentIndex = (index + items.length) % items.length;
         const nextItem = items[currentIndex];
 
         items.forEach(function(item) {
           item.classList.remove('is-active', 'is-exiting');
+          item.setAttribute('aria-hidden', 'true');
         });
 
-        currentItem.classList.add('is-exiting');
+        if (currentItem && currentItem !== nextItem) {
+          currentItem.classList.add('is-exiting');
+        }
+
         nextItem.classList.add('is-active');
+        nextItem.setAttribute('aria-hidden', 'false');
       }
 
-      function startAutoSlide() {
-        stopAutoSlide();
-        timer = setInterval(showNextSlide, speed);
+      function nextSlide() {
+        if (!isPaused) {
+          goToSlide(currentIndex + 1);
+        }
       }
 
-      function stopAutoSlide() {
-        if (timer) clearInterval(timer);
+      function startTimer() {
+        stopTimer();
+        isPaused = false;
+        timer = setInterval(nextSlide, speed);
       }
 
-      startAutoSlide();
+      function stopTimer() {
+        if (timer) {
+          clearInterval(timer);
+          timer = null;
+        }
+      }
 
-      bar.addEventListener('mouseenter', stopAutoSlide);
-      bar.addEventListener('mouseleave', startAutoSlide);
+      function pause() {
+        isPaused = true;
+      }
+
+      function resume() {
+        isPaused = false;
+      }
+
+      startTimer();
+
+      // Pause on hover
+      bar.addEventListener('mouseenter', pause);
+      bar.addEventListener('mouseleave', resume);
+
+      // Pause on focus (keyboard accessibility)
+      bar.addEventListener('focusin', pause);
+      bar.addEventListener('focusout', resume);
+
+      // Shopify Theme Editor block selection
+      document.addEventListener('shopify:block:select', function(e) {
+        if (bar.contains(e.target)) {
+          stopTimer();
+          const targetIndex = parseInt(e.target.getAttribute('data-slide-index'), 10);
+          if (!isNaN(targetIndex)) {
+            goToSlide(targetIndex);
+          }
+        }
+      });
+
+      document.addEventListener('shopify:block:deselect', function(e) {
+        if (bar.contains(e.target)) {
+          startTimer();
+        }
+      });
     });
+  }
+
+  document.addEventListener('DOMContentLoaded', initAnnouncementBar);
+  document.addEventListener('shopify:section:load', function(e) {
+    if (e.target && (e.target.querySelector('.szc-announcement-bar') || e.target.classList.contains('szc-announcement-bar'))) {
+      initAnnouncementBar();
+    }
   });
 {% endjavascript %}
 
 {% schema %}
 {
   "name": "t:sections.announcement-bar.name",
-  "max_blocks": 6,
+  "max_blocks": 20,
   "settings": [
+    {
+      "type": "header",
+      "content": "Promotions & Announcements"
+    },
     {
       "type": "checkbox",
       "id": "enable_auto_slide",
@@ -249,6 +540,67 @@
       "default": 4,
       "unit": "s",
       "label": "Auto-rotate speed (seconds)"
+    },
+    {
+      "type": "select",
+      "id": "announcement_alignment",
+      "label": "Announcement text alignment",
+      "options": [
+        { "value": "left", "label": "Left" },
+        { "value": "center", "label": "Center" }
+      ],
+      "default": "center"
+    },
+    {
+      "type": "header",
+      "content": "Social Media Icons"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_social_icons",
+      "label": "Show social media icons on left",
+      "default": true
+    },
+    {
+      "type": "checkbox",
+      "id": "show_social_mobile",
+      "label": "Show social icons on mobile",
+      "default": false
+    },
+    {
+      "type": "range",
+      "id": "social_icon_size",
+      "min": 12,
+      "max": 20,
+      "step": 1,
+      "default": 14,
+      "unit": "px",
+      "label": "Social icon size"
+    },
+    {
+      "type": "header",
+      "content": "Country & Currency Selector"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_country_selector",
+      "label": "Show country/currency selector",
+      "default": true
+    },
+    {
+      "type": "select",
+      "id": "country_format",
+      "label": "Country / Currency display format",
+      "options": [
+        { "value": "flag_currency", "label": "Flag + Currency (e.g. 🇺🇸 USD)" },
+        { "value": "country_currency", "label": "Country + Currency (e.g. United States · USD)" },
+        { "value": "flag_country", "label": "Flag + Country (e.g. 🇺🇸 United States)" }
+      ],
+      "default": "flag_currency"
+    },
+    {
+      "type": "header",
+      "content": "Colors"
     },
     {
       "type": "color",
@@ -272,7 +624,7 @@
   "blocks": [
     {
       "type": "announcement",
-      "name": "t:sections.announcement-bar.blocks.announcement.name",
+      "name": "Announcement message",
       "settings": [
         {
           "type": "select",
@@ -285,18 +637,55 @@
             { "value": "returns", "label": "Return Arrow" },
             { "value": "shield", "label": "Security Shield" }
           ],
-          "default": "truck"
+          "default": "none"
         },
         {
           "type": "text",
           "id": "text",
           "label": "t:sections.announcement-bar.blocks.announcement.settings.text.label",
-          "default": "Free Shipping On Orders Over $100"
+          "default": "Free Shipping on Orders Over $100"
         },
         {
           "type": "url",
           "id": "link",
           "label": "t:sections.announcement-bar.blocks.announcement.settings.link.label"
+        }
+      ]
+    },
+    {
+      "type": "social_link",
+      "name": "Social link",
+      "settings": [
+        {
+          "type": "select",
+          "id": "platform",
+          "label": "Platform",
+          "options": [
+            { "value": "instagram", "label": "Instagram" },
+            { "value": "facebook", "label": "Facebook" },
+            { "value": "twitter", "label": "X / Twitter" },
+            { "value": "pinterest", "label": "Pinterest" },
+            { "value": "youtube", "label": "YouTube" },
+            { "value": "tiktok", "label": "TikTok" },
+            { "value": "linkedin", "label": "LinkedIn" },
+            { "value": "custom", "label": "Custom Platform" }
+          ],
+          "default": "instagram"
+        },
+        {
+          "type": "url",
+          "id": "link",
+          "label": "Link URL"
+        },
+        {
+          "type": "image_picker",
+          "id": "custom_icon",
+          "label": "Custom Icon Image (optional)"
+        },
+        {
+          "type": "text",
+          "id": "aria_label",
+          "label": "Accessibility Label (optional)"
         }
       ]
     }
@@ -306,24 +695,59 @@
       "name": "t:sections.announcement-bar.presets.name",
       "blocks": [
         {
-          "type": "announcement",
+          "type": "social_link",
           "settings": {
-            "icon": "truck",
-            "text": "FREE SHIPPING ON ORDERS OVER $100"
+            "platform": "instagram",
+            "link": "https://instagram.com"
+          }
+        },
+        {
+          "type": "social_link",
+          "settings": {
+            "platform": "facebook",
+            "link": "https://facebook.com"
+          }
+        },
+        {
+          "type": "social_link",
+          "settings": {
+            "platform": "twitter",
+            "link": "https://twitter.com"
+          }
+        },
+        {
+          "type": "social_link",
+          "settings": {
+            "platform": "pinterest",
+            "link": "https://pinterest.com"
           }
         },
         {
           "type": "announcement",
           "settings": {
-            "icon": "award",
-            "text": "LIFETIME WARRANTY"
+            "icon": "none",
+            "text": "New Arrivals — Explore the Latest Trends"
           }
         },
         {
           "type": "announcement",
           "settings": {
-            "icon": "returns",
-            "text": "30-DAY EASY RETURNS"
+            "icon": "none",
+            "text": "Limited Time Offers — Up to 40% Off"
+          }
+        },
+        {
+          "type": "announcement",
+          "settings": {
+            "icon": "none",
+            "text": "Free Shipping on Orders Over $100"
+          }
+        },
+        {
+          "type": "announcement",
+          "settings": {
+            "icon": "none",
+            "text": "Shop the Latest Collection"
           }
         }
       ]

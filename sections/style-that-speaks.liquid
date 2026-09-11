@@ -1,0 +1,1331 @@
+{% doc %}
+  Renders the "Style That Speaks" high-fashion editorial collage section.
+  Faithfully reproduces the reference design with solid and outline royal blue headline
+  typography, an overlapping central fashion visual, floating rounded cards, and
+  clean editorial narrative paragraphs matching the 5 visual zones.
+{% enddoc %}
+
+{%- liquid
+  assign eyebrow = section.settings.eyebrow
+  assign heading_line_1 = section.settings.heading_line_1 | default: 'STYLE THAT'
+  assign heading_line_2 = section.settings.heading_line_2 | default: 'SPEAKS'
+  assign heading_line_3 = section.settings.heading_line_3 | default: 'YOU'
+
+  assign main_image = section.settings.main_image
+  assign upper_right_image = section.settings.upper_right_image
+  assign upper_right_title = section.settings.upper_right_title
+  assign upper_right_desc = section.settings.upper_right_desc | default: 'Lorem ipsum dolor sit amet consectetur. Pharetra hendrerit cursus porttitor habitant tortor ut mollis sed eu.'
+
+  assign lower_left_image = section.settings.lower_left_image
+
+  assign bottom_text = section.settings.bottom_text | default: 'Lorem ipsum dolor sit amet consectetur. Pharetra hendrerit cursus porttitor habitant tortor ut mollis sed eu. Phasellus condimentum arcu cursus at etiam urna nullam mauris tortor. Tincidunt venenatis turpis est convallis sit placerat quis sed pharetra. In dolor aliquet condimentum turpis feugiat morbi praesent sit. Non vivamus nunc scelerisque in diam at felis.'
+  assign button_label = section.settings.button_label
+  assign button_link = section.settings.button_link
+
+  assign bg_color = section.settings.bg_color | default: '#ffffff'
+  assign heading_solid_color = section.settings.heading_solid_color | default: '#0950b2'
+  assign heading_outline_color = section.settings.heading_outline_color | default: '#0950b2'
+  assign eyebrow_color = section.settings.eyebrow_color | default: '#0950b2'
+  assign body_text_color = section.settings.body_text_color | default: '#333333'
+
+  assign desktop_max_width = section.settings.desktop_max_width | default: 1260
+  assign desktop_height = section.settings.desktop_height | default: 860
+  assign heading_size_desktop = section.settings.heading_size_desktop | default: 104
+  assign heading_size_mobile = section.settings.heading_size_mobile | default: 48
+  assign heading_line_height = section.settings.heading_line_height | default: 85
+  assign heading_letter_spacing = section.settings.heading_letter_spacing | default: -3
+  assign outline_thickness = section.settings.outline_thickness | default: 2
+
+  assign main_image_width = section.settings.main_image_width | default: 510
+  assign upper_right_width = section.settings.upper_right_width | default: 220
+  assign lower_left_width = section.settings.lower_left_width | default: 220
+  assign bottom_right_width = section.settings.bottom_right_width | default: 440
+  assign card_radius = section.settings.card_radius | default: 28
+  assign show_card_shadow = section.settings.show_card_shadow
+  assign enable_animation = section.settings.enable_animation
+  assign show_features = section.settings.show_features
+  if show_features == nil
+    assign show_features = true
+  endif
+  assign features_padding_top = section.settings.features_padding_top | default: 36
+-%}
+
+<section
+  id="StyleThatSpeaks-{{ section.id }}"
+  class="szc-style-that-speaks {% if enable_animation %}szc-sts--animate-ready{% endif %}"
+  style="
+    --szc-sts-bg: {{ bg_color }};
+    --szc-sts-solid: {{ heading_solid_color }};
+    --szc-sts-outline: {{ heading_outline_color }};
+    --szc-sts-eyebrow: {{ eyebrow_color }};
+    --szc-sts-body: {{ body_text_color }};
+    --szc-sts-max-width: {{ desktop_max_width }}px;
+    --szc-sts-height: {{ desktop_height }}px;
+    --szc-sts-heading-desktop: {{ heading_size_desktop }}px;
+    --szc-sts-heading-mobile: {{ heading_size_mobile }}px;
+    --szc-sts-line-height: {{ heading_line_height | divided_by: 100.0 }};
+    --szc-sts-letter-spacing: {{ heading_letter_spacing }}px;
+    --szc-sts-stroke-width: {{ outline_thickness }}px;
+    --szc-sts-neg-stroke: -{{ outline_thickness }}px;
+    --szc-sts-stroke-half: {{ outline_thickness | times: 0.7 | round | at_least: 1 }}px;
+    --szc-sts-neg-stroke-half: -{{ outline_thickness | times: 0.7 | round | at_least: 1 }}px;
+    --szc-sts-main-width: {{ main_image_width }}px;
+    --szc-sts-ur-width: {{ upper_right_width }}px;
+    --szc-sts-ll-width: {{ lower_left_width }}px;
+    --szc-sts-br-width: {{ bottom_right_width }}px;
+    --szc-sts-radius: {{ card_radius }}px;
+    --szc-sts-features-pt: {{ features_padding_top }}px;
+    --szc-sts-pt: {{ section.settings.padding_top | default: 48 }}px;
+    --szc-sts-pb: {{ section.settings.padding_bottom | default: 48 }}px;
+    --szc-sts-pt-mob: {{ section.settings.padding_top_mobile | default: 36 }}px;
+    --szc-sts-pb-mob: {{ section.settings.padding_bottom_mobile | default: 36 }}px;
+  "
+>
+  <div class="szc-sts__canvas">
+
+    <!-- 1. TOP-LEFT HEADING GROUP (Box 1) -->
+    <div class="szc-sts__heading-group" data-sts-item="headline">
+      {%- if eyebrow != blank -%}
+        <span class="szc-sts__eyebrow">{{ eyebrow }}</span>
+      {%- endif -%}
+      <h2 class="szc-sts__heading">
+        <span class="szc-sts__line szc-sts__line--1 is-filled">{{ heading_line_1 }}</span>
+        <span class="szc-sts__line szc-sts__line--2 is-outlined">{{ heading_line_2 }}</span>
+        <span class="szc-sts__line szc-sts__line--3 is-filled">{{ heading_line_3 }}</span>
+      </h2>
+    </div>
+
+    <!-- 2. MAIN CENTER FASHION VISUAL -->
+    <div class="szc-sts__main-visual" data-sts-item="main-image">
+      {%- if main_image != blank -%}
+        {{ main_image | image_url: width: 1200 | image_tag:
+          loading: 'lazy',
+          class: 'szc-sts__main-img',
+          alt: heading_line_1 | default: 'Style That Speaks Featured Fashion'
+        }}
+      {%- else -%}
+        {{ 'style-that-speaks-model.png' | asset_url | image_tag:
+          loading: 'lazy',
+          class: 'szc-sts__main-img',
+          alt: 'Style That Speaks Featured Model'
+        }}
+      {%- endif -%}
+    </div>
+
+    <!-- 3. TOP-RIGHT SUPPORTING CARD + TEXT (Box 2 & Box 3) -->
+    <div class="szc-sts__top-right" data-sts-item="upper-card">
+      <div class="szc-sts__card-img-box szc-sts__card-img-box--ur">
+        {%- if upper_right_image != blank -%}
+          {{ upper_right_image | image_url: width: 600 | image_tag:
+            loading: 'lazy',
+            class: 'szc-sts__card-img',
+            alt: upper_right_title | default: 'Editorial preview card'
+          }}
+        {%- else -%}
+          {{ 'style-that-speaks-tr.png' | asset_url | image_tag:
+            loading: 'lazy',
+            class: 'szc-sts__card-img',
+            alt: 'Curated preview card'
+          }}
+        {%- endif -%}
+      </div>
+      {%- if upper_right_title != blank or upper_right_desc != blank -%}
+        <div class="szc-sts__tr-content">
+          {%- if upper_right_title != blank -%}
+            <h3 class="szc-sts__tr-title">{{ upper_right_title }}</h3>
+          {%- endif -%}
+          {%- if upper_right_desc != blank -%}
+            <div class="szc-sts__tr-desc">{{ upper_right_desc }}</div>
+          {%- endif -%}
+        </div>
+      {%- endif -%}
+    </div>
+
+    <!-- 4. BOTTOM-LEFT SUPPORTING CARD (Box 4) -->
+    <div class="szc-sts__bottom-left {% if show_card_shadow %}has-shadow{% endif %}" data-sts-item="lower-card">
+      <div class="szc-sts__card-img-box szc-sts__card-img-box--ll">
+        {%- if lower_left_image != blank -%}
+          {{ lower_left_image | image_url: width: 600 | image_tag:
+            loading: 'lazy',
+            class: 'szc-sts__card-img',
+            alt: 'Editorial accent card'
+          }}
+        {%- else -%}
+          {{ 'style-that-speaks-bl.png' | asset_url | image_tag:
+            loading: 'lazy',
+            class: 'szc-sts__card-img',
+            alt: 'Style That Speaks accent card'
+          }}
+        {%- endif -%}
+      </div>
+    </div>
+
+    <!-- 5. BOTTOM-RIGHT EDITORIAL TEXT & CTA (Box 5) -->
+    <div class="szc-sts__bottom-right" data-sts-item="editorial-text">
+      {%- if bottom_text != blank -%}
+        <div class="szc-sts__narrative">{{ bottom_text }}</div>
+      {%- endif -%}
+      {%- if button_label != blank -%}
+        <a href="{{ button_link | default: '#' }}" class="szc-sts__cta-link">
+          <span>{{ button_label }}</span>
+          <span class="szc-sts__cta-arrow" aria-hidden="true">&rarr;</span>
+        </a>
+      {%- endif -%}
+    </div>
+
+  </div>
+
+  <!-- 6. BRAND FEATURES ROW (Directly below main editorial content) -->
+  {%- if show_features -%}
+    <div class="szc-sts__features-wrap" data-sts-item="features-row">
+      <div class="szc-sts__features-grid">
+        {%- assign feature_blocks = section.blocks | where: 'type', 'feature' -%}
+        {%- if feature_blocks.size > 0 -%}
+          {%- for block in feature_blocks -%}
+            <div class="szc-sts__feature-item" {{ block.shopify_attributes }}>
+              <div class="szc-sts__feature-icon-box">
+                {%- if block.settings.custom_icon != blank -%}
+                  {{ block.settings.custom_icon | image_url: width: 64 | image_tag:
+                    class: 'szc-sts__feature-custom-icon',
+                    loading: 'lazy',
+                    alt: block.settings.title | default: 'Brand feature icon'
+                  }}
+                {%- else -%}
+                  {% render 'icon',
+                    icon: block.settings.icon | default: 'fabric',
+                    class: 'szc-sts__feature-icon'
+                  %}
+                {%- endif -%}
+              </div>
+              <div class="szc-sts__feature-text">
+                {%- if block.settings.title != blank -%}
+                  <h4 class="szc-sts__feature-title">{{ block.settings.title }}</h4>
+                {%- endif -%}
+                {%- if block.settings.subtitle != blank -%}
+                  <p class="szc-sts__feature-subtitle">{{ block.settings.subtitle }}</p>
+                {%- endif -%}
+              </div>
+            </div>
+          {%- endfor -%}
+        {%- else -%}
+          <!-- Fallback 3 Default Features from Reference Screenshot -->
+          <div class="szc-sts__feature-item">
+            <div class="szc-sts__feature-icon-box">
+              {% render 'icon', icon: 'fabric', class: 'szc-sts__feature-icon' %}
+            </div>
+            <div class="szc-sts__feature-text">
+              <h4 class="szc-sts__feature-title">Premium Fabrics</h4>
+              <p class="szc-sts__feature-subtitle">Soft, Durable & Sustainable</p>
+            </div>
+          </div>
+
+          <div class="szc-sts__feature-item">
+            <div class="szc-sts__feature-icon-box">
+              {% render 'icon', icon: 'shield-check', class: 'szc-sts__feature-icon' %}
+            </div>
+            <div class="szc-sts__feature-text">
+              <h4 class="szc-sts__feature-title">Made to Last</h4>
+              <p class="szc-sts__feature-subtitle">Timeless Designs</p>
+            </div>
+          </div>
+
+          <div class="szc-sts__feature-item">
+            <div class="szc-sts__feature-icon-box">
+              {% render 'icon', icon: 'user-heart', class: 'szc-sts__feature-icon' %}
+            </div>
+            <div class="szc-sts__feature-text">
+              <h4 class="szc-sts__feature-title">Trusted by 10,000+</h4>
+              <p class="szc-sts__feature-subtitle">Happy Customers</p>
+            </div>
+          </div>
+        {%- endif -%}
+      </div>
+    </div>
+  {%- endif -%}
+</section>
+
+{% stylesheet %}
+  .szc-style-that-speaks {
+    background-color: var(--szc-sts-bg, #ffffff);
+    padding-top: var(--szc-sts-pt, 48px);
+    padding-bottom: var(--szc-sts-pb, 48px);
+    position: relative;
+    width: 100%;
+    overflow: hidden;
+    box-sizing: border-box;
+  }
+
+  .szc-sts__canvas {
+    position: relative;
+    width: 100%;
+    max-width: var(--szc-sts-max-width, 1260px);
+    margin: 0 auto;
+    box-sizing: border-box;
+  }
+
+  /* Typography Styles */
+  .szc-sts__heading-group {
+    display: flex;
+    flex-direction: column;
+  }
+
+  .szc-sts__eyebrow {
+    font-family: var(--szc-font-family-body, sans-serif);
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--szc-sts-eyebrow, #0950b2);
+    margin-bottom: 6px;
+  }
+
+  .szc-sts__heading {
+    margin: 0;
+    font-family: var(--font-heading--family, Montserrat, "Montserrat", "Arial Black", -apple-system, sans-serif);
+    font-size: var(--szc-sts-heading-desktop, 100px);
+    font-weight: 900;
+    line-height: var(--szc-sts-line-height, 0.85);
+    letter-spacing: var(--szc-sts-letter-spacing, -3px);
+    text-transform: uppercase;
+    display: flex;
+    flex-direction: column;
+  }
+
+  .szc-sts__line {
+    display: block;
+    white-space: nowrap;
+    transition: color 250ms ease;
+  }
+
+  .szc-sts__line.is-filled {
+    color: var(--szc-sts-solid, #0950b2);
+  }
+
+  .szc-sts__line.is-outlined {
+    color: var(--szc-sts-bg, #ffffff);
+    -webkit-text-fill-color: var(--szc-sts-bg, #ffffff);
+    -webkit-text-stroke: 0px transparent;
+    letter-spacing: 0.05em;
+    text-shadow:
+      var(--szc-sts-neg-stroke, -2px) var(--szc-sts-neg-stroke, -2px) 0 var(--szc-sts-outline, #0950b2),
+      0px var(--szc-sts-neg-stroke, -2px) 0 var(--szc-sts-outline, #0950b2),
+      var(--szc-sts-stroke-width, 2px) var(--szc-sts-neg-stroke, -2px) 0 var(--szc-sts-outline, #0950b2),
+      var(--szc-sts-neg-stroke, -2px) 0px 0 var(--szc-sts-outline, #0950b2),
+      var(--szc-sts-stroke-width, 2px) 0px 0 var(--szc-sts-outline, #0950b2),
+      var(--szc-sts-neg-stroke, -2px) var(--szc-sts-stroke-width, 2px) 0 var(--szc-sts-outline, #0950b2),
+      0px var(--szc-sts-stroke-width, 2px) 0 var(--szc-sts-outline, #0950b2),
+      var(--szc-sts-stroke-width, 2px) var(--szc-sts-stroke-width, 2px) 0 var(--szc-sts-outline, #0950b2),
+      var(--szc-sts-neg-stroke-half, -1px) var(--szc-sts-neg-stroke, -2px) 0 var(--szc-sts-outline, #0950b2),
+      var(--szc-sts-stroke-half, 1px) var(--szc-sts-neg-stroke, -2px) 0 var(--szc-sts-outline, #0950b2),
+      var(--szc-sts-neg-stroke, -2px) var(--szc-sts-neg-stroke-half, -1px) 0 var(--szc-sts-outline, #0950b2),
+      var(--szc-sts-stroke-width, 2px) var(--szc-sts-neg-stroke-half, -1px) 0 var(--szc-sts-outline, #0950b2),
+      var(--szc-sts-neg-stroke, -2px) var(--szc-sts-stroke-half, 1px) 0 var(--szc-sts-outline, #0950b2),
+      var(--szc-sts-stroke-width, 2px) var(--szc-sts-stroke-half, 1px) 0 var(--szc-sts-outline, #0950b2),
+      var(--szc-sts-neg-stroke-half, -1px) var(--szc-sts-stroke-width, 2px) 0 var(--szc-sts-outline, #0950b2),
+      var(--szc-sts-stroke-half, 1px) var(--szc-sts-stroke-width, 2px) 0 var(--szc-sts-outline, #0950b2);
+    transition: color 250ms ease, text-shadow 250ms ease;
+  }
+
+  /* Card Image Elements */
+  .szc-sts__card-img-box {
+    position: relative;
+    overflow: hidden;
+    border-radius: var(--szc-sts-radius, 28px);
+    background-color: #f6f5f2;
+  }
+
+  .szc-sts__card-img-box--ur {
+    aspect-ratio: 4 / 5;
+    width: 100%;
+  }
+
+  .szc-sts__card-img-box--ll {
+    aspect-ratio: 1 / 1.05;
+    width: 100%;
+  }
+
+  .szc-sts__card-img {
+    display: block;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 500ms cubic-bezier(0.16, 1, 0.3, 1);
+  }
+
+  .szc-sts__top-right:hover .szc-sts__card-img,
+  .szc-sts__bottom-left:hover .szc-sts__card-img {
+    transform: scale(1.035);
+  }
+
+  .szc-sts__bottom-left.has-shadow {
+    box-shadow: 0 16px 36px rgba(0, 0, 0, 0.08);
+    border-radius: var(--szc-sts-radius, 28px);
+  }
+
+  .szc-sts__tr-content {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    margin-top: 2px;
+  }
+
+  .szc-sts__tr-title {
+    margin: 0;
+    font-family: var(--font-heading--family, -apple-system, sans-serif);
+    font-size: 14px;
+    font-weight: 700;
+    letter-spacing: 0.02em;
+    color: #111111;
+  }
+
+  .szc-sts__tr-desc {
+    margin: 0;
+    font-family: var(--szc-font-family-body, sans-serif);
+    font-size: 12px;
+    line-height: 1.48;
+    color: var(--szc-sts-body, #333333);
+  }
+
+  /* Editorial Narrative & CTA */
+  .szc-sts__narrative {
+    font-family: var(--szc-font-family-body, sans-serif);
+    font-size: 12.5px;
+    line-height: 1.55;
+    color: var(--szc-sts-body, #333333);
+  }
+
+  .szc-sts__cta-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    font-family: var(--szc-font-family-heading, -apple-system, sans-serif);
+    font-size: 12.5px;
+    font-weight: 700;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    text-decoration: none;
+    color: #111111;
+    border-bottom: 1.5px solid #111111;
+    padding-bottom: 3px;
+    align-self: flex-start;
+    transition: color 250ms ease, border-color 250ms ease;
+  }
+
+  .szc-sts__cta-link:hover {
+    color: var(--szc-sts-solid, #0950b2);
+    border-bottom-color: var(--szc-sts-solid, #0950b2);
+  }
+
+  .szc-sts__cta-arrow {
+    display: inline-block;
+    font-size: 14px;
+    line-height: 1;
+    transition: transform 250ms ease;
+  }
+
+  .szc-sts__cta-link:hover .szc-sts__cta-arrow {
+    transform: translateX(4px);
+  }
+
+  /* ---------------------------------------------------- */
+  /* Desktop Layout (1025px and above)                   */
+  /* ---------------------------------------------------- */
+  @media (min-width: 1025px) {
+    .szc-sts__canvas {
+      position: relative;
+      aspect-ratio: 1024 / 904;
+      min-height: var(--szc-sts-height, 860px);
+    }
+
+    /* 1. Heading Top-Left (Box 1) */
+    .szc-sts__heading-group {
+      position: absolute;
+      left: 7.2%;
+      top: 13.5%;
+      z-index: 1;
+      white-space: nowrap;
+    }
+
+    .szc-sts__heading {
+      font-size: var(--szc-sts-heading-desktop, 104px);
+      line-height: var(--szc-sts-line-height, 0.85);
+      letter-spacing: var(--szc-sts-letter-spacing, -3px);
+    }
+
+    /* 2. Main Center Visual */
+    .szc-sts__main-visual {
+      position: absolute;
+      left: 51.5%;
+      top: 7%;
+      transform: translateX(-50%);
+      height: 86%;
+      max-height: 86%;
+      width: auto;
+      max-width: 48%;
+      z-index: 2;
+      display: flex;
+      justify-content: center;
+      align-items: flex-start;
+      pointer-events: none;
+    }
+
+    .szc-sts__main-img {
+      width: auto;
+      height: 100%;
+      max-height: 100%;
+      object-fit: contain;
+      object-position: center center;
+      filter: drop-shadow(0 14px 28px rgba(0, 0, 0, 0.05));
+      transition: transform 600ms cubic-bezier(0.16, 1, 0.3, 1);
+      pointer-events: auto;
+    }
+
+    .szc-sts__main-visual:hover .szc-sts__main-img {
+      transform: scale(1.015);
+    }
+
+    /* 3. Top-Right Supporting Card (Box 2 & Box 3) */
+    .szc-sts__top-right {
+      position: absolute;
+      right: 7.2%;
+      top: 13.5%;
+      width: var(--szc-sts-ur-width, 220px);
+      max-width: 22%;
+      z-index: 3;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      transition: transform 350ms cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
+    .szc-sts__top-right:hover {
+      transform: translateY(-4px);
+    }
+
+    /* 4. Bottom-Left Supporting Card (Box 4) */
+    .szc-sts__bottom-left {
+      position: absolute;
+      left: 7.2%;
+      top: 49%;
+      width: var(--szc-sts-ll-width, 220px);
+      max-width: 21%;
+      z-index: 3;
+      transition: transform 350ms cubic-bezier(0.16, 1, 0.3, 1), box-shadow 350ms ease;
+    }
+
+    .szc-sts__bottom-left:hover {
+      transform: translateY(-4px);
+    }
+
+    /* 5. Bottom-Right Narrative (Box 5) */
+    .szc-sts__bottom-right {
+      position: absolute;
+      left: 55%;
+      right: 7.2%;
+      bottom: 4.5%;
+      max-width: var(--szc-sts-br-width, 440px);
+      z-index: 3;
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+    }
+  }
+
+  /* Tablet Layout (768px - 1024px) */
+
+  @media (min-width: 768px) and (max-width: 1024px) {
+    .szc-sts__canvas {
+      position: relative;
+      aspect-ratio: 1024 / 904;
+      min-height: 700px;
+      padding: 0 20px;
+    }
+
+    .szc-sts__heading-group {
+      position: absolute;
+      left: 4%;
+      top: 10%;
+      z-index: 1;
+      white-space: nowrap;
+    }
+
+    .szc-sts__heading {
+      font-size: clamp(52px, 6.8vw, 76px);
+      line-height: 0.85;
+      letter-spacing: -2px;
+    }
+
+    .szc-sts__main-visual {
+      position: absolute;
+      left: 52%;
+      top: 6%;
+      transform: translateX(-50%);
+      height: 84%;
+      max-height: 84%;
+      width: auto;
+      max-width: 48%;
+      z-index: 2;
+    }
+
+    .szc-sts__main-img {
+      width: auto;
+      height: 100%;
+      object-fit: contain;
+      object-position: top center;
+    }
+
+    .szc-sts__top-right {
+      position: absolute;
+      right: 4%;
+      top: 10%;
+      width: 180px;
+      z-index: 3;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .szc-sts__bottom-left {
+      position: absolute;
+      left: 4%;
+      top: 50%;
+      width: 170px;
+      z-index: 3;
+    }
+
+    .szc-sts__bottom-right {
+      position: absolute;
+      left: 53%;
+      right: 4%;
+      bottom: 4%;
+      z-index: 3;
+    }
+
+    .szc-sts__narrative {
+      font-size: 11.5px;
+      line-height: 1.5;
+    }
+  }
+
+  /* ---------------------------------------------------- */
+  /* Mobile Layout (Below 768px)                          */
+  /* ---------------------------------------------------- */
+  @media (max-width: 767px) {
+    .szc-style-that-speaks {
+      padding-top: var(--szc-sts-pt-mob, 36px);
+      padding-bottom: var(--szc-sts-pb-mob, 36px);
+    }
+
+    .szc-sts__canvas {
+      min-height: auto;
+      aspect-ratio: auto;
+      padding: 0 20px;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      column-gap: 14px;
+      row-gap: 20px;
+      align-items: start;
+    }
+
+    .szc-sts__heading-group {
+      grid-column: 1 / -1;
+      position: static;
+      width: 100%;
+      text-align: left;
+      gap: 0;
+    }
+
+    .szc-sts__heading {
+      font-size: var(--szc-sts-heading-mobile, 48px);
+      line-height: 0.88;
+      letter-spacing: -0.03em;
+    }
+
+    .szc-sts__main-visual {
+      grid-column: 1 / -1;
+      position: static;
+      transform: none;
+      width: 100%;
+      height: auto;
+      max-width: 340px;
+      margin: 0 auto;
+      display: flex;
+      justify-content: center;
+    }
+
+    .szc-sts__main-img {
+      width: 100%;
+      height: auto;
+      max-height: 460px;
+      object-fit: contain;
+    }
+
+    .szc-sts__bottom-left {
+      grid-column: 1;
+      position: static;
+      width: 100%;
+      max-width: 100%;
+    }
+
+    .szc-sts__top-right {
+      grid-column: 2;
+      position: static;
+      width: 100%;
+      max-width: 100%;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .szc-sts__bottom-right {
+      grid-column: 1 / -1;
+      position: static;
+      width: 100%;
+      max-width: 100%;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      margin-top: 6px;
+    }
+
+    .szc-sts__narrative {
+      font-size: 12px;
+      line-height: 1.55;
+    }
+
+    .szc-sts__cta-link {
+      align-self: flex-start;
+    }
+  }
+
+  /* ---------------------------------------------------- */
+  /* Scroll Reveal Animation                             */
+  /* ---------------------------------------------------- */
+  .szc-sts--animate-ready [data-sts-item] {
+    opacity: 0;
+    transform: translateY(18px);
+    transition: opacity 700ms cubic-bezier(0.16, 1, 0.3, 1), transform 700ms cubic-bezier(0.16, 1, 0.3, 1);
+  }
+
+  @media (min-width: 768px) {
+    .szc-sts--animate-ready [data-sts-item="main-image"] {
+      opacity: 0;
+      transform: translate(-50%, 18px);
+      transition: opacity 750ms cubic-bezier(0.16, 1, 0.3, 1), transform 750ms cubic-bezier(0.16, 1, 0.3, 1);
+    }
+    .szc-sts--animate-ready.is-visible [data-sts-item="main-image"] {
+      opacity: 1;
+      transform: translate(-50%, 0);
+      transition-delay: 140ms;
+    }
+  }
+
+  @media (max-width: 767px) {
+    .szc-sts--animate-ready.is-visible [data-sts-item="main-image"] {
+      opacity: 1;
+      transform: translateY(0);
+      transition-delay: 140ms;
+    }
+  }
+
+  .szc-sts--animate-ready.is-visible [data-sts-item="headline"] {
+    opacity: 1;
+    transform: translateY(0);
+    transition-delay: 40ms;
+  }
+
+  .szc-sts--animate-ready.is-visible [data-sts-item="upper-card"] {
+    opacity: 1;
+    transform: translateY(0);
+    transition-delay: 240ms;
+  }
+
+  .szc-sts--animate-ready.is-visible [data-sts-item="lower-card"] {
+    opacity: 1;
+    transform: translateY(0);
+    transition-delay: 320ms;
+  }
+
+  .szc-sts--animate-ready.is-visible [data-sts-item="editorial-text"] {
+    opacity: 1;
+    transform: translateY(0);
+    transition-delay: 400ms;
+  }
+
+  .szc-sts--animate-ready.is-visible [data-sts-item="features-row"] {
+    opacity: 1;
+    transform: translateY(0);
+    transition-delay: 460ms;
+  }
+
+  /* ---------------------------------------------------- */
+  /* Brand Features Row (Directly below editorial visual) */
+  /* ---------------------------------------------------- */
+  .szc-sts__features-wrap {
+    position: relative;
+    width: 100%;
+    max-width: var(--szc-sts-max-width, 1260px);
+    margin: 0 auto;
+    padding-top: var(--szc-sts-features-pt, 36px);
+    padding-left: 24px;
+    padding-right: 24px;
+    box-sizing: border-box;
+  }
+
+  .szc-sts__features-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 32px;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .szc-sts__feature-item {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 14px;
+    text-align: left;
+  }
+
+  .szc-sts__feature-icon-box {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 38px;
+    height: 38px;
+    flex-shrink: 0;
+  }
+
+  .szc-sts__feature-icon {
+    width: 28px;
+    height: 28px;
+    color: #111111;
+  }
+
+  .szc-sts__feature-custom-icon {
+    width: 28px;
+    height: 28px;
+    object-fit: contain;
+  }
+
+  .szc-sts__feature-text {
+    display: flex;
+    flex-direction: column;
+  }
+
+  .szc-sts__feature-title {
+    margin: 0;
+    font-family: var(--szc-font-family-body, sans-serif);
+    font-size: 14px;
+    font-weight: 700;
+    color: #111111;
+    line-height: 1.3;
+  }
+
+  .szc-sts__feature-subtitle {
+    margin: 2px 0 0 0;
+    font-family: var(--szc-font-family-body, sans-serif);
+    font-size: 12px;
+    color: #666666;
+    line-height: 1.4;
+  }
+
+  @media (min-width: 768px) and (max-width: 1024px) {
+    .szc-sts__features-wrap {
+      padding-left: 20px;
+      padding-right: 20px;
+    }
+    .szc-sts__features-grid {
+      gap: 20px;
+    }
+    .szc-sts__feature-title {
+      font-size: 13px;
+    }
+    .szc-sts__feature-subtitle {
+      font-size: 11px;
+    }
+  }
+
+  @media (max-width: 767px) {
+    .szc-sts__features-wrap {
+      padding-top: 24px;
+      padding-left: 20px;
+      padding-right: 20px;
+    }
+    .szc-sts__features-grid {
+      grid-template-columns: 1fr;
+      gap: 16px;
+    }
+    .szc-sts__feature-item {
+      justify-content: flex-start;
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .szc-sts--animate-ready [data-sts-item] {
+      opacity: 1 !important;
+      transform: none !important;
+      transition: none !important;
+    }
+  }
+
+  @media print {
+    .szc-sts--animate-ready [data-sts-item] {
+      opacity: 1 !important;
+      transform: none !important;
+    }
+  }
+{% endstylesheet %}
+
+{% javascript %}
+  function initStyleThatSpeaksAnimation() {
+    const sections = document.querySelectorAll('.szc-style-that-speaks.szc-sts--animate-ready:not(.is-visible)');
+    if (!sections.length) return;
+
+    if ('IntersectionObserver' in window && !window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+      const observer = new IntersectionObserver((entries, obs) => {
+        entries.forEach(entry => {
+          if (entry.isIntersecting) {
+            entry.target.classList.add('is-visible');
+            obs.unobserve(entry.target);
+          }
+        });
+      }, {
+        threshold: 0.01,
+        rootMargin: '120px 0px 80px 0px'
+      });
+
+      sections.forEach(sec => {
+        // Immediate check if element is already in or near viewport
+        const rect = sec.getBoundingClientRect();
+        if (rect.top < window.innerHeight + 120 && rect.bottom > -80) {
+          sec.classList.add('is-visible');
+        } else {
+          observer.observe(sec);
+        }
+      });
+
+      // Safety fallback: ensure section is never left invisible
+      setTimeout(() => {
+        sections.forEach(sec => sec.classList.add('is-visible'));
+      }, 1000);
+    } else {
+      sections.forEach(sec => sec.classList.add('is-visible'));
+    }
+  }
+
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', initStyleThatSpeaksAnimation);
+  } else {
+    initStyleThatSpeaksAnimation();
+  }
+
+  document.addEventListener('shopify:section:load', function(e) {
+    if (e.target && (e.target.matches('.szc-style-that-speaks') || e.target.querySelector('.szc-style-that-speaks'))) {
+      initStyleThatSpeaksAnimation();
+    }
+  });
+{% endjavascript %}
+
+{% schema %}
+{
+  "name": "Style That Speaks",
+  "tag": "section",
+  "class": "section-style-that-speaks",
+  "settings": [
+    {
+      "type": "header",
+      "content": "Typography & Headings"
+    },
+    {
+      "type": "text",
+      "id": "eyebrow",
+      "label": "Eyebrow tag (leave blank to hide)"
+    },
+    {
+      "type": "text",
+      "id": "heading_line_1",
+      "label": "Headline Line 1 (Solid)",
+      "default": "STYLE THAT"
+    },
+    {
+      "type": "text",
+      "id": "heading_line_2",
+      "label": "Headline Line 2 (Outline)",
+      "default": "SPEAKS"
+    },
+    {
+      "type": "text",
+      "id": "heading_line_3",
+      "label": "Headline Line 3 (Solid)",
+      "default": "YOU"
+    },
+    {
+      "type": "range",
+      "id": "heading_size_desktop",
+      "min": 60,
+      "max": 120,
+      "step": 2,
+      "unit": "px",
+      "label": "Heading font size (Desktop)",
+      "default": 104
+    },
+    {
+      "type": "range",
+      "id": "heading_size_mobile",
+      "min": 32,
+      "max": 64,
+      "step": 2,
+      "unit": "px",
+      "label": "Heading font size (Mobile)",
+      "default": 48
+    },
+    {
+      "type": "range",
+      "id": "heading_line_height",
+      "min": 70,
+      "max": 120,
+      "step": 5,
+      "unit": "%",
+      "label": "Heading line height",
+      "default": 85
+    },
+    {
+      "type": "range",
+      "id": "heading_letter_spacing",
+      "min": -6,
+      "max": 6,
+      "step": 1,
+      "unit": "px",
+      "label": "Heading letter spacing",
+      "default": -3
+    },
+    {
+      "type": "range",
+      "id": "outline_thickness",
+      "min": 1,
+      "max": 5,
+      "step": 1,
+      "unit": "px",
+      "label": "Outline stroke thickness",
+      "default": 2
+    },
+    {
+      "type": "header",
+      "content": "Main Center Visual"
+    },
+    {
+      "type": "image_picker",
+      "id": "main_image",
+      "label": "Main fashion image (Transparent PNG recommended)"
+    },
+    {
+      "type": "range",
+      "id": "main_image_width",
+      "min": 340,
+      "max": 680,
+      "step": 10,
+      "unit": "px",
+      "label": "Main image max width (Desktop)",
+      "default": 510
+    },
+    {
+      "type": "header",
+      "content": "Top-Right Supporting Card (Box 2 & 3)"
+    },
+    {
+      "type": "image_picker",
+      "id": "upper_right_image",
+      "label": "Upper-right card image"
+    },
+    {
+      "type": "text",
+      "id": "upper_right_title",
+      "label": "Card title (optional, leave blank to hide)"
+    },
+    {
+      "type": "textarea",
+      "id": "upper_right_desc",
+      "label": "Card description",
+      "default": "Lorem ipsum dolor sit amet consectetur. Pharetra hendrerit cursus porttitor habitant tortor ut mollis sed eu."
+    },
+    {
+      "type": "range",
+      "id": "upper_right_width",
+      "min": 160,
+      "max": 320,
+      "step": 10,
+      "unit": "px",
+      "label": "Upper-right card width (Desktop)",
+      "default": 220
+    },
+    {
+      "type": "header",
+      "content": "Bottom-Left Supporting Card (Box 4)"
+    },
+    {
+      "type": "image_picker",
+      "id": "lower_left_image",
+      "label": "Bottom-left card image"
+    },
+    {
+      "type": "range",
+      "id": "lower_left_width",
+      "min": 150,
+      "max": 320,
+      "step": 10,
+      "unit": "px",
+      "label": "Bottom-left card width (Desktop)",
+      "default": 220
+    },
+    {
+      "type": "range",
+      "id": "card_radius",
+      "min": 0,
+      "max": 40,
+      "step": 2,
+      "unit": "px",
+      "label": "Cards corner radius",
+      "default": 28
+    },
+    {
+      "type": "checkbox",
+      "id": "show_card_shadow",
+      "label": "Enable soft card shadow",
+      "default": true
+    },
+    {
+      "type": "header",
+      "content": "Bottom-Right Editorial Text & CTA (Box 5)"
+    },
+    {
+      "type": "textarea",
+      "id": "bottom_text",
+      "label": "Editorial narrative paragraph",
+      "default": "Lorem ipsum dolor sit amet consectetur. Pharetra hendrerit cursus porttitor habitant tortor ut mollis sed eu. Phasellus condimentum arcu cursus at etiam urna nullam mauris tortor. Tincidunt venenatis turpis est convallis sit placerat quis sed pharetra. In dolor aliquet condimentum turpis feugiat morbi praesent sit. Non vivamus nunc scelerisque in diam at felis."
+    },
+    {
+      "type": "text",
+      "id": "button_label",
+      "label": "CTA Link text (optional, leave blank to hide)"
+    },
+    {
+      "type": "url",
+      "id": "button_link",
+      "label": "CTA Link URL"
+    },
+    {
+      "type": "range",
+      "id": "bottom_right_width",
+      "min": 260,
+      "max": 560,
+      "step": 10,
+      "unit": "px",
+      "label": "Bottom-right text max width (Desktop)",
+      "default": 440
+    },
+    {
+      "type": "header",
+      "content": "Colors"
+    },
+    {
+      "type": "color",
+      "id": "bg_color",
+      "label": "Section background color",
+      "default": "#ffffff"
+    },
+    {
+      "type": "color",
+      "id": "heading_solid_color",
+      "label": "Heading solid lines color",
+      "default": "#0950b2"
+    },
+    {
+      "type": "color",
+      "id": "heading_outline_color",
+      "label": "Heading outline line color",
+      "default": "#0950b2"
+    },
+    {
+      "type": "color",
+      "id": "eyebrow_color",
+      "label": "Eyebrow text color",
+      "default": "#0950b2"
+    },
+    {
+      "type": "color",
+      "id": "body_text_color",
+      "label": "Body & narrative text color",
+      "default": "#333333"
+    },
+    {
+      "type": "header",
+      "content": "Layout & Spacing"
+    },
+    {
+      "type": "range",
+      "id": "desktop_max_width",
+      "min": 1100,
+      "max": 1600,
+      "step": 20,
+      "unit": "px",
+      "label": "Desktop canvas max width",
+      "default": 1260
+    },
+    {
+      "type": "range",
+      "id": "desktop_height",
+      "min": 650,
+      "max": 1000,
+      "step": 10,
+      "unit": "px",
+      "label": "Desktop canvas height",
+      "default": 860
+    },
+    {
+      "type": "range",
+      "id": "padding_top",
+      "min": 20,
+      "max": 120,
+      "step": 4,
+      "unit": "px",
+      "label": "Padding top (Desktop)",
+      "default": 48
+    },
+    {
+      "type": "range",
+      "id": "padding_bottom",
+      "min": 20,
+      "max": 120,
+      "step": 4,
+      "unit": "px",
+      "label": "Padding bottom (Desktop)",
+      "default": 48
+    },
+    {
+      "type": "range",
+      "id": "padding_top_mobile",
+      "min": 16,
+      "max": 80,
+      "step": 4,
+      "unit": "px",
+      "label": "Padding top (Mobile)",
+      "default": 36
+    },
+    {
+      "type": "range",
+      "id": "padding_bottom_mobile",
+      "min": 16,
+      "max": 80,
+      "step": 4,
+      "unit": "px",
+      "label": "Padding bottom (Mobile)",
+      "default": 36
+    },
+    {
+      "type": "header",
+      "content": "Brand Features Row (Under Editorial Image)"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_features",
+      "label": "Show 3 Brand Features row",
+      "default": true
+    },
+    {
+      "type": "range",
+      "id": "features_padding_top",
+      "min": 16,
+      "max": 80,
+      "step": 4,
+      "unit": "px",
+      "label": "Features row top spacing",
+      "default": 36
+    },
+    {
+      "type": "header",
+      "content": "Subtle Animation"
+    },
+    {
+      "type": "checkbox",
+      "id": "enable_animation",
+      "label": "Enable subtle fade & reveal on scroll",
+      "default": true
+    }
+  ],
+  "max_blocks": 6,
+  "blocks": [
+    {
+      "type": "feature",
+      "name": "Brand Feature",
+      "settings": [
+        {
+          "type": "select",
+          "id": "icon",
+          "label": "Icon",
+          "options": [
+            { "value": "fabric", "label": "Fabric / Lotus" },
+            { "value": "diamond", "label": "Diamond / Ethical" },
+            { "value": "shield-check", "label": "Shield / Quality" },
+            { "value": "user-heart", "label": "User / Trust" },
+            { "value": "bag", "label": "Shopping Bag" },
+            { "value": "star", "label": "Star" },
+            { "value": "check", "label": "Checkmark" }
+          ],
+          "default": "fabric"
+        },
+        {
+          "type": "image_picker",
+          "id": "custom_icon",
+          "label": "Custom Icon Image",
+          "info": "Overrides selected SVG icon if provided"
+        },
+        {
+          "type": "text",
+          "id": "title",
+          "default": "Premium Fabrics",
+          "label": "Title"
+        },
+        {
+          "type": "text",
+          "id": "subtitle",
+          "default": "Soft, Durable & Sustainable",
+          "label": "Subtitle"
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "Style That Speaks",
+      "blocks": [
+        {
+          "type": "feature",
+          "settings": {
+            "icon": "fabric",
+            "title": "Premium Fabrics",
+            "subtitle": "Soft, Durable & Sustainable"
+          }
+        },
+        {
+          "type": "feature",
+          "settings": {
+            "icon": "shield-check",
+            "title": "Made to Last",
+            "subtitle": "Timeless Designs"
+          }
+        },
+        {
+          "type": "feature",
+          "settings": {
+            "icon": "user-heart",
+            "title": "Trusted by 10,000+",
+            "subtitle": "Happy Customers"
+          }
+        }
+      ]
+    }
+  ]
+}
+{% endschema %}

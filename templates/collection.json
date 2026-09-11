@@ -15,9 +15,8 @@
         "category_nav_item_Retfeb": {
           "type": "category_nav_item",
           "settings": {
-            "collection": "",
+            "collection": "new-in",
             "title": "NEW IN",
-            "custom_image": "",
             "icon_name": "tag",
             "icon_svg": "",
             "custom_url": ""
@@ -26,9 +25,9 @@
         "category_nav_item_YEGcW6": {
           "type": "category_nav_item",
           "settings": {
-            "collection": "",
+            "collection": "frontpage",
             "title": "HOME",
-            "custom_image": "",
+            "custom_image": "shopify://shop_images/BucketBag.png",
             "icon_name": "tag",
             "icon_svg": "",
             "custom_url": ""
@@ -37,9 +36,8 @@
         "category_nav_item_pdgPkb": {
           "type": "category_nav_item",
           "settings": {
-            "collection": "",
+            "collection": "men",
             "title": "MEN",
-            "custom_image": "",
             "icon_name": "tag",
             "icon_svg": "",
             "custom_url": ""
@@ -48,9 +46,8 @@
         "category_nav_item_GQPGc7": {
           "type": "category_nav_item",
           "settings": {
-            "collection": "",
+            "collection": "accessories",
             "title": "ACCESSORIES",
-            "custom_image": "",
             "icon_name": "tag",
             "icon_svg": "",
             "custom_url": ""
@@ -59,9 +56,8 @@
         "category_nav_item_cFjwDJ": {
           "type": "category_nav_item",
           "settings": {
-            "collection": "",
+            "collection": "shoes",
             "title": "SHOES",
-            "custom_image": "",
             "icon_name": "tag",
             "icon_svg": "",
             "custom_url": ""
@@ -70,9 +66,8 @@
         "category_nav_item_ntVX3e": {
           "type": "category_nav_item",
           "settings": {
-            "collection": "",
+            "collection": "women",
             "title": "WOMEN",
-            "custom_image": "",
             "icon_name": "tag",
             "icon_svg": "",
             "custom_url": ""
@@ -81,7 +76,7 @@
         "promo_slide_HaMg69": {
           "type": "promo_slide",
           "settings": {
-            "image": "",
+            "image": "shopify://shop_images/collectionpageslide1.png",
             "subheading": "For effortless everyday looks",
             "heading": "Everyday Essentials",
             "description": "",
@@ -96,7 +91,7 @@
         "promo_slide_BGcnG3": {
           "type": "promo_slide",
           "settings": {
-            "image": "",
+            "image": "shopify://shop_images/collectionpagebnner2.png",
             "subheading": "For effortless everyday looks",
             "heading": "Everyday Essentials",
             "description": "",
@@ -121,7 +116,6 @@
       ],
       "settings": {
         "show_hero": true,
-        "banner_image": "",
         "hero_height": "medium",
         "hero_text_alignment": "left",
         "hero_side_padding": 5,
@@ -164,7 +158,7 @@
       "type": "recently-viewed-products",
       "settings": {
         "heading": "RECENTLY VIEWED",
-        "products_to_show": 4,
+        "products_to_show": 15,
         "show_price": true,
         "show_arrows": true,
         "background_color": "#ffffff",

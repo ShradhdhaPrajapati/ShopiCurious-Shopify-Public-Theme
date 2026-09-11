@@ -1187,7 +1187,14 @@
     border: 1px solid rgba(255, 255, 255, 0.16);
     border-radius: 16px;
     box-shadow: 0 16px 36px rgba(0, 0, 0, 0.4);
-    transition: transform 550ms cubic-bezier(0.25, 1, 0.5, 1), opacity 400ms ease;
+    opacity: 0;
+    visibility: hidden;
+    transform: translateY(calc(100% + 70px));
+    pointer-events: none;
+    transition: transform 500ms cubic-bezier(0.25, 1, 0.5, 1),
+                opacity 450ms cubic-bezier(0.25, 1, 0.5, 1),
+                visibility 500ms ease;
+    will-change: transform, opacity;
   }
 
   .szc-hero-hover-panels__content--align-left {
@@ -1278,18 +1285,21 @@
       min-height: 650px;
     }
 
-    /* Initial state before hover: Content hidden below the image boundary */
+    /* Initial state before hover: Content hidden below the panel boundary */
     .szc-hero-hover-panels__content {
-      transform: translateY(calc(100% + 80px));
+      transform: translateY(calc(100% + 70px));
       opacity: 0;
+      visibility: hidden;
+      pointer-events: none;
     }
 
-    /* Active / Hovered Panel Content Reveal: Slides UP from below and stays elevated above bottom edge */
+    /* Hovered or focused panel: Content slides upward smoothly */
     .szc-hero-hover-panels__panel:hover .szc-hero-hover-panels__content,
-    .szc-hero-hover-panels__panel:focus-within .szc-hero-hover-panels__content,
-    .szc-hero-hover-panels__panel.is-active .szc-hero-hover-panels__content {
+    .szc-hero-hover-panels__panel:focus-within .szc-hero-hover-panels__content {
       transform: translateY(0);
       opacity: 1;
+      visibility: visible;
+      pointer-events: auto;
     }
 
     /* Grid Hover behavior: Panel width expansion */
@@ -1304,8 +1314,10 @@
 
     /* Non-hovered panels when grid is hovered: retract content down below */
     .szc-hero-hover-panels__grid:hover .szc-hero-hover-panels__panel:not(:hover) .szc-hero-hover-panels__content {
-      transform: translateY(calc(100% + 80px));
+      transform: translateY(calc(100% + 70px));
       opacity: 0;
+      visibility: hidden;
+      pointer-events: none;
     }
   }
 
@@ -1350,8 +1362,22 @@
 
     .szc-hero-hover-panels__content {
       padding: 20px 20px 24px 20px;
+      transform: translateY(calc(100% + 60px));
+      opacity: 0;
+      visibility: hidden;
+      pointer-events: none;
+      transition: transform 500ms cubic-bezier(0.25, 1, 0.5, 1),
+                  opacity 450ms cubic-bezier(0.25, 1, 0.5, 1),
+                  visibility 500ms ease;
+    }
+
+    .szc-hero-hover-panels__panel:hover .szc-hero-hover-panels__content,
+    .szc-hero-hover-panels__panel:focus-within .szc-hero-hover-panels__content,
+    .szc-hero-hover-panels__panel.is-active .szc-hero-hover-panels__content {
       transform: translateY(0);
       opacity: 1;
+      visibility: visible;
+      pointer-events: auto;
     }
   }
 
@@ -1422,10 +1448,10 @@
       scroll-snap-stop: always;
     }
 
-    /* Content is always visible (no hover-reveal on mobile) */
+    /* Only the active / tapped panel reveals its content on mobile */
     .szc-hero-hover-panels__content-wrapper {
       padding: 16px;
-      overflow: visible;
+      overflow: hidden;
     }
 
     .szc-hero-hover-panels__content {
@@ -1434,8 +1460,21 @@
       padding: 18px 18px 22px 18px;
       border-radius: 12px;
       border-top: none;
-      transform: translateY(0) !important;
-      opacity: 1 !important;
+      transform: translateY(calc(100% + 30px));
+      opacity: 0;
+      visibility: hidden;
+      pointer-events: none;
+      transition: transform 450ms cubic-bezier(0.25, 1, 0.5, 1),
+                  opacity 400ms cubic-bezier(0.25, 1, 0.5, 1),
+                  visibility 450ms ease;
+    }
+
+    /* Active / tapped panel reveals only its own content */
+    .szc-hero-hover-panels__panel.is-active .szc-hero-hover-panels__content {
+      transform: translateY(0);
+      opacity: 1;
+      visibility: visible;
+      pointer-events: auto;
     }
 
     .szc-hero-hover-panels__heading {
@@ -1489,12 +1528,14 @@
     .szc-hero-hover-panels__content,
     .szc-hero-hover-panels__overlay {
       transition: none !important;
-      transform: none !important;
     }
 
-    .szc-hero-hover-panels__content {
+    .szc-hero-hover-panels__panel:hover .szc-hero-hover-panels__content,
+    .szc-hero-hover-panels__panel:focus-within .szc-hero-hover-panels__content,
+    .szc-hero-hover-panels__panel.is-active .szc-hero-hover-panels__content {
       transform: translateY(0) !important;
       opacity: 1 !important;
+      visibility: visible !important;
     }
   }
 {% endstylesheet %}
@@ -1509,45 +1550,110 @@
           this.panels = Array.from(this.querySelectorAll('.szc-hero-hover-panels__panel'));
           if (!this.panels.length) return;
 
-          // ── Desktop behaviour (mouseenter / focus / click) ─────────────────
-          // Completely unchanged from original implementation.
+          const grid = this.querySelector('.szc-hero-hover-panels__grid');
+
+          // Ensure no panel is marked is-active on desktop on initial load
+          if (!this._isMobile()) {
+            this.clearActive();
+          }
+
+          // ── Desktop & Mobile Panel Event Listeners ─────────────────────────
           this.panels.forEach((panel) => {
-            panel.addEventListener('mouseenter', () => this.setActive(panel));
-            panel.addEventListener('focus', () => this.setActive(panel));
+            panel.addEventListener('mouseenter', () => {
+              if (!this._isMobile()) {
+                this.setActive(panel);
+              }
+            });
+
+            panel.addEventListener('mouseleave', () => {
+              if (!this._isMobile()) {
+                panel.classList.remove('is-active');
+              }
+            });
+
+            panel.addEventListener('focus', () => {
+              if (!this._isMobile()) {
+                this.setActive(panel);
+              }
+            });
+
+            panel.addEventListener('blur', () => {
+              if (!this._isMobile()) {
+                panel.classList.remove('is-active');
+              }
+            });
+
             panel.addEventListener('click', (e) => {
-              // On mobile, suppress click when the user was swiping
-              if (this._wasSwiping) return;
+              // Suppress click if user was scrolling vertically or swiping horizontally
+              if (this._isScrollingOrSwiping || this._wasSwiping) return;
+
+              // Let direct clicks on links or buttons function natively
               if (e.target.closest('a, button')) return;
-              const primaryBtn = panel.querySelector('.szc-hero-hover-panels__buttons a, .szc-hero-hover-panels__buttons button');
-              if (primaryBtn) primaryBtn.click();
+
+              if (this._isMobile()) {
+                // On mobile: deliberate tap on panel activates/reveals it
+                if (panel.classList.contains('is-active')) {
+                  const primaryBtn = panel.querySelector('.szc-hero-hover-panels__buttons a, .szc-hero-hover-panels__buttons button');
+                  if (primaryBtn) primaryBtn.click();
+                } else {
+                  this.setActive(panel);
+                }
+              } else {
+                // Desktop: click anywhere on panel triggers primary button
+                const primaryBtn = panel.querySelector('.szc-hero-hover-panels__buttons a, .szc-hero-hover-panels__buttons button');
+                if (primaryBtn) primaryBtn.click();
+              }
             });
           });
+
+          // When mouse leaves the entire grid on desktop, clear any active state
+          if (grid) {
+            grid.addEventListener('mouseleave', () => {
+              if (!this._isMobile()) {
+                this.clearActive();
+              }
+            });
+          }
 
           // Mobile carousel (≤ 767px)
           this._initMobileCarousel();
 
-          // Re-initialise if viewport crosses the breakpoint (e.g. rotation)
+          // Re-initialise if viewport crosses breakpoint (e.g. orientation change)
           this._mq = window.matchMedia('(max-width: 767px)');
-          this._mq.addEventListener('change', () => this._initMobileCarousel());
+          this._mq.addEventListener('change', () => {
+            if (!this._isMobile()) {
+              this.clearActive();
+            }
+            this._initMobileCarousel();
+          });
+        }
+
+        _isMobile() {
+          return window.matchMedia('(max-width: 767px)').matches;
         }
 
         setActive(targetPanel) {
           this.panels.forEach((p) => p.classList.remove('is-active'));
-          targetPanel.classList.add('is-active');
+          if (targetPanel) {
+            targetPanel.classList.add('is-active');
+          }
         }
 
-        //Mobile carousel helpers
+        clearActive() {
+          this.panels.forEach((p) => p.classList.remove('is-active'));
+        }
+
+        // Mobile carousel helpers
         _initMobileCarousel() {
           const grid = this.querySelector('.szc-hero-hover-panels__grid');
           const dotsContainer = this.querySelector('[data-hover-panels-dots]');
           if (!grid) return;
 
-          const isMobile = window.matchMedia('(max-width: 767px)').matches;
+          const isMobile = this._isMobile();
 
           if (!isMobile) {
-            // Desktop: dots hidden, swipe guards not needed
+            // Desktop: dots hidden, observers disconnected
             if (dotsContainer) dotsContainer.innerHTML = '';
-            // Disconnect any existing observer
             if (this._scrollObserver) {
               this._scrollObserver.disconnect();
               this._scrollObserver = null;
@@ -1555,33 +1661,43 @@
             return;
           }
 
-          // Build dot buttons 
+          // On mobile, ensure the first slide is active if none is active
+          const hasActive = this.panels.some((p) => p.classList.contains('is-active'));
+          if (!hasActive && this.panels.length > 0) {
+            this.panels[0].classList.add('is-active');
+          }
+
+          // Build dot buttons
           if (dotsContainer && this.panels.length > 1) {
             dotsContainer.innerHTML = '';
             this.panels.forEach((_, i) => {
               const btn = document.createElement('button');
               btn.type = 'button';
-              btn.className = 'szc-hover-panels-dot' + (i === 0 ? ' is-active' : '');
+              btn.className = 'szc-hover-panels-dot' + (this.panels[i].classList.contains('is-active') ? ' is-active' : '');
               btn.setAttribute('aria-label', 'Go to panel ' + (i + 1));
               btn.addEventListener('click', () => {
                 grid.scrollTo({ left: grid.offsetWidth * i, behavior: 'smooth' });
+                this.setActive(this.panels[i]);
               });
               dotsContainer.appendChild(btn);
             });
           }
 
-          // ── Sync active dot on scroll (IntersectionObserver) ──
+          // ── Sync active dot and panel on horizontal scroll (IntersectionObserver) ──
           if (this._scrollObserver) this._scrollObserver.disconnect();
 
-          if (dotsContainer && this.panels.length > 1) {
+          if (this.panels.length > 1) {
             this._scrollObserver = new IntersectionObserver(
               (entries) => {
                 entries.forEach((entry) => {
                   if (entry.isIntersecting && entry.intersectionRatio >= 0.5) {
                     const idx = this.panels.indexOf(entry.target);
                     if (idx < 0) return;
-                    const dots = dotsContainer.querySelectorAll('.szc-hover-panels-dot');
-                    dots.forEach((d, i) => d.classList.toggle('is-active', i === idx));
+                    if (dotsContainer) {
+                      const dots = dotsContainer.querySelectorAll('.szc-hover-panels-dot');
+                      dots.forEach((d, i) => d.classList.toggle('is-active', i === idx));
+                    }
+                    this.panels.forEach((p, i) => p.classList.toggle('is-active', i === idx));
                   }
                 });
               },
@@ -1590,28 +1706,39 @@
             this.panels.forEach((p) => this._scrollObserver.observe(p));
           }
 
-          // ── Swipe guard: prevent click from firing after a swipe ──
-          // Tracks touch start X; if the finger moved > 8px horizontally before
-          // touchend, mark _wasSwiping=true so the click handler above no-ops.
+          // ── Scroll & Swipe guard: prevent accidental opening while scrolling ──
           this._wasSwiping = false;
+          this._isScrollingOrSwiping = false;
           this._touchStartX = 0;
+          this._touchStartY = 0;
 
           if (!this._touchListenersAdded) {
             this._touchListenersAdded = true;
 
             grid.addEventListener('touchstart', (e) => {
+              if (!e.touches || !e.touches[0]) return;
               this._touchStartX = e.touches[0].clientX;
+              this._touchStartY = e.touches[0].clientY;
               this._wasSwiping = false;
+              this._isScrollingOrSwiping = false;
             }, { passive: true });
 
             grid.addEventListener('touchmove', (e) => {
+              if (!e.touches || !e.touches[0]) return;
               const deltaX = Math.abs(e.touches[0].clientX - this._touchStartX);
-              if (deltaX > 8) this._wasSwiping = true;
+              const deltaY = Math.abs(e.touches[0].clientY - this._touchStartY);
+              if (deltaX > 8 || deltaY > 8) {
+                this._wasSwiping = true;
+                this._isScrollingOrSwiping = true;
+              }
             }, { passive: true });
 
-            // Reset swipe flag after click has had a chance to fire
+            // Reset flags after touch finishes
             grid.addEventListener('touchend', () => {
-              setTimeout(() => { this._wasSwiping = false; }, 350);
+              setTimeout(() => {
+                this._wasSwiping = false;
+                this._isScrollingOrSwiping = false;
+              }, 350);
             }, { passive: true });
           }
         }

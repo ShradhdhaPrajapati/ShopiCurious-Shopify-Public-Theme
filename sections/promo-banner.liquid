@@ -1,6 +1,6 @@
 {%- comment -%}
-  ShopziCurious - Promotional Banner Section (Part 07)
-  Features a dual-image split banner with editorial typography and CTA matching the approved UI screenshot.
+  ShopziCurious - Promotional Banner Section
+  Features a single editorial image banner with typography, CTA, and brand features matching the approved UI screenshot.
 {%- endcomment -%}
 
 {%- liquid
@@ -11,18 +11,30 @@
   assign button_link = section.settings.button_link | default: '/pages/about-us'
   assign img_1 = section.settings.image_1
   assign img_2 = section.settings.image_2
+  assign promo_image = section.settings.image | default: section.settings.image_1
   assign content_pos = section.settings.content_position | default: 'right'
+  assign show_features = section.settings.show_features
+  if show_features == nil
+    assign show_features = true
+  endif
 -%}
 
 <section id="PromoBanner-{{ section.id }}" class="szc-promo-banner-section page-width">
   <div class="szc-promo-banner szc-promo-banner--content-{{ content_pos }}">
     <!-- Images Container (Dual Split) -->
+    <!-- Single Media Area -->
     <div class="szc-promo-banner__media" data-animate="slide-right">
       <div class="szc-promo-banner__media-item szc-promo-banner__media-item--narrow">
         {%- if img_1 != blank -%}
           {% render 'image',
             image: img_1,
             aspect_ratio: '3/4',
+      {%- if promo_image != blank -%}
+        {{
+          promo_image
+          | image_url: width: 1400
+          | image_tag:
+            class: 'szc-promo-banner__image',
             loading: 'lazy',
             class: 'szc-promo-banner__image'
           %}
@@ -47,6 +59,13 @@
           </div>
         {%- endif -%}
       </div>
+            alt: title | default: 'Promotional Banner Image'
+        }}
+      {%- else -%}
+        <div class="szc-promo-banner__placeholder">
+          {{ 'lifestyle-1' | placeholder_svg_tag: 'szc-placeholder-svg' }}
+        </div>
+      {%- endif -%}
     </div>
 
     <!-- Content Box -->
@@ -79,8 +98,78 @@
 
         {%- if button_label != blank -%}
           <a href="{{ button_link }}" class="szc-promo-banner__btn">
+          <a href="{{ button_link | default: '#' }}" class="szc-promo-banner__btn">
             <span>{{ button_label }}</span>
+            <span class="szc-promo-banner__btn-arrow" aria-hidden="true">&rarr;</span>
           </a>
+        {%- endif -%}
+
+        {%- if show_features -%}
+          <!-- Brand Features Row (Directly below button) -->
+          <div class="szc-promo-banner__features">
+            {%- assign feature_blocks = section.blocks | where: 'type', 'feature' -%}
+            {%- if feature_blocks.size > 0 -%}
+              {%- for block in feature_blocks -%}
+                <div class="szc-promo-banner__feature-item" {{ block.shopify_attributes }}>
+                  <div class="szc-promo-banner__feature-icon-box">
+                    {%- if block.settings.custom_icon != blank -%}
+                      {{
+                        block.settings.custom_icon
+                        | image_url: width: 48
+                        | image_tag:
+                          class: 'szc-promo-banner__feature-custom-icon',
+                          loading: 'lazy',
+                          alt: block.settings.title | default: 'Brand feature icon'
+                      }}
+                    {%- else -%}
+                      {% render 'icon',
+                        icon: block.settings.icon | default: 'fabric',
+                        class: 'szc-promo-banner__feature-icon'
+                      %}
+                    {%- endif -%}
+                  </div>
+                  <div class="szc-promo-banner__feature-text">
+                    {%- if block.settings.title != blank -%}
+                      <h4 class="szc-promo-banner__feature-title">{{ block.settings.title }}</h4>
+                    {%- endif -%}
+                    {%- if block.settings.subtitle != blank -%}
+                      <p class="szc-promo-banner__feature-subtitle">{{ block.settings.subtitle }}</p>
+                    {%- endif -%}
+                  </div>
+                </div>
+              {%- endfor -%}
+            {%- else -%}
+              <div class="szc-promo-banner__feature-item">
+                <div class="szc-promo-banner__feature-icon-box">
+                  {% render 'icon', icon: 'fabric', class: 'szc-promo-banner__feature-icon' %}
+                </div>
+                <div class="szc-promo-banner__feature-text">
+                  <h4 class="szc-promo-banner__feature-title">Premium Fabrics</h4>
+                  <p class="szc-promo-banner__feature-subtitle">Soft, Durable & Sustainable</p>
+                </div>
+              </div>
+
+              <div class="szc-promo-banner__feature-item">
+                <div class="szc-promo-banner__feature-icon-box">
+                  {% render 'icon', icon: 'shield-check', class: 'szc-promo-banner__feature-icon' %}
+                </div>
+                <div class="szc-promo-banner__feature-text">
+                  <h4 class="szc-promo-banner__feature-title">Made to Last</h4>
+                  <p class="szc-promo-banner__feature-subtitle">Timeless Designs</p>
+                </div>
+              </div>
+
+              <div class="szc-promo-banner__feature-item">
+                <div class="szc-promo-banner__feature-icon-box">
+                  {% render 'icon', icon: 'user-heart', class: 'szc-promo-banner__feature-icon' %}
+                </div>
+                <div class="szc-promo-banner__feature-text">
+                  <h4 class="szc-promo-banner__feature-title">Trusted by 10,000+</h4>
+                  <p class="szc-promo-banner__feature-subtitle">Happy Customers</p>
+                </div>
+              </div>
+            {%- endif -%}
+          </div>
         {%- endif -%}
       </div>
     </div>
@@ -95,6 +184,7 @@
     margin: 0 auto;
     padding-left: var(--szc-space-6, 24px);
     padding-right: var(--szc-space-6, 24px);
+    box-sizing: border-box;
   }
 
   .szc-promo-banner {
@@ -105,6 +195,7 @@
     background-color: #f7f4ee;
     overflow: hidden;
     box-shadow: 0 4px 20px rgba(0, 0, 0, 0.03);
+    box-sizing: border-box;
   }
 
   @media (min-width: 990px) {
@@ -113,6 +204,7 @@
       grid-template-columns: 1fr 1fr;
       align-items: stretch;
       min-height: 420px;
+      min-height: 480px;
     }
 
     .szc-promo-banner--content-left .szc-promo-banner__media {
@@ -125,11 +217,14 @@
   }
 
   /* Dual Media Area */
+  /* Single Media Area */
   .szc-promo-banner__media {
     display: flex;
+    position: relative;
     width: 100%;
     height: 100%;
     min-height: 320px;
+    min-height: 340px;
     overflow: hidden;
     background-color: #ede8df;
   }
@@ -137,6 +232,12 @@
   .szc-promo-banner__media-item {
     position: relative;
     overflow: hidden;
+  @media (max-width: 989px) {
+    .szc-promo-banner__media {
+      min-height: 280px;
+      max-height: 400px;
+      height: 55vw;
+    }
   }
 
   .szc-promo-banner__media-item--narrow {
@@ -151,6 +252,7 @@
     width: 100%;
     height: 100%;
     object-fit: cover;
+    object-position: center;
     display: block;
     transition: transform 700ms ease;
   }
@@ -163,6 +265,7 @@
     width: 100%;
     height: 100%;
     min-height: 320px;
+    min-height: 340px;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -177,6 +280,8 @@
   .szc-placeholder-svg {
     width: 60%;
     height: 60%;
+    width: 50%;
+    height: 50%;
     opacity: 0.4;
   }
 
@@ -186,20 +291,26 @@
     flex-direction: column;
     justify-content: center;
     padding: 40px 32px;
+    padding: 36px 24px;
     background-color: #f7f4ee;
+    box-sizing: border-box;
   }
 
   @media (min-width: 990px) {
     .szc-promo-banner__content {
       padding: 56px 64px;
+      padding: 48px 56px;
     }
   }
 
   .szc-promo-banner__content-inner {
     max-width: 460px;
+    max-width: 540px;
+    width: 100%;
     display: flex;
     flex-direction: column;
     align-items: flex-start;
+    box-sizing: border-box;
   }
 
   .szc-promo-banner__subtitle {
@@ -224,6 +335,7 @@
 
   .szc-promo-banner__description {
     margin: 0 0 28px 0;
+    margin: 0 0 24px 0;
     font-family: var(--szc-font-family-body, sans-serif);
     font-size: var(--desc-size, 13px);
     font-weight: var(--desc-weight, 400);
@@ -235,6 +347,7 @@
     display: inline-flex;
     align-items: center;
     justify-content: center;
+    gap: 8px;
     background-color: #242424;
     color: #ffffff;
     font-family: var(--szc-font-family-body, sans-serif);
@@ -243,6 +356,7 @@
     letter-spacing: 0.12em;
     text-transform: uppercase;
     padding: 14px 28px;
+    padding: 13px 26px;
     border-radius: 6px;
     text-decoration: none;
     transition: background-color 200ms ease, transform 200ms ease, box-shadow 200ms ease;
@@ -252,6 +366,130 @@
     background-color: #000000;
     transform: translateY(-1px);
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  }
+
+  .szc-promo-banner__btn-arrow {
+    display: inline-block;
+    font-size: 13px;
+    line-height: 1;
+    transition: transform 200ms ease;
+  }
+
+  .szc-promo-banner__btn:hover .szc-promo-banner__btn-arrow {
+    transform: translateX(3px);
+  }
+
+  /* Features Row (Directly below Our Story button) */
+  .szc-promo-banner__features {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 16px;
+    width: 100%;
+    margin-top: 32px;
+    padding-top: 24px;
+    border-top: 1px solid rgba(0, 0, 0, 0.08);
+    box-sizing: border-box;
+  }
+
+  .szc-promo-banner__feature-item {
+    display: flex;
+    align-items: flex-start;
+    gap: 8px;
+    min-width: 0;
+  }
+
+  .szc-promo-banner__feature-icon-box {
+    flex-shrink: 0;
+    width: 24px;
+    height: 24px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #111111;
+    margin-top: 1px;
+  }
+
+  .szc-promo-banner__feature-icon {
+    width: 18px;
+    height: 18px;
+    stroke-width: 1.6;
+    color: currentColor;
+  }
+
+  .szc-promo-banner__feature-custom-icon {
+    width: 18px;
+    height: 18px;
+    object-fit: contain;
+    display: block;
+  }
+
+  .szc-promo-banner__feature-text {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    min-width: 0;
+  }
+
+  .szc-promo-banner__feature-title {
+    margin: 0;
+    font-family: var(--szc-font-family-body, sans-serif);
+    font-size: 12px;
+    font-weight: 600;
+    color: #111111;
+    line-height: 1.3;
+    letter-spacing: -0.01em;
+  }
+
+  .szc-promo-banner__feature-subtitle {
+    margin: 0;
+    font-family: var(--szc-font-family-body, sans-serif);
+    font-size: 11px;
+    font-weight: 400;
+    color: #666666;
+    line-height: 1.35;
+  }
+
+  /* Responsive Adjustments */
+  @media (min-width: 990px) and (max-width: 1199px) {
+    .szc-promo-banner__features {
+      gap: 12px;
+    }
+
+    .szc-promo-banner__feature-title {
+      font-size: 11px;
+    }
+
+    .szc-promo-banner__feature-subtitle {
+      font-size: 10px;
+    }
+  }
+
+  @media (max-width: 767px) {
+    .szc-promo-banner-section {
+      padding-left: var(--szc-space-4, 16px);
+      padding-right: var(--szc-space-4, 16px);
+      padding-top: var(--szc-space-8, 32px);
+      padding-bottom: var(--szc-space-8, 32px);
+    }
+
+    .szc-promo-banner__content {
+      padding: 28px 20px;
+    }
+
+    .szc-promo-banner__title {
+      font-size: clamp(22px, 6vw, 28px);
+    }
+
+    .szc-promo-banner__features {
+      grid-template-columns: 1fr;
+      gap: 14px;
+      margin-top: 24px;
+      padding-top: 20px;
+    }
+
+    .szc-promo-banner__feature-item {
+      gap: 10px;
+    }
   }
 {% endstylesheet %}
 
@@ -265,6 +503,8 @@
       "type": "image_picker",
       "id": "image_1",
       "label": "Left Narrow Image"
+      "id": "image",
+      "label": "Image"
     },
     {
       "type": "image_picker",
@@ -309,6 +549,16 @@
         { "value": "right", "label": "Right" }
       ],
       "default": "right"
+    },
+    {
+      "type": "header",
+      "content": "Features Row"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_features",
+      "label": "Show features row",
+      "default": true
     },
     {
       "type": "header",
@@ -408,9 +658,77 @@
       "default": "400"
     }
   ],
+  "blocks": [
+    {
+      "type": "feature",
+      "name": "Feature",
+      "limit": 6,
+      "settings": [
+        {
+          "type": "select",
+          "id": "icon",
+          "label": "Icon",
+          "options": [
+            { "value": "fabric", "label": "Fabric / Lotus" },
+            { "value": "shield-check", "label": "Shield / Security" },
+            { "value": "user-heart", "label": "User / Heart" },
+            { "value": "diamond", "label": "Diamond" },
+            { "value": "award", "label": "Award / Badge" },
+            { "value": "truck", "label": "Free Shipping" },
+            { "value": "returns", "label": "Easy Returns" }
+          ],
+          "default": "fabric"
+        },
+        {
+          "type": "image_picker",
+          "id": "custom_icon",
+          "label": "Custom icon image (optional)"
+        },
+        {
+          "type": "text",
+          "id": "title",
+          "label": "Title",
+          "default": "Feature Title"
+        },
+        {
+          "type": "text",
+          "id": "subtitle",
+          "label": "Subtitle / Description",
+          "default": "Feature description"
+        }
+      ]
+    }
+  ],
   "presets": [
     {
       "name": "Promotional banner"
+      "name": "Promotional banner",
+      "blocks": [
+        {
+          "type": "feature",
+          "settings": {
+            "icon": "fabric",
+            "title": "Premium Fabrics",
+            "subtitle": "Soft, Durable & Sustainable"
+          }
+        },
+        {
+          "type": "feature",
+          "settings": {
+            "icon": "shield-check",
+            "title": "Made to Last",
+            "subtitle": "Timeless Designs"
+          }
+        },
+        {
+          "type": "feature",
+          "settings": {
+            "icon": "user-heart",
+            "title": "Trusted by 10,000+",
+            "subtitle": "Happy Customers"
+          }
+        }
+      ]
     }
   ]
 }

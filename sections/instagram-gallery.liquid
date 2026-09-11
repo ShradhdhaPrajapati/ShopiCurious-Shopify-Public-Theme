@@ -1,139 +1,424 @@
 {%- comment -%}
   ShopziCurious - Instagram Gallery Section (Part 11)
-  Displays a dynamic grid of Instagram posts with smooth hover effects, overlay icons, and editorial styling.
+  Edge-to-edge dual-row Instagram mosaic with continuous opposite-direction horizontal marquee animation.
+  - Row 1: Smooth continuous linear movement in one direction
+  - Row 2: Smooth continuous linear movement in the opposite direction
+  - Seamless 50% clone loop with zero jump and zero blank gaps
+  - Minimal editorial inline header: Subtitle ("FOLLOW US ON INSTAGRAM") + Linked Account Handle ("@shopzicurious")
+  - Interactive hover: subtle zoom, Instagram icon overlay, pause on hover
+  - Responsive layout on desktop, tablet, and mobile with zero page horizontal overflow
 {%- endcomment -%}
 
 {%- liquid
-  assign subtitle = section.settings.subtitle | default: 'FOLLOW US ON INSTAGRAM'
-  assign title = section.settings.title | default: '@shopzicurious'
-  assign link = section.settings.link | default: 'https://instagram.com'
-  assign cols_desktop = section.settings.columns_desktop | default: 5
-  assign cols_mobile = section.settings.columns_mobile | default: '2'
-  assign aspect_ratio = section.settings.image_ratio | default: '1/1'
-  assign align_class = section.settings.heading_alignment | default: 'center'
+  assign subtitle = section.settings.subtitle
+  if subtitle == blank
+    assign subtitle = section.settings.eyebrow | default: 'FOLLOW US ON INSTAGRAM'
+  endif
+
+  assign title = section.settings.title
+  if title == blank
+    assign title = section.settings.heading
+    if title == blank or title == 'Our Work'
+      assign title = '@shopzicurious'
+    endif
+  endif
+
+  assign link = section.settings.link
+  if link == blank
+    assign link = section.settings.button_link | default: 'https://instagram.com'
+  endif
+
+  assign heading_alignment = section.settings.heading_alignment | default: 'center'
+  assign bg_color = section.settings.bg_color | default: '#ffffff'
+  assign heading_color = section.settings.heading_color | default: '#111111'
+  assign eyebrow_color = section.settings.eyebrow_color | default: '#666666'
+
+  assign tile_size_desktop = section.settings.tile_size_desktop | default: 260
+  assign tile_size_mobile = section.settings.tile_size_mobile | default: 150
+  assign tile_gap = section.settings.tile_gap | default: 4
+  assign animation_speed = section.settings.animation_speed | default: 35
+  assign pause_on_hover = section.settings.pause_on_hover
+  if pause_on_hover == nil
+    assign pause_on_hover = true
+  endif
+  assign reverse_directions = section.settings.reverse_directions | default: false
+
+  assign padding_top = section.settings.padding_top | default: 56
+  assign padding_bottom = section.settings.padding_bottom | default: 56
+
+  assign top_direction = 'left'
+  assign bottom_direction = 'right'
+  if reverse_directions
+    assign top_direction = 'right'
+    assign bottom_direction = 'left'
+  endif
+
+  assign block_count = section.blocks.size
+  assign repeat_times = 1
+  if block_count == 0
+    assign repeat_times = 1
+  elsif block_count <= 3
+    assign repeat_times = 4
+  elsif block_count <= 6
+    assign repeat_times = 3
+  elsif block_count <= 10
+    assign repeat_times = 2
+  endif
+
+  assign half_count = block_count | divided_by: 2
 -%}
 
 <section
   id="InstagramGallery-{{ section.id }}"
-  class="szc-instagram-section page-width"
-  style="--cols-desktop: {{ cols_desktop }}; --cols-mobile: {{ cols_mobile }};"
-  data-animate="scale-in"
+  class="szc-instagram-section"
+  data-pause-hover="{{ pause_on_hover }}"
+  style="
+    --szc-insta-bg: {{ bg_color }};
+    --szc-insta-heading: {{ heading_color }};
+    --szc-insta-eyebrow: {{ eyebrow_color }};
+    --szc-insta-tile: {{ tile_size_desktop }}px;
+    --szc-insta-tile-m: {{ tile_size_mobile }}px;
+    --szc-insta-gap: {{ tile_gap }}px;
+    --szc-insta-speed: {{ animation_speed }}s;
+    --szc-insta-pt: {{ padding_top }}px;
+    --szc-insta-pb: {{ padding_bottom }}px;
+  "
 >
   <!-- Section Header -->
   {%- if title != blank or subtitle != blank -%}
-    <div class="szc-section-header szc-section-header--{{ align_class }}">
-      <div class="szc-instagram-header-inline">
-        {%- if subtitle != blank -%}
-          <span class="szc-instagram-header__subtitle">{{ subtitle }}</span>
-        {%- endif -%}
+    <div class="szc-instagram-header-wrap page-width">
+      <div class="szc-section-header szc-section-header--{{ heading_alignment }}">
+        <div class="szc-instagram-header-inline">
+          {%- if subtitle != blank -%}
+            <span class="szc-instagram-header__subtitle">{{ subtitle }}</span>
+          {%- endif -%}
 
-        {%- if title != blank -%}
-          <a href="{{ link }}" target="_blank" rel="noopener noreferrer" class="szc-instagram-header__link">
-            {{ title }}
-          </a>
-        {%- endif -%}
+          {%- if title != blank -%}
+            <a
+              href="{{ link }}"
+              target="_blank"
+              rel="noopener noreferrer"
+              class="szc-instagram-header__link"
+            >
+              {{ title }}
+            </a>
+          {%- endif -%}
+        </div>
       </div>
     </div>
   {%- endif -%}
 
-  <!-- Instagram Grid -->
-  <div class="szc-instagram__grid">
-    {%- for block in section.blocks -%}
-      {%- liquid
-        assign img = block.settings.image
-        assign post_link = block.settings.link | default: link
-        assign caption = block.settings.caption
-      -%}
-
-      <div class="szc-instagram__item" {{ block.shopify_attributes }}>
-        <a
-          href="{{ post_link }}"
-          target="_blank"
-          rel="noopener noreferrer"
-          class="szc-instagram-card"
-          style="aspect-ratio: {{ aspect_ratio }};"
-          aria-label="{{ caption | default: 'View on Instagram' }}"
-        >
-          <div class="szc-instagram-card__media">
-            {%- if img != blank -%}
-              {% render 'image',
-                image: img,
-                aspect_ratio: aspect_ratio,
-                loading: 'lazy',
-                class: 'szc-instagram-card__image'
-              %}
-            {%- else -%}
-              <div class="szc-instagram-card__placeholder">
-                {{ 'lifestyle-1' | placeholder_svg_tag: 'szc-placeholder-svg' }}
+  {%- comment -%} Capture Row 1 Items (Forward sequence) {%- endcomment -%}
+  {%- capture row_1_items -%}
+    {%- if section.blocks.size > 0 -%}
+      {%- for r in (1..repeat_times) -%}
+        {%- for block in section.blocks -%}
+          {%- liquid
+            assign img = block.settings.image
+            assign post_link = block.settings.link
+            if post_link == blank
+              assign post_link = link
+            endif
+            assign caption = block.settings.caption
+          -%}
+          <div class="szc-instagram__item" {% if r == 1 %}{{ block.shopify_attributes }}{% endif %}>
+            <a
+              href="{{ post_link }}"
+              target="_blank"
+              rel="noopener noreferrer"
+              class="szc-instagram-tile"
+              aria-label="{{ caption | default: 'Instagram post' | escape }}"
+            >
+              <div class="szc-instagram-tile__media">
+                {%- if img != blank -%}
+                  {%- assign alt_text = caption | default: 'Instagram post' | escape -%}
+                  {{ img | image_url: width: 600 | image_tag:
+                    class: 'szc-instagram-tile__img',
+                    loading: 'lazy',
+                    alt: alt_text
+                  }}
+                {%- else -%}
+                  <div class="szc-instagram-tile__placeholder">
+                    {%- capture placeholder_idx -%}lifestyle-{{ forloop.index | modulo: 5 | plus: 1 }}{%- endcapture -%}
+                    {{ placeholder_idx | placeholder_svg_tag: 'szc-placeholder-svg' }}
+                  </div>
+                {%- endif -%}
               </div>
-            {%- endif -%}
+
+              <div class="szc-instagram-tile__overlay">
+                <div class="szc-instagram-tile__icon-wrap">
+                  {% render 'icon', icon: 'instagram', class: 'szc-instagram-tile__icon' %}
+                </div>
+                {%- if caption != blank -%}
+                  <p class="szc-instagram-tile__caption">{{ caption }}</p>
+                {%- endif -%}
+              </div>
+            </a>
           </div>
-
-          <!-- Hover Overlay -->
-          <div class="szc-instagram-card__overlay">
-            <div class="szc-instagram-card__icon-wrapper">
-              {% render 'icon', icon: 'instagram', class: 'szc-instagram-card__icon' %}
-            </div>
-            {%- if caption != blank -%}
-              <p class="szc-instagram-card__caption">{{ caption }}</p>
-            {%- endif -%}
-          </div>
-        </a>
-      </div>
-    {%- else -%}
-      <!-- Default 5 Demo Items -->
-      {%- for i in (1..5) -%}
-        <div class="szc-instagram__item">
-          <a
-            href="{{ link }}"
-            target="_blank"
-            rel="noopener noreferrer"
-            class="szc-instagram-card"
-            style="aspect-ratio: {{ aspect_ratio }};"
-          >
-            <div class="szc-instagram-card__media">
-              <div class="szc-instagram-card__placeholder">
-                {%- capture placeholder_index -%}lifestyle-{{ i }}{%- endcapture -%}
-                {{ placeholder_index | placeholder_svg_tag: 'szc-placeholder-svg' }}
-              </div>
-            </div>
-
-            <div class="szc-instagram-card__overlay">
-              <div class="szc-instagram-card__icon-wrapper">
-                {% render 'icon', icon: 'instagram', class: 'szc-instagram-card__icon' %}
-              </div>
-            </div>
-          </a>
-        </div>
+        {%- endfor -%}
       {%- endfor -%}
-    {%- endfor -%}
+    {%- else -%}
+      {%- for r in (1..2) -%}
+        {%- for i in (1..5) -%}
+          <div class="szc-instagram__item">
+            <a
+              href="{{ link }}"
+              target="_blank"
+              rel="noopener noreferrer"
+              class="szc-instagram-tile"
+              aria-label="Instagram post"
+            >
+              <div class="szc-instagram-tile__media">
+                <div class="szc-instagram-tile__placeholder">
+                  {%- capture placeholder_idx -%}lifestyle-{{ i }}{%- endcapture -%}
+                  {{ placeholder_idx | placeholder_svg_tag: 'szc-placeholder-svg' }}
+                </div>
+              </div>
+
+              <div class="szc-instagram-tile__overlay">
+                <div class="szc-instagram-tile__icon-wrap">
+                  {% render 'icon', icon: 'instagram', class: 'szc-instagram-tile__icon' %}
+                </div>
+              </div>
+            </a>
+          </div>
+        {%- endfor -%}
+      {%- endfor -%}
+    {%- endif -%}
+  {%- endcapture -%}
+
+  {%- comment -%} Capture Row 2 Items (Staggered/offset sequence) {%- endcomment -%}
+  {%- capture row_2_items -%}
+    {%- if section.blocks.size > 0 -%}
+      {%- for r in (1..repeat_times) -%}
+        {%- for block in section.blocks -%}
+          {%- if forloop.index0 >= half_count -%}
+            {%- liquid
+              assign img = block.settings.image
+              assign post_link = block.settings.link
+              if post_link == blank
+                assign post_link = link
+              endif
+              assign caption = block.settings.caption
+            -%}
+            <div class="szc-instagram__item">
+              <a
+                href="{{ post_link }}"
+                target="_blank"
+                rel="noopener noreferrer"
+                class="szc-instagram-tile"
+                aria-label="{{ caption | default: 'Instagram post' | escape }}"
+              >
+                <div class="szc-instagram-tile__media">
+                  {%- if img != blank -%}
+                    {%- assign alt_text = caption | default: 'Instagram post' | escape -%}
+                    {{ img | image_url: width: 600 | image_tag:
+                      class: 'szc-instagram-tile__img',
+                      loading: 'lazy',
+                      alt: alt_text
+                    }}
+                  {%- else -%}
+                    <div class="szc-instagram-tile__placeholder">
+                      {%- capture placeholder_idx -%}lifestyle-{{ forloop.index | modulo: 5 | plus: 1 }}{%- endcapture -%}
+                      {{ placeholder_idx | placeholder_svg_tag: 'szc-placeholder-svg' }}
+                    </div>
+                  {%- endif -%}
+                </div>
+
+                <div class="szc-instagram-tile__overlay">
+                  <div class="szc-instagram-tile__icon-wrap">
+                    {% render 'icon', icon: 'instagram', class: 'szc-instagram-tile__icon' %}
+                  </div>
+                  {%- if caption != blank -%}
+                    <p class="szc-instagram-tile__caption">{{ caption }}</p>
+                  {%- endif -%}
+                </div>
+              </a>
+            </div>
+          {%- endif -%}
+        {%- endfor -%}
+
+        {%- for block in section.blocks -%}
+          {%- if forloop.index0 < half_count -%}
+            {%- liquid
+              assign img = block.settings.image
+              assign post_link = block.settings.link
+              if post_link == blank
+                assign post_link = link
+              endif
+              assign caption = block.settings.caption
+            -%}
+            <div class="szc-instagram__item">
+              <a
+                href="{{ post_link }}"
+                target="_blank"
+                rel="noopener noreferrer"
+                class="szc-instagram-tile"
+                aria-label="{{ caption | default: 'Instagram post' | escape }}"
+              >
+                <div class="szc-instagram-tile__media">
+                  {%- if img != blank -%}
+                    {%- assign alt_text = caption | default: 'Instagram post' | escape -%}
+                    {{ img | image_url: width: 600 | image_tag:
+                      class: 'szc-instagram-tile__img',
+                      loading: 'lazy',
+                      alt: alt_text
+                    }}
+                  {%- else -%}
+                    <div class="szc-instagram-tile__placeholder">
+                      {%- capture placeholder_idx -%}lifestyle-{{ forloop.index | modulo: 5 | plus: 1 }}{%- endcapture -%}
+                      {{ placeholder_idx | placeholder_svg_tag: 'szc-placeholder-svg' }}
+                    </div>
+                  {%- endif -%}
+                </div>
+
+                <div class="szc-instagram-tile__overlay">
+                  <div class="szc-instagram-tile__icon-wrap">
+                    {% render 'icon', icon: 'instagram', class: 'szc-instagram-tile__icon' %}
+                  </div>
+                  {%- if caption != blank -%}
+                    <p class="szc-instagram-tile__caption">{{ caption }}</p>
+                  {%- endif -%}
+                </div>
+              </a>
+            </div>
+          {%- endif -%}
+        {%- endfor -%}
+      {%- endfor -%}
+    {%- else -%}
+      {%- for r in (1..2) -%}
+        {%- for i in (3..5) -%}
+          <div class="szc-instagram__item">
+            <a
+              href="{{ link }}"
+              target="_blank"
+              rel="noopener noreferrer"
+              class="szc-instagram-tile"
+              aria-label="Instagram post"
+            >
+              <div class="szc-instagram-tile__media">
+                <div class="szc-instagram-tile__placeholder">
+                  {%- capture placeholder_idx -%}lifestyle-{{ i }}{%- endcapture -%}
+                  {{ placeholder_idx | placeholder_svg_tag: 'szc-placeholder-svg' }}
+                </div>
+              </div>
+
+              <div class="szc-instagram-tile__overlay">
+                <div class="szc-instagram-tile__icon-wrap">
+                  {% render 'icon', icon: 'instagram', class: 'szc-instagram-tile__icon' %}
+                </div>
+              </div>
+            </a>
+          </div>
+        {%- endfor -%}
+        {%- for i in (1..2) -%}
+          <div class="szc-instagram__item">
+            <a
+              href="{{ link }}"
+              target="_blank"
+              rel="noopener noreferrer"
+              class="szc-instagram-tile"
+              aria-label="Instagram post"
+            >
+              <div class="szc-instagram-tile__media">
+                <div class="szc-instagram-tile__placeholder">
+                  {%- capture placeholder_idx -%}lifestyle-{{ i }}{%- endcapture -%}
+                  {{ placeholder_idx | placeholder_svg_tag: 'szc-placeholder-svg' }}
+                </div>
+              </div>
+
+              <div class="szc-instagram-tile__overlay">
+                <div class="szc-instagram-tile__icon-wrap">
+                  {% render 'icon', icon: 'instagram', class: 'szc-instagram-tile__icon' %}
+                </div>
+              </div>
+            </a>
+          </div>
+        {%- endfor -%}
+      {%- endfor -%}
+    {%- endif -%}
+  {%- endcapture -%}
+
+  {%- comment -%} Cloned Groups for Seamless 50% Infinite Loop with Accessibility Optimization {%- endcomment -%}
+  {%- capture row_1_items_clone -%}
+    {{ row_1_items | replace: 'class="szc-instagram-tile"', 'class="szc-instagram-tile" tabindex="-1" aria-hidden="true"' }}
+  {%- endcapture -%}
+
+  {%- capture row_2_items_clone -%}
+    {{ row_2_items | replace: 'class="szc-instagram-tile"', 'class="szc-instagram-tile" tabindex="-1" aria-hidden="true"' }}
+  {%- endcapture -%}
+
+  <!-- Instagram Moving Mosaic (2 Rows) -->
+  <div class="szc-instagram__mosaic">
+    <!-- Row 1 (Top) -->
+    <div class="szc-instagram__row szc-instagram__row--top" role="region" aria-label="Instagram feed top row">
+      <div class="szc-instagram__track szc-instagram__track--{{ top_direction }}">
+        <div class="szc-instagram__group" aria-hidden="false">
+          {{ row_1_items }}
+        </div>
+        <div class="szc-instagram__group" aria-hidden="true">
+          {{ row_1_items_clone }}
+        </div>
+      </div>
+    </div>
+
+    <!-- Row 2 (Bottom) -->
+    <div class="szc-instagram__row szc-instagram__row--bottom" role="region" aria-label="Instagram feed bottom row">
+      <div class="szc-instagram__track szc-instagram__track--{{ bottom_direction }}">
+        <div class="szc-instagram__group" aria-hidden="false">
+          {{ row_2_items }}
+        </div>
+        <div class="szc-instagram__group" aria-hidden="true">
+          {{ row_2_items_clone }}
+        </div>
+      </div>
+    </div>
   </div>
 </section>
 
 {% stylesheet %}
   .szc-instagram-section {
-    padding-top: var(--szc-space-12, 48px);
-    padding-bottom: var(--szc-space-12, 48px);
+    width: 100%;
+    position: relative;
+    overflow: hidden;
+    background-color: var(--szc-insta-bg, #ffffff);
+    padding-top: var(--szc-insta-pt, 56px);
+    padding-bottom: var(--szc-insta-pb, 56px);
+    box-sizing: border-box;
+  }
+
+  .szc-instagram-header-wrap {
     max-width: var(--szc-page-max-width, 1400px);
     margin: 0 auto;
     padding-left: var(--szc-space-6, 24px);
     padding-right: var(--szc-space-6, 24px);
+    margin-bottom: clamp(20px, 3vw, 32px);
+    box-sizing: border-box;
   }
 
-  .szc-section-header {
-    margin-bottom: var(--szc-space-8, 32px);
+  .szc-instagram-header-wrap .szc-section-header {
+    margin-bottom: 0 !important;
   }
 
-  .szc-section-header--left {
-    text-align: left;
+  .szc-instagram-header-wrap .szc-section-header--center {
+    display: flex !important;
+    justify-content: center !important;
+    align-items: center !important;
+    text-align: center !important;
   }
 
-  .szc-section-header--center {
-    text-align: center;
+  .szc-instagram-header-wrap .szc-section-header--left {
+    display: flex !important;
+    justify-content: flex-start !important;
+    align-items: center !important;
+    text-align: left !important;
   }
 
-  .szc-section-header--right {
-    text-align: right;
+  .szc-instagram-header-wrap .szc-section-header--right {
+    display: flex !important;
+    justify-content: flex-end !important;
+    align-items: center !important;
+    text-align: right !important;
   }
 
   .szc-instagram-header-inline {
@@ -145,21 +430,21 @@
   }
 
   .szc-instagram-header__subtitle {
-    font-family: var(--szc-font-family-body, sans-serif);
+    font-family: var(--szc-font-family-body, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif);
     font-size: 11px;
     font-weight: 600;
     text-transform: uppercase;
     letter-spacing: 0.12em;
-    color: #666666;
+    color: var(--szc-insta-eyebrow, #666666);
   }
 
   .szc-instagram-header__link {
-    font-family: var(--szc-font-family-body, sans-serif);
+    font-family: var(--szc-font-family-body, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif);
     font-size: 11px;
     font-weight: 600;
     text-transform: uppercase;
     letter-spacing: 0.12em;
-    color: #111111;
+    color: var(--szc-insta-heading, #111111);
     text-decoration: underline;
     text-underline-offset: 3px;
     transition: color 200ms ease;
@@ -169,85 +454,138 @@
     color: #d4a373;
   }
 
-  .szc-instagram__grid {
-    display: grid;
-    grid-template-columns: repeat(var(--cols-mobile, 2), 1fr);
-    gap: var(--szc-space-4, 16px);
+  /* Image Mosaic Container */
+  .szc-instagram__mosaic {
+    display: flex;
+    flex-direction: column;
+    gap: var(--szc-insta-gap, 4px);
+    width: 100%;
+    overflow: hidden;
   }
 
-  @media (min-width: 990px) {
-    .szc-instagram__grid {
-      grid-template-columns: repeat(var(--cols-desktop, 5), 1fr);
-      gap: var(--szc-space-5, 20px);
+  .szc-instagram__row {
+    width: 100%;
+    overflow: hidden;
+    position: relative;
+    user-select: none;
+  }
+
+  .szc-instagram__track {
+    display: flex;
+    width: max-content;
+    will-change: transform;
+  }
+
+  .szc-instagram__track--left {
+    animation: szc-insta-marquee-left var(--szc-insta-speed, 35s) linear infinite;
+  }
+
+  .szc-instagram__track--right {
+    animation: szc-insta-marquee-right var(--szc-insta-speed, 35s) linear infinite;
+  }
+
+  @keyframes szc-insta-marquee-left {
+    0% {
+      transform: translate3d(0, 0, 0);
+    }
+    100% {
+      transform: translate3d(-50%, 0, 0);
     }
   }
 
-  /* Instagram Card Styling */
-  .szc-instagram-card {
-    position: relative;
-    display: flex;
-    width: 100%;
-    border-radius: 12px;
-    overflow: hidden;
-    text-decoration: none;
-    background-color: #f5f2eb;
+  @keyframes szc-insta-marquee-right {
+    0% {
+      transform: translate3d(-50%, 0, 0);
+    }
+    100% {
+      transform: translate3d(0, 0, 0);
+    }
   }
 
-  .szc-instagram-card__media {
+  /* Pause on hover */
+  .szc-instagram-section[data-pause-hover="true"] .szc-instagram__row:hover .szc-instagram__track {
+    animation-play-state: paused;
+  }
+
+  .szc-instagram__group {
+    display: flex;
+    align-items: center;
+    gap: var(--szc-insta-gap, 4px);
+    padding-right: var(--szc-insta-gap, 4px);
+    flex-shrink: 0;
+  }
+
+  .szc-instagram__item {
+    flex-shrink: 0;
+  }
+
+  /* Tile Styling */
+  .szc-instagram-tile {
+    position: relative;
+    flex-shrink: 0;
+    width: var(--szc-insta-tile, 260px);
+    height: var(--szc-insta-tile, 260px);
+    aspect-ratio: 1 / 1;
+    overflow: hidden;
+    text-decoration: none;
+    background-color: #1a1a1a;
+    display: block;
+    cursor: pointer;
+  }
+
+  .szc-instagram-tile__media {
     position: absolute;
-    top: 0;
-    left: 0;
+    inset: 0;
     width: 100%;
     height: 100%;
     overflow: hidden;
   }
 
-  .szc-instagram-card__image {
+  .szc-instagram-tile__img {
     width: 100%;
     height: 100%;
     object-fit: cover;
-    transition: transform 600ms ease;
+    display: block;
+    transition: transform 550ms cubic-bezier(0.2, 0.8, 0.2, 1);
   }
 
-  .szc-instagram-card:hover .szc-instagram-card__image {
+  .szc-instagram-tile:hover .szc-instagram-tile__img {
     transform: scale(1.08);
   }
 
-  .szc-instagram-card__placeholder {
+  .szc-instagram-tile__placeholder {
     width: 100%;
     height: 100%;
     display: flex;
     align-items: center;
     justify-content: center;
-    background-color: #eae5d9;
+    background-color: #eee9df;
     color: #a8a090;
   }
 
   /* Hover Overlay */
-  .szc-instagram-card__overlay {
+  .szc-instagram-tile__overlay {
     position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.42);
+    backdrop-filter: blur(2px);
+    -webkit-backdrop-filter: blur(2px);
     display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: center;
     padding: 16px;
-    background: rgba(0, 0, 0, 0.45);
-    backdrop-filter: blur(2px);
-    -webkit-backdrop-filter: blur(2px);
+    box-sizing: border-box;
     opacity: 0;
     transition: opacity 300ms ease;
     z-index: 2;
   }
 
-  .szc-instagram-card:hover .szc-instagram-card__overlay {
+  .szc-instagram-tile:hover .szc-instagram-tile__overlay {
     opacity: 1;
   }
 
-  .szc-instagram-card__icon-wrapper {
+  .szc-instagram-tile__icon-wrap {
     display: flex;
     align-items: center;
     justify-content: center;
@@ -258,30 +596,79 @@
     color: #111111;
     transform: scale(0.8);
     transition: transform 300ms ease;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    box-shadow: 0 4px 14px rgba(0, 0, 0, 0.2);
   }
 
-  .szc-instagram-card:hover .szc-instagram-card__icon-wrapper {
+  .szc-instagram-tile:hover .szc-instagram-tile__icon-wrap {
     transform: scale(1);
   }
 
-  .szc-instagram-card__icon {
+  .szc-instagram-tile__icon {
     width: 22px;
     height: 22px;
   }
 
-  .szc-instagram-card__caption {
-    margin: 10px 0 0 0;
+  .szc-instagram-tile__caption {
+    margin: 10px 0 0;
     font-family: var(--szc-font-family-body, sans-serif);
     font-size: 11px;
     font-weight: 500;
     color: #ffffff;
     text-align: center;
-    line-height: 1.3;
+    line-height: 1.35;
     display: -webkit-box;
     -webkit-line-clamp: 2;
     -webkit-box-orient: vertical;
     overflow: hidden;
+    max-width: 90%;
+  }
+
+  /* Mobile Responsive */
+  @media (max-width: 768px) {
+    .szc-instagram-section {
+      --szc-insta-tile: var(--szc-insta-tile-m, 150px);
+      padding-top: calc(var(--szc-insta-pt, 56px) * 0.7);
+      padding-bottom: calc(var(--szc-insta-pb, 56px) * 0.7);
+    }
+
+    .szc-instagram-header-wrap {
+      padding-left: var(--szc-space-4, 16px);
+      padding-right: var(--szc-space-4, 16px);
+      margin-bottom: 24px;
+    }
+
+    .szc-instagram-tile__icon-wrap {
+      width: 36px;
+      height: 36px;
+    }
+
+    .szc-instagram-tile__icon {
+      width: 18px;
+      height: 18px;
+    }
+
+    .szc-instagram-tile__caption {
+      display: none;
+    }
+  }
+
+  /* Reduced Motion Support */
+  @media (prefers-reduced-motion: reduce) {
+    .szc-instagram__track--left,
+    .szc-instagram__track--right {
+      animation: none !important;
+      transform: none !important;
+    }
+
+    .szc-instagram__row {
+      overflow-x: auto;
+      -webkit-overflow-scrolling: touch;
+      scrollbar-width: none;
+    }
+
+    .szc-instagram__row::-webkit-scrollbar {
+      display: none;
+    }
   }
 {% endstylesheet %}
 
@@ -290,19 +677,23 @@
   "name": "Instagram gallery",
   "tag": "section",
   "class": "section-instagram-gallery",
-  "max_blocks": 10,
+  "max_blocks": 24,
   "settings": [
+    {
+      "type": "header",
+      "content": "Header Settings"
+    },
     {
       "type": "text",
       "id": "subtitle",
-      "default": "FOLLOW US ON INSTAGRAM",
-      "label": "Subtitle"
+      "label": "Subtitle",
+      "default": "FOLLOW US ON INSTAGRAM"
     },
     {
       "type": "text",
       "id": "title",
-      "default": "@shopzicurious",
-      "label": "Title / Handle"
+      "label": "Account Handle / Heading",
+      "default": "@shopzicurious"
     },
     {
       "type": "url",
@@ -321,35 +712,102 @@
       "default": "center"
     },
     {
-      "type": "select",
-      "id": "image_ratio",
-      "label": "Image aspect ratio",
-      "options": [
-        { "value": "1/1", "label": "Square (1:1)" },
-        { "value": "3/4", "label": "Portrait (3:4)" },
-        { "value": "4/5", "label": "Tall (4:5)" }
-      ],
-      "default": "1/1"
+      "type": "header",
+      "content": "Mosaic & Animation Layout"
     },
     {
       "type": "range",
-      "id": "columns_desktop",
-      "min": 3,
-      "max": 6,
-      "step": 1,
-      "default": 5,
-      "label": "Desktop columns"
+      "id": "tile_size_desktop",
+      "min": 180,
+      "max": 360,
+      "step": 10,
+      "unit": "px",
+      "label": "Tile size (Desktop)",
+      "default": 260
     },
     {
-      "type": "select",
-      "id": "columns_mobile",
-      "label": "Mobile columns",
-      "options": [
-        { "value": "1", "label": "1 Column" },
-        { "value": "2", "label": "2 Columns" },
-        { "value": "3", "label": "3 Columns" }
-      ],
-      "default": "2"
+      "type": "range",
+      "id": "tile_size_mobile",
+      "min": 120,
+      "max": 200,
+      "step": 10,
+      "unit": "px",
+      "label": "Tile size (Mobile)",
+      "default": 150
+    },
+    {
+      "type": "range",
+      "id": "tile_gap",
+      "min": 0,
+      "max": 16,
+      "step": 2,
+      "unit": "px",
+      "label": "Gap between tiles",
+      "default": 4
+    },
+    {
+      "type": "range",
+      "id": "animation_speed",
+      "min": 15,
+      "max": 65,
+      "step": 5,
+      "unit": "s",
+      "label": "Animation cycle speed (seconds)",
+      "default": 35
+    },
+    {
+      "type": "checkbox",
+      "id": "pause_on_hover",
+      "label": "Pause animation on hover",
+      "default": true
+    },
+    {
+      "type": "checkbox",
+      "id": "reverse_directions",
+      "label": "Reverse row animation directions",
+      "default": false
+    },
+    {
+      "type": "header",
+      "content": "Colors & Spacing"
+    },
+    {
+      "type": "color",
+      "id": "bg_color",
+      "label": "Section background color",
+      "default": "#ffffff"
+    },
+    {
+      "type": "color",
+      "id": "heading_color",
+      "label": "Heading / Handle color",
+      "default": "#111111"
+    },
+    {
+      "type": "color",
+      "id": "eyebrow_color",
+      "label": "Subtitle color",
+      "default": "#666666"
+    },
+    {
+      "type": "range",
+      "id": "padding_top",
+      "min": 20,
+      "max": 120,
+      "step": 4,
+      "unit": "px",
+      "label": "Padding top",
+      "default": 56
+    },
+    {
+      "type": "range",
+      "id": "padding_bottom",
+      "min": 20,
+      "max": 120,
+      "step": 4,
+      "unit": "px",
+      "label": "Padding bottom",
+      "default": 56
     }
   ],
   "blocks": [
@@ -379,6 +837,9 @@
     {
       "name": "Instagram gallery",
       "blocks": [
+        {
+          "type": "instagram_post"
+        },
         {
           "type": "instagram_post"
         },

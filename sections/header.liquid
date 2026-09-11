@@ -212,9 +212,10 @@
     </div>
   </header>
 
-  <!-- DYNAMIC MOBILE NAVIGATION DRAWER -->
-  {% render 'mobile-drawer', main_menu_links: main_menu_links, section: section %}
 </sticky-header>
+
+<!-- DYNAMIC MOBILE NAVIGATION DRAWER -->
+{% render 'mobile-drawer', main_menu_links: main_menu_links, section: section %}
 
 {% stylesheet %}
   sticky-header {
@@ -895,15 +896,21 @@
     left: 0;
     width: 100vw;
     height: 100vh;
+    height: 100dvh;
     z-index: 99999;
     visibility: hidden;
     pointer-events: none;
     transition: visibility 300ms ease;
   }
 
+  .szc-mobile-drawer:not(.is-open) {
+    visibility: hidden !important;
+    pointer-events: none !important;
+  }
+
   .szc-mobile-drawer.is-open {
-    visibility: visible;
-    pointer-events: auto;
+    visibility: visible !important;
+    pointer-events: auto !important;
   }
 
   .szc-mobile-drawer__overlay {
@@ -929,6 +936,9 @@
     width: 85%;
     max-width: 380px;
     height: 100%;
+    height: 100vh;
+    height: 100dvh;
+    max-height: 100dvh;
     background: #ffffff;
     display: flex;
     flex-direction: column;
@@ -1288,7 +1298,7 @@
 
 {% javascript %}
 
-  document.addEventListener('DOMContentLoaded', function() {
+  function initHeader() {
     const menuItems = document.querySelectorAll('.szc-header__menu-item.has-mega-menu, .szc-header__menu-item.has-dropdown');
     menuItems.forEach(item => {
       let timer = null;
@@ -1340,8 +1350,14 @@
         document.body.style.overflow = '';
       }
 
-      triggerBtns.forEach(btn => btn.addEventListener('click', openDrawer));
-      closeBtns.forEach(btn => btn.addEventListener('click', closeDrawer));
+      triggerBtns.forEach(btn => {
+        btn.removeEventListener('click', openDrawer);
+        btn.addEventListener('click', openDrawer);
+      });
+      closeBtns.forEach(btn => {
+        btn.removeEventListener('click', closeDrawer);
+        btn.addEventListener('click', closeDrawer);
+      });
 
       const accordions = drawer.querySelectorAll('.szc-mobile-drawer__accordion-toggle');
       const menuItems = drawer.querySelectorAll('[data-mobile-tab-trigger]');
@@ -1384,6 +1400,13 @@
           closeDrawer();
         }
       });
+    }
+  }
+
+  document.addEventListener('DOMContentLoaded', initHeader);
+  document.addEventListener('shopify:section:load', function(e) {
+    if (e.target && (e.target.matches('.shopify-section-group-header-group') || e.target.querySelector('.szc-header') || (e.target.id && e.target.id.includes('header')))) {
+      initHeader();
     }
   });
 {% endjavascript %}
