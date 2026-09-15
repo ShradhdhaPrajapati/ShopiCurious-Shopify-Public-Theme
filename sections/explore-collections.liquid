@@ -50,6 +50,12 @@
     assign show_button = false
   endif
 
+  assign enable_autoplay = true
+  if section.settings.enable_autoplay == false
+    assign enable_autoplay = false
+  endif
+  assign autoplay_speed = section.settings.autoplay_speed | default: 3.5
+
   assign show_script_badge = true
   if section.settings.show_script_badge == false
     assign show_script_badge = false
@@ -62,7 +68,7 @@
 
   assign badge_color = section.settings.script_badge_color | default: '#b89270'
   assign badge_text = section.settings.script_badge_text | default: "Style\nIn Every\nStory"
-  assign badge_icon = section.settings.script_badge_icon | default: '♡'
+  assign badge_icon = section.settings.script_badge_icon | default: 'heart'
 
   assign button_label = section.settings.button_label | default: 'VIEW ALL COLLECTIONS'
   assign button_link = section.settings.button_link | default: routes.collections_url
@@ -73,7 +79,7 @@
   endif
 
   assign has_overflow = false
-  if total_cards > cols_desktop
+  if total_cards > cols_desktop or enable_autoplay or total_cards > 1
     assign has_overflow = true
   endif
 
@@ -130,8 +136,21 @@
             <span class="szc-expcol-script-badge__line">{{ clean_line }}</span>
           {%- endif -%}
         {%- endfor -%}
-        {%- if badge_icon != blank -%}
-          <span class="szc-expcol-script-badge__heart">{{ badge_icon }}</span>
+        {%- if badge_icon != blank and badge_icon != 'none' -%}
+          <span class="szc-expcol-script-badge__heart">
+            {%- case badge_icon -%}
+              {%- when 'star' -%}
+                {% render 'icon', icon: 'star', class: 'szc-expcol-script-badge__svg' %}
+              {%- when 'sparkle' -%}
+                {% render 'icon', icon: 'sparkle', class: 'szc-expcol-script-badge__svg' %}
+              {%- when 'diamond' -%}
+                {% render 'icon', icon: 'diamond', class: 'szc-expcol-script-badge__svg' %}
+              {%- when 'heart-solid' -%}
+                {% render 'icon', icon: 'heart-solid', class: 'szc-expcol-script-badge__svg' %}
+              {%- else -%}
+                {% render 'icon', icon: 'heart', class: 'szc-expcol-script-badge__svg' %}
+            {%- endcase -%}
+          </span>
         {%- endif -%}
       </div>
     {%- endif -%}
@@ -169,6 +188,18 @@
       </header>
     {%- endif -%}
 
+    {%- if show_button and button_label != blank -%}
+          <!-- Bottom View All Button -->
+          <div class="szc-expcol-cta">
+            <a href="{{ button_link }}" class="szc-expcol-btn">
+              <span>{{ button_label }}</span>
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                <path d="M5 12h14"/><path d="m12 5 7 7-7 7"/>
+              </svg>
+            </a>
+          </div>
+        {%- endif -%}
+
     <!-- Main Hanging Carousel Container (Full Width, Pure Swiper + Dots) -->
     <div
       class="szc-expcol-carousel szc-expcol--mobile-cols-{{ cols_mobile }}"
@@ -176,6 +207,8 @@
       data-cols-mobile="{{ cols_mobile }}"
       data-total-cards="{{ total_cards }}"
       data-max-rot="{{ max_rot }}"
+      data-autoplay="{{ enable_autoplay }}"
+      data-autoplay-speed="{{ autoplay_speed }}"
     >
       <div class="szc-expcol-stage">
         {%- if show_string -%}
@@ -314,17 +347,6 @@
           </div>
         {%- endif -%}
 
-        {%- if show_button and button_label != blank -%}
-          <!-- Bottom View All Button -->
-          <div class="szc-expcol-cta">
-            <a href="{{ button_link }}" class="szc-expcol-btn">
-              <span>{{ button_label }}</span>
-              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-                <path d="M5 12h14"/><path d="m12 5 7 7-7 7"/>
-              </svg>
-            </a>
-          </div>
-        {%- endif -%}
       </div>
     </div>
   </div>
@@ -373,7 +395,7 @@
     transform: translate(10%, 10%);
   }
 
-  /* Editorial Script Badge (Style In Every Story ♡ - Red Marked Area) */
+  /* Editorial Script Badge (Style In Every Story - SVG Badge Icon) */
   .szc-expcol-script-badge {
     position: absolute;
     top: 8px;
@@ -400,9 +422,17 @@
   }
 
   .szc-expcol-script-badge__heart {
-    font-size: 15px;
-    margin-top: 2px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    margin-top: 4px;
     color: inherit;
+  }
+
+  .szc-expcol-script-badge__svg {
+    width: 16px;
+    height: 16px;
+    display: block;
   }
 
   @media (max-width: 767px) {
@@ -580,7 +610,8 @@
     overflow-y: visible;
     scrollbar-width: none;
     -ms-overflow-style: none;
-    scroll-behavior: smooth;
+    scroll-behavior: auto;
+    position: relative;
     padding: 10px 4vw 135px 4vw;
     margin: 0;
     box-sizing: border-box;
@@ -632,21 +663,7 @@
     transform: translate3d(0, var(--card-offset-y), 0) rotate(var(--card-rot));
     transform-origin: 50% -6px;
     will-change: transform;
-    transition: transform 380ms cubic-bezier(0.25, 1, 0.5, 1);
   }
-
-  .szc-expcol-track.is-scrolling .szc-expcol-slide,
-  .szc-expcol-track.is-swiping .szc-expcol-slide,
-  .szc-expcol-track.is-dragging .szc-expcol-slide {
-    transition: none !important;
-  }
-
-  /* Exact static hanging curve coordinates matching SVG curve */
-  .szc-expcol-slide:nth-child(1) { --card-rot: 6.5deg;   --card-offset-y: 41px; }
-  .szc-expcol-slide:nth-child(2) { --card-rot: 3.2deg;   --card-offset-y: 65px; }
-  .szc-expcol-slide:nth-child(3) { --card-rot: 0deg;     --card-offset-y: 73px; }
-  .szc-expcol-slide:nth-child(4) { --card-rot: -3.2deg;  --card-offset-y: 65px; }
-  .szc-expcol-slide:nth-child(5) { --card-rot: -6.5deg;  --card-offset-y: 41px; }
 
   .szc-expcol-rot--none .szc-expcol-slide {
     --card-rot: 0deg !important;
@@ -664,14 +681,14 @@
     box-sizing: border-box;
     text-decoration: none;
     box-shadow: 0 16px 36px -8px rgba(0, 0, 0, 0.11), 0 4px 12px rgba(0, 0, 0, 0.04);
-    transition: box-shadow 350ms ease, transform 350ms cubic-bezier(0.25, 1, 0.5, 1);
     border: 1px solid rgba(0, 0, 0, 0.04);
     cursor: pointer;
   }
 
   .szc-expcol-card:hover {
-    box-shadow: 0 22px 48px -10px rgba(0, 0, 0, 0.18), 0 8px 18px rgba(0, 0, 0, 0.06);
-    transform: translateY(-6px);
+    box-shadow: 0 16px 36px -8px rgba(0, 0, 0, 0.11), 0 4px 12px rgba(0, 0, 0, 0.04) !important;
+    transform: none !important;
+    border-color: rgba(0, 0, 0, 0.04) !important;
   }
 
   /* Decorative Clip / Tag at Top Center */
@@ -728,11 +745,22 @@
     object-position: center;
     display: block;
     pointer-events: none;
-    transition: transform 600ms cubic-bezier(0.25, 1, 0.5, 1);
+    transform: scale(1);
+    transform-origin: center;
+    transition: transform 300ms cubic-bezier(0.25, 1, 0.5, 1);
   }
 
-  .szc-expcol-card:hover .szc-expcol-card__img {
-    transform: scale(1.05);
+  @media (hover: hover) and (pointer: fine) {
+    .szc-expcol-card:hover .szc-expcol-card__img {
+      transform: scale(1.04);
+    }
+  }
+
+  @media (hover: none) or (pointer: coarse) {
+    .szc-expcol-card__img,
+    .szc-expcol-card:hover .szc-expcol-card__img {
+      transform: none !important;
+    }
   }
 
   .szc-expcol-card__placeholder {
@@ -846,12 +874,18 @@
   .szc-expcol-cta {
     display: flex;
     justify-content: center;
+    align-items: center;
+    width: 100%;
     margin-top: 28px;
+    position: relative;
+    z-index: 5;
+    text-align: center;
   }
 
   .szc-expcol-btn {
     display: inline-flex;
     align-items: center;
+    justify-content: center;
     gap: 10px;
     padding: 12px 28px;
     border-radius: 9999px;
@@ -866,6 +900,7 @@
     text-transform: uppercase;
     transition: all 300ms ease;
     box-sizing: border-box;
+    margin: 0 auto;
   }
 
   .szc-expcol-btn:hover {
@@ -925,8 +960,9 @@
     .szc-expcol-track {
       padding: 10px 14vw 90px 14vw;
       gap: 16px;
-      scroll-snap-type: x mandatory;
+      scroll-snap-type: none;
       -webkit-overflow-scrolling: touch;
+      position: relative;
     }
 
     .szc-expcol-slide {
@@ -1071,81 +1107,238 @@
       var track = section.querySelector('[data-expcol-track]');
       if (!track) return;
 
-      var slides = Array.from(section.querySelectorAll('.szc-expcol-slide'));
+      var originalSlides = Array.from(track.querySelectorAll('.szc-expcol-slide:not([data-is-clone])'));
+      var N = originalSlides.length;
+      if (N < 2) {
+        return;
+      }
+
+      // ── Create Before and After Clones for Seamless Infinite Loop ──
+      var beforeFragment = document.createDocumentFragment();
+      var afterFragment = document.createDocumentFragment();
+
+      originalSlides.forEach(function(origSlide) {
+        var cloneBefore = origSlide.cloneNode(true);
+        cloneBefore.setAttribute('data-is-clone', 'true');
+        cloneBefore.setAttribute('data-clone-type', 'before');
+        cloneBefore.setAttribute('aria-hidden', 'true');
+        cloneBefore.removeAttribute('id');
+        cloneBefore.removeAttribute('data-shopify-editor-block');
+        var focusablesB = cloneBefore.querySelectorAll('a, button, input, [tabindex]');
+        focusablesB.forEach(function(el) { el.setAttribute('tabindex', '-1'); });
+        beforeFragment.appendChild(cloneBefore);
+
+        var cloneAfter = origSlide.cloneNode(true);
+        cloneAfter.setAttribute('data-is-clone', 'true');
+        cloneAfter.setAttribute('data-clone-type', 'after');
+        cloneAfter.setAttribute('aria-hidden', 'true');
+        cloneAfter.removeAttribute('id');
+        cloneAfter.removeAttribute('data-shopify-editor-block');
+        var focusablesA = cloneAfter.querySelectorAll('a, button, input, [tabindex]');
+        focusablesA.forEach(function(el) { el.setAttribute('tabindex', '-1'); });
+        afterFragment.appendChild(cloneAfter);
+      });
+
+      track.insertBefore(beforeFragment, originalSlides[0]);
+      track.appendChild(afterFragment);
+
+      var allSlides = Array.from(track.querySelectorAll('.szc-expcol-slide'));
       var dots = Array.from(section.querySelectorAll('.szc-expcol-dot'));
-      var cards = Array.from(section.querySelectorAll('.szc-expcol-card'));
 
       var isMobile = window.matchMedia('(max-width: 767px)').matches;
       var prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
       var wasSwiping = false;
       var touchStartX = 0;
       var touchStartY = 0;
-      var rafId = null;
-      var scrollTimeout = null;
-      var currentActiveIdx = 0;
+      var touchStartTime = 0;
 
-      /* Mouse drag-to-swipe state */
+      // Track index starts at original Card 0 (index N in 3*N slides)
+      var currentTrackIdx = N;
+      var activeCardIdx = 0;
+
+      // Mouse drag state (Desktop)
       var isMouseDown = false;
       var mouseStartX = 0;
       var mouseStartScrollLeft = 0;
       var wasMouseDragging = false;
 
-      function updateDots() {
-        if (!dots.length) return;
-        var maxScroll = track.scrollWidth - track.clientWidth;
-        var activeIdx = 0;
-        if (maxScroll > 8 && dots.length > 1) {
-          var ratio = Math.max(0, Math.min(1, track.scrollLeft / maxScroll));
-          activeIdx = Math.min(dots.length - 1, Math.max(0, Math.round(ratio * (dots.length - 1))));
-        } else if (slides.length > 0) {
-          var trackRect = track.getBoundingClientRect();
-          var centerX = trackRect.left + trackRect.width / 2;
-          var minD = Infinity;
-          slides.forEach(function(s, idx) {
-            var r = s.getBoundingClientRect();
-            var d = Math.abs(r.left + r.width / 2 - centerX);
-            if (d < minD) {
-              minD = d;
-              activeIdx = idx;
-            }
-          });
+      // Autoplay state
+      var autoplayTimer = null;
+      var isInteracting = false;
+      var isHovered = false;
+
+      // Animation state
+      var isAnimating = false;
+      var animationRafId = null;
+
+      var carouselEl = section.querySelector('.szc-expcol-carousel');
+      var isAutoplayEnabled = true;
+      var autoplaySpeedMs = 3500;
+
+      if (carouselEl) {
+        if (carouselEl.dataset.autoplay === 'false') {
+          isAutoplayEnabled = false;
         }
-        currentActiveIdx = activeIdx;
+        var customSpeed = parseFloat(carouselEl.dataset.autoplaySpeed);
+        if (!isNaN(customSpeed) && customSpeed > 0) {
+          autoplaySpeedMs = customSpeed * 1000;
+        }
+      }
+
+      function getActiveCardIndex(idx) {
+        return ((idx % N) + N) % N;
+      }
+
+      // Exact pixel distance of 1 complete set of N cards
+      function getSetStride() {
+        if (!allSlides[N] || !allSlides[0]) return 0;
+        return allSlides[N].offsetLeft - allSlides[0].offsetLeft;
+      }
+
+      // Precise layout-based target scroll offset (immune to rotation / CSS transforms)
+      function getTargetScroll(idx) {
+        var slide = allSlides[idx];
+        if (!slide) return 0;
+        var slideCenter = slide.offsetLeft + slide.offsetWidth / 2;
+        return Math.round(slideCenter - track.clientWidth / 2);
+      }
+
+      // Find slide closest to current track.scrollLeft
+      function getNearestTrackIndex() {
+        var current = track.scrollLeft;
+        var minDiff = Infinity;
+        var nearest = currentTrackIdx;
+        for (var i = 0; i < allSlides.length; i++) {
+          var target = getTargetScroll(i);
+          var diff = Math.abs(current - target);
+          if (diff < minDiff) {
+            minDiff = diff;
+            nearest = i;
+          }
+        }
+        return nearest;
+      }
+
+      function updateDots() {
+        activeCardIdx = getActiveCardIndex(currentTrackIdx);
         dots.forEach(function(dot, i) {
-          dot.classList.toggle('is-active', i === activeIdx);
+          dot.classList.toggle('is-active', i === activeCardIdx);
         });
       }
 
-      function updateNavState() {
-        var isScrollable = track.scrollWidth > track.clientWidth + 8;
-        section.classList.toggle('has-scroll-overflow', isScrollable);
+      // Exact setStride shift (0ms instantaneous swap without visual difference)
+      function normalizeBoundary() {
+        var setStride = getSetStride();
+        if (setStride <= 0) return;
 
-        var dotsWrapAll = section.querySelector('[data-expcol-dots]');
-        if (dotsWrapAll) {
-          if (!isScrollable) {
-            dotsWrapAll.style.display = 'none';
+        var normalized = false;
+        if (currentTrackIdx >= 2 * N) {
+          currentTrackIdx -= N;
+          track.scrollLeft -= setStride;
+          normalized = true;
+        } else if (currentTrackIdx < N) {
+          currentTrackIdx += N;
+          track.scrollLeft += setStride;
+          normalized = true;
+        }
+        if (normalized) {
+          updateFannedCards();
+          updateDots();
+        }
+      }
+
+      // Deterministic, silky smooth cubic-bezier scroll animation
+      function smoothScrollTo(targetScroll, duration, onComplete) {
+        if (animationRafId) {
+          cancelAnimationFrame(animationRafId);
+          animationRafId = null;
+        }
+        duration = duration || 450;
+        var startScroll = track.scrollLeft;
+        var distance = targetScroll - startScroll;
+
+        if (Math.abs(distance) < 2) {
+          track.scrollLeft = targetScroll;
+          updateFannedCards();
+          if (onComplete) onComplete();
+          return;
+        }
+
+        isAnimating = true;
+        var startTime = null;
+
+        function easeOutCubic(t) {
+          return 1 - Math.pow(1 - t, 3);
+        }
+
+        function step(timestamp) {
+          if (!startTime) startTime = timestamp;
+          var elapsed = timestamp - startTime;
+          var progress = Math.min(1, elapsed / duration);
+          var ease = easeOutCubic(progress);
+
+          track.scrollLeft = Math.round(startScroll + distance * ease);
+          updateFannedCards();
+
+          var nearest = getNearestTrackIndex();
+          var cardIdx = getActiveCardIndex(nearest);
+          if (cardIdx !== activeCardIdx) {
+            activeCardIdx = cardIdx;
+            dots.forEach(function(dot, i) {
+              dot.classList.toggle('is-active', i === activeCardIdx);
+            });
+          }
+
+          if (progress < 1) {
+            animationRafId = requestAnimationFrame(step);
           } else {
-            dotsWrapAll.style.display = 'flex';
+            track.scrollLeft = targetScroll;
+            isAnimating = false;
+            animationRafId = null;
+            updateFannedCards();
+            updateDots();
+            if (onComplete) onComplete();
           }
         }
+
+        animationRafId = requestAnimationFrame(step);
+      }
+
+      function goToTrackIndex(idx, duration, onComplete) {
+        if (idx < 0 || idx >= allSlides.length) return;
+        currentTrackIdx = idx;
+        activeCardIdx = getActiveCardIndex(currentTrackIdx);
+        updateDots();
+        smoothScrollTo(getTargetScroll(idx), duration || 450, function() {
+          normalizeBoundary();
+          if (onComplete) onComplete();
+        });
+      }
+
+      function stopAutoplay() {
+        if (autoplayTimer) {
+          clearTimeout(autoplayTimer);
+          autoplayTimer = null;
+        }
+      }
+
+      function startAutoplay() {
+        stopAutoplay();
+        if (!isAutoplayEnabled || isHovered || isInteracting || isMouseDown || isAnimating) return;
+        autoplayTimer = setTimeout(function() {
+          advanceSlide();
+        }, autoplaySpeedMs);
+      }
+
+      function advanceSlide() {
+        if (!isAutoplayEnabled || isHovered || isInteracting || isMouseDown || isAnimating) return;
+        goToTrackIndex(currentTrackIdx + 1, 500, function() {
+          startAutoplay();
+        });
       }
 
       function updateFannedCards() {
         if (prefersReducedMotion) return;
-
-        var isScrollable = track.scrollWidth > track.clientWidth + 8;
-        if (!isMobile && !isScrollable && slides.length === 5) {
-          var staticOffsets = [41, 65, 73, 65, 41];
-          var staticRots = [6.5, 3.2, 0, -3.2, -6.5];
-          slides.forEach(function(slide, idx) {
-            if (idx < 5) {
-              slide.style.setProperty('--card-offset-y', staticOffsets[idx] + 'px');
-              slide.style.setProperty('--card-rot', staticRots[idx] + 'deg');
-            }
-          });
-          updateDots();
-          return;
-        }
 
         var stage = section.querySelector('.szc-expcol-stage') || track;
         var stageRect = stage.getBoundingClientRect();
@@ -1155,100 +1348,78 @@
         var maxRot = rotSetting !== null ? parseFloat(rotSetting) : (isMobile ? 5 : 8.5);
         if (isNaN(maxRot)) maxRot = 8.5;
 
-        slides.forEach(function(slide) {
+        for (var i = 0; i < allSlides.length; i++) {
+          var slide = allSlides[i];
           var slideRect = slide.getBoundingClientRect();
+          if (slideRect.right < stageRect.left - 250 || slideRect.left > stageRect.right + 250) {
+            continue;
+          }
           var slideCenterX = slideRect.left + slideRect.width / 2;
           var relX = slideCenterX - stageRect.left;
           var normX = Math.max(0, Math.min(1, relX / stageWidth));
 
-          // Map to SVG coordinates (0 to 1440)
           var xSvg = normX * 1440;
-          // SVG Quadratic Bézier formula: d="M -50 20 Q 720 134 1490 20"
-          // X(t) = -50 + 1540*t  =>  t = (xSvg + 50) / 1540
           var t = Math.max(0, Math.min(1, (xSvg + 50) / 1540));
-          // Y(t) = 20 + 228 * t * (1 - t)
           var ySvg = 20 + 228 * t * (1 - t);
-          // Scale to actual rendered SVG height
           var stringY = ySvg * (svgHeight / 120);
 
-          // Card clip hole is at stage Y = 10 (track padding) + cardTop - 6 = cardTop + 4
-          // Setting cardTop = stringY - 4 locks the clip hole exactly onto the curve line
           var cardTop = Math.max(4, stringY - 4);
-
-          // Rotate card to match curve slope (-u * maxRot)
           var u = (normX - 0.5) * 2;
           var rot = -u * maxRot;
 
           slide.style.setProperty('--card-offset-y', cardTop.toFixed(1) + 'px');
           slide.style.setProperty('--card-rot', rot.toFixed(2) + 'deg');
-        });
+        }
+      }
 
+      function setInitialPosition() {
+        if (animationRafId) {
+          cancelAnimationFrame(animationRafId);
+          animationRafId = null;
+          isAnimating = false;
+        }
+        track.scrollLeft = getTargetScroll(currentTrackIdx);
+        updateFannedCards();
         updateDots();
       }
 
-      function onScroll() {
-        if (rafId) return;
-        rafId = requestAnimationFrame(function() {
-          updateFannedCards();
-          updateNavState();
-          rafId = null;
-        });
-      }
+      setInitialPosition();
+      startAutoplay();
 
-      function getScrollStep() {
-        if (!slides.length) return 300;
-        var slideWidth = slides[0].offsetWidth;
-        var gap = parseFloat(getComputedStyle(track).gap) || 20;
-        return slideWidth + gap;
-      }
-
-      function goToIndex(index) {
-        if (index < 0 || index >= slides.length) return;
-        var maxScroll = track.scrollWidth - track.clientWidth;
-        if (maxScroll <= 0) return;
-        var targetSlide = slides[index];
-        var trackRect = track.getBoundingClientRect();
-        var targetRect = targetSlide.getBoundingClientRect();
-        var currentScroll = track.scrollLeft;
-        var targetCenter = targetRect.left - trackRect.left + currentScroll + targetRect.width / 2;
-        var offset = targetCenter - trackRect.width / 2;
-        var clampedOffset = Math.max(0, Math.min(maxScroll, offset));
-        track.scrollTo({ left: clampedOffset, behavior: 'smooth' });
-      }
-
-      track.addEventListener('scroll', function() {
-        track.classList.add('is-scrolling');
-        onScroll();
-        clearTimeout(scrollTimeout);
-        scrollTimeout = setTimeout(function() {
-          track.classList.remove('is-scrolling');
-        }, 120);
-      }, { passive: true });
+      window.addEventListener('load', function() {
+        setInitialPosition();
+        startAutoplay();
+      });
 
       window.addEventListener('resize', function() {
         isMobile = window.matchMedia('(max-width: 767px)').matches;
-        updateFannedCards();
-        updateNavState();
+        setInitialPosition();
+        startAutoplay();
       }, { passive: true });
 
-      /* ── Click on Dots to Navigate ── */
-      dots.forEach(function(dot, index) {
+      /* ── Click on Dots to Navigate (Shortest Circular Path) ── */
+      dots.forEach(function(dot, cardIdx) {
         dot.addEventListener('click', function(e) {
           e.preventDefault();
-          var maxScroll = track.scrollWidth - track.clientWidth;
-          if (maxScroll <= 0) return;
-          if (index === 0) {
-            track.scrollTo({ left: 0, behavior: 'smooth' });
-          } else if (index === dots.length - 1) {
-            track.scrollTo({ left: maxScroll, behavior: 'smooth' });
-          } else {
-            goToIndex(index);
+          if (isAnimating) return;
+          var candidates = [cardIdx, N + cardIdx, 2 * N + cardIdx];
+          var best = candidates[1];
+          var minDiff = Infinity;
+          for (var c = 0; c < candidates.length; c++) {
+            var diff = Math.abs(candidates[c] - currentTrackIdx);
+            if (diff < minDiff) {
+              minDiff = diff;
+              best = candidates[c];
+            }
           }
+          goToTrackIndex(best, 450, function() {
+            startAutoplay();
+          });
         });
       });
 
-      /* ── Click on Card to Center/Swipe OR Open ── */
-      slides.forEach(function(slide) {
+      /* ── Click on Card to Center OR Open Collection ── */
+      allSlides.forEach(function(slide) {
         slide.addEventListener('click', function(e) {
           if (wasMouseDragging || wasSwiping) {
             e.preventDefault();
@@ -1256,17 +1427,19 @@
             return;
           }
 
-          var slideIdx = parseInt(slide.dataset.slideIndex, 10);
-          // If clicking the small arrow button, always allow link navigation
           if (e.target.closest('.szc-expcol-card__arrow-btn')) {
             return;
           }
 
-          // If the clicked card is NOT the active card and track is scrollable, click to swipe to it
-          var isScrollable = track.scrollWidth > track.clientWidth + 8;
-          if (isScrollable && slideIdx !== currentActiveIdx) {
+          var slideIdx = allSlides.indexOf(slide);
+          var activeCard = getActiveCardIndex(currentTrackIdx);
+          var clickedCard = getActiveCardIndex(slideIdx);
+
+          if (clickedCard !== activeCard) {
             e.preventDefault();
-            goToIndex(slideIdx);
+            goToTrackIndex(slideIdx, 450, function() {
+              startAutoplay();
+            });
           }
         });
       });
@@ -1279,34 +1452,62 @@
       /* ── Mouse Click-and-Drag to Swipe (Desktop) ── */
       track.addEventListener('mousedown', function(e) {
         if (e.button !== 0) return;
+        if (animationRafId) {
+          cancelAnimationFrame(animationRafId);
+          animationRafId = null;
+          isAnimating = false;
+        }
+        stopAutoplay();
         isMouseDown = true;
         wasMouseDragging = false;
+        isInteracting = true;
         mouseStartX = e.clientX;
         mouseStartScrollLeft = track.scrollLeft;
-        track.style.scrollBehavior = 'auto';
         track.classList.add('is-dragging');
       });
 
       window.addEventListener('mousemove', function(e) {
         if (!isMouseDown) return;
         var diffX = e.clientX - mouseStartX;
-        if (Math.abs(diffX) > 5) {
+        if (Math.abs(diffX) > 6) {
           wasMouseDragging = true;
           track.classList.add('is-swiping');
         }
         track.scrollLeft = mouseStartScrollLeft - diffX;
-        onScroll();
+        updateFannedCards();
+
+        var nearest = getNearestTrackIndex();
+        var cardIdx = getActiveCardIndex(nearest);
+        if (cardIdx !== activeCardIdx) {
+          activeCardIdx = cardIdx;
+          dots.forEach(function(dot, i) {
+            dot.classList.toggle('is-active', i === activeCardIdx);
+          });
+        }
       });
 
-      function onMouseUp() {
+      function onMouseUp(e) {
         if (!isMouseDown) return;
         isMouseDown = false;
-        track.style.scrollBehavior = '';
         track.classList.remove('is-dragging');
         track.classList.remove('is-swiping');
-        setTimeout(function() {
-          wasMouseDragging = false;
-        }, 80);
+
+        var nearestIdx = getNearestTrackIndex();
+        if (e && typeof e.clientX === 'number') {
+          var dragDist = e.clientX - mouseStartX;
+          if (dragDist < -35 && nearestIdx === currentTrackIdx) {
+            nearestIdx = currentTrackIdx + 1;
+          } else if (dragDist > 35 && nearestIdx === currentTrackIdx) {
+            nearestIdx = currentTrackIdx - 1;
+          }
+        }
+        isInteracting = false;
+        goToTrackIndex(nearestIdx, 350, function() {
+          setTimeout(function() {
+            wasMouseDragging = false;
+            if (!isHovered) startAutoplay();
+          }, 60);
+        });
       }
 
       window.addEventListener('mouseup', onMouseUp);
@@ -1321,36 +1522,101 @@
 
       /* ── Touch Swipe (Mobile) ── */
       track.addEventListener('touchstart', function(e) {
+        if (animationRafId) {
+          cancelAnimationFrame(animationRafId);
+          animationRafId = null;
+          isAnimating = false;
+        }
+        stopAutoplay();
         touchStartX = e.touches[0].clientX;
         touchStartY = e.touches[0].clientY;
+        touchStartTime = Date.now();
+        mouseStartScrollLeft = track.scrollLeft;
         wasSwiping = false;
+        isInteracting = true;
         track.classList.add('is-swiping');
       }, { passive: true });
 
       track.addEventListener('touchmove', function(e) {
-        var diffX = Math.abs(e.touches[0].clientX - touchStartX);
-        var diffY = Math.abs(e.touches[0].clientY - touchStartY);
-        if (diffX > 8 || diffY > 8) {
+        var diffX = e.touches[0].clientX - touchStartX;
+        var diffY = e.touches[0].clientY - touchStartY;
+        if (Math.abs(diffX) > 8 || Math.abs(diffY) > 8) {
           wasSwiping = true;
+        }
+        track.scrollLeft = mouseStartScrollLeft - diffX;
+        updateFannedCards();
+
+        var nearest = getNearestTrackIndex();
+        var cardIdx = getActiveCardIndex(nearest);
+        if (cardIdx !== activeCardIdx) {
+          activeCardIdx = cardIdx;
+          dots.forEach(function(dot, i) {
+            dot.classList.toggle('is-active', i === activeCardIdx);
+          });
         }
       }, { passive: true });
 
-      track.addEventListener('touchend', function() {
+      track.addEventListener('touchend', function(e) {
         track.classList.remove('is-swiping');
-        setTimeout(function() {
-          wasSwiping = false;
-        }, 90);
+        var touchEndX = (e.changedTouches && e.changedTouches[0]) ? e.changedTouches[0].clientX : touchStartX;
+        var diffX = touchEndX - touchStartX;
+        var elapsed = Math.max(1, Date.now() - touchStartTime);
+        var velocity = diffX / elapsed;
+
+        var nearestIdx = getNearestTrackIndex();
+        if (diffX < -35 || velocity < -0.25) {
+          if (nearestIdx === currentTrackIdx) nearestIdx = currentTrackIdx + 1;
+        } else if (diffX > 35 || velocity > 0.25) {
+          if (nearestIdx === currentTrackIdx) nearestIdx = currentTrackIdx - 1;
+        }
+
+        isInteracting = false;
+        goToTrackIndex(nearestIdx, 350, function() {
+          setTimeout(function() {
+            wasSwiping = false;
+            startAutoplay();
+          }, 60);
+        });
       }, { passive: true });
+
+      /* ── Hover Pause/Resume on Desktop (Cursor rakhu tyare stop thay) ── */
+      var hasHover = window.matchMedia('(hover: hover) and (pointer: fine)').matches;
+      if (hasHover) {
+        var hoverTarget = section.querySelector('.szc-expcol-carousel') || track;
+        hoverTarget.addEventListener('mouseenter', function() {
+          isHovered = true;
+          stopAutoplay();
+        });
+
+        hoverTarget.addEventListener('mouseleave', function() {
+          isHovered = false;
+          if (!isInteracting && !isMouseDown && !isAnimating) {
+            startAutoplay();
+          }
+        });
+      }
 
       /* ── Keyboard Left/Right Navigation ── */
       track.addEventListener('keydown', function(e) {
-        var step = getScrollStep();
         if (e.key === 'ArrowLeft') {
           e.preventDefault();
-          track.scrollBy({ left: -step, behavior: 'smooth' });
+          goToTrackIndex(currentTrackIdx - 1, 380, function() {
+            startAutoplay();
+          });
         } else if (e.key === 'ArrowRight') {
           e.preventDefault();
-          track.scrollBy({ left: step, behavior: 'smooth' });
+          goToTrackIndex(currentTrackIdx + 1, 380, function() {
+            startAutoplay();
+          });
+        }
+      });
+
+      /* ── Tab Visibility ── */
+      document.addEventListener('visibilitychange', function() {
+        if (document.hidden) {
+          stopAutoplay();
+        } else if (isAutoplayEnabled && !isInteracting && !isHovered && !isMouseDown && !isAnimating) {
+          startAutoplay();
         }
       });
 
@@ -1360,14 +1626,15 @@
           var blockId = e.detail.blockId;
           var targetSlide = section.querySelector('[data-shopify-editor-block*="' + blockId + '"]');
           if (targetSlide) {
-            var idx = parseInt(targetSlide.dataset.slideIndex, 10);
-            if (!isNaN(idx)) goToIndex(idx);
+            var idx = allSlides.indexOf(targetSlide);
+            if (idx !== -1) {
+              goToTrackIndex(idx, 450, function() {
+                startAutoplay();
+              });
+            }
           }
         });
       }
-
-      updateFannedCards();
-      updateNavState();
     }
 
     if (document.readyState === 'loading') {
@@ -1462,11 +1729,18 @@
       "info": "Press Enter for a new line"
     },
     {
-      "type": "text",
+      "type": "select",
       "id": "script_badge_icon",
-      "label": "Callout icon / symbol",
-      "default": "♡",
-      "info": "e.g. ♡, ★, ✦, ❀, or leave blank"
+      "label": "Callout decorative SVG icon",
+      "options": [
+        { "value": "heart", "label": "Heart (Outline)" },
+        { "value": "heart-solid", "label": "Heart (Solid)" },
+        { "value": "star", "label": "Star" },
+        { "value": "sparkle", "label": "Sparkle" },
+        { "value": "diamond", "label": "Diamond" },
+        { "value": "none", "label": "None" }
+      ],
+      "default": "heart"
     },
     {
       "type": "select",
@@ -1560,13 +1834,29 @@
     },
     {
       "type": "header",
-      "content": "Pagination"
+      "content": "Pagination & Autoplay"
     },
     {
       "type": "checkbox",
       "id": "show_dots",
       "label": "Show pagination dots",
       "default": true
+    },
+    {
+      "type": "checkbox",
+      "id": "enable_autoplay",
+      "label": "Enable continuous auto-loop",
+      "default": true
+    },
+    {
+      "type": "range",
+      "id": "autoplay_speed",
+      "min": 2,
+      "max": 8,
+      "step": 1,
+      "unit": "s",
+      "label": "Autoplay speed",
+      "default": 3
     },
     {
       "type": "header",

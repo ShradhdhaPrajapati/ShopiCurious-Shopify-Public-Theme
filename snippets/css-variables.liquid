@@ -204,32 +204,27 @@
   {% # Card Visual Style %}
   {% if settings.card_style == 'bordered' %}
     .szc-card,
-    .szc-product-card,
     .szc-card-collection {
       border: 1px solid var(--szc-color-border) !important;
       box-shadow: none !important;
     }
     .szc-card:hover,
-    .szc-product-card:hover,
     .szc-card-collection:hover {
       border-color: var(--szc-color-border-strong) !important;
     }
   {% elsif settings.card_style == 'shadow' %}
     .szc-card,
-    .szc-product-card,
     .szc-card-collection {
       box-shadow: var(--szc-shadow-sm) !important;
       border: 1px solid transparent !important;
       background-color: var(--szc-color-surface-elevated, #ffffff) !important;
     }
     .szc-card:hover,
-    .szc-product-card:hover,
     .szc-card-collection:hover {
       box-shadow: var(--szc-shadow-md) !important;
     }
   {% elsif settings.card_style == 'flat' %}
     .szc-card,
-    .szc-product-card,
     .szc-card-collection {
       box-shadow: none !important;
       border: none !important;
@@ -239,38 +234,32 @@
   {% # Card Hover Micro-Animation %}
   {% if settings.card_hover_effect == 'zoom' %}
     .szc-card:hover .szc-card__media img,
-    .szc-product-card:hover .szc-product-card__image,
     .szc-card-collection:hover .szc-card-collection__image {
       transform: scale(1.05) !important;
       transition: transform var(--szc-transition-slow, 400ms ease) !important;
     }
     .szc-card:hover,
-    .szc-product-card:hover,
     .szc-card-collection:hover {
       transform: none !important;
     }
   {% elsif settings.card_hover_effect == 'lift' %}
     .szc-card:hover,
-    .szc-product-card:hover,
     .szc-card-collection:hover {
       transform: translateY(-4px) !important;
       box-shadow: var(--szc-shadow-md) !important;
       transition: transform var(--szc-transition-base, 250ms ease), box-shadow var(--szc-transition-base, 250ms ease) !important;
     }
     .szc-card:hover .szc-card__media img,
-    .szc-product-card:hover .szc-product-card__image,
     .szc-card-collection:hover .szc-card-collection__image {
       transform: none !important;
     }
   {% elsif settings.card_hover_effect == 'none' %}
     .szc-card:hover,
-    .szc-product-card:hover,
     .szc-card-collection:hover {
       transform: none !important;
       box-shadow: none !important;
     }
     .szc-card:hover .szc-card__media img,
-    .szc-product-card:hover .szc-product-card__image,
     .szc-card-collection:hover .szc-card-collection__image {
       transform: none !important;
     }

@@ -1,9 +1,9 @@
-{% doc %}
+{% comment %}
   Renders the "Style That Speaks" high-fashion editorial collage section.
   Faithfully reproduces the reference design with solid and outline royal blue headline
   typography, an overlapping central fashion visual, floating rounded cards, and
   clean editorial narrative paragraphs matching the 5 visual zones.
-{% enddoc %}
+{% endcomment %}
 
 {%- liquid
   assign eyebrow = section.settings.eyebrow
@@ -17,6 +17,8 @@
   assign upper_right_desc = section.settings.upper_right_desc | default: 'Lorem ipsum dolor sit amet consectetur. Pharetra hendrerit cursus porttitor habitant tortor ut mollis sed eu.'
 
   assign lower_left_image = section.settings.lower_left_image
+  assign lower_left_title = section.settings.lower_left_title
+  assign lower_left_desc = section.settings.lower_left_desc | default: 'Lorem ipsum dolor sit amet consectetur. Pharetra hendrerit cursus porttitor habitant tortor ut mollis sed eu.'
 
   assign bottom_text = section.settings.bottom_text | default: 'Lorem ipsum dolor sit amet consectetur. Pharetra hendrerit cursus porttitor habitant tortor ut mollis sed eu. Phasellus condimentum arcu cursus at etiam urna nullam mauris tortor. Tincidunt venenatis turpis est convallis sit placerat quis sed pharetra. In dolor aliquet condimentum turpis feugiat morbi praesent sit. Non vivamus nunc scelerisque in diam at felis.'
   assign button_label = section.settings.button_label
@@ -27,11 +29,13 @@
   assign heading_outline_color = section.settings.heading_outline_color | default: '#0950b2'
   assign eyebrow_color = section.settings.eyebrow_color | default: '#0950b2'
   assign body_text_color = section.settings.body_text_color | default: '#333333'
+  assign card_bg_color = section.settings.card_bg_color | default: '#f6f5f2'
 
   assign desktop_max_width = section.settings.desktop_max_width | default: 1260
   assign desktop_height = section.settings.desktop_height | default: 860
   assign heading_size_desktop = section.settings.heading_size_desktop | default: 104
   assign heading_size_mobile = section.settings.heading_size_mobile | default: 48
+  assign heading_font_weight = section.settings.heading_font_weight | default: '900'
   assign heading_line_height = section.settings.heading_line_height | default: 85
   assign heading_letter_spacing = section.settings.heading_letter_spacing | default: -3
   assign outline_thickness = section.settings.outline_thickness | default: 2
@@ -59,10 +63,12 @@
     --szc-sts-outline: {{ heading_outline_color }};
     --szc-sts-eyebrow: {{ eyebrow_color }};
     --szc-sts-body: {{ body_text_color }};
+    --szc-sts-card-bg: {{ card_bg_color }};
     --szc-sts-max-width: {{ desktop_max_width }}px;
     --szc-sts-height: {{ desktop_height }}px;
     --szc-sts-heading-desktop: {{ heading_size_desktop }}px;
     --szc-sts-heading-mobile: {{ heading_size_mobile }}px;
+    --szc-sts-heading-weight: {{ heading_font_weight }};
     --szc-sts-line-height: {{ heading_line_height | divided_by: 100.0 }};
     --szc-sts-letter-spacing: {{ heading_letter_spacing }}px;
     --szc-sts-stroke-width: {{ outline_thickness }}px;
@@ -89,9 +95,15 @@
         <span class="szc-sts__eyebrow">{{ eyebrow }}</span>
       {%- endif -%}
       <h2 class="szc-sts__heading">
-        <span class="szc-sts__line szc-sts__line--1 is-filled">{{ heading_line_1 }}</span>
-        <span class="szc-sts__line szc-sts__line--2 is-outlined">{{ heading_line_2 }}</span>
-        <span class="szc-sts__line szc-sts__line--3 is-filled">{{ heading_line_3 }}</span>
+        {%- if heading_line_1 != blank -%}
+          <span class="szc-sts__line szc-sts__line--1 is-filled">{{ heading_line_1 }}</span>
+        {%- endif -%}
+        {%- if heading_line_2 != blank -%}
+          <span class="szc-sts__line szc-sts__line--2 is-outlined">{{ heading_line_2 }}</span>
+        {%- endif -%}
+        {%- if heading_line_3 != blank -%}
+          <span class="szc-sts__line szc-sts__line--3 is-filled">{{ heading_line_3 }}</span>
+        {%- endif -%}
       </h2>
     </div>
 
@@ -101,7 +113,7 @@
         {{ main_image | image_url: width: 1200 | image_tag:
           loading: 'lazy',
           class: 'szc-sts__main-img',
-          alt: heading_line_1 | default: 'Style That Speaks Featured Fashion'
+          alt: main_image.alt | default: heading_line_1 | default: 'Style That Speaks Featured Fashion'
         }}
       {%- else -%}
         {{ 'style-that-speaks-model.png' | asset_url | image_tag:
@@ -119,7 +131,7 @@
           {{ upper_right_image | image_url: width: 600 | image_tag:
             loading: 'lazy',
             class: 'szc-sts__card-img',
-            alt: upper_right_title | default: 'Editorial preview card'
+            alt: upper_right_image.alt | default: upper_right_title | default: 'Editorial preview card'
           }}
         {%- else -%}
           {{ 'style-that-speaks-tr.png' | asset_url | image_tag:
@@ -148,16 +160,26 @@
           {{ lower_left_image | image_url: width: 600 | image_tag:
             loading: 'lazy',
             class: 'szc-sts__card-img',
-            alt: 'Editorial accent card'
+            alt: lower_left_image.alt | default: lower_left_title | default: 'Editorial accent card'
           }}
         {%- else -%}
           {{ 'style-that-speaks-bl.png' | asset_url | image_tag:
             loading: 'lazy',
             class: 'szc-sts__card-img',
-            alt: 'Style That Speaks accent card'
+            alt: lower_left_title | default: 'Style That Speaks accent card'
           }}
         {%- endif -%}
       </div>
+      {%- if lower_left_title != blank or lower_left_desc != blank -%}
+        <div class="szc-sts__ll-content">
+          {%- if lower_left_title != blank -%}
+            <h3 class="szc-sts__ll-title">{{ lower_left_title }}</h3>
+          {%- endif -%}
+          {%- if lower_left_desc != blank -%}
+            <div class="szc-sts__ll-desc">{{ lower_left_desc }}</div>
+          {%- endif -%}
+        </div>
+      {%- endif -%}
     </div>
 
     <!-- 5. BOTTOM-RIGHT EDITORIAL TEXT & CTA (Box 5) -->
@@ -168,7 +190,9 @@
       {%- if button_label != blank -%}
         <a href="{{ button_link | default: '#' }}" class="szc-sts__cta-link">
           <span>{{ button_label }}</span>
-          <span class="szc-sts__cta-arrow" aria-hidden="true">&rarr;</span>
+          <span class="szc-sts__cta-arrow" aria-hidden="true">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" focusable="false"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg>
+          </span>
         </a>
       {%- endif -%}
     </div>
@@ -275,7 +299,7 @@
     font-weight: 700;
     letter-spacing: 0.18em;
     text-transform: uppercase;
-    color: var(--szc-sts-eyebrow, #0950b2);
+    color: var(--szc-sts-eyebrow, #b6ae60);
     margin-bottom: 6px;
   }
 
@@ -283,7 +307,7 @@
     margin: 0;
     font-family: var(--font-heading--family, Montserrat, "Montserrat", "Arial Black", -apple-system, sans-serif);
     font-size: var(--szc-sts-heading-desktop, 100px);
-    font-weight: 900;
+    font-weight: var(--szc-sts-heading-weight, 900);
     line-height: var(--szc-sts-line-height, 0.85);
     letter-spacing: var(--szc-sts-letter-spacing, -3px);
     text-transform: uppercase;
@@ -331,7 +355,10 @@
     position: relative;
     overflow: hidden;
     border-radius: var(--szc-sts-radius, 28px);
-    background-color: #f6f5f2;
+    background-color: var(--szc-sts-card-bg, #f6f5f2);
+    display: flex;
+    align-items: center;
+    justify-content: center;
   }
 
   .szc-sts__card-img-box--ur {
@@ -348,7 +375,10 @@
     display: block;
     width: 100%;
     height: 100%;
-    object-fit: cover;
+    max-width: 100%;
+    max-height: 100%;
+    object-fit: contain;
+    object-position: center center;
     transition: transform 500ms cubic-bezier(0.16, 1, 0.3, 1);
   }
 
@@ -357,19 +387,20 @@
     transform: scale(1.035);
   }
 
-  .szc-sts__bottom-left.has-shadow {
+  .szc-sts__bottom-left.has-shadow .szc-sts__card-img-box {
     box-shadow: 0 16px 36px rgba(0, 0, 0, 0.08);
-    border-radius: var(--szc-sts-radius, 28px);
   }
 
-  .szc-sts__tr-content {
+  .szc-sts__tr-content,
+  .szc-sts__ll-content {
     display: flex;
     flex-direction: column;
     gap: 4px;
     margin-top: 2px;
   }
 
-  .szc-sts__tr-title {
+  .szc-sts__tr-title,
+  .szc-sts__ll-title {
     margin: 0;
     font-family: var(--font-heading--family, -apple-system, sans-serif);
     font-size: 14px;
@@ -378,7 +409,8 @@
     color: #111111;
   }
 
-  .szc-sts__tr-desc {
+  .szc-sts__tr-desc,
+  .szc-sts__ll-desc {
     margin: 0;
     font-family: var(--szc-font-family-body, sans-serif);
     font-size: 12px;
@@ -417,10 +449,16 @@
   }
 
   .szc-sts__cta-arrow {
-    display: inline-block;
-    font-size: 14px;
-    line-height: 1;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
     transition: transform 250ms ease;
+  }
+
+  .szc-sts__cta-arrow svg {
+    width: 14px;
+    height: 14px;
+    display: block;
   }
 
   .szc-sts__cta-link:hover .szc-sts__cta-arrow {
@@ -448,6 +486,7 @@
 
     .szc-sts__heading {
       font-size: var(--szc-sts-heading-desktop, 104px);
+      font-weight: var(--szc-sts-heading-weight, 900);
       line-height: var(--szc-sts-line-height, 0.85);
       letter-spacing: var(--szc-sts-letter-spacing, -3px);
     }
@@ -510,6 +549,9 @@
       width: var(--szc-sts-ll-width, 220px);
       max-width: 21%;
       z-index: 3;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
       transition: transform 350ms cubic-bezier(0.16, 1, 0.3, 1), box-shadow 350ms ease;
     }
 
@@ -550,7 +592,8 @@
     }
 
     .szc-sts__heading {
-      font-size: clamp(52px, 6.8vw, 76px);
+      font-size: clamp(var(--szc-sts-heading-mobile, 48px), calc(var(--szc-sts-heading-desktop, 104px) * 0.72), var(--szc-sts-heading-desktop, 104px));
+      font-weight: var(--szc-sts-heading-weight, 900);
       line-height: 0.85;
       letter-spacing: -2px;
     }
@@ -591,6 +634,9 @@
       top: 50%;
       width: 170px;
       z-index: 3;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
     }
 
     .szc-sts__bottom-right {
@@ -637,6 +683,7 @@
 
     .szc-sts__heading {
       font-size: var(--szc-sts-heading-mobile, 48px);
+      font-weight: var(--szc-sts-heading-weight, 900);
       line-height: 0.88;
       letter-spacing: -0.03em;
     }
@@ -665,6 +712,9 @@
       position: static;
       width: 100%;
       max-width: 100%;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
     }
 
     .szc-sts__top-right {
@@ -964,8 +1014,8 @@
     {
       "type": "range",
       "id": "heading_size_desktop",
-      "min": 60,
-      "max": 120,
+      "min": 40,
+      "max": 140,
       "step": 2,
       "unit": "px",
       "label": "Heading font size (Desktop)",
@@ -974,12 +1024,26 @@
     {
       "type": "range",
       "id": "heading_size_mobile",
-      "min": 32,
-      "max": 64,
+      "min": 24,
+      "max": 72,
       "step": 2,
       "unit": "px",
       "label": "Heading font size (Mobile)",
       "default": 48
+    },
+    {
+      "type": "select",
+      "id": "heading_font_weight",
+      "label": "Heading font weight",
+      "options": [
+        { "value": "400", "label": "Normal (400)" },
+        { "value": "500", "label": "Medium (500)" },
+        { "value": "600", "label": "Semi Bold (600)" },
+        { "value": "700", "label": "Bold (700)" },
+        { "value": "800", "label": "Extra Bold (800)" },
+        { "value": "900", "label": "Black (900)" }
+      ],
+      "default": "900"
     },
     {
       "type": "range",
@@ -1070,6 +1134,17 @@
       "label": "Bottom-left card image"
     },
     {
+      "type": "text",
+      "id": "lower_left_title",
+      "label": "Card title (optional, leave blank to hide)"
+    },
+    {
+      "type": "textarea",
+      "id": "lower_left_desc",
+      "label": "Card description (optional, leave blank to hide)",
+      "default": "Lorem ipsum dolor sit amet consectetur. Pharetra hendrerit cursus porttitor habitant tortor ut mollis sed eu."
+    },
+    {
       "type": "range",
       "id": "lower_left_width",
       "min": 150,
@@ -1138,13 +1213,13 @@
     {
       "type": "color",
       "id": "heading_solid_color",
-      "label": "Heading solid lines color",
+      "label": "Main heading color (Solid lines)",
       "default": "#0950b2"
     },
     {
       "type": "color",
       "id": "heading_outline_color",
-      "label": "Heading outline line color",
+      "label": "Highlight / outline color (Outline line)",
       "default": "#0950b2"
     },
     {
@@ -1158,6 +1233,12 @@
       "id": "body_text_color",
       "label": "Body & narrative text color",
       "default": "#333333"
+    },
+    {
+      "type": "color",
+      "id": "card_bg_color",
+      "label": "Card image background color",
+      "default": "#f6f5f2"
     },
     {
       "type": "header",

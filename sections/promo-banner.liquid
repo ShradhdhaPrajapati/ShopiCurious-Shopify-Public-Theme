@@ -4,15 +4,13 @@
 {%- endcomment -%}
 
 {%- liquid
-  assign subtitle = section.settings.subtitle | default: 'CRAFTED TO PERFECTION'
-  assign title = section.settings.title | default: 'Modern Fashion, Created to Last'
+  assign subtitle = section.settings.subtitle | default: "CRAFTED TO PERFECTION"
+  assign title = section.settings.title | default: "Modern Fashion, Created to Last"
   assign description = section.settings.description | default: "Each piece is a work of art, designed to celebrate life's most precious moments."
-  assign button_label = section.settings.button_label | default: 'DISCOVER OUR STORY'
-  assign button_link = section.settings.button_link | default: '/pages/about-us'
-  assign img_1 = section.settings.image_1
-  assign img_2 = section.settings.image_2
+  assign button_label = section.settings.button_label | default: "OUR STORY"
+  assign button_link = section.settings.button_link | default: "/pages/about-us"
   assign promo_image = section.settings.image | default: section.settings.image_1
-  assign content_pos = section.settings.content_position | default: 'right'
+  assign content_pos = section.settings.content_position | default: "right"
   assign show_features = section.settings.show_features
   if show_features == nil
     assign show_features = true
@@ -21,49 +19,20 @@
 
 <section id="PromoBanner-{{ section.id }}" class="szc-promo-banner-section page-width">
   <div class="szc-promo-banner szc-promo-banner--content-{{ content_pos }}">
-    <!-- Images Container (Dual Split) -->
     <!-- Single Media Area -->
     <div class="szc-promo-banner__media" data-animate="slide-right">
-      <div class="szc-promo-banner__media-item szc-promo-banner__media-item--narrow">
-        {%- if img_1 != blank -%}
-          {% render 'image',
-            image: img_1,
-            aspect_ratio: '3/4',
       {%- if promo_image != blank -%}
         {{
           promo_image
           | image_url: width: 1400
           | image_tag:
-            class: 'szc-promo-banner__image',
-            loading: 'lazy',
-            class: 'szc-promo-banner__image'
-          %}
-        {%- else -%}
-          <div class="szc-promo-banner__placeholder szc-promo-banner__placeholder--1">
-            {{ 'lifestyle-1' | placeholder_svg_tag: 'szc-placeholder-svg' }}
-          </div>
-        {%- endif -%}
-      </div>
-
-      <div class="szc-promo-banner__media-item szc-promo-banner__media-item--wide">
-        {%- if img_2 != blank -%}
-          {% render 'image',
-            image: img_2,
-            aspect_ratio: '4/3',
-            loading: 'lazy',
-            class: 'szc-promo-banner__image'
-          %}
-        {%- else -%}
-          <div class="szc-promo-banner__placeholder szc-promo-banner__placeholder--2">
-            {{ 'collection-1' | placeholder_svg_tag: 'szc-placeholder-svg' }}
-          </div>
-        {%- endif -%}
-      </div>
-            alt: title | default: 'Promotional Banner Image'
+            class: "szc-promo-banner__image",
+            loading: "lazy",
+            alt: title | default: "Promotional Banner Image"
         }}
       {%- else -%}
         <div class="szc-promo-banner__placeholder">
-          {{ 'lifestyle-1' | placeholder_svg_tag: 'szc-placeholder-svg' }}
+          {{ "lifestyle-1" | placeholder_svg_tag: "szc-placeholder-svg" }}
         </div>
       {%- endif -%}
     </div>
@@ -97,17 +66,18 @@
         {%- endif -%}
 
         {%- if button_label != blank -%}
-          <a href="{{ button_link }}" class="szc-promo-banner__btn">
           <a href="{{ button_link | default: '#' }}" class="szc-promo-banner__btn">
             <span>{{ button_label }}</span>
-            <span class="szc-promo-banner__btn-arrow" aria-hidden="true">&rarr;</span>
+            <span class="szc-promo-banner__btn-arrow" aria-hidden="true">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" focusable="false"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg>
+            </span>
           </a>
         {%- endif -%}
 
         {%- if show_features -%}
           <!-- Brand Features Row (Directly below button) -->
           <div class="szc-promo-banner__features">
-            {%- assign feature_blocks = section.blocks | where: 'type', 'feature' -%}
+            {%- assign feature_blocks = section.blocks | where: "type", "feature" -%}
             {%- if feature_blocks.size > 0 -%}
               {%- for block in feature_blocks -%}
                 <div class="szc-promo-banner__feature-item" {{ block.shopify_attributes }}>
@@ -117,14 +87,14 @@
                         block.settings.custom_icon
                         | image_url: width: 48
                         | image_tag:
-                          class: 'szc-promo-banner__feature-custom-icon',
-                          loading: 'lazy',
-                          alt: block.settings.title | default: 'Brand feature icon'
+                          class: "szc-promo-banner__feature-custom-icon",
+                          loading: "lazy",
+                          alt: block.settings.title | default: "Brand feature icon"
                       }}
                     {%- else -%}
-                      {% render 'icon',
-                        icon: block.settings.icon | default: 'fabric',
-                        class: 'szc-promo-banner__feature-icon'
+                      {% render "icon",
+                        icon: block.settings.icon | default: "fabric",
+                        class: "szc-promo-banner__feature-icon"
                       %}
                     {%- endif -%}
                   </div>
@@ -141,7 +111,7 @@
             {%- else -%}
               <div class="szc-promo-banner__feature-item">
                 <div class="szc-promo-banner__feature-icon-box">
-                  {% render 'icon', icon: 'fabric', class: 'szc-promo-banner__feature-icon' %}
+                  {% render "icon", icon: "fabric", class: "szc-promo-banner__feature-icon" %}
                 </div>
                 <div class="szc-promo-banner__feature-text">
                   <h4 class="szc-promo-banner__feature-title">Premium Fabrics</h4>
@@ -151,7 +121,7 @@
 
               <div class="szc-promo-banner__feature-item">
                 <div class="szc-promo-banner__feature-icon-box">
-                  {% render 'icon', icon: 'shield-check', class: 'szc-promo-banner__feature-icon' %}
+                  {% render "icon", icon: "shield-check", class: "szc-promo-banner__feature-icon" %}
                 </div>
                 <div class="szc-promo-banner__feature-text">
                   <h4 class="szc-promo-banner__feature-title">Made to Last</h4>
@@ -161,7 +131,7 @@
 
               <div class="szc-promo-banner__feature-item">
                 <div class="szc-promo-banner__feature-icon-box">
-                  {% render 'icon', icon: 'user-heart', class: 'szc-promo-banner__feature-icon' %}
+                  {% render "icon", icon: "user-heart", class: "szc-promo-banner__feature-icon" %}
                 </div>
                 <div class="szc-promo-banner__feature-text">
                   <h4 class="szc-promo-banner__feature-title">Trusted by 10,000+</h4>
@@ -203,7 +173,6 @@
       display: grid;
       grid-template-columns: 1fr 1fr;
       align-items: stretch;
-      min-height: 420px;
       min-height: 480px;
     }
 
@@ -216,22 +185,16 @@
     }
   }
 
-  /* Dual Media Area */
   /* Single Media Area */
   .szc-promo-banner__media {
-    display: flex;
     position: relative;
     width: 100%;
     height: 100%;
-    min-height: 320px;
     min-height: 340px;
     overflow: hidden;
     background-color: #ede8df;
   }
 
-  .szc-promo-banner__media-item {
-    position: relative;
-    overflow: hidden;
   @media (max-width: 989px) {
     .szc-promo-banner__media {
       min-height: 280px;
@@ -240,31 +203,17 @@
     }
   }
 
-  .szc-promo-banner__media-item--narrow {
-    flex: 0 0 35%;
-  }
-
-  .szc-promo-banner__media-item--wide {
-    flex: 1 1 65%;
-  }
-
   .szc-promo-banner__image {
     width: 100%;
     height: 100%;
     object-fit: cover;
     object-position: center;
     display: block;
-    transition: transform 700ms ease;
-  }
-
-  .szc-promo-banner:hover .szc-promo-banner__image {
-    transform: scale(1.03);
   }
 
   .szc-promo-banner__placeholder {
     width: 100%;
     height: 100%;
-    min-height: 320px;
     min-height: 340px;
     display: flex;
     align-items: center;
@@ -273,13 +222,7 @@
     color: #a8a090;
   }
 
-  .szc-promo-banner__placeholder--2 {
-    background-color: #dfd9cb;
-  }
-
   .szc-placeholder-svg {
-    width: 60%;
-    height: 60%;
     width: 50%;
     height: 50%;
     opacity: 0.4;
@@ -290,7 +233,6 @@
     display: flex;
     flex-direction: column;
     justify-content: center;
-    padding: 40px 32px;
     padding: 36px 24px;
     background-color: #f7f4ee;
     box-sizing: border-box;
@@ -298,13 +240,11 @@
 
   @media (min-width: 990px) {
     .szc-promo-banner__content {
-      padding: 56px 64px;
       padding: 48px 56px;
     }
   }
 
   .szc-promo-banner__content-inner {
-    max-width: 460px;
     max-width: 540px;
     width: 100%;
     display: flex;
@@ -326,7 +266,7 @@
 
   .szc-promo-banner__title {
     margin: 0 0 14px 0;
-    font-family: var(--szc-font-family-heading, Georgia, 'Playfair Display', serif);
+    font-family: var(--szc-font-family-heading, Georgia, "Playfair Display", serif);
     font-size: var(--title-size, 32px);
     font-weight: var(--title-weight, 500);
     color: var(--title-color, #111111);
@@ -334,7 +274,6 @@
   }
 
   .szc-promo-banner__description {
-    margin: 0 0 28px 0;
     margin: 0 0 24px 0;
     font-family: var(--szc-font-family-body, sans-serif);
     font-size: var(--desc-size, 13px);
@@ -355,7 +294,6 @@
     font-weight: 600;
     letter-spacing: 0.12em;
     text-transform: uppercase;
-    padding: 14px 28px;
     padding: 13px 26px;
     border-radius: 6px;
     text-decoration: none;
@@ -369,10 +307,16 @@
   }
 
   .szc-promo-banner__btn-arrow {
-    display: inline-block;
-    font-size: 13px;
-    line-height: 1;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
     transition: transform 200ms ease;
+  }
+
+  .szc-promo-banner__btn-arrow svg {
+    width: 14px;
+    height: 14px;
+    display: block;
   }
 
   .szc-promo-banner__btn:hover .szc-promo-banner__btn-arrow {
@@ -501,15 +445,8 @@
   "settings": [
     {
       "type": "image_picker",
-      "id": "image_1",
-      "label": "Left Narrow Image"
       "id": "image",
       "label": "Image"
-    },
-    {
-      "type": "image_picker",
-      "id": "image_2",
-      "label": "Right Wide Image"
     },
     {
       "type": "text",
@@ -532,7 +469,7 @@
     {
       "type": "text",
       "id": "button_label",
-      "default": "DISCOVER OUR STORY",
+      "default": "OUR STORY",
       "label": "Button label"
     },
     {
@@ -701,7 +638,6 @@
   ],
   "presets": [
     {
-      "name": "Promotional banner"
       "name": "Promotional banner",
       "blocks": [
         {

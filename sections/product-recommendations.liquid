@@ -23,7 +23,7 @@
   {%- if show_h and section.settings.heading != blank -%}
     {%- assign has_heading = true -%}
   {%- endif -%}
-  
+
   {%- if has_subtitle or has_heading -%}
     <div
       class="szc-section-header szc-section-header--{{ align_class }}"
@@ -78,6 +78,7 @@
             card_product: recommendation,
             show_secondary_image: section.settings.show_secondary_image,
             show_vendor: section.settings.show_vendor,
+            show_add_to_cart: section.settings.show_quick_add,
             show_quick_add: section.settings.show_quick_add,
             show_quick_view: true,
             show_price: section.settings.show_price
@@ -98,6 +99,7 @@
                 card_product: col_product,
                 show_secondary_image: section.settings.show_secondary_image,
                 show_vendor: section.settings.show_vendor,
+                show_add_to_cart: section.settings.show_quick_add,
                 show_quick_add: section.settings.show_quick_add,
                 show_quick_view: true,
                 show_price: section.settings.show_price
@@ -123,6 +125,7 @@
               card_product: nil,
               show_secondary_image: section.settings.show_secondary_image,
               show_price: section.settings.show_price,
+              show_add_to_cart: section.settings.show_quick_add,
               show_quick_add: section.settings.show_quick_add
             %}
           </div>
@@ -141,6 +144,21 @@
     margin: 0 auto;
     padding-left: var(--szc-space-6, 24px);
     padding-right: var(--szc-space-6, 24px);
+  }
+
+  .szc-product-recommendations .szc-featured-collection__grid {
+    display: grid;
+    grid-template-columns: repeat(var(--cols-desktop, 4), 1fr);
+    gap: var(--szc-space-5, 20px);
+    padding: 12px 6px 20px 6px;
+  }
+
+  @media (max-width: 768px) {
+    .szc-product-recommendations .szc-featured-collection__grid {
+      grid-template-columns: repeat(var(--cols-mobile, 2), 1fr);
+      gap: 12px;
+      padding: 8px 4px 16px 4px;
+    }
   }
 
   .szc-section-header {
@@ -401,8 +419,8 @@
     {
       "type": "checkbox",
       "id": "show_quick_add",
-      "default": true,
-      "label": "Enable quick add button"
+      "default": false,
+      "label": "Show Add to Cart Button"
     }
   ],
   "presets": [

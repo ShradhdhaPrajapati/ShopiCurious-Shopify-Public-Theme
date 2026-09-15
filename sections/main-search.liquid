@@ -43,7 +43,7 @@
     </form>
 
     <!-- Right Controls: Sort By Dropdown -->
-    <div class="szc-main-search__controls">    
+    <div class="szc-main-search__controls">
       <div class="szc-main-search__sort">
         <label for="SearchSortSelect" class="szc-sort-label">Sort by:</label>
         <select
@@ -71,7 +71,7 @@
 
   <!-- Search Results Body with Left Sidebar Filters + Right Grid -->
   <div class="szc-main-search__layout">
-    
+
     <!-- LEFT SIDEBAR: FILTERS -->
     <aside class="szc-main-search__sidebar">
       <div class="szc-search-filters">
@@ -113,7 +113,8 @@
                 <div class="szc-main-search__item szc-animate-fade-up">
                   {% render 'product-card',
                     card_product: item,
-                    show_quick_add: true,
+                    show_add_to_cart: section.settings.show_add_to_cart,
+                    show_quick_add: section.settings.show_add_to_cart,
                     show_quick_view: true
                   %}
                 </div>
@@ -136,7 +137,8 @@
             <div class="szc-main-search__item szc-animate-fade-up">
               {% render 'product-card',
                 card_product: product,
-                show_quick_add: true,
+                show_add_to_cart: section.settings.show_add_to_cart,
+                show_quick_add: section.settings.show_add_to_cart,
                 show_quick_view: true
               %}
             </div>
@@ -395,6 +397,7 @@
     display: grid;
     grid-template-columns: repeat(var(--cols-desktop, 4), 1fr);
     gap: 24px;
+    padding: 12px 6px 20px 6px;
   }
 
   @media (max-width: 991px) {
@@ -579,6 +582,12 @@
         { "value": "load_more", "label": "Load More Button" }
       ],
       "default": "numbers"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_add_to_cart",
+      "default": false,
+      "label": "Show Add to Cart Button"
     },
     {
       "type": "checkbox",

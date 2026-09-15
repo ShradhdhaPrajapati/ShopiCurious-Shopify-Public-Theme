@@ -388,7 +388,8 @@
                 <div class="szc-product-grid__item szc-animate-fade-up">
                   {% render 'product-card',
                     card_product: product,
-                    show_quick_add: true,
+                    show_add_to_cart: section.settings.show_add_to_cart,
+                    show_quick_add: section.settings.show_add_to_cart,
                     show_quick_view: true
                   %}
                 </div>
@@ -944,6 +945,7 @@
     display: grid;
     grid-template-columns: repeat(var(--cols-desktop, 4), 1fr);
     gap: 24px;
+    padding: 12px 6px 20px 6px;
   }
 
   /* ==========================================================================
@@ -1931,6 +1933,12 @@
         { "value": "2", "label": "2" }
       ],
       "default": "2"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_add_to_cart",
+      "label": "Show Add to Cart Button",
+      "default": false
     },
     {
       "type": "checkbox",

@@ -8,6 +8,7 @@
   @param {boolean} [show_secondary_image] - Displays secondary hover image if available
   @param {boolean} [show_vendor] - Displays vendor/brand name if true
   @param {boolean} [show_price] - Displays product price if true
+  @param {boolean} [show_add_to_cart] - Displays add to cart / quick add button if true
   @param {boolean} [show_quick_add] - Displays quick add to cart button if true
   @param {boolean} [show_quick_view] - Displays quick view modal trigger if true
   @param {boolean} [lazy_load] - Uses native lazy loading if true (Default: true)
@@ -22,7 +23,7 @@
   if raw_aspect == 'theme' or raw_aspect == blank or raw_aspect == 'default'
     assign raw_aspect = settings.product_card_image_ratio | default: settings.product_card_aspect_ratio | default: '3/4'
   endif
-  
+
   if raw_aspect == 'natural' or raw_aspect == 'adapt'
     if product != blank and product.featured_media.preview_image != blank
       assign aspect_ratio = product.featured_media.preview_image.aspect_ratio
@@ -46,7 +47,7 @@
     assign aspect_ratio = raw_aspect
     assign is_fixed_aspect = true
   endif
-  
+
   assign show_secondary = true
   if settings.show_secondary_image == false or settings.product_card_show_secondary_image == false
     assign show_secondary = false
@@ -80,11 +81,15 @@
     assign show_view = settings.enable_quick_shop
   endif
 
-  assign show_add = true
-  if show_quick_add == false
-    assign show_add = false
-  elsif show_quick_add == true
+  assign show_add = false
+  if show_add_to_cart == true or show_quick_add == true
     assign show_add = true
+  elsif show_add_to_cart == false or show_quick_add == false
+    assign show_add = false
+  elsif settings.show_add_to_cart == true
+    assign show_add = true
+  elsif settings.show_add_to_cart == false
+    assign show_add = false
   endif
 
   assign is_lazy = lazy_load | default: true
@@ -355,17 +360,19 @@
 {%- endif -%}
 
 {% stylesheet %}
-  .szc-product-card {
+  .szc-product-card,
+  .szc-product-card--box-hover {
     display: flex;
     flex-direction: column;
     position: relative;
     width: 100%;
-    border-radius: var(--szc-radius-card, 12px);
-    background-color: var(--szc-color-surface, #ffffff);
-    border: 1px solid var(--szc-color-border, #f0f0f0);
-    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.02);
-    overflow: hidden;
-    transition: transform 250ms ease, box-shadow 250ms ease;
+    border-radius: 18px !important;
+    padding: 10px 10px 14px 10px !important;
+    box-sizing: border-box !important;
+    background-color: #ffffff !important;
+    border: 1px solid rgba(0, 0, 0, 0.05) !important;
+    box-shadow: 0 16px 36px -8px rgba(0, 0, 0, 0.11), 0 4px 12px rgba(0, 0, 0, 0.04) !important;
+    transition: box-shadow 350ms ease, transform 350ms cubic-bezier(0.25, 1, 0.5, 1), border-color 350ms ease !important;
   }
 
   .szc-product-card--fixed-ratio {
@@ -377,9 +384,95 @@
     flex-grow: 1;
   }
 
-  .szc-product-card:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 6px 16px rgba(0, 0, 0, 0.06);
+  .szc-product-card .szc-product-card__media-container,
+  .szc-product-card--box-hover .szc-product-card__media-container {
+    border-radius: 14px !important;
+    overflow: hidden !important;
+    background-color: #f2efe9 !important;
+  }
+
+  .szc-product-card .szc-product-card__image,
+  .szc-product-card--box-hover .szc-product-card__image {
+    border-radius: 14px !important;
+  }
+
+  .szc-product-card .szc-product-card__info,
+  .szc-product-card--box-hover .szc-product-card__info {
+    padding: 12px 4px 4px 4px !important;
+    background-color: transparent !important;
+  }
+
+  @media (hover: hover) and (pointer: fine) {
+    .szc-product-card:hover,
+    .szc-product-card--box-hover:hover {
+      box-shadow: 0 22px 48px -10px rgba(0, 0, 0, 0.18), 0 8px 20px rgba(0, 0, 0, 0.06) !important;
+      transform: translateY(-6px) !important;
+      border-color: rgba(0, 0, 0, 0.08) !important;
+    }
+
+    .szc-product-card:hover .szc-product-card__image--primary,
+    .szc-product-card:hover .szc-product-card__image,
+    .szc-product-card--box-hover:hover .szc-product-card__image--primary,
+    .szc-product-card--box-hover:hover .szc-product-card__image {
+      transform: none !important;
+    }
+
+    .szc-product-card:hover .szc-product-card__image--secondary,
+    .szc-product-card--box-hover:hover .szc-product-card__image--secondary {
+      opacity: 1;
+    }
+  }
+
+  .szc-product-card:focus-within,
+  .szc-product-card--box-hover:focus-within {
+    border-color: rgba(0, 0, 0, 0.14) !important;
+    box-shadow: 0 22px 48px -10px rgba(0, 0, 0, 0.18), 0 8px 20px rgba(0, 0, 0, 0.06) !important;
+    transform: translateY(-6px) !important;
+  }
+
+  @media (hover: none) or (pointer: coarse) {
+    .szc-product-card:hover,
+    .szc-product-card--box-hover:hover {
+      transform: none !important;
+      box-shadow: 0 16px 36px -8px rgba(0, 0, 0, 0.11), 0 4px 12px rgba(0, 0, 0, 0.04) !important;
+      border-color: rgba(0, 0, 0, 0.05) !important;
+    }
+  }
+
+  @media (max-width: 480px) {
+    .szc-product-card,
+    .szc-product-card--box-hover {
+      border-radius: 14px !important;
+      padding: 8px 8px 10px 8px !important;
+      box-shadow: 0 10px 24px -6px rgba(0, 0, 0, 0.09), 0 2px 8px rgba(0, 0, 0, 0.03) !important;
+    }
+
+    .szc-product-card .szc-product-card__media-container,
+    .szc-product-card .szc-product-card__image,
+    .szc-product-card--box-hover .szc-product-card__media-container,
+    .szc-product-card--box-hover .szc-product-card__image {
+      border-radius: 10px !important;
+    }
+
+    .szc-product-card .szc-product-card__info,
+    .szc-product-card--box-hover .szc-product-card__info {
+      padding: 8px 2px 2px 2px !important;
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .szc-product-card,
+    .szc-product-card--box-hover {
+      transition: none !important;
+      transform: none !important;
+    }
+    .szc-product-card:hover,
+    .szc-product-card--box-hover:hover,
+    .szc-product-card:focus-within,
+    .szc-product-card--box-hover:focus-within {
+      transform: none !important;
+      transition: none !important;
+    }
   }
 
   .szc-product-card__media-container {
@@ -402,20 +495,12 @@
     transition: transform 500ms ease;
   }
 
-  .szc-product-card:hover .szc-product-card__image--primary {
-    transform: scale(1.04);
-  }
-
   .szc-product-card__image--secondary {
     position: absolute;
     top: 0;
     left: 0;
     opacity: 0;
     transition: opacity 300ms ease;
-  }
-
-  .szc-product-card:hover .szc-product-card__image--secondary {
-    opacity: 1;
   }
 
   .szc-product-card__placeholder {
@@ -488,9 +573,12 @@
     transition: all 250ms ease;
   }
 
-  .szc-product-card:hover .szc-product-card__quick-add {
-    opacity: 1;
-    transform: translateY(0);
+  @media (hover: hover) and (pointer: fine) {
+    .szc-product-card:hover .szc-product-card__quick-add,
+    .szc-product-card:focus-within .szc-product-card__quick-add {
+      opacity: 1;
+      transform: translateY(0);
+    }
   }
 
   /* List View Add to Cart Button */
@@ -501,11 +589,11 @@
 
   /* Info Details */
   .szc-product-card__info {
-    padding: 14px 16px 16px 16px;
+    padding: 12px 4px 4px 4px;
     display: flex;
     flex-direction: column;
     gap: 4px;
-    background-color: var(--szc-color-surface, #ffffff);
+    background-color: transparent;
   }
 
   .szc-product-card__vendor {
@@ -596,7 +684,7 @@
     }
 
     .szc-product-card__info {
-      padding: 10px 10px 12px 10px;
+      padding: 8px 2px 2px 2px !important;
     }
 
     .szc-product-card__title {

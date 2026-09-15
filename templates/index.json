@@ -302,13 +302,14 @@
         "title": "Handpicked Just For You",
         "heading_alignment": "left",
         "collection": "new-in",
-        "products_to_show": 5,
-        "columns_desktop": 5,
+        "products_to_show": 4,
+        "columns_desktop": 4,
         "columns_mobile": "2",
         "enable_swipe_mobile": true,
         "image_ratio": "portrait",
         "show_price": true,
-        "show_view_all": true
+        "show_view_all": true,
+        "enable_card_box_hover": true
       }
     },
     "promo_banner": {
@@ -345,14 +346,11 @@
         "promo_feature_3"
       ],
       "settings": {
-        "image_1": "shopify://shop_images/Promo_left_side.png",
-        "image_2": "shopify://shop_images/Promo_right_side.png",
         "image": "shopify://shop_images/Promo_left_side.png",
         "subtitle": "CRAFTED TO PERFECTION",
         "title": "Modern Fashion, Created to Last",
         "description": "Each piece is a work of art, designed to celebrate life's most precious moments.",
         "button_label": "DISCOVER OUR STORY",
-        "button_label": "OUR STORY",
         "button_link": "",
         "content_position": "right",
         "show_features": true,
@@ -365,6 +363,101 @@
         "desc_color": "#555555",
         "desc_size": 13,
         "desc_weight": "400"
+      }
+    },
+    "diagonal_marquee_fbpNyz": {
+      "type": "diagonal-marquee",
+      "blocks": {
+        "marquee_item_AVb3me": {
+          "type": "marquee_item",
+          "settings": {
+            "text": "Limited time offer! Up to 50% Discount",
+            "link": "",
+            "show_separator": true
+          }
+        },
+        "marquee_item_ntUfVD": {
+          "type": "marquee_item",
+          "settings": {
+            "text": "Shop now",
+            "link": "",
+            "show_separator": true
+          }
+        },
+        "marquee_item_K6rAtY": {
+          "type": "marquee_item",
+          "settings": {
+            "text": "New Arrivals",
+            "link": "",
+            "show_separator": true
+          }
+        },
+        "marquee_item_EHzVXk": {
+          "type": "marquee_item",
+          "settings": {
+            "text": "Discover the latest styles",
+            "link": "",
+            "show_separator": true
+          }
+        },
+        "marquee_item_WQKW9P": {
+          "type": "marquee_item",
+          "settings": {
+            "text": "Free shipping on orders over $100",
+            "link": "",
+            "show_separator": true
+          }
+        },
+        "marquee_item_fD8Fbj": {
+          "type": "marquee_item",
+          "settings": {
+            "text": "Shop the collection",
+            "link": "",
+            "show_separator": true
+          }
+        }
+      },
+      "block_order": [
+        "marquee_item_AVb3me",
+        "marquee_item_ntUfVD",
+        "marquee_item_K6rAtY",
+        "marquee_item_EHzVXk",
+        "marquee_item_WQKW9P",
+        "marquee_item_fD8Fbj"
+      ],
+      "name": "Diagonal Marquee",
+      "settings": {
+        "bg_color": "#FAF8F5",
+        "height_desktop": 280,
+        "height_mobile": 200,
+        "padding_top": 0,
+        "padding_bottom": 0,
+        "pause_on_hover": true,
+        "strip_height_desktop": 58,
+        "strip_height_mobile": 46,
+        "item_spacing_desktop": 32,
+        "item_spacing_mobile": 20,
+        "row1_bg_color": "#2F2F2F",
+        "row1_text_color": "#F5F5F5",
+        "row1_angle_desktop": -4,
+        "row1_angle_mobile": -4,
+        "row1_direction": "right",
+        "row1_speed": 85,
+        "row1_font_size_desktop": 16,
+        "row1_font_size_mobile": 14,
+        "row1_font_weight": "500",
+        "row1_text_transform": "none",
+        "row2_bg_color": "#000000",
+        "row2_text_color": "#F5F5F5",
+        "row2_angle_desktop": 4,
+        "row2_angle_mobile": 4,
+        "row2_direction": "left",
+        "row2_speed": 90,
+        "row2_font_size_desktop": 16,
+        "row2_font_size_mobile": 14,
+        "row2_font_weight": "500",
+        "row2_text_transform": "none",
+        "row2_on_top": true
       }
     },
     "scroll_reveal_gallery_zcWGRC": {
@@ -591,7 +684,7 @@
         "show_script_badge_mobile": true,
         "script_badge_color": "#b89270",
         "script_badge_text": "Style\nIn Every\nStory",
-        "script_badge_icon": "♡",
+        "script_badge_icon": "heart",
         "heading_alignment": "center",
         "image_ratio": "1/1",
         "columns_desktop": 5,
@@ -603,6 +696,8 @@
         "clip_color": "#175429",
         "show_leaf_shadows": true,
         "show_dots": true,
+        "enable_autoplay": true,
+        "autoplay_speed": 2,
         "show_button": true,
         "button_label": "VIEW ALL COLLECTIONS",
         "button_link": "",
@@ -652,16 +747,19 @@
         "heading_line_3": "YOU",
         "heading_size_desktop": 104,
         "heading_size_mobile": 48,
+        "heading_font_weight": "900",
         "heading_line_height": 85,
         "heading_letter_spacing": -3,
         "outline_thickness": 2,
-        "main_image": "shopify://shop_images/ChatGPT_Image_Sep_10_2026_02_01_56_PM.png",
+        "main_image": "shopify://shop_images/ChatGPT_Image_Sep_11_2026_06_23_57_PM.png",
         "main_image_width": 510,
-        "upper_right_image": "shopify://shop_images/ChatGPT_Image_Sep_10_2026_02_01_56_PM.png",
+        "upper_right_image": "shopify://shop_images/ChatGPT_Image_Sep_11_2026_06_24_07_PM.png",
         "upper_right_title": "",
         "upper_right_desc": "Lorem ipsum dolor sit amet consectetur. Pharetra hendrerit cursus porttitor habitant tortor ut mollis sed eu.",
         "upper_right_width": 220,
-        "lower_left_image": "shopify://shop_images/ChatGPT_Image_Sep_10_2026_02_01_56_PM.png",
+        "lower_left_image": "shopify://shop_images/ChatGPT_Image_Sep_12_2026_11_34_59_AM.png",
+        "lower_left_title": "",
+        "lower_left_desc": "Lorem ipsum dolor sit amet consectetur. Pharetra hendrerit cursus porttitor habitant tortor ut mollis sed eu.",
         "lower_left_width": 220,
         "card_radius": 28,
         "show_card_shadow": true,
@@ -670,20 +768,132 @@
         "button_link": "",
         "bottom_right_width": 440,
         "bg_color": "#ffffff",
-        "heading_solid_color": "#0950b2",
-        "heading_outline_color": "#0950b2",
+        "heading_solid_color": "#80603e",
+        "heading_outline_color": "#9e6f3d",
         "eyebrow_color": "#0950b2",
         "body_text_color": "#333333",
+        "card_bg_color": "#f6f5f2",
         "desktop_max_width": 1260,
         "desktop_height": 860,
         "padding_top": 48,
         "padding_bottom": 48,
         "padding_top_mobile": 36,
         "padding_bottom_mobile": 36,
-        "show_features": true,
         "show_features": false,
         "features_padding_top": 36,
         "enable_animation": true
+      }
+    },
+    "brand_features_fgQXBV": {
+      "type": "brand-features",
+      "blocks": {
+        "brand_ATQ3th": {
+          "type": "brand",
+          "settings": {
+            "brand_name": "NYKA",
+            "wordmark_style": "bold",
+            "brand_link": ""
+          }
+        },
+        "brand_DxRrer": {
+          "type": "brand",
+          "settings": {
+            "brand_name": "NIKE",
+            "wordmark_style": "bold",
+            "brand_link": ""
+          }
+        },
+        "brand_4n3G9b": {
+          "type": "brand",
+          "settings": {
+            "brand_name": "UNISON",
+            "wordmark_style": "bold",
+            "brand_link": ""
+          }
+        },
+        "brand_NU9EVw": {
+          "type": "brand",
+          "settings": {
+            "brand_name": "LAKME",
+            "wordmark_style": "bold",
+            "brand_link": ""
+          }
+        },
+        "brand_UrqeyN": {
+          "type": "brand",
+          "settings": {
+            "brand_name": "NIKE",
+            "wordmark_style": "bold",
+            "brand_link": ""
+          }
+        },
+        "brand_BGEiKz": {
+          "type": "brand",
+          "settings": {
+            "brand_name": "ADIDAS",
+            "wordmark_style": "geometric",
+            "brand_link": ""
+          }
+        },
+        "brand_nqbDQe": {
+          "type": "brand",
+          "settings": {
+            "brand_name": "LEVI'S",
+            "wordmark_style": "classic",
+            "brand_link": ""
+          }
+        },
+        "brand_YBtHgB": {
+          "type": "brand",
+          "settings": {
+            "brand_name": "ZARA",
+            "wordmark_style": "serif",
+            "brand_link": ""
+          }
+        },
+        "brand_qNgBXk": {
+          "type": "brand",
+          "settings": {
+            "brand_name": "UNIQLO",
+            "wordmark_style": "modern",
+            "brand_link": ""
+          }
+        },
+        "brand_zw9XQg": {
+          "type": "brand",
+          "settings": {
+            "brand_name": "COS",
+            "wordmark_style": "wide",
+            "brand_link": ""
+          }
+        }
+      },
+      "block_order": [
+        "brand_ATQ3th",
+        "brand_DxRrer",
+        "brand_4n3G9b",
+        "brand_NU9EVw",
+        "brand_UrqeyN",
+        "brand_BGEiKz",
+        "brand_nqbDQe",
+        "brand_YBtHgB",
+        "brand_qNgBXk",
+        "brand_zw9XQg"
+      ],
+      "name": "Brands We Love",
+      "settings": {
+        "enable_marquee": true,
+        "marquee_speed": 25,
+        "pause_on_hover": true,
+        "logo_color": "#111111",
+        "logo_size": 30,
+        "logo_opacity": 45,
+        "logo_spacing": 48,
+        "bg_color": "#ffffff",
+        "show_top_border": false,
+        "border_color": "#e5e5e5",
+        "padding_top": 36,
+        "padding_bottom": 36
       }
     },
     "countdown_timer_Dhypnc": {
@@ -828,104 +1038,123 @@
         "padding_bottom": 56
       }
     },
-    "brand_logos": {
-      "type": "brand-features",
+    "instagram_reels_TNhw9D": {
+      "type": "instagram-reels",
       "blocks": {
-        "brand_nike": {
-          "type": "brand",
+        "instagram_reel_4h9UY6": {
+          "type": "instagram_reel",
           "settings": {
-            "brand_name": "NIKE",
-            "wordmark_style": "bold",
-            "brand_link": ""
+            "video": "shopify://files/videos/instareel 2.mp4",
+            "reel_url": "",
+            "accessibility_label": ""
           }
         },
-        "brand_adidas": {
-          "type": "brand",
+        "instagram_reel_7eHmyw": {
+          "type": "instagram_reel",
           "settings": {
-            "brand_name": "ADIDAS",
-            "wordmark_style": "geometric",
-            "brand_link": ""
+            "video": "shopify://files/videos/reel5.mp4",
+            "reel_url": "",
+            "accessibility_label": ""
           }
         },
-        "brand_levis": {
-          "type": "brand",
+        "instagram_reel_8QJcqQ": {
+          "type": "instagram_reel",
           "settings": {
-            "brand_name": "LEVI'S",
-            "wordmark_style": "classic",
-            "brand_link": ""
+            "video": "shopify://files/videos/instareel 1.mp4",
+            "reel_url": "",
+            "accessibility_label": ""
           }
         },
-        "brand_zara": {
-          "type": "brand",
+        "instagram_reel_FDeNDd": {
+          "type": "instagram_reel",
           "settings": {
-            "brand_name": "ZARA",
-            "wordmark_style": "serif",
-            "brand_link": ""
+            "video": "shopify://files/videos/instareel 3.mp4",
+            "reel_url": "https://www.instagram.com/reel/DbiGgKYTqfv/?utm_source=ig_web_copy_link&stkn=NTc4MTIwNjQ2YQ==",
+            "accessibility_label": ""
           }
         },
-        "brand_uniqlo": {
-          "type": "brand",
+        "instagram_reel_q84xVk": {
+          "type": "instagram_reel",
           "settings": {
-            "brand_name": "UNIQLO",
-            "wordmark_style": "modern",
-            "brand_link": ""
+            "video": "shopify://files/videos/instareel 2.mp4",
+            "reel_url": "",
+            "accessibility_label": ""
           }
         },
-        "brand_cos": {
-          "type": "brand",
+        "instagram_reel_WYaxz7": {
+          "type": "instagram_reel",
           "settings": {
-            "brand_name": "COS",
-            "wordmark_style": "wide",
-            "brand_link": ""
+            "video": "shopify://files/videos/reel5.mp4",
+            "reel_url": "",
+            "accessibility_label": ""
+          }
+        },
+        "instagram_reel_WnHtWE": {
+          "type": "instagram_reel",
+          "settings": {
+            "video": "shopify://files/videos/instareel 1.mp4",
+            "reel_url": "",
+            "accessibility_label": ""
           }
         }
       },
       "block_order": [
-        "brand_nike",
-        "brand_adidas",
-        "brand_levis",
-        "brand_zara",
-        "brand_uniqlo",
-        "brand_cos"
+        "instagram_reel_4h9UY6",
+        "instagram_reel_7eHmyw",
+        "instagram_reel_8QJcqQ",
+        "instagram_reel_FDeNDd",
+        "instagram_reel_q84xVk",
+        "instagram_reel_WYaxz7",
+        "instagram_reel_WnHtWE"
       ],
-      "name": "Brands We Love",
+      "name": "Instagram Reels",
       "settings": {
-        "heading": "BRANDS WE LOVE",
-        "eyebrow": "",
-        "heading_alignment": "center",
-        "logo_color": "#111111",
-        "logo_size": 22,
-        "logo_spacing": 48,
-        "bg_color": "#FFFFFF",
-        "show_top_border": false,
-        "border_color": "#e5e5e5",
-        "padding_top": 16,
-        "padding_bottom": 16
-      }
-    },
-    "recently_viewed_products": {
-      "type": "recently-viewed-products",
-      "disabled": true,
-      "settings": {
-        "heading": "RECENTLY VIEWED",
-        "products_to_show": 4,
-        "show_price": true,
-        "show_arrows": true,
-        "background_color": "#ffffff",
-        "border_color": "#e5e7eb",
-        "border_radius": 12,
-        "padding_top": 32,
-        "padding_bottom": 32
+        "eyebrow": "COMMUNITY",
+        "heading": "Meet the People Who Wear, Share and Shape ShopziCurious.",
+        "description": "Real moments, everyday styling, and community favorites. Tag @shopzicurious to be featured.",
+        "instagram_handle": "@shopzicurious",
+        "instagram_url": "",
+        "cta_label": "Follow",
+        "enable_phone_frame": true,
+        "center_reel_width": 300,
+        "mid_reel_width": 195,
+        "outer_reel_width": 175,
+        "reel_gap": 20,
+        "stagger_amount": 20,
+        "card_radius": 18,
+        "bg_color": "#ffffff",
+        "card_bg_color": "#f5f5f7",
+        "heading_color": "#111111",
+        "description_color": "#555555",
+        "eyebrow_color": "#888888",
+        "cta_bg_color": "#111111",
+        "cta_text_color": "#ffffff",
+        "autoplay_muted": true,
+        "enable_animation": true,
+        "mobile_reel_width": 260,
+        "mobile_gap": 16,
+        "show_cta_mobile": true,
+        "padding_top": 72,
+        "padding_bottom": 80
       }
     },
     "recent_blog_posts_TxPkBy": {
       "type": "recent-blog-posts",
       "name": "Recent Blog Posts",
       "settings": {
-        "heading": "Recently Viewed Articles",
-        "subtitle": "Articles you've recently read",
-        "articles_to_show": 4,
-        "columns_desktop": 4
+        "heading": "Recent Blog Posts",
+        "subtitle": "Explore our latest style stories and updates",
+        "blog": "news",
+        "articles_to_show": 6,
+        "columns_desktop": 3,
+        "columns_tablet": 2,
+        "card_gap": 24,
+        "show_arrows": true,
+        "enable_autoplay": true,
+        "autoplay_speed": 3,
+        "panel_bg_color": "#ffffff",
+        "panel_bg_opacity": 40,
+        "panel_blur": 6
       }
     },
     "bottom_usp_bar": {
@@ -979,14 +1208,15 @@
     "category_cards",
     "featured_collection",
     "promo_banner",
+    "diagonal_marquee_fbpNyz",
     "scroll_reveal_gallery_zcWGRC",
     "explore_collections_xGCiHg",
     "style_that_speaks_xjCtwU",
-    "brand_logos",
+    "brand_features_fgQXBV",
     "countdown_timer_Dhypnc",
     "sticky_story_showcase_QErXnH",
     "instagram_gallery",
-    "recently_viewed_products",
+    "instagram_reels_TNhw9D",
     "recent_blog_posts_TxPkBy",
     "bottom_usp_bar"
   ]

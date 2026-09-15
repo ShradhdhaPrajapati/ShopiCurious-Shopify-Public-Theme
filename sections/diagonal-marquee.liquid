@@ -1,0 +1,939 @@
+{%- doc -%}
+  Renders two crossed diagonal infinite marquee strips with customizable content,
+  speed, colors, typography, angles, and responsive controls.
+{%- enddoc -%}
+
+{%- liquid
+  assign section_id = section.id
+  assign bg_color = section.settings.bg_color | default: '#FAF8F5'
+  assign pause_on_hover = section.settings.pause_on_hover
+
+  assign height_desktop = section.settings.height_desktop | default: 280
+  assign height_mobile = section.settings.height_mobile | default: 200
+  assign padding_top = section.settings.padding_top | default: 0
+  assign padding_bottom = section.settings.padding_bottom | default: 0
+
+  assign strip_height_desktop = section.settings.strip_height_desktop | default: 58
+  assign strip_height_mobile = section.settings.strip_height_mobile | default: 46
+  assign item_spacing_desktop = section.settings.item_spacing_desktop | default: 32
+  assign item_spacing_mobile = section.settings.item_spacing_mobile | default: 20
+
+  assign row1_bg = section.settings.row1_bg_color | default: '#2F2F2F'
+  assign row1_color = section.settings.row1_text_color | default: '#F5F5F5'
+  assign row1_angle_desktop = section.settings.row1_angle_desktop | default: -4
+  assign row1_angle_mobile = section.settings.row1_angle_mobile | default: -4
+  assign row1_direction = section.settings.row1_direction | default: 'left'
+  assign row1_speed = section.settings.row1_speed | default: 35
+  assign row1_font_size_desktop = section.settings.row1_font_size_desktop | default: 16
+  assign row1_font_size_mobile = section.settings.row1_font_size_mobile | default: 14
+  assign row1_font_weight = section.settings.row1_font_weight | default: '500'
+  assign row1_text_transform = section.settings.row1_text_transform | default: 'none'
+
+  assign row2_bg = section.settings.row2_bg_color | default: '#000000'
+  assign row2_color = section.settings.row2_text_color | default: '#F5F5F5'
+  assign row2_angle_desktop = section.settings.row2_angle_desktop | default: 4
+  assign row2_angle_mobile = section.settings.row2_angle_mobile | default: 4
+  assign row2_direction = section.settings.row2_direction | default: 'right'
+  assign row2_speed = section.settings.row2_speed | default: 40
+  assign row2_font_size_desktop = section.settings.row2_font_size_desktop | default: 16
+  assign row2_font_size_mobile = section.settings.row2_font_size_mobile | default: 14
+  assign row2_font_weight = section.settings.row2_font_weight | default: '500'
+  assign row2_text_transform = section.settings.row2_text_transform | default: 'none'
+  assign row2_on_top = section.settings.row2_on_top
+
+  assign block_count = section.blocks.size
+  if block_count == 0
+    assign repeat_times = 6
+  elsif block_count == 1
+    assign repeat_times = 14
+  elsif block_count == 2
+    assign repeat_times = 8
+  elsif block_count <= 4
+    assign repeat_times = 5
+  elsif block_count <= 8
+    assign repeat_times = 4
+  else
+    assign repeat_times = 3
+  endif
+-%}
+
+<div
+  id="szc-diagonal-marquee-{{ section_id }}"
+  class="szc-diagonal-marquee{% if pause_on_hover %} szc-diagonal-marquee--pause-hover{% endif %}"
+  style="
+    --szc-dm-bg: {{ bg_color }};
+    --szc-dm-height-desktop: {{ height_desktop }}px;
+    --szc-dm-height-mobile: {{ height_mobile }}px;
+    --szc-dm-padding-top: {{ padding_top }}px;
+    --szc-dm-padding-bottom: {{ padding_bottom }}px;
+    --szc-dm-strip-height-desktop: {{ strip_height_desktop }}px;
+    --szc-dm-strip-height-mobile: {{ strip_height_mobile }}px;
+    --szc-dm-spacing-desktop: {{ item_spacing_desktop }}px;
+    --szc-dm-spacing-mobile: {{ item_spacing_mobile }}px;
+    --szc-dm-row1-bg: {{ row1_bg }};
+    --szc-dm-row1-color: {{ row1_color }};
+    --szc-dm-row1-angle-desktop: {{ row1_angle_desktop }}deg;
+    --szc-dm-row1-angle-mobile: {{ row1_angle_mobile }}deg;
+    --szc-dm-row1-speed: {{ row1_speed }}s;
+    --szc-dm-row1-fs-desktop: {{ row1_font_size_desktop }}px;
+    --szc-dm-row1-fs-mobile: {{ row1_font_size_mobile }}px;
+    --szc-dm-row1-fw: {{ row1_font_weight }};
+    --szc-dm-row1-tt: {{ row1_text_transform }};
+    --szc-dm-row2-bg: {{ row2_bg }};
+    --szc-dm-row2-color: {{ row2_color }};
+    --szc-dm-row2-angle-desktop: {{ row2_angle_desktop }}deg;
+    --szc-dm-row2-angle-mobile: {{ row2_angle_mobile }}deg;
+    --szc-dm-row2-speed: {{ row2_speed }}s;
+    --szc-dm-row2-fs-desktop: {{ row2_font_size_desktop }}px;
+    --szc-dm-row2-fs-mobile: {{ row2_font_size_mobile }}px;
+    --szc-dm-row2-fw: {{ row2_font_weight }};
+    --szc-dm-row2-tt: {{ row2_text_transform }};
+    --szc-dm-row1-z: {% if row2_on_top %}1{% else %}2{% endif %};
+    --szc-dm-row2-z: {% if row2_on_top %}2{% else %}1{% endif %};
+  "
+>
+  <div class="szc-diagonal-marquee__container">
+    {%- comment -%} ==================== ROW 1 ==================== {%- endcomment -%}
+    <div class="szc-diagonal-marquee__row szc-diagonal-marquee__row--1" aria-label="Marquee Row 1">
+      <div class="szc-diagonal-marquee__track szc-diagonal-marquee__track--{{ row1_direction }}" style="animation-duration: var(--szc-dm-row1-speed);">
+        {%- if block_count > 0 -%}
+          {%- for rep in (1..repeat_times) -%}
+            {%- for block in section.blocks -%}
+              <div class="szc-diagonal-marquee__item" {{ block.shopify_attributes }}>
+                {%- if block.settings.link != blank -%}
+                  <a href="{{ block.settings.link }}" class="szc-diagonal-marquee__link">
+                    <span class="szc-diagonal-marquee__text">{{ block.settings.text | escape }}</span>
+                  </a>
+                {%- else -%}
+                  <span class="szc-diagonal-marquee__text">{{ block.settings.text | escape }}</span>
+                {%- endif -%}
+                {%- if block.settings.show_separator -%}
+                  <span class="szc-diagonal-marquee__separator" aria-hidden="true">•</span>
+                {%- endif -%}
+              </div>
+            {%- endfor -%}
+          {%- endfor -%}
+        {%- else -%}
+          {%- for rep in (1..6) -%}
+            <div class="szc-diagonal-marquee__item">
+              <span class="szc-diagonal-marquee__text">Limited time offer! Up to 50% Discount</span>
+              <span class="szc-diagonal-marquee__separator" aria-hidden="true">•</span>
+            </div>
+            <div class="szc-diagonal-marquee__item">
+              <a href="#" class="szc-diagonal-marquee__link">
+                <span class="szc-diagonal-marquee__text">Shop now</span>
+              </a>
+              <span class="szc-diagonal-marquee__separator" aria-hidden="true">•</span>
+            </div>
+            <div class="szc-diagonal-marquee__item">
+              <span class="szc-diagonal-marquee__text">New Arrivals</span>
+              <span class="szc-diagonal-marquee__separator" aria-hidden="true">•</span>
+            </div>
+            <div class="szc-diagonal-marquee__item">
+              <span class="szc-diagonal-marquee__text">Discover the latest styles</span>
+              <span class="szc-diagonal-marquee__separator" aria-hidden="true">•</span>
+            </div>
+            <div class="szc-diagonal-marquee__item">
+              <span class="szc-diagonal-marquee__text">Free shipping on orders over $100</span>
+              <span class="szc-diagonal-marquee__separator" aria-hidden="true">•</span>
+            </div>
+            <div class="szc-diagonal-marquee__item">
+              <a href="#" class="szc-diagonal-marquee__link">
+                <span class="szc-diagonal-marquee__text">Shop the collection</span>
+              </a>
+              <span class="szc-diagonal-marquee__separator" aria-hidden="true">•</span>
+            </div>
+          {%- endfor -%}
+        {%- endif -%}
+      </div>
+
+      <div class="szc-diagonal-marquee__track szc-diagonal-marquee__track--{{ row1_direction }}" style="animation-duration: var(--szc-dm-row1-speed);" aria-hidden="true">
+        {%- if block_count > 0 -%}
+          {%- for rep in (1..repeat_times) -%}
+            {%- for block in section.blocks -%}
+              <div class="szc-diagonal-marquee__item">
+                {%- if block.settings.link != blank -%}
+                  <a href="{{ block.settings.link }}" tabindex="-1" class="szc-diagonal-marquee__link">
+                    <span class="szc-diagonal-marquee__text">{{ block.settings.text | escape }}</span>
+                  </a>
+                {%- else -%}
+                  <span class="szc-diagonal-marquee__text">{{ block.settings.text | escape }}</span>
+                {%- endif -%}
+                {%- if block.settings.show_separator -%}
+                  <span class="szc-diagonal-marquee__separator" aria-hidden="true">•</span>
+                {%- endif -%}
+              </div>
+            {%- endfor -%}
+          {%- endfor -%}
+        {%- else -%}
+          {%- for rep in (1..6) -%}
+            <div class="szc-diagonal-marquee__item">
+              <span class="szc-diagonal-marquee__text">Limited time offer! Up to 50% Discount</span>
+              <span class="szc-diagonal-marquee__separator" aria-hidden="true">•</span>
+            </div>
+            <div class="szc-diagonal-marquee__item">
+              <a href="#" tabindex="-1" class="szc-diagonal-marquee__link">
+                <span class="szc-diagonal-marquee__text">Shop now</span>
+              </a>
+              <span class="szc-diagonal-marquee__separator" aria-hidden="true">•</span>
+            </div>
+            <div class="szc-diagonal-marquee__item">
+              <span class="szc-diagonal-marquee__text">New Arrivals</span>
+              <span class="szc-diagonal-marquee__separator" aria-hidden="true">•</span>
+            </div>
+            <div class="szc-diagonal-marquee__item">
+              <span class="szc-diagonal-marquee__text">Discover the latest styles</span>
+              <span class="szc-diagonal-marquee__separator" aria-hidden="true">•</span>
+            </div>
+            <div class="szc-diagonal-marquee__item">
+              <span class="szc-diagonal-marquee__text">Free shipping on orders over $100</span>
+              <span class="szc-diagonal-marquee__separator" aria-hidden="true">•</span>
+            </div>
+            <div class="szc-diagonal-marquee__item">
+              <a href="#" tabindex="-1" class="szc-diagonal-marquee__link">
+                <span class="szc-diagonal-marquee__text">Shop the collection</span>
+              </a>
+              <span class="szc-diagonal-marquee__separator" aria-hidden="true">•</span>
+            </div>
+          {%- endfor -%}
+        {%- endif -%}
+      </div>
+    </div>
+
+    {%- comment -%} ==================== ROW 2 ==================== {%- endcomment -%}
+    <div class="szc-diagonal-marquee__row szc-diagonal-marquee__row--2" aria-label="Marquee Row 2">
+      <div class="szc-diagonal-marquee__track szc-diagonal-marquee__track--{{ row2_direction }}" style="animation-duration: var(--szc-dm-row2-speed);">
+        {%- if block_count > 0 -%}
+          {%- for rep in (1..repeat_times) -%}
+            {%- for block in section.blocks -%}
+              <div class="szc-diagonal-marquee__item" {{ block.shopify_attributes }}>
+                {%- if block.settings.link != blank -%}
+                  <a href="{{ block.settings.link }}" class="szc-diagonal-marquee__link">
+                    <span class="szc-diagonal-marquee__text">{{ block.settings.text | escape }}</span>
+                  </a>
+                {%- else -%}
+                  <span class="szc-diagonal-marquee__text">{{ block.settings.text | escape }}</span>
+                {%- endif -%}
+                {%- if block.settings.show_separator -%}
+                  <span class="szc-diagonal-marquee__separator" aria-hidden="true">•</span>
+                {%- endif -%}
+              </div>
+            {%- endfor -%}
+          {%- endfor -%}
+        {%- else -%}
+          {%- for rep in (1..6) -%}
+            <div class="szc-diagonal-marquee__item">
+              <span class="szc-diagonal-marquee__text">Limited time offer! Up to 50% Discount</span>
+              <span class="szc-diagonal-marquee__separator" aria-hidden="true">•</span>
+            </div>
+            <div class="szc-diagonal-marquee__item">
+              <a href="#" class="szc-diagonal-marquee__link">
+                <span class="szc-diagonal-marquee__text">Shop now</span>
+              </a>
+              <span class="szc-diagonal-marquee__separator" aria-hidden="true">•</span>
+            </div>
+            <div class="szc-diagonal-marquee__item">
+              <span class="szc-diagonal-marquee__text">New Arrivals</span>
+              <span class="szc-diagonal-marquee__separator" aria-hidden="true">•</span>
+            </div>
+            <div class="szc-diagonal-marquee__item">
+              <span class="szc-diagonal-marquee__text">Discover the latest styles</span>
+              <span class="szc-diagonal-marquee__separator" aria-hidden="true">•</span>
+            </div>
+            <div class="szc-diagonal-marquee__item">
+              <span class="szc-diagonal-marquee__text">Free shipping on orders over $100</span>
+              <span class="szc-diagonal-marquee__separator" aria-hidden="true">•</span>
+            </div>
+            <div class="szc-diagonal-marquee__item">
+              <a href="#" class="szc-diagonal-marquee__link">
+                <span class="szc-diagonal-marquee__text">Shop the collection</span>
+              </a>
+              <span class="szc-diagonal-marquee__separator" aria-hidden="true">•</span>
+            </div>
+          {%- endfor -%}
+        {%- endif -%}
+      </div>
+
+      <div class="szc-diagonal-marquee__track szc-diagonal-marquee__track--{{ row2_direction }}" style="animation-duration: var(--szc-dm-row2-speed);" aria-hidden="true">
+        {%- if block_count > 0 -%}
+          {%- for rep in (1..repeat_times) -%}
+            {%- for block in section.blocks -%}
+              <div class="szc-diagonal-marquee__item">
+                {%- if block.settings.link != blank -%}
+                  <a href="{{ block.settings.link }}" tabindex="-1" class="szc-diagonal-marquee__link">
+                    <span class="szc-diagonal-marquee__text">{{ block.settings.text | escape }}</span>
+                  </a>
+                {%- else -%}
+                  <span class="szc-diagonal-marquee__text">{{ block.settings.text | escape }}</span>
+                {%- endif -%}
+                {%- if block.settings.show_separator -%}
+                  <span class="szc-diagonal-marquee__separator" aria-hidden="true">•</span>
+                {%- endif -%}
+              </div>
+            {%- endfor -%}
+          {%- endfor -%}
+        {%- else -%}
+          {%- for rep in (1..6) -%}
+            <div class="szc-diagonal-marquee__item">
+              <span class="szc-diagonal-marquee__text">Limited time offer! Up to 50% Discount</span>
+              <span class="szc-diagonal-marquee__separator" aria-hidden="true">•</span>
+            </div>
+            <div class="szc-diagonal-marquee__item">
+              <a href="#" tabindex="-1" class="szc-diagonal-marquee__link">
+                <span class="szc-diagonal-marquee__text">Shop now</span>
+              </a>
+              <span class="szc-diagonal-marquee__separator" aria-hidden="true">•</span>
+            </div>
+            <div class="szc-diagonal-marquee__item">
+              <span class="szc-diagonal-marquee__text">New Arrivals</span>
+              <span class="szc-diagonal-marquee__separator" aria-hidden="true">•</span>
+            </div>
+            <div class="szc-diagonal-marquee__item">
+              <span class="szc-diagonal-marquee__text">Discover the latest styles</span>
+              <span class="szc-diagonal-marquee__separator" aria-hidden="true">•</span>
+            </div>
+            <div class="szc-diagonal-marquee__item">
+              <span class="szc-diagonal-marquee__text">Free shipping on orders over $100</span>
+              <span class="szc-diagonal-marquee__separator" aria-hidden="true">•</span>
+            </div>
+            <div class="szc-diagonal-marquee__item">
+              <a href="#" tabindex="-1" class="szc-diagonal-marquee__link">
+                <span class="szc-diagonal-marquee__text">Shop the collection</span>
+              </a>
+              <span class="szc-diagonal-marquee__separator" aria-hidden="true">•</span>
+            </div>
+          {%- endfor -%}
+        {%- endif -%}
+      </div>
+    </div>
+  </div>
+</div>
+
+{% stylesheet %}
+  .szc-diagonal-marquee {
+    position: relative;
+    width: 100%;
+    overflow: hidden;
+    background-color: var(--szc-dm-bg);
+    padding-top: var(--szc-dm-padding-top);
+    padding-bottom: var(--szc-dm-padding-bottom);
+    contain: paint;
+    box-sizing: border-box;
+  }
+
+  .szc-diagonal-marquee__container {
+    position: relative;
+    width: 100%;
+    height: var(--szc-dm-height-desktop);
+    overflow: hidden;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .szc-diagonal-marquee__row {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 135vw;
+    min-width: 135%;
+    max-width: none;
+    display: flex;
+    align-items: center;
+    overflow: hidden;
+    white-space: nowrap;
+    user-select: none;
+    -webkit-user-select: none;
+    pointer-events: auto;
+    transform-origin: center center;
+    box-sizing: border-box;
+  }
+
+  .szc-diagonal-marquee__row--1 {
+    background-color: var(--szc-dm-row1-bg);
+    color: var(--szc-dm-row1-color);
+    z-index: var(--szc-dm-row1-z);
+    height: var(--szc-dm-strip-height-desktop);
+    transform: translate(-50%, -50%) rotate(var(--szc-dm-row1-angle-desktop));
+    font-size: var(--szc-dm-row1-fs-desktop);
+    font-weight: var(--szc-dm-row1-fw);
+    text-transform: var(--szc-dm-row1-tt);
+  }
+
+  .szc-diagonal-marquee__row--2 {
+    background-color: var(--szc-dm-row2-bg);
+    color: var(--szc-dm-row2-color);
+    z-index: var(--szc-dm-row2-z);
+    height: var(--szc-dm-strip-height-desktop);
+    transform: translate(-50%, -50%) rotate(var(--szc-dm-row2-angle-desktop));
+    font-size: var(--szc-dm-row2-fs-desktop);
+    font-weight: var(--szc-dm-row2-fw);
+    text-transform: var(--szc-dm-row2-tt);
+    box-shadow: 0 4px 18px rgba(0, 0, 0, 0.22);
+  }
+
+  .szc-diagonal-marquee__track {
+    display: flex;
+    align-items: center;
+    flex-shrink: 0;
+    white-space: nowrap;
+    will-change: transform;
+  }
+
+  .szc-diagonal-marquee__track--left {
+    animation: szc-marquee-move-left linear infinite;
+  }
+
+  .szc-diagonal-marquee__track--right {
+    animation: szc-marquee-move-right linear infinite;
+  }
+
+  @keyframes szc-marquee-move-left {
+    0% {
+      transform: translate3d(0, 0, 0);
+    }
+    100% {
+      transform: translate3d(-100%, 0, 0);
+    }
+  }
+
+  @keyframes szc-marquee-move-right {
+    0% {
+      transform: translate3d(-100%, 0, 0);
+    }
+    100% {
+      transform: translate3d(0, 0, 0);
+    }
+  }
+
+  .szc-diagonal-marquee--pause-hover:hover .szc-diagonal-marquee__track,
+  .szc-diagonal-marquee__row:hover .szc-diagonal-marquee__track {
+    animation-play-state: paused;
+  }
+
+  .szc-diagonal-marquee__item {
+    display: inline-flex;
+    align-items: center;
+    padding-right: var(--szc-dm-spacing-desktop);
+    line-height: 1;
+    flex-shrink: 0;
+  }
+
+  .szc-diagonal-marquee__text {
+    font-family: inherit;
+    font-size: inherit;
+    font-weight: inherit;
+    color: inherit;
+    line-height: 1.2;
+    letter-spacing: 0.01em;
+  }
+
+  .szc-diagonal-marquee__link {
+    color: inherit;
+    text-decoration: underline;
+    text-underline-offset: 4px;
+    text-decoration-thickness: 1px;
+    display: inline-flex;
+    align-items: center;
+    cursor: pointer;
+    transition: opacity 0.2s ease, text-decoration-thickness 0.2s ease;
+  }
+
+  .szc-diagonal-marquee__link:hover {
+    opacity: 0.82;
+    text-decoration-thickness: 2px;
+  }
+
+  .szc-diagonal-marquee__link:focus-visible {
+    outline: 2px solid currentColor;
+    outline-offset: 3px;
+    border-radius: 2px;
+  }
+
+  .szc-diagonal-marquee__separator {
+    display: inline-block;
+    padding-left: var(--szc-dm-spacing-desktop);
+    opacity: 0.65;
+    font-size: 0.75em;
+    line-height: 1;
+    vertical-align: middle;
+    user-select: none;
+  }
+
+  @media (max-width: 767px) {
+    .szc-diagonal-marquee__container {
+      height: var(--szc-dm-height-mobile);
+    }
+
+    .szc-diagonal-marquee__row {
+      width: 145vw;
+      min-width: 145%;
+    }
+
+    .szc-diagonal-marquee__row--1 {
+      height: var(--szc-dm-strip-height-mobile);
+      transform: translate(-50%, -50%) rotate(var(--szc-dm-row1-angle-mobile));
+      font-size: var(--szc-dm-row1-fs-mobile);
+    }
+
+    .szc-diagonal-marquee__row--2 {
+      height: var(--szc-dm-strip-height-mobile);
+      transform: translate(-50%, -50%) rotate(var(--szc-dm-row2-angle-mobile));
+      font-size: var(--szc-dm-row2-fs-mobile);
+      box-shadow: 0 3px 12px rgba(0, 0, 0, 0.2);
+    }
+
+    .szc-diagonal-marquee__item {
+      padding-right: var(--szc-dm-spacing-mobile);
+    }
+
+    .szc-diagonal-marquee__separator {
+      padding-left: var(--szc-dm-spacing-mobile);
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .szc-diagonal-marquee__track {
+      animation: none !important;
+    }
+  }
+{% endstylesheet %}
+
+{% schema %}
+{
+  "name": "Diagonal Marquee",
+  "tag": "section",
+  "class": "section-diagonal-marquee",
+  "settings": [
+    {
+      "type": "header",
+      "content": "Section Layout"
+    },
+    {
+      "type": "color",
+      "id": "bg_color",
+      "label": "Background Color",
+      "default": "#FAF8F5"
+    },
+    {
+      "type": "range",
+      "id": "height_desktop",
+      "label": "Desktop Section Height",
+      "min": 180,
+      "max": 450,
+      "step": 10,
+      "unit": "px",
+      "default": 280
+    },
+    {
+      "type": "range",
+      "id": "height_mobile",
+      "label": "Mobile Section Height",
+      "min": 140,
+      "max": 350,
+      "step": 10,
+      "unit": "px",
+      "default": 200
+    },
+    {
+      "type": "range",
+      "id": "padding_top",
+      "label": "Top Padding",
+      "min": 0,
+      "max": 100,
+      "step": 5,
+      "unit": "px",
+      "default": 0
+    },
+    {
+      "type": "range",
+      "id": "padding_bottom",
+      "label": "Bottom Padding",
+      "min": 0,
+      "max": 100,
+      "step": 5,
+      "unit": "px",
+      "default": 0
+    },
+    {
+      "type": "checkbox",
+      "id": "pause_on_hover",
+      "label": "Pause Animation on Hover",
+      "default": true
+    },
+    {
+      "type": "range",
+      "id": "strip_height_desktop",
+      "label": "Strip Height (Desktop)",
+      "min": 36,
+      "max": 80,
+      "step": 2,
+      "unit": "px",
+      "default": 58
+    },
+    {
+      "type": "range",
+      "id": "strip_height_mobile",
+      "label": "Strip Height (Mobile)",
+      "min": 30,
+      "max": 60,
+      "step": 2,
+      "unit": "px",
+      "default": 46
+    },
+    {
+      "type": "range",
+      "id": "item_spacing_desktop",
+      "label": "Item Spacing (Desktop)",
+      "min": 16,
+      "max": 80,
+      "step": 4,
+      "unit": "px",
+      "default": 32
+    },
+    {
+      "type": "range",
+      "id": "item_spacing_mobile",
+      "label": "Item Spacing (Mobile)",
+      "min": 12,
+      "max": 50,
+      "step": 2,
+      "unit": "px",
+      "default": 20
+    },
+    {
+      "type": "header",
+      "content": "Row 1 (Top Strip)"
+    },
+    {
+      "type": "color",
+      "id": "row1_bg_color",
+      "label": "Background Color",
+      "default": "#2F2F2F"
+    },
+    {
+      "type": "color",
+      "id": "row1_text_color",
+      "label": "Text Color",
+      "default": "#F5F5F5"
+    },
+    {
+      "type": "range",
+      "id": "row1_angle_desktop",
+      "label": "Rotation Angle (Desktop)",
+      "min": -15,
+      "max": 15,
+      "step": 1,
+      "unit": "deg",
+      "default": -4
+    },
+    {
+      "type": "range",
+      "id": "row1_angle_mobile",
+      "label": "Rotation Angle (Mobile)",
+      "min": -15,
+      "max": 15,
+      "step": 1,
+      "unit": "deg",
+      "default": -4
+    },
+    {
+      "type": "select",
+      "id": "row1_direction",
+      "label": "Animation Direction",
+      "options": [
+        {
+          "value": "left",
+          "label": "Move Left"
+        },
+        {
+          "value": "right",
+          "label": "Move Right"
+        }
+      ],
+      "default": "left"
+    },
+    {
+      "type": "range",
+      "id": "row1_speed",
+      "label": "Animation Duration (Speed)",
+      "min": 10,
+      "max": 120,
+      "step": 5,
+      "unit": "s",
+      "default": 35
+    },
+    {
+      "type": "range",
+      "id": "row1_font_size_desktop",
+      "label": "Font Size (Desktop)",
+      "min": 12,
+      "max": 28,
+      "step": 1,
+      "unit": "px",
+      "default": 16
+    },
+    {
+      "type": "range",
+      "id": "row1_font_size_mobile",
+      "label": "Font Size (Mobile)",
+      "min": 10,
+      "max": 20,
+      "step": 1,
+      "unit": "px",
+      "default": 14
+    },
+    {
+      "type": "select",
+      "id": "row1_font_weight",
+      "label": "Font Weight",
+      "options": [
+        {
+          "value": "400",
+          "label": "Normal (400)"
+        },
+        {
+          "value": "500",
+          "label": "Medium (500)"
+        },
+        {
+          "value": "600",
+          "label": "Semi Bold (600)"
+        },
+        {
+          "value": "700",
+          "label": "Bold (700)"
+        }
+      ],
+      "default": "500"
+    },
+    {
+      "type": "select",
+      "id": "row1_text_transform",
+      "label": "Text Transform",
+      "options": [
+        {
+          "value": "none",
+          "label": "None"
+        },
+        {
+          "value": "uppercase",
+          "label": "Uppercase"
+        },
+        {
+          "value": "capitalize",
+          "label": "Capitalize"
+        }
+      ],
+      "default": "none"
+    },
+    {
+      "type": "header",
+      "content": "Row 2 (Crossing Strip)"
+    },
+    {
+      "type": "color",
+      "id": "row2_bg_color",
+      "label": "Background Color",
+      "default": "#000000"
+    },
+    {
+      "type": "color",
+      "id": "row2_text_color",
+      "label": "Text Color",
+      "default": "#F5F5F5"
+    },
+    {
+      "type": "range",
+      "id": "row2_angle_desktop",
+      "label": "Rotation Angle (Desktop)",
+      "min": -15,
+      "max": 15,
+      "step": 1,
+      "unit": "deg",
+      "default": 4
+    },
+    {
+      "type": "range",
+      "id": "row2_angle_mobile",
+      "label": "Rotation Angle (Mobile)",
+      "min": -15,
+      "max": 15,
+      "step": 1,
+      "unit": "deg",
+      "default": 4
+    },
+    {
+      "type": "select",
+      "id": "row2_direction",
+      "label": "Animation Direction",
+      "options": [
+        {
+          "value": "left",
+          "label": "Move Left"
+        },
+        {
+          "value": "right",
+          "label": "Move Right"
+        }
+      ],
+      "default": "right"
+    },
+    {
+      "type": "range",
+      "id": "row2_speed",
+      "label": "Animation Duration (Speed)",
+      "min": 10,
+      "max": 120,
+      "step": 5,
+      "unit": "s",
+      "default": 40
+    },
+    {
+      "type": "range",
+      "id": "row2_font_size_desktop",
+      "label": "Font Size (Desktop)",
+      "min": 12,
+      "max": 28,
+      "step": 1,
+      "unit": "px",
+      "default": 16
+    },
+    {
+      "type": "range",
+      "id": "row2_font_size_mobile",
+      "label": "Font Size (Mobile)",
+      "min": 10,
+      "max": 20,
+      "step": 1,
+      "unit": "px",
+      "default": 14
+    },
+    {
+      "type": "select",
+      "id": "row2_font_weight",
+      "label": "Font Weight",
+      "options": [
+        {
+          "value": "400",
+          "label": "Normal (400)"
+        },
+        {
+          "value": "500",
+          "label": "Medium (500)"
+        },
+        {
+          "value": "600",
+          "label": "Semi Bold (600)"
+        },
+        {
+          "value": "700",
+          "label": "Bold (700)"
+        }
+      ],
+      "default": "500"
+    },
+    {
+      "type": "select",
+      "id": "row2_text_transform",
+      "label": "Text Transform",
+      "options": [
+        {
+          "value": "none",
+          "label": "None"
+        },
+        {
+          "value": "uppercase",
+          "label": "Uppercase"
+        },
+        {
+          "value": "capitalize",
+          "label": "Capitalize"
+        }
+      ],
+      "default": "none"
+    },
+    {
+      "type": "checkbox",
+      "id": "row2_on_top",
+      "label": "Row 2 Overlaps on Top",
+      "default": true
+    }
+  ],
+  "blocks": [
+    {
+      "type": "marquee_item",
+      "name": "Marquee Item",
+      "settings": [
+        {
+          "type": "text",
+          "id": "text",
+          "label": "Text",
+          "default": "Limited time offer! Up to 50% Discount"
+        },
+        {
+          "type": "url",
+          "id": "link",
+          "label": "Link (Optional)"
+        },
+        {
+          "type": "checkbox",
+          "id": "show_separator",
+          "label": "Show separator dot",
+          "default": true
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "Diagonal Marquee",
+      "blocks": [
+        {
+          "type": "marquee_item",
+          "settings": {
+            "text": "Limited time offer! Up to 50% Discount",
+            "show_separator": true
+          }
+        },
+        {
+          "type": "marquee_item",
+          "settings": {
+            "text": "Shop now",
+            "show_separator": true
+          }
+        },
+        {
+          "type": "marquee_item",
+          "settings": {
+            "text": "New Arrivals",
+            "show_separator": true
+          }
+        },
+        {
+          "type": "marquee_item",
+          "settings": {
+            "text": "Discover the latest styles",
+            "show_separator": true
+          }
+        },
+        {
+          "type": "marquee_item",
+          "settings": {
+            "text": "Free shipping on orders over $100",
+            "show_separator": true
+          }
+        },
+        {
+          "type": "marquee_item",
+          "settings": {
+            "text": "Shop the collection",
+            "show_separator": true
+          }
+        }
+      ]
+    }
+  ]
+}
+{% endschema %}
+

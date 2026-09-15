@@ -5,19 +5,23 @@
 
 {%- liquid
   assign collection = section.settings.collection
-  assign limit = section.settings.products_to_show | default: 5
-  assign cols_desktop = section.settings.columns_desktop | default: 5
+  assign limit = section.settings.products_to_show | default: 4
+  assign cols_desktop = section.settings.columns_desktop | default: 4
   assign cols_mobile = section.settings.columns_mobile | default: '2'
   assign enable_swipe = section.settings.enable_swipe_mobile | default: false
   assign image_ratio = section.settings.image_ratio
   if image_ratio == 'theme' or image_ratio == blank
     assign image_ratio = settings.product_card_image_ratio | default: '3/4'
   endif
+  assign enable_box_hover = section.settings.enable_card_box_hover
+  if enable_box_hover == nil
+    assign enable_box_hover = true
+  endif
 -%}
 
 <section
   id="FeaturedCollection-{{ section.id }}"
-  class="szc-featured-collection page-width{% if enable_swipe %} szc-featured-collection--swipe-mobile{% endif %}"
+  class="szc-featured-collection page-width{% if enable_swipe %} szc-featured-collection--swipe-mobile{% endif %}{% if enable_box_hover %} szc-featured-collection--box-hover{% endif %}"
   style="--cols-desktop: {{ cols_desktop }}; --cols-mobile: {{ cols_mobile }};"
   data-animate="slide-up"
 >
@@ -48,29 +52,28 @@
         <div class="szc-featured-collection__item szc-animate-fade-up">
           {% render 'product-card',
             card_product: product,
-            show_quick_add: true,
+            show_add_to_cart: section.settings.show_add_to_cart,
+            show_quick_add: section.settings.show_add_to_cart,
             show_quick_view: true,
             show_price: section.settings.show_price,
-            media_aspect_ratio: image_ratio
+            media_aspect_ratio: image_ratio,
+            class: 'szc-product-card--box-hover'
           %}
         </div>
       {%- endfor -%}
     {%- else -%}
-      <!-- Demo 5 Items matching approved UI screenshot pixel-for-pixel -->
+      <!-- Demo 4 Items matching 4-column layout -->
       <div class="szc-featured-collection__item">
-        {% render 'product-card', card_product: nil, title_override: 'Oversized Knit Sweater', price_override: '$59.99', show_price: section.settings.show_price, media_aspect_ratio: image_ratio %}
+        {% render 'product-card', card_product: nil, title_override: 'Oversized Knit Sweater', price_override: '$59.99', show_price: section.settings.show_price, show_add_to_cart: section.settings.show_add_to_cart, show_quick_add: section.settings.show_add_to_cart, media_aspect_ratio: image_ratio, class: 'szc-product-card--box-hover' %}
       </div>
       <div class="szc-featured-collection__item">
-        {% render 'product-card', card_product: nil, title_override: 'Linen Blend Shirt', price_override: '$49.99', show_price: section.settings.show_price, media_aspect_ratio: image_ratio %}
+        {% render 'product-card', card_product: nil, title_override: 'Linen Blend Shirt', price_override: '$49.99', show_price: section.settings.show_price, show_add_to_cart: section.settings.show_add_to_cart, show_quick_add: section.settings.show_add_to_cart, media_aspect_ratio: image_ratio, class: 'szc-product-card--box-hover' %}
       </div>
       <div class="szc-featured-collection__item">
-        {% render 'product-card', card_product: nil, title_override: 'Satin Slip Dress', price_override: '$69.99', show_price: section.settings.show_price, media_aspect_ratio: image_ratio %}
+        {% render 'product-card', card_product: nil, title_override: 'Satin Slip Dress', price_override: '$69.99', show_price: section.settings.show_price, show_add_to_cart: section.settings.show_add_to_cart, show_quick_add: section.settings.show_add_to_cart, media_aspect_ratio: image_ratio, class: 'szc-product-card--box-hover' %}
       </div>
       <div class="szc-featured-collection__item">
-        {% render 'product-card', card_product: nil, title_override: 'Classic Denim Jacket', price_override: '$78.99', show_price: section.settings.show_price, media_aspect_ratio: image_ratio %}
-      </div>
-      <div class="szc-featured-collection__item">
-        {% render 'product-card', card_product: nil, title_override: 'Wide Leg Trousers', price_override: '$54.99', show_price: section.settings.show_price, media_aspect_ratio: image_ratio %}
+        {% render 'product-card', card_product: nil, title_override: 'Classic Denim Jacket', price_override: '$78.99', show_price: section.settings.show_price, show_add_to_cart: section.settings.show_add_to_cart, show_quick_add: section.settings.show_add_to_cart, media_aspect_ratio: image_ratio, class: 'szc-product-card--box-hover' %}
       </div>
     {%- endif -%}
   </div>
@@ -242,8 +245,178 @@
 
   @media (min-width: 750px) {
     .szc-featured-collection__grid {
-      grid-template-columns: repeat(var(--cols-desktop, 5), 1fr);
+      grid-template-columns: repeat(var(--cols-desktop, 4), 1fr);
       gap: var(--szc-space-5, 20px);
+    }
+  }
+
+  /* ---------------------------------------------------- */
+  /* Featured Collection: Card Item Stacking & Box Hover  */
+  /* Matching the Explore Collections Editorial Card Design */
+  /* ---------------------------------------------------- */
+  .szc-featured-collection__item {
+    position: relative;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+  }
+
+  .szc-featured-collection--box-hover .szc-featured-collection__grid {
+    padding-top: 10px;
+    padding-bottom: 22px;
+    margin-top: -10px;
+  }
+
+  .szc-featured-collection--box-hover .szc-featured-collection__item {
+    transition: z-index 200ms ease;
+    transition: z-index 250ms ease;
+  }
+
+  /* Base Box Card Style in Featured Collection */
+  /* Base Box Card Style in Featured Collection (Framed White Card matching Reference Screenshot) */
+  .szc-featured-collection--box-hover .szc-product-card {
+    position: relative;
+    border-radius: var(--szc-radius-card, 8px);
+    background-color: var(--szc-color-surface, #ffffff);
+    border: 1px solid var(--szc-color-border, rgba(0, 0, 0, 0.08)) !important;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.02) !important;
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    background-color: #ffffff !important;
+    border-radius: 18px !important;
+    padding: 10px 10px 14px 10px !important;
+    box-sizing: border-box !important;
+    text-decoration: none;
+    border: 1px solid rgba(0, 0, 0, 0.05) !important;
+    box-shadow: 0 16px 36px -8px rgba(0, 0, 0, 0.11), 0 4px 12px rgba(0, 0, 0, 0.04) !important;
+    transition: box-shadow 350ms ease, transform 350ms cubic-bezier(0.25, 1, 0.5, 1), border-color 350ms ease !important;
+    overflow: hidden;
+    transition: transform 200ms cubic-bezier(0.16, 1, 0.3, 1),
+                box-shadow 200ms cubic-bezier(0.16, 1, 0.3, 1),
+                border-color 200ms ease !important;
+    will-change: transform, box-shadow, border-color;
+    will-change: transform, box-shadow;
+  }
+
+  /* Desktop Hover State: Active only with mouse/trackpad pointer */
+  /* Rounded Media Container matching the reference image framing */
+  .szc-featured-collection--box-hover .szc-product-card .szc-product-card__media-container {
+    border-radius: 14px !important;
+    overflow: hidden !important;
+    position: relative !important;
+    background-color: #f2efe9 !important;
+  }
+
+  .szc-featured-collection--box-hover .szc-product-card .szc-product-card__image {
+    border-radius: 14px !important;
+  }
+
+  /* Clean Info Section spacing inside the framed card */
+  .szc-featured-collection--box-hover .szc-product-card .szc-product-card__info {
+    padding: 12px 4px 4px 4px !important;
+    background-color: transparent !important;
+    display: flex;
+    flex-direction: column;
+    flex-grow: 1;
+  }
+
+  /* Desktop Hover State: Exact matching shadow & elevation from reference screenshot */
+  @media (hover: hover) and (pointer: fine) {
+    .szc-featured-collection--box-hover .szc-featured-collection__item:hover {
+      z-index: 3;
+      z-index: 4;
+    }
+
+    .szc-featured-collection--box-hover .szc-product-card:hover {
+      border-color: rgba(0, 0, 0, 0.22) !important;
+      box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.12),
+                  0 4px 16px rgba(0, 0, 0, 0.06) !important;
+      transform: translateY(-2px) !important;
+      z-index: 2;
+      box-shadow: 0 22px 48px -10px rgba(0, 0, 0, 0.18), 0 8px 20px rgba(0, 0, 0, 0.06) !important;
+      transform: translateY(-6px) !important;
+      border-color: rgba(0, 0, 0, 0.08) !important;
+      z-index: 3;
+    }
+
+    /* Product image must NEVER zoom, crop, move, or change dimensions */
+    .szc-featured-collection--box-hover .szc-product-card:hover .szc-product-card__image--primary,
+    .szc-featured-collection--box-hover .szc-product-card:hover .szc-product-card__image,
+    .szc-featured-collection--box-hover .szc-product-card:hover .szc-card__media img {
+      transform: none !important;
+    }
+
+    /* Keep controls and buttons working smoothly */
+    .szc-featured-collection--box-hover .szc-product-card:hover .szc-product-card__quick-add {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    .szc-featured-collection--box-hover .szc-product-card__wishlist-btn:hover {
+      transform: scale(1.08);
+    }
+  }
+
+  /* Keyboard Accessibility Focus State */
+  .szc-featured-collection--box-hover .szc-product-card:focus-within {
+    border-color: rgba(0, 0, 0, 0.25) !important;
+    box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.14),
+                0 4px 16px rgba(0, 0, 0, 0.08) !important;
+    transform: translateY(-2px) !important;
+    z-index: 2;
+    border-color: rgba(0, 0, 0, 0.14) !important;
+    box-shadow: 0 22px 48px -10px rgba(0, 0, 0, 0.18), 0 8px 20px rgba(0, 0, 0, 0.06) !important;
+    transform: translateY(-6px) !important;
+    z-index: 3;
+  }
+
+  .szc-featured-collection--box-hover .szc-product-card a:focus-visible,
+  .szc-featured-collection--box-hover .szc-product-card button:focus-visible {
+    outline: 2px solid var(--szc-color-text-primary, #111111);
+    outline-offset: 2px;
+  }
+
+  /* Touch / Mobile Guard: Never stick in hover state after tapping */
+  /* Touch / Mobile Guard: Keep resting shadow on touch devices without sticky jump */
+  @media (hover: none) or (pointer: coarse) {
+    .szc-featured-collection--box-hover .szc-product-card:hover {
+      transform: none !important;
+      box-shadow: 0 1px 3px rgba(0, 0, 0, 0.02) !important;
+      border-color: var(--szc-color-border, rgba(0, 0, 0, 0.08)) !important;
+      box-shadow: 0 16px 36px -8px rgba(0, 0, 0, 0.11), 0 4px 12px rgba(0, 0, 0, 0.04) !important;
+      border-color: rgba(0, 0, 0, 0.05) !important;
+    }
+  }
+
+  /* Mobile screen padding refinement (<= 480px) */
+  @media (max-width: 480px) {
+    .szc-featured-collection--box-hover .szc-product-card {
+      border-radius: 14px !important;
+      padding: 8px 8px 10px 8px !important;
+      box-shadow: 0 10px 24px -6px rgba(0, 0, 0, 0.09), 0 2px 8px rgba(0, 0, 0, 0.03) !important;
+    }
+
+    .szc-featured-collection--box-hover .szc-product-card .szc-product-card__media-container,
+    .szc-featured-collection--box-hover .szc-product-card .szc-product-card__image {
+      border-radius: 10px !important;
+    }
+
+    .szc-featured-collection--box-hover .szc-product-card .szc-product-card__info {
+      padding: 8px 2px 2px 2px !important;
+    }
+  }
+
+  /* Reduced Motion Accessibility */
+  @media (prefers-reduced-motion: reduce) {
+    .szc-featured-collection--box-hover .szc-product-card {
+      transition: none !important;
+      transform: none !important;
+    }
+    .szc-featured-collection--box-hover .szc-product-card:hover,
+    .szc-featured-collection--box-hover .szc-product-card:focus-within {
+      transform: none !important;
+      transition: none !important;
     }
   }
 {% endstylesheet %}
@@ -288,7 +461,7 @@
       "min": 2,
       "max": 12,
       "step": 1,
-      "default": 5,
+      "default": 4,
       "label": "Maximum products to show"
     },
     {
@@ -297,7 +470,7 @@
       "min": 2,
       "max": 6,
       "step": 1,
-      "default": 5,
+      "default": 4,
       "label": "Number of columns on desktop"
     },
     {
@@ -337,9 +510,25 @@
     },
     {
       "type": "checkbox",
+      "id": "show_add_to_cart",
+      "default": false,
+      "label": "Show Add to Cart Button"
+    },
+    {
+      "type": "checkbox",
       "id": "show_view_all",
       "default": true,
       "label": "Enable 'VIEW ALL' link"
+    },
+    {
+      "type": "header",
+      "content": "Card Hover Effect"
+    },
+    {
+      "type": "checkbox",
+      "id": "enable_card_box_hover",
+      "default": true,
+      "label": "Enable premium box hover effect"
     }
   ],
   "presets": [

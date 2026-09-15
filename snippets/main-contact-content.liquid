@@ -38,11 +38,13 @@
     {%- endif -%}
     <div class="{{ hero_class }}"{% if hero_style != blank %} style="{{ hero_style }}"{% endif %}>
       <div class="szc-contact-container">
-        
+
         <!-- Breadcrumbs inside Hero Banner -->
         <nav class="szc-contact-breadcrumbs" aria-label="Breadcrumb">
           <a href="{{ routes.root_url }}">Home</a>
-          <span class="szc-breadcrumb-sep">&gt;</span>
+          <span class="szc-breadcrumb-sep" aria-hidden="true">
+            <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" focusable="false"><polyline points="9 18 15 12 9 6"></polyline></svg>
+          </span>
           <span class="szc-breadcrumb-current">Contact Us</span>
         </nav>
 
@@ -62,7 +64,7 @@
     <!-- 2. Contact Info Cards (4 Column Grid Overlapping Banner) -->
     {%- if show_cards -%}
       <div class="szc-contact-cards-grid">
-        
+
         <!-- Card 1: Customer Support -->
         <div class="szc-contact-card">
           <div class="szc-contact-card__icon-wrap">
@@ -360,7 +362,9 @@
   }
 
   .szc-breadcrumb-sep {
-    font-size: 11px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
     color: #999999;
   }
 
@@ -766,7 +770,7 @@
       btn.addEventListener('click', function() {
         const item = this.closest('.szc-faq-item');
         const isActive = item.classList.contains('is-active');
-        
+
         item.classList.toggle('is-active');
         this.setAttribute('aria-expanded', !isActive);
       });

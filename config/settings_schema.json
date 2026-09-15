@@ -407,6 +407,12 @@
       },
       {
         "type": "checkbox",
+        "id": "show_add_to_cart",
+        "label": "Show Add to Cart Button",
+        "default": false
+      },
+      {
+        "type": "checkbox",
         "id": "enable_quick_shop",
         "label": "Enable Quick Shop Modal Trigger",
         "default": true

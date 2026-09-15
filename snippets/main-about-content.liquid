@@ -38,11 +38,13 @@
     {%- endif -%}
     <div class="{{ hero_class }}"{% if hero_style != blank %} style="{{ hero_style }}"{% endif %}>
       <div class="szc-about-container">
-        
+
         <!-- Breadcrumbs inside Hero Banner -->
         <nav class="szc-about-breadcrumbs" aria-label="Breadcrumb">
           <a href="{{ routes.root_url }}">Home</a>
-          <span class="szc-breadcrumb-sep">&gt;</span>
+          <span class="szc-breadcrumb-sep" aria-hidden="true">
+            <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" focusable="false"><polyline points="9 18 15 12 9 6"></polyline></svg>
+          </span>
           <span class="szc-breadcrumb-current">About Us</span>
         </nav>
 
@@ -67,7 +69,7 @@
     <!-- 2. Value Proposition Cards (4 Column Grid Overlapping Banner) -->
     {%- if show_values -%}
       <div class="szc-about-values-grid">
-        
+
         <!-- Card 1 -->
         <div class="szc-about-val-card">
           <div class="szc-about-val-card__icon-wrap">
@@ -123,7 +125,7 @@
     {%- if show_story -%}
       <div class="szc-about-story-section" id="OurStorySection">
         <div class="szc-about-story-grid">
-          
+
           <!-- Left Column: 2x2 Image Collage -->
           <div class="szc-about-story-collage">
             <div class="szc-collage-item">
@@ -159,11 +161,11 @@
           <!-- Right Column: Story Text Content & 3 Key Stats -->
           <div class="szc-about-story-content">
             <h2 class="szc-about-story__title">{{ section.settings.story_title | default: "Our Story" }}</h2>
-            
+
             <p class="szc-about-story__text">
               {{ section.settings.story_p1 | default: "Founded with a simple mission—to create fashion that blends timeless elegance with everyday comfort. What began as a small idea has grown into a brand trusted by thousands of customers worldwide." }}
             </p>
-            
+
             <p class="szc-about-story__text">
               {{ section.settings.story_p2 | default: "We collaborate with skilled artisans and use high-quality materials to create pieces that are made to last and loved for years to come." }}
             </p>
@@ -351,7 +353,9 @@
   }
 
   .szc-breadcrumb-sep {
-    font-size: 11px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
     color: #999999;
   }
 

@@ -33,7 +33,7 @@
         "show_secondary_image": true,
         "show_vendor": false,
         "show_price": true,
-        "show_quick_add": true
+        "show_quick_add": false
       }
     }
   },

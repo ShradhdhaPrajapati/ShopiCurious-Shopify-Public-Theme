@@ -1,0 +1,1392 @@
+{% comment %}
+  ShopziCurious - Instagram Reels / Community Reels Section
+  Displays an editorial community showcase with a dominant center portrait 9:16 reel
+  and gracefully staggered surrounding reels in a small -> medium -> LARGE CENTER -> medium -> small hierarchy.
+  Transforms into a smooth touch-friendly scroll-snap carousel on mobile.
+{% endcomment %}
+
+{%- liquid
+  assign eyebrow = section.settings.eyebrow
+  assign heading = section.settings.heading | default: 'Meet the People Who Wear, Share and Shape ShopziCurious.'
+  assign description = section.settings.description | default: 'Real moments, everyday styling, and community favorites. Tag @shopzicurious to be featured.'
+  assign instagram_handle = section.settings.instagram_handle | default: '@shopzicurious'
+  assign instagram_url = section.settings.instagram_url
+  if instagram_url == blank
+    if instagram_handle != blank
+      assign clean_handle = instagram_handle | remove: '@'
+      assign instagram_url = 'https://www.instagram.com/' | append: clean_handle
+    else
+      assign instagram_url = 'https://www.instagram.com'
+    endif
+  endif
+  assign cta_label = section.settings.cta_label | default: 'Follow'
+  assign show_cta_mobile = section.settings.show_cta_mobile
+
+  assign center_reel_width = section.settings.center_reel_width | default: 300
+  assign mid_reel_width = section.settings.mid_reel_width | default: 195
+  assign outer_reel_width = section.settings.outer_reel_width | default: 175
+  assign reel_gap = section.settings.reel_gap | default: 20
+  assign stagger_amount = section.settings.stagger_amount | default: 20
+  assign card_radius = section.settings.card_radius | default: 18
+
+  assign autoplay_muted = section.settings.autoplay_muted
+  if autoplay_muted == nil
+    assign autoplay_muted = true
+  endif
+  assign enable_animation = section.settings.enable_animation
+  if enable_animation == nil
+    assign enable_animation = true
+  endif
+  assign enable_phone_frame = section.settings.enable_phone_frame
+  if enable_phone_frame == nil
+    assign enable_phone_frame = true
+  endif
+
+  assign mobile_reel_width = section.settings.mobile_reel_width | default: 260
+  assign mobile_gap = section.settings.mobile_gap | default: 16
+
+  assign bg_color = section.settings.bg_color | default: '#ffffff'
+  assign card_bg_color = section.settings.card_bg_color | default: '#f5f5f7'
+  assign heading_color = section.settings.heading_color | default: '#111111'
+  assign description_color = section.settings.description_color | default: '#555555'
+  assign eyebrow_color = section.settings.eyebrow_color | default: '#888888'
+  assign cta_bg_color = section.settings.cta_bg_color | default: '#111111'
+  assign cta_text_color = section.settings.cta_text_color | default: '#ffffff'
+
+  assign padding_top = section.settings.padding_top | default: 72
+  assign padding_bottom = section.settings.padding_bottom | default: 80
+
+  assign total_blocks = section.blocks.size
+  if total_blocks == 0
+    assign total_blocks = 7
+  endif
+  assign center_index = total_blocks | divided_by: 2
+-%}
+
+<section
+  id="InstagramReels-{{ section.id }}"
+  class="szc-instagram-reels {% if enable_animation %}szc-instagram-reels--animated{% endif %}"
+  style="
+    --szc-ir-bg: {{ bg_color }};
+    --szc-ir-card-bg: {{ card_bg_color }};
+    --szc-ir-heading: {{ heading_color }};
+    --szc-ir-desc: {{ description_color }};
+    --szc-ir-eyebrow: {{ eyebrow_color }};
+    --szc-ir-cta-bg: {{ cta_bg_color }};
+    --szc-ir-cta-text: {{ cta_text_color }};
+    --szc-ir-center-w: {{ center_reel_width }}px;
+    --szc-ir-mid-w: {{ mid_reel_width }}px;
+    --szc-ir-outer-w: {{ outer_reel_width }}px;
+    --szc-ir-gap: {{ reel_gap }}px;
+    --szc-ir-stagger: {{ stagger_amount }}px;
+    --szc-ir-radius: {{ card_radius }}px;
+    --szc-ir-mobile-w: {{ mobile_reel_width }}px;
+    --szc-ir-mobile-gap: {{ mobile_gap }}px;
+    --szc-ir-pt: {{ padding_top }}px;
+    --szc-ir-pb: {{ padding_bottom }}px;
+  "
+>
+  <div class="szc-instagram-reels__container page-width">
+    <!-- Section Editorial Header -->
+    <header class="szc-instagram-reels__header">
+      {%- if eyebrow != blank -%}
+        <p class="szc-instagram-reels__eyebrow">{{ eyebrow | escape }}</p>
+      {%- endif -%}
+
+      {%- if heading != blank -%}
+        <h2 class="szc-instagram-reels__heading">{{ heading | escape }}</h2>
+      {%- endif -%}
+
+      {%- if description != blank -%}
+        <p class="szc-instagram-reels__description">{{ description | escape }}</p>
+      {%- endif -%}
+
+      {%- if instagram_url != blank -%}
+        <div class="szc-instagram-reels__cta-wrap {% unless show_cta_mobile %}szc-instagram-reels__cta-wrap--hide-mobile{% endunless %}">
+          <a
+            href="{{ instagram_url }}"
+            class="szc-instagram-reels__cta"
+            target="_blank"
+            rel="noopener noreferrer"
+            aria-label="{{ cta_label }} {{ instagram_handle }} on Instagram"
+          >
+            <span class="szc-instagram-reels__cta-text">
+              {{ cta_label | escape }} {{ instagram_handle | escape }}
+            </span>
+          </a>
+        </div>
+      {%- endif -%}
+    </header>
+
+    <!-- Reels Showcase Web Component -->
+    <instagram-reels class="szc-instagram-reels__showcase" data-autoplay="{{ autoplay_muted }}">
+      <div class="szc-instagram-reels__track" role="region" aria-label="{{ heading | default: 'Instagram community reels' }}">
+        {%- if section.blocks.size > 0 -%}
+          {%- for block in section.blocks -%}
+            {%- liquid
+              assign idx = forloop.index0
+              assign diff = idx | minus: center_index
+              if diff < 0
+                assign abs_diff = diff | times: -1
+              else
+                assign abs_diff = diff
+              endif
+
+              assign is_center = false
+              if abs_diff == 0
+                assign is_center = true
+              endif
+
+              assign size_class = 'szc-instagram-reels__card--outer'
+              if is_center
+                assign size_class = 'szc-instagram-reels__card--center'
+              elsif abs_diff == 1
+                assign size_class = 'szc-instagram-reels__card--mid'
+              endif
+
+              assign stagger_class = 'szc-instagram-reels__card--stagger-zero'
+              if is_center
+                assign stagger_class = 'szc-instagram-reels__card--stagger-center'
+              elsif diff == -3 or diff == 3
+                assign stagger_class = 'szc-instagram-reels__card--stagger-outer'
+              elsif diff == -2 or diff == 2
+                assign stagger_class = 'szc-instagram-reels__card--stagger-mid'
+              elsif diff == -1 or diff == 1
+                assign stagger_class = 'szc-instagram-reels__card--stagger-near'
+              endif
+
+              assign reel_alt = block.settings.accessibility_label | default: 'Instagram community reel'
+            -%}
+
+            <div
+              class="szc-instagram-reels__card {{ size_class }} {{ stagger_class }} {% if is_center and enable_phone_frame %}szc-instagram-reels__card--phone{% endif %}"
+              data-reel-index="{{ idx }}"
+              {% if is_center %}data-is-center="true"{% endif %}
+              {{ block.shopify_attributes }}
+            >
+              {%- if is_center and enable_phone_frame -%}
+                <!-- Center Reel Smartphone Mockup Frame -->
+                <div class="szc-instagram-reels__phone">
+                  <span class="szc-instagram-reels__phone-button szc-instagram-reels__phone-button--action" aria-hidden="true"></span>
+                  <span class="szc-instagram-reels__phone-button szc-instagram-reels__phone-button--vol-up" aria-hidden="true"></span>
+                  <span class="szc-instagram-reels__phone-button szc-instagram-reels__phone-button--vol-down" aria-hidden="true"></span>
+                  <span class="szc-instagram-reels__phone-button szc-instagram-reels__phone-button--power" aria-hidden="true"></span>
+                  <div class="szc-instagram-reels__phone-speaker" aria-hidden="true"></div>
+
+                  <div class="szc-instagram-reels__phone-screen">
+                    <div class="szc-instagram-reels__dynamic-island" aria-hidden="true">
+                      <span class="szc-instagram-reels__dynamic-camera"></span>
+                      <span class="szc-instagram-reels__dynamic-sensor"></span>
+                    </div>
+
+                    {%- if block.settings.video != blank -%}
+                      {%- assign poster_url = '' -%}
+                      {%- if block.settings.poster_image != blank -%}
+                        {%- assign poster_url = block.settings.poster_image | image_url: width: 800 -%}
+                      {%- endif -%}
+
+                      {{ block.settings.video | video_tag:
+                        autoplay: autoplay_muted,
+                        loop: true,
+                        muted: true,
+                        controls: true,
+                        playsinline: true,
+                        preload: 'metadata',
+                        class: 'szc-instagram-reels__media szc-instagram-reels__media--video szc-instagram-reels__media--center',
+                        poster: poster_url
+                      }}
+                    {%- elsif block.settings.poster_image != blank -%}
+                      {{ block.settings.poster_image | image_url: width: 800 | image_tag:
+                        loading: 'lazy',
+                        class: 'szc-instagram-reels__media szc-instagram-reels__media--image',
+                        alt: reel_alt
+                      }}
+                      <div class="szc-instagram-reels__phone-home-bar" aria-hidden="true"></div>
+                    {%- else -%}
+                      <div class="szc-instagram-reels__placeholder">
+                        <div class="szc-instagram-reels__placeholder-graphic" aria-hidden="true">
+                          <svg class="szc-instagram-reels__placeholder-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round">
+                            <rect x="2" y="2" width="20" height="20" rx="5" ry="5"/>
+                            <path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"/>
+                            <line x1="17.5" y1="6.5" x2="17.51" y2="6.5"/>
+                          </svg>
+                        </div>
+                      </div>
+                      <div class="szc-instagram-reels__phone-home-bar" aria-hidden="true"></div>
+                    {%- endif -%}
+
+                    {%- assign card_link = block.settings.reel_url | default: instagram_url -%}
+                    {%- if card_link != blank -%}
+                      <a
+                        href="{{ card_link }}"
+                        class="szc-instagram-reels__insta-link"
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        aria-label="Open reel on Instagram"
+                      >
+                        <svg class="szc-instagram-reels__insta-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round">
+                          <rect x="2" y="2" width="20" height="20" rx="5" ry="5"/>
+                          <path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"/>
+                          <line x1="17.5" y1="6.5" x2="17.51" y2="6.5"/>
+                        </svg>
+                      </a>
+                    {%- endif -%}
+                  </div>
+                </div>
+              {%- else -%}
+                <div class="szc-instagram-reels__card-inner">
+                  {%- if block.settings.video != blank -%}
+                    {%- assign poster_url = '' -%}
+                    {%- if block.settings.poster_image != blank -%}
+                      {%- assign poster_url = block.settings.poster_image | image_url: width: 800 -%}
+                    {%- endif -%}
+
+                    {{ block.settings.video | video_tag:
+                      autoplay: autoplay_muted,
+                      loop: true,
+                      muted: true,
+                      controls: true,
+                      playsinline: true,
+                      preload: 'metadata',
+                      class: 'szc-instagram-reels__media szc-instagram-reels__media--video',
+                      poster: poster_url
+                    }}
+                  {%- elsif block.settings.poster_image != blank -%}
+                    {{ block.settings.poster_image | image_url: width: 800 | image_tag:
+                      loading: 'lazy',
+                      class: 'szc-instagram-reels__media szc-instagram-reels__media--image',
+                      alt: reel_alt
+                    }}
+                  {%- else -%}
+                    <div class="szc-instagram-reels__placeholder">
+                      <div class="szc-instagram-reels__placeholder-graphic" aria-hidden="true">
+                        <svg class="szc-instagram-reels__placeholder-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round">
+                          <rect x="2" y="2" width="20" height="20" rx="5" ry="5"/>
+                          <path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"/>
+                          <line x1="17.5" y1="6.5" x2="17.51" y2="6.5"/>
+                        </svg>
+                      </div>
+                    </div>
+                  {%- endif -%}
+
+                  {%- assign card_link = block.settings.reel_url | default: instagram_url -%}
+                  {%- if card_link != blank -%}
+                    <a
+                      href="{{ card_link }}"
+                      class="szc-instagram-reels__insta-link"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      aria-label="Open reel on Instagram"
+                    >
+                      <svg class="szc-instagram-reels__insta-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round">
+                        <rect x="2" y="2" width="20" height="20" rx="5" ry="5"/>
+                        <path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"/>
+                        <line x1="17.5" y1="6.5" x2="17.51" y2="6.5"/>
+                      </svg>
+                    </a>
+                  {%- endif -%}
+                </div>
+              {%- endif -%}
+            </div>
+          {%- endfor -%}
+        {%- else -%}
+          <!-- 7 Default Preview Cards matching reference composition -->
+          {%- for i in (1..7) -%}
+            {%- liquid
+              assign is_center = false
+              assign size_class = 'szc-instagram-reels__card--outer'
+              assign stagger_class = 'szc-instagram-reels__card--stagger-outer'
+              assign fallback_img = 'about-story-1.png'
+
+              case i
+                when 1
+                  assign stagger_class = 'szc-instagram-reels__card--stagger-outer'
+                  assign size_class = 'szc-instagram-reels__card--outer'
+                  assign fallback_img = 'style-that-speaks-bl.png'
+                when 2
+                  assign stagger_class = 'szc-instagram-reels__card--stagger-mid'
+                  assign size_class = 'szc-instagram-reels__card--mid'
+                  assign fallback_img = 'about-story-2.png'
+                when 3
+                  assign stagger_class = 'szc-instagram-reels__card--stagger-near'
+                  assign size_class = 'szc-instagram-reels__card--outer'
+                  assign fallback_img = 'about-story-1.png'
+                when 4
+                  assign is_center = true
+                  assign stagger_class = 'szc-instagram-reels__card--stagger-center'
+                  assign size_class = 'szc-instagram-reels__card--center'
+                  assign fallback_img = 'style-that-speaks-model.png'
+                when 5
+                  assign stagger_class = 'szc-instagram-reels__card--stagger-near'
+                  assign size_class = 'szc-instagram-reels__card--outer'
+                  assign fallback_img = 'about-story-3.png'
+                when 6
+                  assign stagger_class = 'szc-instagram-reels__card--stagger-mid'
+                  assign size_class = 'szc-instagram-reels__card--mid'
+                  assign fallback_img = 'about-story-4.png'
+                when 7
+                  assign stagger_class = 'szc-instagram-reels__card--stagger-outer'
+                  assign size_class = 'szc-instagram-reels__card--outer'
+                  assign fallback_img = 'style-that-speaks-tr.png'
+              endcase
+            -%}
+
+            <div
+              class="szc-instagram-reels__card {{ size_class }} {{ stagger_class }} {% if is_center and enable_phone_frame %}szc-instagram-reels__card--phone{% endif %}"
+              data-reel-index="{{ forloop.index0 }}"
+              {% if is_center %}data-is-center="true"{% endif %}
+            >
+              {%- if is_center and enable_phone_frame -%}
+                <!-- Center Reel Smartphone Mockup Frame -->
+                <div class="szc-instagram-reels__phone">
+                  <span class="szc-instagram-reels__phone-button szc-instagram-reels__phone-button--action" aria-hidden="true"></span>
+                  <span class="szc-instagram-reels__phone-button szc-instagram-reels__phone-button--vol-up" aria-hidden="true"></span>
+                  <span class="szc-instagram-reels__phone-button szc-instagram-reels__phone-button--vol-down" aria-hidden="true"></span>
+                  <span class="szc-instagram-reels__phone-button szc-instagram-reels__phone-button--power" aria-hidden="true"></span>
+                  <div class="szc-instagram-reels__phone-speaker" aria-hidden="true"></div>
+
+                  <div class="szc-instagram-reels__phone-screen">
+                    <div class="szc-instagram-reels__dynamic-island" aria-hidden="true">
+                      <span class="szc-instagram-reels__dynamic-camera"></span>
+                      <span class="szc-instagram-reels__dynamic-sensor"></span>
+                    </div>
+
+                    <img
+                      src="{{ fallback_img | asset_url }}"
+                      alt="Instagram community reel"
+                      loading="lazy"
+                      class="szc-instagram-reels__media szc-instagram-reels__media--image"
+                      width="600"
+                      height="1067"
+                    >
+
+                    <div class="szc-instagram-reels__phone-home-bar" aria-hidden="true"></div>
+                  </div>
+                </div>
+              {%- else -%}
+                <div class="szc-instagram-reels__card-inner">
+                  <img
+                    src="{{ fallback_img | asset_url }}"
+                    alt="Instagram community reel"
+                    loading="lazy"
+                    class="szc-instagram-reels__media szc-instagram-reels__media--image"
+                    width="600"
+                    height="933"
+                  >
+
+                  {%- if instagram_url != blank -%}
+                    <a
+                      href="{{ instagram_url }}"
+                      class="szc-instagram-reels__insta-link"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      aria-label="Open on Instagram"
+                    >
+                      <svg class="szc-instagram-reels__insta-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round">
+                        <rect x="2" y="2" width="20" height="20" rx="5" ry="5"/>
+                        <path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"/>
+                        <line x1="17.5" y1="6.5" x2="17.51" y2="6.5"/>
+                      </svg>
+                    </a>
+                  {%- endif -%}
+                </div>
+              {%- endif -%}
+            </div>
+          {%- endfor -%}
+        {%- endif -%}
+      </div>
+    </instagram-reels>
+  </div>
+</section>
+
+{% stylesheet %}
+  .szc-instagram-reels {
+    background-color: var(--szc-ir-bg, #ffffff);
+    padding-top: var(--szc-ir-pt, 72px);
+    padding-bottom: var(--szc-ir-pb, 80px);
+    width: 100%;
+    overflow: hidden;
+    position: relative;
+    box-sizing: border-box;
+  }
+
+  .szc-instagram-reels__container {
+    width: 100%;
+    max-width: var(--page-width, 1320px);
+    margin-left: auto;
+    margin-right: auto;
+    padding-left: var(--page-margin, 20px);
+    padding-right: var(--page-margin, 20px);
+    box-sizing: border-box;
+  }
+
+  /* Editorial Header */
+  .szc-instagram-reels__header {
+    text-align: center;
+    max-width: 780px;
+    margin: 0 auto 52px;
+    padding: 0 16px;
+    box-sizing: border-box;
+  }
+
+  .szc-instagram-reels__eyebrow {
+    font-family: var(--szc-font-family-body, sans-serif);
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--szc-ir-eyebrow, #888888);
+    margin: 0 0 12px;
+    line-height: 1.3;
+  }
+
+  .szc-instagram-reels__heading {
+    font-family: var(--szc-font-family-heading, "Playfair Display", Georgia, serif);
+    font-size: clamp(28px, 4.2vw, 44px);
+    font-weight: 700;
+    line-height: 1.18;
+    letter-spacing: -0.02em;
+    color: var(--szc-ir-heading, #111111);
+    margin: 0 0 16px;
+  }
+
+  .szc-instagram-reels__description {
+    font-family: var(--szc-font-family-body, sans-serif);
+    font-size: clamp(14px, 1.6vw, 16px);
+    line-height: 1.6;
+    color: var(--szc-ir-desc, #555555);
+    margin: 0 auto 24px;
+    max-width: 580px;
+  }
+
+  /* Rounded Instagram CTA Button */
+  .szc-instagram-reels__cta-wrap {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+
+  .szc-instagram-reels__cta {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    background-color: var(--szc-ir-cta-bg, #111111);
+    color: var(--szc-ir-cta-text, #ffffff);
+    padding: 11px 24px;
+    border-radius: 9999px;
+    text-decoration: none;
+    font-family: var(--szc-font-family-body, sans-serif);
+    font-size: 13px;
+    font-weight: 600;
+    letter-spacing: 0.04em;
+    line-height: 1;
+    transition: transform 220ms ease, opacity 220ms ease, background-color 220ms ease;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+  }
+
+  .szc-instagram-reels__cta:hover {
+    transform: translateY(-2px);
+    opacity: 0.92;
+    box-shadow: 0 6px 16px rgba(0, 0, 0, 0.12);
+  }
+
+  .szc-instagram-reels__cta:focus-visible {
+    outline: 2px solid var(--szc-ir-heading, #111111);
+    outline-offset: 3px;
+  }
+
+  .szc-instagram-reels__cta-icon {
+    width: 17px;
+    height: 17px;
+    stroke-width: 2;
+  }
+
+  /* Horizontal Showcase Rail */
+  .szc-instagram-reels__showcase {
+    display: block;
+    width: 100%;
+    position: relative;
+    padding-top: calc(var(--szc-ir-stagger, 20px) * 1.2);
+    padding-bottom: calc(var(--szc-ir-stagger, 20px) * 1.2);
+  }
+
+  .szc-instagram-reels__track {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+    gap: var(--szc-ir-gap, 20px);
+    width: 100%;
+    box-sizing: border-box;
+  }
+
+  /* Reel Card Architecture */
+  .szc-instagram-reels__card {
+    flex-shrink: 0;
+    position: relative;
+    box-sizing: border-box;
+    transition: transform 320ms cubic-bezier(0.2, 0, 0.2, 1);
+  }
+
+  .szc-instagram-reels__card:not(.szc-instagram-reels__card--phone) {
+    aspect-ratio: 9 / 14.5;
+  }
+
+  .szc-instagram-reels__card-inner {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    border-radius: var(--szc-ir-radius, 22px);
+    overflow: hidden;
+    background-color: var(--szc-ir-card-bg, #f5f5f7);
+    box-shadow: 0 4px 18px rgba(0, 0, 0, 0.05);
+    transition: box-shadow 320ms ease;
+  }
+
+  .szc-instagram-reels__card:not(.szc-instagram-reels__card--phone):hover .szc-instagram-reels__card-inner {
+    box-shadow: 0 10px 28px rgba(0, 0, 0, 0.12);
+  }
+
+  /* Center Reel Smartphone Mockup */
+  .szc-instagram-reels__card--center.szc-instagram-reels__card--phone {
+    width: var(--szc-ir-center-w, 310px);
+    aspect-ratio: 9 / 18.8;
+    z-index: 5;
+    position: relative;
+    transform: translateY(0);
+  }
+
+  .szc-instagram-reels__phone {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    border-radius: 46px;
+    background: #0f1012;
+    padding: 10px;
+    box-sizing: border-box;
+    box-shadow:
+      0 0 0 2.5px #3a3b3f,
+      0 0 0 4.5px #18191b,
+      inset 0 0 0 1px rgba(255, 255, 255, 0.18),
+      0 24px 50px -8px rgba(0, 0, 0, 0.32),
+      0 8px 18px -4px rgba(0, 0, 0, 0.18);
+    transition: transform 350ms cubic-bezier(0.2, 0, 0.2, 1), box-shadow 350ms ease;
+  }
+
+  .szc-instagram-reels__card--phone:hover .szc-instagram-reels__phone {
+    box-shadow:
+      0 0 0 2.5px #505258,
+      0 0 0 4.5px #18191b,
+      inset 0 0 0 1px rgba(255, 255, 255, 0.3),
+      0 32px 64px -10px rgba(0, 0, 0, 0.38),
+      0 12px 24px -4px rgba(0, 0, 0, 0.22);
+  }
+
+  /* Hardware Side Buttons */
+  .szc-instagram-reels__phone-button {
+    position: absolute;
+    background: #343538;
+    pointer-events: none;
+    z-index: -1;
+  }
+
+  /* Action button (Left top) */
+  .szc-instagram-reels__phone-button--action {
+    left: -4px;
+    top: 74px;
+    width: 3px;
+    height: 18px;
+    border-radius: 2px 0 0 2px;
+    background: linear-gradient(to left, #242528, #45464a);
+  }
+
+  /* Volume Up (Left middle-top) */
+  .szc-instagram-reels__phone-button--vol-up {
+    left: -4px;
+    top: 106px;
+    width: 3px;
+    height: 42px;
+    border-radius: 2px 0 0 2px;
+    background: linear-gradient(to left, #242528, #45464a);
+  }
+
+  /* Volume Down (Left middle-bottom) */
+  .szc-instagram-reels__phone-button--vol-down {
+    left: -4px;
+    top: 158px;
+    width: 3px;
+    height: 42px;
+    border-radius: 2px 0 0 2px;
+    background: linear-gradient(to left, #242528, #45464a);
+  }
+
+  /* Power / Side Button (Right) */
+  .szc-instagram-reels__phone-button--power {
+    right: -4px;
+    top: 118px;
+    width: 3px;
+    height: 62px;
+    border-radius: 0 2px 2px 0;
+    background: linear-gradient(to right, #242528, #45464a);
+  }
+
+  /* Top Ear-Piece Speaker */
+  .szc-instagram-reels__phone-speaker {
+    position: absolute;
+    top: 4px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 44px;
+    height: 3px;
+    background-color: #1a1a1c;
+    border-radius: 3px;
+    z-index: 12;
+    pointer-events: none;
+  }
+
+  /* Screen Display */
+  .szc-instagram-reels__phone-screen {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    border-radius: 36px;
+    overflow: hidden;
+    background-color: #000000;
+  }
+
+  /* Dynamic Island */
+  .szc-instagram-reels__dynamic-island {
+    position: absolute;
+    top: 11px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 78px;
+    height: 22px;
+    background-color: #000000;
+    border-radius: 20px;
+    z-index: 11;
+    pointer-events: none;
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    padding-right: 9px;
+    box-sizing: border-box;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.4);
+  }
+
+  .szc-instagram-reels__dynamic-camera {
+    width: 9px;
+    height: 9px;
+    border-radius: 50%;
+    background: radial-gradient(circle at 40% 35%, #18263e 0%, #0c1322 55%, #05070c 100%);
+    box-shadow: inset 0 0 1px rgba(255, 255, 255, 0.4);
+    display: inline-block;
+  }
+
+  .szc-instagram-reels__dynamic-sensor {
+    width: 3.5px;
+    height: 3.5px;
+    border-radius: 50%;
+    background-color: #080a10;
+    margin-left: 6px;
+    display: inline-block;
+  }
+
+  /* Home Indicator Bar */
+  .szc-instagram-reels__phone-home-bar {
+    position: absolute;
+    bottom: 8px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 94px;
+    height: 4px;
+    background-color: rgba(255, 255, 255, 0.88);
+    border-radius: 4px;
+    z-index: 11;
+    pointer-events: none;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.4);
+  }
+
+  /* Hierarchy Sizing */
+  .szc-instagram-reels__card--center {
+    width: var(--szc-ir-center-w, 310px);
+    z-index: 4;
+  }
+
+  .szc-instagram-reels__card--mid {
+    width: var(--szc-ir-mid-w, 195px);
+    z-index: 2;
+  }
+
+  .szc-instagram-reels__card--outer {
+    width: var(--szc-ir-outer-w, 175px);
+    z-index: 1;
+  }
+
+  /* Staggered Vertical Offsets (Small -> Med -> Large Center -> Med -> Small) */
+  .szc-instagram-reels__card--stagger-center {
+    transform: translateY(0);
+  }
+
+  .szc-instagram-reels__card--stagger-near {
+    transform: translateY(calc(var(--szc-ir-stagger, 20px) * 0.8));
+  }
+
+  .szc-instagram-reels__card--stagger-mid {
+    transform: translateY(calc(var(--szc-ir-stagger, 20px) * -0.9));
+  }
+
+  .szc-instagram-reels__card--stagger-outer {
+    transform: translateY(calc(var(--szc-ir-stagger, 20px) * 1.2));
+  }
+
+  /* Card Media */
+  .szc-instagram-reels__media {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+    transition: transform 450ms cubic-bezier(0.2, 0, 0.2, 1);
+  }
+
+  .szc-instagram-reels__card:hover .szc-instagram-reels__media {
+    transform: scale(1.035);
+  }
+
+  /* Clean Light Fallback / Placeholder */
+  .szc-instagram-reels__placeholder {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    background: linear-gradient(145deg, #f7f7f9 0%, #eceef2 100%);
+    color: #9aa0a6;
+    padding: 20px;
+    box-sizing: border-box;
+    transition: transform 450ms cubic-bezier(0.2, 0, 0.2, 1);
+  }
+
+  .szc-instagram-reels__card:hover .szc-instagram-reels__placeholder {
+    transform: scale(1.035);
+  }
+
+  .szc-instagram-reels__placeholder-graphic {
+    width: 48px;
+    height: 48px;
+    border-radius: 14px;
+    background-color: rgba(255, 255, 255, 0.7);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 12px;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.03);
+  }
+
+  .szc-instagram-reels__placeholder-svg {
+    width: 24px;
+    height: 24px;
+    color: #70757a;
+  }
+
+  /* Scrim Gradients for text contrast */
+  .szc-instagram-reels__scrim {
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(
+      to bottom,
+      rgba(0, 0, 0, 0.24) 0%,
+      transparent 28%,
+      transparent 64%,
+      rgba(0, 0, 0, 0.52) 100%
+    );
+    pointer-events: none;
+    z-index: 2;
+  }
+
+  /* Instagram External Link Button */
+  .szc-instagram-reels__insta-link {
+    position: absolute;
+    top: 14px;
+    right: 14px;
+    width: 34px;
+    height: 34px;
+    border-radius: 50%;
+    background-color: rgba(0, 0, 0, 0.42);
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    color: #ffffff;
+    text-decoration: none;
+    z-index: 10;
+    cursor: pointer;
+    transition: transform 220ms ease, background-color 220ms ease, box-shadow 220ms ease;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.25);
+  }
+
+  .szc-instagram-reels__insta-link:hover {
+    transform: scale(1.12);
+    background-color: rgba(0, 0, 0, 0.72);
+    box-shadow: 0 4px 14px rgba(0, 0, 0, 0.35);
+    color: #ffffff;
+  }
+
+  .szc-instagram-reels__insta-link:focus-visible {
+    outline: 2px solid #ffffff;
+    outline-offset: 2px;
+  }
+
+  .szc-instagram-reels__insta-icon {
+    width: 17px;
+    height: 17px;
+  }
+
+  /* Native Reel Video & Controls on all cards */
+  .szc-instagram-reels__media--video {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    pointer-events: auto;
+    z-index: 2;
+    background-color: #000000;
+  }
+
+  /* Keep native controls and video stable without hover distortion across all cards */
+  .szc-instagram-reels__card:hover .szc-instagram-reels__media--video {
+    transform: none !important;
+  }
+
+  /* Clickable Card Overlay Link */
+  .szc-instagram-reels__card-link {
+    position: absolute;
+    inset: 0;
+    z-index: 5;
+    text-decoration: none;
+    cursor: pointer;
+  }
+
+  /* Tablet Scaling Breakpoints */
+  @media (min-width: 768px) and (max-width: 1200px) {
+    .szc-instagram-reels__card--center {
+      width: clamp(240px, 25vw, 280px);
+    }
+
+    .szc-instagram-reels__card--mid {
+      width: clamp(150px, 16vw, 175px);
+    }
+
+    .szc-instagram-reels__card--outer {
+      width: clamp(130px, 13vw, 155px);
+    }
+
+    .szc-instagram-reels__track {
+      gap: clamp(10px, 1.4vw, 16px);
+    }
+  }
+
+  /* Mobile Responsive Scroll-Snap Carousel */
+  @media (max-width: 767px) {
+    .szc-instagram-reels {
+      padding-top: calc(var(--szc-ir-pt, 72px) * 0.7);
+      padding-bottom: calc(var(--szc-ir-pb, 80px) * 0.7);
+    }
+
+    .szc-instagram-reels__container {
+      padding-left: 0;
+      padding-right: 0;
+    }
+
+    .szc-instagram-reels__header {
+      margin-bottom: 32px;
+      padding-left: 20px;
+      padding-right: 20px;
+    }
+
+    .szc-instagram-reels__cta-wrap--hide-mobile {
+      display: none;
+    }
+
+    .szc-instagram-reels__showcase {
+      padding-top: 0;
+      padding-bottom: 0;
+    }
+
+    .szc-instagram-reels__track {
+      flex-wrap: nowrap;
+      justify-content: flex-start;
+      overflow-x: auto;
+      overflow-y: hidden;
+      -webkit-overflow-scrolling: touch;
+      scroll-snap-type: x mandatory;
+      scrollbar-width: none;
+      -ms-overflow-style: none;
+      gap: var(--szc-ir-mobile-gap, 16px);
+      /* Side padding centers active card and allows next/prev to peek */
+      padding-left: calc(50vw - (var(--szc-ir-mobile-w, 260px) / 2));
+      padding-right: calc(50vw - (var(--szc-ir-mobile-w, 260px) / 2));
+      box-sizing: border-box;
+      width: 100%;
+    }
+
+    .szc-instagram-reels__track::-webkit-scrollbar {
+      display: none;
+    }
+
+    .szc-instagram-reels__card {
+      scroll-snap-align: center;
+      transform: none !important;
+    }
+
+    .szc-instagram-reels__card--phone {
+      width: var(--szc-ir-mobile-w, 260px) !important;
+      aspect-ratio: 9 / 18.8 !important;
+    }
+
+    .szc-instagram-reels__card:not(.szc-instagram-reels__card--phone) {
+      width: calc(var(--szc-ir-mobile-w, 260px) * 0.86) !important;
+      aspect-ratio: 9 / 14.5 !important;
+    }
+
+    .szc-instagram-reels__phone {
+      border-radius: 38px;
+      padding: 7px;
+    }
+
+    .szc-instagram-reels__phone-screen {
+      border-radius: 30px;
+    }
+
+    .szc-instagram-reels__dynamic-island {
+      width: 66px;
+      height: 18px;
+      top: 8px;
+    }
+
+    .szc-instagram-reels__dynamic-camera {
+      width: 7px;
+      height: 7px;
+    }
+
+    .szc-instagram-reels__phone-home-bar {
+      width: 76px;
+      height: 3.5px;
+      bottom: 5px;
+    }
+
+    .szc-instagram-reels__insta-link {
+      top: 10px;
+      right: 10px;
+      width: 30px;
+      height: 30px;
+    }
+
+    .szc-instagram-reels__insta-icon {
+      width: 15px;
+      height: 15px;
+    }
+  }
+
+  /* Reduced Motion Accessibility */
+  @media (prefers-reduced-motion: reduce) {
+    .szc-instagram-reels__card,
+    .szc-instagram-reels__media,
+    .szc-instagram-reels__placeholder,
+    .szc-instagram-reels__cta {
+      transition: none !important;
+      transform: none !important;
+    }
+  }
+{% endstylesheet %}
+
+{% javascript %}
+  class InstagramReels extends HTMLElement {
+    constructor() {
+      super();
+      this.track = null;
+      this.centerCard = null;
+      this.videos = [];
+      this.observer = null;
+      this.autoplayEnabled = this.dataset.autoplay === 'true';
+    }
+
+    connectedCallback() {
+      this.track = this.querySelector('.szc-instagram-reels__track');
+      this.centerCard = this.querySelector('[data-is-center="true"]') || this.querySelector('.szc-instagram-reels__card:nth-child(4)');
+      this.videos = Array.from(this.querySelectorAll('video'));
+
+      this.centerMobileReel();
+      this.setupVideoObserver();
+    }
+
+    disconnectedCallback() {
+      if (this.observer) {
+        this.observer.disconnect();
+      }
+    }
+
+    centerMobileReel() {
+      if (!this.track || !this.centerCard) return;
+      if (window.innerWidth <= 767) {
+        requestAnimationFrame(() => {
+          const trackRect = this.track.getBoundingClientRect();
+          const cardRect = this.centerCard.getBoundingClientRect();
+          const scrollTarget = this.centerCard.offsetLeft - (trackRect.width - cardRect.width) / 2;
+          this.track.scrollLeft = scrollTarget;
+        });
+      }
+    }
+
+    setupVideoObserver() {
+      if (!('IntersectionObserver' in window)) return;
+
+      this.observer = new IntersectionObserver((entries) => {
+        entries.forEach((entry) => {
+          const video = entry.target;
+          if (entry.isIntersecting) {
+            if (this.autoplayEnabled) {
+              const playPromise = video.play();
+              if (playPromise !== undefined) {
+                playPromise.catch(() => {
+                  // Browser prevented autoplay
+                });
+              }
+            }
+          } else {
+            video.pause();
+          }
+        });
+      }, {
+        threshold: 0.4
+      });
+
+      this.videos.forEach((video) => {
+        this.observer.observe(video);
+
+        video.addEventListener('play', () => {
+          if (!video.muted) {
+            this.videos.forEach((other) => {
+              if (other !== video && !other.paused) {
+                other.pause();
+              }
+            });
+          }
+        });
+      });
+    }
+  }
+
+  if (!customElements.get('instagram-reels')) {
+    customElements.define('instagram-reels', InstagramReels);
+  }
+{% endjavascript %}
+
+{% schema %}
+{
+  "name": "Instagram Reels",
+  "tag": "section",
+  "class": "section-instagram-reels",
+  "max_blocks": 7,
+  "settings": [
+    {
+      "type": "header",
+      "content": "Editorial Content"
+    },
+    {
+      "type": "text",
+      "id": "eyebrow",
+      "label": "Eyebrow tag",
+      "default": "COMMUNITY"
+    },
+    {
+      "type": "text",
+      "id": "heading",
+      "label": "Heading",
+      "default": "Meet the People Who Wear, Share and Shape ShopziCurious."
+    },
+    {
+      "type": "textarea",
+      "id": "description",
+      "label": "Description",
+      "default": "Real moments, everyday styling, and community favorites. Tag @shopzicurious to be featured."
+    },
+    {
+      "type": "text",
+      "id": "instagram_handle",
+      "label": "Instagram Handle",
+      "default": "@shopzicurious"
+    },
+    {
+      "type": "url",
+      "id": "instagram_url",
+      "label": "Instagram Profile URL"
+    },
+    {
+      "type": "text",
+      "id": "cta_label",
+      "label": "Button action prefix",
+      "default": "Follow"
+    },
+    {
+      "type": "header",
+      "content": "Smartphone Frame"
+    },
+    {
+      "type": "checkbox",
+      "id": "enable_phone_frame",
+      "label": "Show smartphone frame on center reel",
+      "default": true
+    },
+    {
+      "type": "header",
+      "content": "Reel Sizing & Stagger"
+    },
+    {
+      "type": "range",
+      "id": "center_reel_width",
+      "min": 260,
+      "max": 360,
+      "step": 10,
+      "unit": "px",
+      "label": "Center dominant reel width",
+      "default": 300
+    },
+    {
+      "type": "range",
+      "id": "mid_reel_width",
+      "min": 160,
+      "max": 240,
+      "step": 5,
+      "unit": "px",
+      "label": "Mid-tier reel width",
+      "default": 195
+    },
+    {
+      "type": "range",
+      "id": "outer_reel_width",
+      "min": 140,
+      "max": 200,
+      "step": 5,
+      "unit": "px",
+      "label": "Outer-tier reel width",
+      "default": 175
+    },
+    {
+      "type": "range",
+      "id": "reel_gap",
+      "min": 10,
+      "max": 36,
+      "step": 2,
+      "unit": "px",
+      "label": "Spacing between reels",
+      "default": 20
+    },
+    {
+      "type": "range",
+      "id": "stagger_amount",
+      "min": 8,
+      "max": 36,
+      "step": 2,
+      "unit": "px",
+      "label": "Vertical stagger amount",
+      "default": 20
+    },
+    {
+      "type": "range",
+      "id": "card_radius",
+      "min": 8,
+      "max": 28,
+      "step": 2,
+      "unit": "px",
+      "label": "Card corner radius",
+      "default": 18
+    },
+    {
+      "type": "header",
+      "content": "Colors"
+    },
+    {
+      "type": "color",
+      "id": "bg_color",
+      "label": "Section background color",
+      "default": "#ffffff"
+    },
+    {
+      "type": "color",
+      "id": "card_bg_color",
+      "label": "Card fallback background",
+      "default": "#f5f5f7"
+    },
+    {
+      "type": "color",
+      "id": "heading_color",
+      "label": "Heading color",
+      "default": "#111111"
+    },
+    {
+      "type": "color",
+      "id": "description_color",
+      "label": "Description color",
+      "default": "#555555"
+    },
+    {
+      "type": "color",
+      "id": "eyebrow_color",
+      "label": "Eyebrow color",
+      "default": "#888888"
+    },
+    {
+      "type": "color",
+      "id": "cta_bg_color",
+      "label": "CTA button background",
+      "default": "#111111"
+    },
+    {
+      "type": "color",
+      "id": "cta_text_color",
+      "label": "CTA button text",
+      "default": "#ffffff"
+    },
+    {
+      "type": "header",
+      "content": "Video & Animation"
+    },
+    {
+      "type": "checkbox",
+      "id": "autoplay_muted",
+      "label": "Autoplay muted videos when in view",
+      "default": true
+    },
+    {
+      "type": "checkbox",
+      "id": "enable_animation",
+      "label": "Enable smooth hover and staggered motion",
+      "default": true
+    },
+    {
+      "type": "header",
+      "content": "Mobile Settings"
+    },
+    {
+      "type": "range",
+      "id": "mobile_reel_width",
+      "min": 200,
+      "max": 320,
+      "step": 10,
+      "unit": "px",
+      "label": "Mobile reel width",
+      "default": 260
+    },
+    {
+      "type": "range",
+      "id": "mobile_gap",
+      "min": 10,
+      "max": 24,
+      "step": 2,
+      "unit": "px",
+      "label": "Mobile gap",
+      "default": 16
+    },
+    {
+      "type": "checkbox",
+      "id": "show_cta_mobile",
+      "label": "Show Instagram CTA on mobile",
+      "default": true
+    },
+    {
+      "type": "header",
+      "content": "Section Padding"
+    },
+    {
+      "type": "range",
+      "id": "padding_top",
+      "min": 24,
+      "max": 140,
+      "step": 4,
+      "unit": "px",
+      "label": "Padding top",
+      "default": 72
+    },
+    {
+      "type": "range",
+      "id": "padding_bottom",
+      "min": 24,
+      "max": 140,
+      "step": 4,
+      "unit": "px",
+      "label": "Padding bottom",
+      "default": 80
+    }
+  ],
+  "blocks": [
+    {
+      "type": "instagram_reel",
+      "name": "Reel Card",
+      "settings": [
+        {
+          "type": "video",
+          "id": "video",
+          "label": "Reel Video (Shopify hosted)"
+        },
+        {
+          "type": "image_picker",
+          "id": "poster_image",
+          "label": "Poster / Fallback Image",
+          "info": "Portrait 9:16 recommended"
+        },
+        {
+          "type": "url",
+          "id": "reel_url",
+          "label": "Reel Link (optional)"
+        },
+        {
+          "type": "text",
+          "id": "accessibility_label",
+          "label": "Accessibility description (optional)"
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "Instagram Reels",
+      "blocks": [
+        {
+          "type": "instagram_reel"
+        },
+        {
+          "type": "instagram_reel"
+        },
+        {
+          "type": "instagram_reel"
+        },
+        {
+          "type": "instagram_reel"
+        },
+        {
+          "type": "instagram_reel"
+        },
+        {
+          "type": "instagram_reel"
+        },
+        {
+          "type": "instagram_reel"
+        }
+      ]
+    }
+  ]
+}
+{% endschema %}
+
