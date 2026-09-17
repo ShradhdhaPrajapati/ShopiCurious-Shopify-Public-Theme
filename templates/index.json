@@ -308,61 +308,9 @@
         "enable_swipe_mobile": true,
         "image_ratio": "portrait",
         "show_price": true,
+        "show_add_to_cart": false,
         "show_view_all": true,
         "enable_card_box_hover": true
-      }
-    },
-    "promo_banner": {
-      "type": "promo-banner",
-      "blocks": {
-        "promo_feature_1": {
-          "type": "feature",
-          "settings": {
-            "icon": "fabric",
-            "title": "Premium Fabrics",
-            "subtitle": "Soft, Durable & Sustainable"
-          }
-        },
-        "promo_feature_2": {
-          "type": "feature",
-          "settings": {
-            "icon": "shield-check",
-            "title": "Made to Last",
-            "subtitle": "Timeless Designs"
-          }
-        },
-        "promo_feature_3": {
-          "type": "feature",
-          "settings": {
-            "icon": "user-heart",
-            "title": "Trusted by 10,000+",
-            "subtitle": "Happy Customers"
-          }
-        }
-      },
-      "block_order": [
-        "promo_feature_1",
-        "promo_feature_2",
-        "promo_feature_3"
-      ],
-      "settings": {
-        "image": "shopify://shop_images/Promo_left_side.png",
-        "subtitle": "CRAFTED TO PERFECTION",
-        "title": "Modern Fashion, Created to Last",
-        "description": "Each piece is a work of art, designed to celebrate life's most precious moments.",
-        "button_label": "DISCOVER OUR STORY",
-        "button_link": "",
-        "content_position": "right",
-        "show_features": true,
-        "subtitle_color": "#666666",
-        "subtitle_size": 11,
-        "subtitle_weight": "600",
-        "title_color": "#111111",
-        "title_size": 32,
-        "title_weight": "500",
-        "desc_color": "#555555",
-        "desc_size": 13,
-        "desc_weight": "400"
       }
     },
     "diagonal_marquee_fbpNyz": {
@@ -427,7 +375,7 @@
       ],
       "name": "Diagonal Marquee",
       "settings": {
-        "bg_color": "#FAF8F5",
+        "bg_color": "#FFFFFF",
         "height_desktop": 280,
         "height_mobile": 200,
         "padding_top": 0,
@@ -437,8 +385,8 @@
         "strip_height_mobile": 46,
         "item_spacing_desktop": 32,
         "item_spacing_mobile": 20,
-        "row1_bg_color": "#2F2F2F",
-        "row1_text_color": "#F5F5F5",
+        "row1_bg_color": "#2f2f2f",
+        "row1_text_color": "#f5f5f5",
         "row1_angle_desktop": -4,
         "row1_angle_mobile": -4,
         "row1_direction": "right",
@@ -448,7 +396,7 @@
         "row1_font_weight": "500",
         "row1_text_transform": "none",
         "row2_bg_color": "#000000",
-        "row2_text_color": "#F5F5F5",
+        "row2_text_color": "#f5f5f5",
         "row2_angle_desktop": 4,
         "row2_angle_mobile": 4,
         "row2_direction": "left",
@@ -458,6 +406,59 @@
         "row2_font_weight": "500",
         "row2_text_transform": "none",
         "row2_on_top": true
+      }
+    },
+    "promo_banner": {
+      "type": "promo-banner",
+      "blocks": {
+        "promo_feature_1": {
+          "type": "feature",
+          "settings": {
+            "icon": "fabric",
+            "title": "Premium Fabrics",
+            "subtitle": "Soft, Durable & Sustainable"
+          }
+        },
+        "promo_feature_2": {
+          "type": "feature",
+          "settings": {
+            "icon": "shield-check",
+            "title": "Made to Last",
+            "subtitle": "Timeless Designs"
+          }
+        },
+        "promo_feature_3": {
+          "type": "feature",
+          "settings": {
+            "icon": "user-heart",
+            "title": "Trusted by 10,000+",
+            "subtitle": "Happy Customers"
+          }
+        }
+      },
+      "block_order": [
+        "promo_feature_1",
+        "promo_feature_2",
+        "promo_feature_3"
+      ],
+      "settings": {
+        "image": "shopify://shop_images/Promo_left_side.png",
+        "subtitle": "CRAFTED TO PERFECTION",
+        "title": "Modern Fashion, Created to Last",
+        "description": "Each piece is a work of art, designed to celebrate life's most precious moments.",
+        "button_label": "DISCOVER OUR STORY",
+        "button_link": "",
+        "content_position": "right",
+        "show_features": true,
+        "subtitle_color": "#666666",
+        "subtitle_size": 11,
+        "subtitle_weight": "600",
+        "title_color": "#111111",
+        "title_size": 32,
+        "title_weight": "500",
+        "desc_color": "#555555",
+        "desc_size": 13,
+        "desc_weight": "400"
       }
     },
     "scroll_reveal_gallery_zcWGRC": {
@@ -1207,8 +1208,8 @@
     "feature_icons_bar",
     "category_cards",
     "featured_collection",
-    "promo_banner",
     "diagonal_marquee_fbpNyz",
+    "promo_banner",
     "scroll_reveal_gallery_zcWGRC",
     "explore_collections_xGCiHg",
     "style_that_speaks_xjCtwU",

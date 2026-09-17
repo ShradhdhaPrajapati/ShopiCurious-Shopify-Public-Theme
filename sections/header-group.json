@@ -14,11 +14,43 @@
     "announcement-bar": {
       "type": "announcement-bar",
       "blocks": {
+        "social_instagram": {
+          "type": "social_link",
+          "settings": {
+            "platform": "instagram",
+            "link": "https://instagram.com",
+            "aria_label": ""
+          }
+        },
+        "social_facebook": {
+          "type": "social_link",
+          "settings": {
+            "platform": "facebook",
+            "link": "https://facebook.com",
+            "aria_label": ""
+          }
+        },
+        "social_twitter": {
+          "type": "social_link",
+          "settings": {
+            "platform": "twitter",
+            "link": "https://twitter.com",
+            "aria_label": ""
+          }
+        },
+        "social_pinterest": {
+          "type": "social_link",
+          "settings": {
+            "platform": "pinterest",
+            "link": "https://pinterest.com",
+            "aria_label": ""
+          }
+        },
         "announcement_new_arrivals": {
           "type": "announcement",
           "settings": {
             "icon": "none",
-            "text": "New Arrivals \u2014 Explore the Latest Trends",
+            "text": "New Arrivals — Explore the Latest Trends",
             "link": ""
           }
         },
@@ -26,7 +58,7 @@
           "type": "announcement",
           "settings": {
             "icon": "none",
-            "text": "Limited Time Offers \u2014 Up to 40% Off",
+            "text": "Limited Time Offers — Up to 40% Off",
             "link": ""
           }
         },
@@ -46,32 +78,12 @@
             "link": ""
           }
         },
-        "social_instagram": {
-          "type": "social_link",
+        "announcement_contact_phone": {
+          "type": "contact_phone",
           "settings": {
-            "platform": "instagram",
-            "link": "https://instagram.com"
-          }
-        },
-        "social_facebook": {
-          "type": "social_link",
-          "settings": {
-            "platform": "facebook",
-            "link": "https://facebook.com"
-          }
-        },
-        "social_twitter": {
-          "type": "social_link",
-          "settings": {
-            "platform": "twitter",
-            "link": "https://twitter.com"
-          }
-        },
-        "social_pinterest": {
-          "type": "social_link",
-          "settings": {
-            "platform": "pinterest",
-            "link": "https://pinterest.com"
+            "icon": "phone-outline",
+            "phone_number": "+1 234 567 8900",
+            "link": ""
           }
         }
       },
@@ -83,20 +95,24 @@
         "announcement_new_arrivals",
         "announcement_limited_offers",
         "announcement_kYWTCq",
-        "announcement_new_collection"
+        "announcement_new_collection",
+        "announcement_contact_phone"
       ],
       "settings": {
         "enable_auto_slide": true,
         "auto_slide_speed": 4,
-        "show_country_selector": true,
-        "country_format": "flag_currency",
         "announcement_alignment": "center",
-        "background_color": "#f7f6f4",
-        "text_color": "#2b2b2b",
-        "border_color": "#e8e6e1",
         "show_social_icons": true,
         "show_social_mobile": false,
-        "social_icon_size": 14
+        "social_icon_size": 14,
+        "show_phone_number": true,
+        "phone_icon": "phone",
+        "phone_number": "+1 234 567 8900",
+        "show_country_selector": false,
+        "country_format": "flag_currency",
+        "background_color": "#f7f6f4",
+        "text_color": "#2b2b2b",
+        "border_color": "#e8e6e1"
       }
     },
     "header": {
@@ -108,6 +124,7 @@
             "menu_item_title": "WOMEN",
             "menu_type": "mega",
             "show_banner": true,
+            "banner_image": "shopify://shop_images/OversizedKnitSweater_199ef7ef-06f6-4497-8352-f71cf1f0649c.png",
             "banner_subtitle": "NEW COLLECTION",
             "banner_heading": "Elevate Your Every Day Style",
             "banner_description": "Timeless pieces, modern silhouettes.",
@@ -121,16 +138,18 @@
             "occasions_menu": "shop-by-occasion",
             "show_new_arrivals": true,
             "new_arrivals_title": "NEW ARRIVAL",
-            "new_arrivals_collection": "",
+            "new_arrivals_collection": "new-in",
             "products_to_show": 4,
             "show_card_1": true,
             "card_1_title": "FEATURED COLLECTION",
+            "card_1_image": "shopify://shop_images/Sunglassesforwomen1.png",
             "card_1_subheading": "Summer Edit",
             "card_1_description": "Light, Breezy & Chic",
             "card_1_button_label": "SHOP COLLECTION",
             "card_1_button_link": "",
             "show_card_2": true,
             "card_2_title": "BEST SELLERS",
+            "card_2_image": "shopify://shop_images/WristWatch_e9cd5aad-5e33-43ea-b5ca-7347eab12a3c.png",
             "card_2_subheading": "Minimal Stones",
             "card_2_description": "Timeless Brilliance",
             "card_2_button_label": "EXPLORE NOW",
@@ -181,7 +200,10 @@
       "settings": {
         "logo_width": 140,
         "menu": "main-menu",
-        "enable_sticky_header": true
+        "enable_sticky_header": true,
+        "show_logo_underline": true,
+        "show_country_selector": true,
+        "accent_color": "#c87a38"
       }
     }
   },

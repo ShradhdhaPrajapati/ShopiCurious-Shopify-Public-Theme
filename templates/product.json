@@ -46,12 +46,22 @@
         "buy_buttons": {
           "type": "buy_buttons",
           "settings": {
+            "show_add_to_cart": true,
             "show_dynamic_checkout": true
           }
         },
         "trust_badges": {
           "type": "trust_badges",
           "settings": {
+            "badge_1_title": "Free Shipping",
+            "badge_1_subtext": "On orders over $100",
+            "badge_1_icon": "shipping",
+            "badge_2_title": "Easy Returns",
+            "badge_2_subtext": "30-day return policy",
+            "badge_2_icon": "returns",
+            "badge_3_title": "Secure Payment",
+            "badge_3_subtext": "100% secure checkout",
+            "badge_3_icon": "secure",
             "icon_color": "#d7ab83",
             "icon_size": 24,
             "title_color": "#111111",
@@ -73,35 +83,17 @@
             "open": false
           }
         },
-        "share": {
-          "type": "share",
-          "settings": {
-            "share_title": "Share this product:",
-            "show_facebook": true,
-            "show_twitter": true,
-            "show_pinterest": true,
-            "show_email": true,
-            "show_copy_link": true
-          }
-        },
         "tab_description": {
           "type": "tab",
           "settings": {
-            "heading": "DESCRIPTION",
+            "heading": "DETAILS & FIT",
             "tab_content": ""
           }
         },
         "tab_fabric": {
           "type": "tab",
           "settings": {
-            "heading": "FABRIC & CARE",
-            "tab_content": ""
-          }
-        },
-        "tab_size": {
-          "type": "tab",
-          "settings": {
-            "heading": "SIZE GUIDE",
+            "heading": "MATERIALS & CARE",
             "tab_content": ""
           }
         },
@@ -109,6 +101,13 @@
           "type": "tab",
           "settings": {
             "heading": "SHIPPING & RETURNS",
+            "tab_content": ""
+          }
+        },
+        "tab_size": {
+          "type": "tab",
+          "settings": {
+            "heading": "SIZE GUIDE",
             "tab_content": ""
           }
         }
@@ -124,14 +123,17 @@
         "buy_buttons",
         "trust_badges",
         "accordion_shipping",
-        "share",
         "tab_description",
         "tab_fabric",
-        "tab_size",
-        "tab_shipping"
+        "tab_shipping",
+        "tab_size"
       ],
       "settings": {
-        "enable_product_tabs": true
+        "gallery_layout": "stacked",
+        "enable_product_tabs": true,
+        "tab_bg_color": "#111111",
+        "show_related_blog": true,
+        "related_blog_heading": "Related Blog"
       }
     },
     "related-products": {

@@ -14,204 +14,220 @@
   assign is_sticky = section.settings.enable_sticky_header
 -%}
 
-<sticky-header class="szc-header-wrapper {% if is_sticky %}is-sticky{% endif %}">
-  <header class="szc-header page-width">
-    <!-- Mobile Hamburger Toggle Button -->
-    <button
-      type="button"
-      class="szc-header__icon-btn szc-header__mobile-toggle mobile-only"
-      aria-label="{{ 'sections.header.menu' | t | default: 'Toggle menu' }}"
-      data-mobile-menu-trigger
-    >
-      {% render 'icon', icon: 'menu', class: 'szc-header__icon' %}
-    </button>
-
-    <!-- Brand Logo -->
-    <div class="szc-header__logo">
-      <a href="{{ routes.root_url }}" class="szc-header__logo-link {% if header_logo != blank %}szc-header__logo-link--image{% else %}szc-header__logo-link--text{% endif %}" style="--logo-width: {{ logo_width }}px;">
-        {%- if header_logo != blank -%}
-          {%- assign logo_height = logo_width | divided_by: header_logo.aspect_ratio -%}
-          <picture>
-            {%- if header_logo_mobile != blank -%}
-              <source media="(max-width: 767px)" srcset="{{ header_logo_mobile | image_url: width: 400 }}">
-            {%- endif -%}
-            {{ header_logo | image_url: width: 400 | image_tag:
-              class: 'szc-header__logo-img',
-              width: logo_width,
-              height: logo_height,
-              alt: shop.name,
-              preload: true
-            }}
-          </picture>
-        {%- else -%}
-          <span class="szc-header__logo-text">{{ shop.name }}</span>
-        {%- endif -%}
-      </a>
-    </div>
-
-    <!-- Desktop Navigation Menu with Theme Store Grade Mega Menu Engine -->
-    <nav class="szc-header__inline-menu desktop-only" aria-label="{{ 'sections.header.menu' | t | default: 'Main Navigation' }}">
-      <ul class="szc-header__menu-list" role="list">
-        {%- for link in main_menu_links -%}
-          {%- liquid
-            assign nav_link_handle = link.handle | default: ''
-            assign nav_link_title_handle = link.title | handleize
-            assign nav_link_title_down = link.title | downcase | strip
-            assign mega_block = null
-            for block in section.blocks
-              if block.type == 'mega_menu'
-                assign block_title = block.settings.menu_item_title | default: ''
-                assign block_handle = block_title | handleize
-                assign block_title_down = block_title | downcase | strip
-                if block_handle != blank
-                  if block_handle == nav_link_handle or block_handle == nav_link_title_handle or block_title_down == nav_link_title_down
-                    assign mega_block = block
-                    break
-                  endif
-                endif
-              endif
-            endfor
-
-            if mega_block != null
-              assign display_type = 'mega'
-            elsif link.links != blank
-              assign display_type = 'dropdown'
-            else
-              assign display_type = 'simple'
-            endif
-          -%}
-
-          <li class="szc-header__menu-item {% if display_type == 'mega' %}has-mega-menu{% elsif display_type == 'dropdown' %}has-dropdown{% endif %}" {{ mega_block.shopify_attributes }}>
-            <a
-              href="{{ link.url }}"
-              class="szc-header__menu-link {% if link.child_active or link.active %}is-active{% endif %}"
-              {% if display_type != 'simple' %}aria-expanded="false" aria-haspopup="true"{% endif %}
-            >
-              <span>{{ link.title }}</span>
-              {%- if display_type != 'simple' -%}
-                {% render 'icon', icon: 'chevron-down', class: 'szc-header__menu-chevron' %}
-              {%- endif -%}
-            </a>
-
-            <!-- DYNAMIC MEGA MENU PANEL (PURE SCHEMAS & THEME EDITOR DRIVEN) -->
-            {%- if display_type == 'mega' and mega_block != null -%}
-              {% render 'mega-menu', link: link, mega_block: mega_block, section: section %}
-            {%- endif -%}
-
-            <!-- STANDARD DROPDOWN (If Menu Type is Dropdown) -->
-            {%- if display_type == 'dropdown' -%}
-              {%- liquid
-                assign dropdown_links = link.links
-                if dropdown_links == blank and mega_block != null
-                  if mega_block.settings.categories_menu != blank
-                    assign cat_m = mega_block.settings.categories_menu
-                    if cat_m.links != blank
-                      assign dropdown_links = cat_m.links
-                    elsif linklists[cat_m] != blank and linklists[cat_m].links != blank
-                      assign dropdown_links = linklists[cat_m].links
-                    endif
-                  elsif mega_block.settings.occasions_menu != blank
-                    assign occ_m = mega_block.settings.occasions_menu
-                    if occ_m.links != blank
-                      assign dropdown_links = occ_m.links
-                    elsif linklists[occ_m] != blank and linklists[occ_m].links != blank
-                      assign dropdown_links = linklists[occ_m].links
-                    endif
-                  endif
-                endif
-              -%}
-              {%- if dropdown_links != blank and dropdown_links.size > 0 -%}
-                <ul class="szc-header__dropdown" role="list">
-                  {%- for childlink in dropdown_links -%}
-                    <li class="szc-header__dropdown-item">
-                      <a
-                        href="{{ childlink.url }}"
-                        class="szc-header__dropdown-link {% if childlink.active %}is-active{% endif %}"
-                      >
-                        {{ childlink.title }}
-                      </a>
-                    </li>
-                  {%- endfor -%}
-                </ul>
-              {%- endif -%}
-            {%- endif -%}
-
-          </li>
-        {%- endfor -%}
-      </ul>
-    </nav>
-
-    <!-- Header Actions (Search, Account, Wishlist, Cart) -->
-    <div class="szc-header__icons">
-      <!-- Native Shopify Language Selector -->
-      {% render 'language-selector', class: 'desktop-only' %}
-
-      <!-- Search Trigger -->
-      <button
-        type="button"
-        class="szc-header__icon-btn szc-search-trigger"
-        aria-label="{{ 'general.search.search' | t | default: 'Search' }}"
-      >
-        {% render 'icon', icon: 'search', class: 'szc-header__icon' %}
-      </button>
-
-      <!-- Customer Account Link -->
-      {%- if shop.customer_accounts_enabled -%}
-        <a
-          href="{% if customer %}{{ routes.account_url }}{% else %}{{ routes.account_login_url }}{% endif %}"
-          class="szc-header__icon-btn desktop-only"
-          aria-label="{{ 'customer.account_fallback' | t | default: 'Account' }}"
-        >
-          {% render 'icon', icon: 'user', class: 'szc-header__icon' %}
-        </a>
-      {%- endif -%}
-
-      <!-- Wishlist Icon Link -->
-      {%- if settings.enable_wishlist != false -%}
-        {%- assign wishlist_url = settings.wishlist_page_url -%}
-        {%- if wishlist_url == blank or wishlist_url == '#' -%}
-          {%- assign wishlist_url = '/pages/wishlist' -%}
-        {%- endif -%}
-        <a
-          href="{{ wishlist_url }}"
-          class="szc-header__icon-btn szc-wishlist-header-link"
-          aria-label="Wishlist"
-          title="Wishlist"
-        >
-          {% render 'icon', icon: 'heart', class: 'szc-header__icon' %}
-          <span class="szc-header__wishlist-badge" data-wishlist-count="0">
-            0
-          </span>
-        </a>
-      {%- endif -%}
-
-      <!-- Cart Icon -->
-      {%- if settings.cart_type == 'page' -%}
-        <a
-          href="{{ routes.cart_url }}"
-          class="szc-header__icon-btn"
-          aria-label="{{ 'sections.header.cart' | t | default: 'Shopping bag' }}"
-        >
-          {% render 'icon', icon: 'bag', class: 'szc-header__icon' %}
-          <span class="szc-header__cart-badge" data-cart-count="{{ cart.item_count }}">
-            {{ cart.item_count }}
-          </span>
-        </a>
-      {%- else -%}
+<sticky-header class="szc-header-wrapper {% if is_sticky %}is-sticky{% endif %}" style="--szc-header-accent: {{ section.settings.accent_color | default: '#c87a38' }};">
+  <header class="szc-header">
+    <!-- Row 1: Brand & Controls (3-Column Grid for True Mathematical Center) -->
+    <div class="szc-header__main-row page-width">
+      <!-- Left Controls: Mobile Hamburger (mobile-only) + Language & Country Selectors (desktop-only) -->
+      <div class="szc-header__left-controls">
         <button
           type="button"
-          class="szc-header__icon-btn szc-cart-trigger"
-          aria-label="{{ 'sections.header.cart' | t | default: 'Shopping bag' }}"
+          class="szc-header__icon-btn szc-header__mobile-toggle mobile-only"
+          aria-label="{{ 'sections.header.menu' | t | default: 'Toggle menu' }}"
+          data-mobile-menu-trigger
         >
-          {% render 'icon', icon: 'bag', class: 'szc-header__icon' %}
-          <span class="szc-header__cart-badge" data-cart-count="{{ cart.item_count }}">
-            {{ cart.item_count }}
-          </span>
+          {% render 'icon', icon: 'menu', class: 'szc-header__icon' %}
         </button>
-      {%- endif -%}
+
+        {% render 'language-selector', class: 'desktop-only', id_prefix: 'Header' %}
+
+        {%- if section.settings.show_country_selector != false -%}
+          {% render 'country-selector', class: 'desktop-only', id_prefix: 'Header', display_format: 'flag_currency' %}
+        {%- endif -%}
+      </div>
+
+      <!-- Center: Brand Logo with Short Accent Underline -->
+      <div class="szc-header__brand">
+        <div class="szc-header__logo">
+          <a href="{{ routes.root_url }}" class="szc-header__logo-link {% if header_logo != blank %}szc-header__logo-link--image{% else %}szc-header__logo-link--text{% endif %}" style="--logo-width: {{ logo_width }}px;">
+            {%- if header_logo != blank -%}
+              {%- assign logo_height = logo_width | divided_by: header_logo.aspect_ratio -%}
+              <picture>
+                {%- if header_logo_mobile != blank -%}
+                  <source media="(max-width: 767px)" srcset="{{ header_logo_mobile | image_url: width: 400 }}">
+                {%- endif -%}
+                {{ header_logo | image_url: width: 400 | image_tag:
+                  class: 'szc-header__logo-img',
+                  width: logo_width,
+                  height: logo_height,
+                  alt: shop.name,
+                  preload: true
+                }}
+              </picture>
+            {%- else -%}
+              <span class="szc-header__logo-text">{{ shop.name }}</span>
+            {%- endif -%}
+          </a>
+        </div>
+        {%- if section.settings.show_logo_underline != false -%}
+          <div class="szc-header__logo-accent-line desktop-only" aria-hidden="true"></div>
+        {%- endif -%}
+      </div>
+
+      <!-- Right Controls: Header Actions (Search, Account, Wishlist, Cart) -->
+      <div class="szc-header__icons">
+        <!-- Search Trigger -->
+        <button
+          type="button"
+          class="szc-header__icon-btn szc-search-trigger"
+          aria-label="{{ 'general.search.search' | t | default: 'Search' }}"
+        >
+          {% render 'icon', icon: 'search', class: 'szc-header__icon' %}
+        </button>
+
+        <!-- Customer Account Link -->
+        {%- if shop.customer_accounts_enabled -%}
+          <a
+            href="{% if customer %}{{ routes.account_url }}{% else %}{{ routes.account_login_url }}{% endif %}"
+            class="szc-header__icon-btn desktop-only"
+            aria-label="{{ 'customer.account_fallback' | t | default: 'Account' }}"
+          >
+            {% render 'icon', icon: 'user', class: 'szc-header__icon' %}
+          </a>
+        {%- endif -%}
+
+        <!-- Wishlist Icon Link -->
+        {%- if settings.enable_wishlist != false -%}
+          {%- assign wishlist_url = settings.wishlist_page_url -%}
+          {%- if wishlist_url == blank or wishlist_url == '#' -%}
+            {%- assign wishlist_url = '/pages/wishlist' -%}
+          {%- endif -%}
+          <a
+            href="{{ wishlist_url }}"
+            class="szc-header__icon-btn szc-wishlist-header-link"
+            aria-label="Wishlist"
+            title="Wishlist"
+          >
+            {% render 'icon', icon: 'heart', class: 'szc-header__icon' %}
+            <span class="szc-header__wishlist-badge" data-wishlist-count="0">
+              0
+            </span>
+          </a>
+        {%- endif -%}
+
+        <!-- Cart Icon -->
+        {%- if settings.cart_type == 'page' -%}
+          <a
+            href="{{ routes.cart_url }}"
+            class="szc-header__icon-btn"
+            aria-label="{{ 'sections.header.cart' | t | default: 'Shopping bag' }}"
+          >
+            {% render 'icon', icon: 'bag', class: 'szc-header__icon' %}
+            <span class="szc-header__cart-badge" data-cart-count="{{ cart.item_count }}">
+              {{ cart.item_count }}
+            </span>
+          </a>
+        {%- else -%}
+          <button
+            type="button"
+            class="szc-header__icon-btn szc-cart-trigger"
+            aria-label="{{ 'sections.header.cart' | t | default: 'Shopping bag' }}"
+          >
+            {% render 'icon', icon: 'bag', class: 'szc-header__icon' %}
+            <span class="szc-header__cart-badge" data-cart-count="{{ cart.item_count }}">
+              {{ cart.item_count }}
+            </span>
+          </button>
+        {%- endif -%}
+      </div>
+    </div>
+
+    <!-- Row 2: Desktop Navigation Menu Centered Underneath Logo -->
+    <div class="szc-header__nav-row desktop-only">
+      <div class="szc-header__nav-container page-width">
+        <nav class="szc-header__inline-menu" aria-label="{{ 'sections.header.menu' | t | default: 'Main Navigation' }}">
+          <ul class="szc-header__menu-list" role="list">
+            {%- for link in main_menu_links -%}
+              {%- liquid
+                assign nav_link_handle = link.handle | default: ''
+                assign nav_link_title_handle = link.title | handleize
+                assign nav_link_title_down = link.title | downcase | strip
+                assign mega_block = null
+                for block in section.blocks
+                  if block.type == 'mega_menu'
+                    assign block_title = block.settings.menu_item_title | default: ''
+                    assign block_handle = block_title | handleize
+                    assign block_title_down = block_title | downcase | strip
+                    if block_handle != blank
+                      if block_handle == nav_link_handle or block_handle == nav_link_title_handle or block_title_down == nav_link_title_down
+                        assign mega_block = block
+                        break
+                      endif
+                    endif
+                  endif
+                endfor
+
+                if mega_block != null
+                  assign display_type = 'mega'
+                elsif link.links != blank
+                  assign display_type = 'dropdown'
+                else
+                  assign display_type = 'simple'
+                endif
+              -%}
+
+              <li class="szc-header__menu-item {% if display_type == 'mega' %}has-mega-menu{% elsif display_type == 'dropdown' %}has-dropdown{% endif %}" {{ mega_block.shopify_attributes }}>
+                <a
+                  href="{{ link.url }}"
+                  class="szc-header__menu-link {% if link.child_active or link.active %}is-active{% endif %}"
+                  {% if display_type != 'simple' %}aria-expanded="false" aria-haspopup="true"{% endif %}
+                >
+                  <span>{{ link.title }}</span>
+                  {%- if display_type != 'simple' -%}
+                    {% render 'icon', icon: 'chevron-down', class: 'szc-header__menu-chevron' %}
+                  {%- endif -%}
+                </a>
+
+                <!-- DYNAMIC MEGA MENU PANEL (PURE SCHEMAS & THEME EDITOR DRIVEN) -->
+                {%- if display_type == 'mega' and mega_block != null -%}
+                  {% render 'mega-menu', link: link, mega_block: mega_block, section: section %}
+                {%- endif -%}
+
+                <!-- STANDARD DROPDOWN (If Menu Type is Dropdown) -->
+                {%- if display_type == 'dropdown' -%}
+                  {%- liquid
+                    assign dropdown_links = link.links
+                    if dropdown_links == blank and mega_block != null
+                      if mega_block.settings.categories_menu != blank
+                        assign cat_m = mega_block.settings.categories_menu
+                        if cat_m.links != blank
+                          assign dropdown_links = cat_m.links
+                        elsif linklists[cat_m] != blank and linklists[cat_m].links != blank
+                          assign dropdown_links = linklists[cat_m].links
+                        endif
+                      elsif mega_block.settings.occasions_menu != blank
+                        assign occ_m = mega_block.settings.occasions_menu
+                        if occ_m.links != blank
+                          assign dropdown_links = occ_m.links
+                        elsif linklists[occ_m] != blank and linklists[occ_m].links != blank
+                          assign dropdown_links = linklists[occ_m].links
+                        endif
+                      endif
+                    endif
+                  -%}
+                  {%- if dropdown_links != blank and dropdown_links.size > 0 -%}
+                    <ul class="szc-header__dropdown" role="list">
+                      {%- for childlink in dropdown_links -%}
+                        <li class="szc-header__dropdown-item">
+                          <a
+                            href="{{ childlink.url }}"
+                            class="szc-header__dropdown-link {% if childlink.active %}is-active{% endif %}"
+                          >
+                            {{ childlink.title }}
+                          </a>
+                        </li>
+                      {%- endfor -%}
+                    </ul>
+                  {%- endif -%}
+                {%- endif -%}
+
+              </li>
+            {%- endfor -%}
+          </ul>
+        </nav>
+      </div>
     </div>
   </header>
-
 </sticky-header>
 
 <!-- DYNAMIC MOBILE NAVIGATION DRAWER -->
@@ -255,19 +271,76 @@
   }
 
   .szc-header {
-    display: flex;
+    width: 100%;
+    position: relative;
+    background-color: var(--szc-color-background, #ffffff);
+  }
+
+  /* Row 1: Brand & Controls (3-Column Grid for Mathematical Center) */
+  .szc-header__main-row {
+    display: grid;
+    grid-template-columns: 1fr auto 1fr;
     align-items: center;
-    justify-content: space-between;
-    height: var(--szc-header-height, 70px);
-    padding: 0 var(--szc-space-6, 24px);
+    padding: 20px var(--szc-space-6, 24px) 14px;
     max-width: var(--szc-page-max-width, 1400px);
     margin: 0 auto;
+    box-sizing: border-box;
+    width: 100%;
     position: relative;
+    z-index: 20;
+    transition: padding var(--szc-transition-base, 250ms ease);
+  }
+
+  .szc-header-wrapper.is-sticky.is-scrolled .szc-header__main-row {
+    padding-top: 12px;
+    padding-bottom: 10px;
+  }
+
+  .szc-header__left-controls {
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+    gap: 10px;
+    min-width: 0;
+  }
+
+  .szc-header__left-controls .szc-country-toggle-btn {
+    height: 32px;
+    font-size: 12px;
+    padding: 0 10px;
+    border-radius: 4px;
+    border: 1px solid var(--szc-color-border, #e0e0e0);
+    color: var(--szc-color-text-primary, #111111);
+    background-color: transparent;
+    box-shadow: none;
+  }
+
+  .szc-header__left-controls .szc-country-toggle-btn:hover,
+  .szc-header__left-controls .szc-country-toggle-btn[aria-expanded="true"] {
+    border-color: var(--szc-header-accent, var(--szc-color-secondary, #d4a373));
+    background-color: var(--szc-color-surface, #fafafa);
+    box-shadow: none;
+  }
+
+  .szc-header__left-controls .szc-localization-dropdown {
+    left: 0;
+    right: auto;
+  }
+
+  .szc-header__brand {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    min-width: 0;
+    padding: 0 16px;
   }
 
   .szc-header__logo {
     display: flex;
     align-items: center;
+    justify-content: center;
     flex-shrink: 1;
     min-width: 0;
   }
@@ -291,19 +364,19 @@
     width: 100%;
     height: auto;
     max-width: var(--logo-width, 140px);
-    max-height: calc(var(--szc-header-height, 70px) - 16px);
+    max-height: 70px;
     object-fit: contain;
   }
 
   .szc-header__logo-link--text {
-    max-width: min(320px, 30vw);
+    max-width: min(380px, 40vw);
   }
 
   .szc-header__logo-text {
     font-family: var(--szc-font-family-heading, serif);
-    font-size: clamp(16px, 1.8vw, 22px);
+    font-size: clamp(20px, 2.2vw, 28px);
     font-weight: 700;
-    letter-spacing: var(--szc-letter-spacing-wide, 0.04em);
+    letter-spacing: var(--szc-letter-spacing-wide, 0.08em);
     text-transform: uppercase;
     white-space: nowrap;
     overflow: hidden;
@@ -311,34 +384,49 @@
     line-height: 1.2;
     display: block;
     max-width: 100%;
+    color: var(--szc-color-text-primary, #111111);
   }
 
-  @media (max-width: 767px) {
-    .szc-header__logo-link--image {
-      max-width: min(var(--logo-width, 140px), 120px);
-    }
-    .szc-header__logo-img {
-      max-width: min(var(--logo-width, 140px), 120px);
-      max-height: calc(var(--szc-header-height, 70px) - 12px);
-    }
-    .szc-header__logo-link--text {
-      max-width: calc(100vw - 140px);
-    }
-    .szc-header__logo-text {
-      font-size: clamp(13px, 4vw, 17px);
-      letter-spacing: 0.03em;
-    }
+  /* Short Accent Underline directly below the Logo */
+  .szc-header__logo-accent-line {
+    width: 48px;
+    height: 2px;
+    background-color: var(--szc-header-accent, var(--szc-color-secondary, #d4a373));
+    margin: 8px auto 0;
+    border-radius: 2px;
+    transition: background-color var(--szc-transition-fast, 150ms ease), width var(--szc-transition-fast, 150ms ease);
+  }
+
+  /* Row 2: Centered Navigation Row */
+  .szc-header__nav-row {
+    position: relative;
+    z-index: 10;
+    width: 100%;
+    border-bottom: 1px solid var(--szc-color-border, #e5e5e5);
+    background-color: var(--szc-color-background, #ffffff);
+  }
+
+  .szc-header__nav-container {
+    max-width: var(--szc-page-max-width, 1400px);
+    margin: 0 auto;
+    padding: 0 var(--szc-space-6, 24px);
+    display: flex;
+    justify-content: center;
+    position: static;
   }
 
   .szc-header__inline-menu {
     display: flex;
     align-items: center;
+    justify-content: center;
+    position: static;
   }
 
   .szc-header__menu-list {
     display: flex;
     align-items: center;
-    gap: var(--szc-space-6, 24px);
+    justify-content: center;
+    gap: clamp(20px, 2.5vw, 36px);
     list-style: none;
     margin: 0;
     padding: 0;
@@ -351,27 +439,100 @@
   .szc-header__menu-link {
     display: inline-flex;
     align-items: center;
-    gap: 4px;
-    padding: 24px 0;
+    gap: 5px;
+    padding: 12px 0 14px;
     font-family: var(--szc-font-family-nav, var(--szc-font-family-body));
-    font-size: var(--szc-font-size-sm, 14px);
+    font-size: var(--szc-font-size-sm, 13px);
     font-weight: 600;
     color: var(--szc-color-text-primary, #111111);
     text-decoration: none;
     text-transform: uppercase;
-    letter-spacing: var(--szc-letter-spacing-wide, 0.05em);
+    letter-spacing: var(--szc-letter-spacing-wide, 0.06em);
     transition: color var(--szc-transition-fast, 150ms ease);
+    position: relative;
   }
 
   .szc-header__menu-link:hover,
   .szc-header__menu-link.is-active,
   .szc-header__menu-item.is-hovered .szc-header__menu-link {
-    color: var(--szc-color-secondary, #d4a373);
+    color: var(--szc-header-accent, var(--szc-color-secondary, #d4a373));
+  }
+
+  /* Thin Accent Underline on Active Navigation Item */
+  .szc-header__menu-link.is-active::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    height: 2px;
+    background-color: var(--szc-header-accent, var(--szc-color-secondary, #d4a373));
+    border-radius: 1px;
   }
 
   .szc-header__menu-chevron {
-    width: 12px;
-    height: 12px;
+    width: 11px;
+    height: 11px;
+    stroke-width: 2.2;
+    transition: transform var(--szc-transition-fast, 150ms ease);
+  }
+
+  .szc-header__menu-item.is-hovered .szc-header__menu-chevron {
+    transform: rotate(180deg);
+  }
+
+  @media (max-width: 767px) {
+    .szc-header__main-row {
+      padding: 10px 16px;
+      min-height: 56px;
+    }
+    .szc-header__brand {
+      padding: 0 8px;
+    }
+    .szc-header__logo-link--image {
+      max-width: min(var(--logo-width, 140px), 120px);
+    }
+    .szc-header__logo-img {
+      max-width: min(var(--logo-width, 140px), 120px);
+      max-height: 42px;
+    }
+    .szc-header__logo-link--text {
+      max-width: calc(100vw - 140px);
+    }
+    .szc-header__logo-text {
+      font-size: clamp(14px, 4.5vw, 18px);
+      letter-spacing: 0.04em;
+    }
+    .szc-header__logo-accent-line {
+      display: none;
+    }
+    .szc-header__icons {
+      gap: 4px;
+    }
+    .szc-header__icon-btn {
+      width: 36px;
+      height: 36px;
+    }
+  }
+
+  @media (max-width: 360px) {
+    .szc-header__main-row {
+      padding: 8px 10px;
+    }
+    .szc-header__logo-link--text {
+      max-width: calc(100vw - 120px);
+    }
+    .szc-header__logo-text {
+      font-size: 13px;
+    }
+    .szc-header__icon-btn {
+      width: 32px;
+      height: 32px;
+    }
+    .szc-header__icon {
+      width: 18px;
+      height: 18px;
+    }
   }
 
   /* Standard Dropdown Menu */
@@ -816,6 +977,7 @@
   .szc-header__icons {
     display: flex;
     align-items: center;
+    justify-content: flex-end;
     gap: var(--szc-space-3, 12px);
   }
 
@@ -1441,6 +1603,24 @@
       "id": "enable_sticky_header",
       "default": true,
       "label": "Enable sticky header"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_logo_underline",
+      "default": true,
+      "label": "Show accent line below logo"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_country_selector",
+      "default": true,
+      "label": "Show country/currency selector in header"
+    },
+    {
+      "type": "color",
+      "id": "accent_color",
+      "label": "Header accent color",
+      "default": "#c87a38"
     }
   ],
   "blocks": [

@@ -116,7 +116,9 @@
                     data-action="plus"
                     data-line="{{ forloop.index }}"
                     aria-label="Increase quantity"
-                  >+</button>
+                  >
+                    {% render 'icon', icon: 'plus' %}
+                  </button>
                 </div>
               </div>
 
@@ -176,7 +178,7 @@
                 </span>
               </button>
             </div>
-            
+
             <!-- Applied Discount Tag Pill (Matching User Specification) -->
             <div id="DiscountTagsContainer" class="szc-discount-tags">
               {%- if cart.cart_level_discount_applications.size > 0 -%}
@@ -1036,7 +1038,7 @@
         const parentBox = discountInput.closest('.szc-discount-box');
         const discountBtn = parentBox ? parentBox.querySelector('#ApplyDiscountBtn') : document.getElementById('ApplyDiscountBtn');
         const statusDiv = parentBox ? parentBox.querySelector('#DiscountStatusMessage') : document.getElementById('DiscountStatusMessage');
-        
+
         resetApplyButtonState(discountInput, discountBtn, statusDiv);
       }
     });

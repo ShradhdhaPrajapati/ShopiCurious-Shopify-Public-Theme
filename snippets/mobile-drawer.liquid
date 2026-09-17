@@ -273,6 +273,7 @@
     <div class="szc-mobile-drawer__footer">
       <div class="szc-mobile-drawer__lang-wrap">
         {% render 'language-selector', class: 'mobile-drawer-lang-selector' %}
+        {% render 'language-selector', class: 'mobile-drawer-lang-selector', id_prefix: 'MobileDrawer' %}
       </div>
       <a href="{% if customer %}{{ routes.account_url }}{% else %}{{ routes.account_login_url }}{% endif %}" class="szc-mobile-drawer__footer-link">
         {% render 'icon', icon: 'user', class: 'szc-header__icon' %}

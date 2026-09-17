@@ -3,7 +3,11 @@
   assign featured_media = current_variant.featured_media | default: product.featured_media
 -%}
 
-<section id="MainProduct-{{ section.id }}" class="szc-main-product page-width" data-product-handle="{{ product.handle }}">
+<section
+  id="MainProduct-{{ section.id }}"
+  class="szc-main-product page-width"
+  data-product-handle="{{ product.handle }}"
+>
   <script>
     (function recordViewedProduct() {
       function track() {
@@ -198,6 +202,209 @@
 
     <!-- 2. Sticky Product Info Details Column -->
     <div class="szc-main-product__info-col">
+      <!-- Top-Right Actions: Wishlist & Share Popover -->
+      <div class="szc-main-product__top-actions">
+        {%- if settings.enable_wishlist != false -%}
+          <button
+            type="button"
+            class="szc-main-product__action-btn szc-main-product__wishlist-btn szc-main-product__wishlist-btn--top"
+            data-wishlist-toggle
+            data-product-handle="{{ product.handle }}"
+            data-product-id="{{ current_variant.id | default: product.id }}"
+            data-product-title="{{ product.title | escape }}"
+            data-product-price="{{ current_variant.price | default: product.price | money }}"
+            data-product-compare-price="{% if current_variant.compare_at_price > current_variant.price %}{{ current_variant.compare_at_price | money }}{% endif %}"
+            data-product-image="{% if product.featured_media != blank %}{{ product.featured_media | image_url: width: 600 }}{% endif %}"
+            data-product-url="{{ product.url }}"
+            data-product-vendor="{{ product.vendor | escape }}"
+            data-product-available="{{ current_variant.available }}"
+            aria-label="Add to Wishlist"
+            title="Add to Wishlist"
+          >
+            <span class="szc-wishlist-icon-wrap">
+              <svg
+                class="szc-icon szc-icon--heart"
+                width="19"
+                height="19"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="#111111"
+                stroke-width="1.8"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                aria-hidden="true"
+              >
+                <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l8.78-8.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path>
+              </svg>
+            </span>
+          </button>
+        {%- endif -%}
+
+        <!-- New Floating Share Popover Component -->
+        {%- assign share_prod_url = shop.url | append: product.url -%}
+        {%- assign share_prod_title = product.title -%}
+        {%- assign share_prod_img = '' -%}
+        {%- if product.featured_media != blank -%}
+          {%- assign share_prod_img = product.featured_media | image_url: width: 1200 -%}
+        {%- endif -%}
+
+        <product-share-popover
+          class="szc-product-share-wrap"
+          data-share-url="{{ share_prod_url }}"
+          data-share-title="{{ share_prod_title | escape }}"
+          data-share-img="{{ share_prod_img }}"
+        >
+          <button
+            type="button"
+            class="szc-main-product__action-btn szc-main-product__share-btn"
+            id="SzcProductShareTrigger"
+            aria-haspopup="true"
+            aria-expanded="false"
+            aria-controls="SzcProductShareMenu"
+            aria-label="Share this product"
+            title="Share this product"
+            data-share-trigger
+          >
+            <svg
+              class="szc-icon szc-icon--share"
+              width="18"
+              height="18"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="#111111"
+              stroke-width="1.8"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              aria-hidden="true"
+            >
+              <circle cx="18" cy="5" r="3"></circle>
+              <circle cx="6" cy="12" r="3"></circle>
+              <circle cx="18" cy="19" r="3"></circle>
+              <line x1="8.59" y1="13.51" x2="15.42" y2="17.49"></line>
+              <line x1="15.41" y1="6.51" x2="8.59" y2="10.49"></line>
+            </svg>
+          </button>
+
+          <div
+            class="szc-share-menu"
+            id="SzcProductShareMenu"
+            role="menu"
+            aria-hidden="true"
+            data-share-menu
+          >
+            <button
+              type="button"
+              class="szc-share-menu__item szc-share-menu__item--copy"
+              role="menuitem"
+              data-share-action="copy"
+            >
+              <span class="szc-share-menu__icon szc-share-menu__icon--link" data-copy-icon-wrap>
+                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                  <path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path>
+                  <path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path>
+                </svg>
+              </span>
+              <span class="szc-share-menu__label" data-copy-label>Copy link</span>
+            </button>
+
+            <a
+              href="https://api.whatsapp.com/send?text={{ share_prod_title | url_encode }}%20{{ share_prod_url | url_encode }}"
+              target="_blank"
+              rel="noopener noreferrer"
+              class="szc-share-menu__item szc-share-menu__item--whatsapp"
+              role="menuitem"
+              data-share-action="whatsapp"
+            >
+              <span class="szc-share-menu__icon-badge szc-share-menu__icon-badge--whatsapp">
+                <svg width="13" height="13" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+                  <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51l-.57-.01c-.198 0-.52.074-.792.372s-1.04 1.016-1.04 2.479 1.065 2.876 1.213 3.074c.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.05 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413Z"/>
+                </svg>
+              </span>
+              <span class="szc-share-menu__label">WhatsApp</span>
+            </a>
+
+            <a
+              href="https://www.facebook.com/sharer/sharer.php?u={{ share_prod_url | url_encode }}"
+              target="_blank"
+              rel="noopener noreferrer"
+              class="szc-share-menu__item szc-share-menu__item--facebook"
+              role="menuitem"
+              data-share-action="facebook"
+            >
+              <span class="szc-share-menu__icon-badge szc-share-menu__icon-badge--facebook">
+                <svg width="13" height="13" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+                  <path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/>
+                </svg>
+              </span>
+              <span class="szc-share-menu__label">Facebook</span>
+            </a>
+
+            <a
+              href="https://twitter.com/intent/tweet?text={{ share_prod_title | url_encode }}&url={{ share_prod_url | url_encode }}"
+              target="_blank"
+              rel="noopener noreferrer"
+              class="szc-share-menu__item szc-share-menu__item--twitter"
+              role="menuitem"
+              data-share-action="twitter"
+            >
+              <span class="szc-share-menu__icon-badge szc-share-menu__icon-badge--x">
+                <svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+                  <path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/>
+                </svg>
+              </span>
+              <span class="szc-share-menu__label">Twitter / X</span>
+            </a>
+
+            <a
+              href="https://pinterest.com/pin/create/button/?url={{ share_prod_url | url_encode }}&media={{ share_prod_img | url_encode }}&description={{ share_prod_title | url_encode }}"
+              target="_blank"
+              rel="noopener noreferrer"
+              class="szc-share-menu__item szc-share-menu__item--pinterest"
+              role="menuitem"
+              data-share-action="pinterest"
+            >
+              <span class="szc-share-menu__icon-badge szc-share-menu__icon-badge--pinterest">
+                <svg width="13" height="13" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+                  <path d="M12 0C5.373 0 0 5.372 0 12c0 5.084 3.163 9.426 7.627 11.174-.105-.949-.2-2.405.042-3.441.218-.937 1.407-5.965 1.407-5.965s-.359-.719-.359-1.782c0-1.668.967-2.914 2.171-2.914 1.023 0 1.518.769 1.518 1.69 0 1.029-.655 2.568-.994 3.995-.283 1.194.599 2.169 1.777 2.169 2.133 0 3.772-2.249 3.772-5.495 0-2.873-2.064-4.882-5.012-4.882-3.414 0-5.418 2.561-5.418 5.207 0 1.031.397 2.138.893 2.738.098.119.112.224.083.345-.09.375-.293 1.199-.334 1.364-.053.225-.174.271-.401.165-1.495-.69-2.433-2.878-2.433-4.646 0-3.776 2.748-7.252 7.92-7.252 4.158 0 7.392 2.967 7.392 6.923 0 4.135-2.607 7.462-6.233 7.462-1.214 0-2.354-.629-2.758-1.379l-.749 2.848c-.269 1.045-1.004 2.352-1.498 3.146 1.123.345 2.306.535 3.55.535 6.607 0 11.985-5.365 11.985-11.987C23.97 5.39 18.592.026 11.985.026L12 0z"/>
+                </svg>
+              </span>
+              <span class="szc-share-menu__label">Pinterest</span>
+            </a>
+
+            <a
+              href="mailto:?subject={{ share_prod_title | url_encode }}&body={{ share_prod_title | url_encode }}%0A%0A{{ share_prod_url | url_encode }}"
+              class="szc-share-menu__item szc-share-menu__item--email"
+              role="menuitem"
+              data-share-action="email"
+            >
+              <span class="szc-share-menu__icon szc-share-menu__icon--email">
+                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                  <rect width="20" height="16" x="2" y="4" rx="2"></rect>
+                  <path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"></path>
+                </svg>
+              </span>
+              <span class="szc-share-menu__label">Email</span>
+            </a>
+
+            <button
+              type="button"
+              class="szc-share-menu__item szc-share-menu__item--more"
+              role="menuitem"
+              data-share-action="more"
+            >
+              <span class="szc-share-menu__icon szc-share-menu__icon--more">
+                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                  <circle cx="12" cy="12" r="1"></circle>
+                  <circle cx="19" cy="12" r="1"></circle>
+                  <circle cx="5" cy="12" r="1"></circle>
+                </svg>
+              </span>
+              <span class="szc-share-menu__label">More options</span>
+            </button>
+          </div>
+        </product-share-popover>
+      </div>
+
       {%- for block in section.blocks -%}
         {%- case block.type -%}
           {%- when '@app' -%}
@@ -221,7 +428,13 @@
           {%- when 'price' -%}
             <div class="szc-main-product__price-wrap" {{ block.shopify_attributes }}>
               <div class="szc-main-product__price">
-                {% render 'price', product: product, use_variant: true, variant: current_variant, show_badges: false, show_discount_badge: settings.show_discount_badge %}
+                {% render 'price',
+                  product: product,
+                  use_variant: true,
+                  variant: current_variant,
+                  show_badges: false,
+                  show_discount_badge: settings.show_discount_badge
+                %}
               </div>
             </div>
 
@@ -335,10 +548,6 @@
             </variant-selects>
 
           {%- when 'quantity_selector' -%}
-            <div class="szc-main-product__quantity" {{ block.shopify_attributes }}>
-              {%- assign qty_input_id = 'Quantity-' | append: section.id -%}
-              {% render 'quantity-input', value: 1, min: 1, id: qty_input_id %}
-            </div>
 
           {%- when 'buy_buttons' -%}
             <div class="szc-main-product__buy-buttons" {{ block.shopify_attributes }}>
@@ -347,59 +556,52 @@
                   <input type="hidden" name="id" value="{{ current_variant.id }}" data-variant-input>
 
                   <div class="szc-main-product__btn-row">
-                    <button
-                      type="submit"
-                      name="add"
-                      class="szc-button szc-button--primary szc-main-product__add-btn"
-                      {% if current_variant.available == false %}
-                        disabled
-                      {% endif %}
-                      data-add-to-cart-btn
-                    >
-                      <span>
-                        {%- if current_variant.available -%}
-                          ADD TO BAG
-                        {%- else -%}
-                          SOLD OUT
-                        {%- endif -%}
-                      </span>
-                    </button>
+                    {%- assign qty_block = section.blocks | where: 'type', 'quantity_selector' | first -%}
+                    {%- if qty_block != blank -%}
+                      <div class="szc-main-product__quantity" {{ qty_block.shopify_attributes }}>
+                        {%- assign qty_input_id = 'Quantity-' | append: section.id -%}
+                        {% render 'quantity-input', value: 1, min: 1, id: qty_input_id %}
+                      </div>
+                    {%- endif -%}
 
-                    {%- if settings.enable_wishlist != false -%}
+                    {%- assign show_atc = true -%}
+                    {%- if block.settings.show_add_to_cart != nil -%}
+                      {%- assign show_atc = block.settings.show_add_to_cart -%}
+                    {%- endif -%}
+
+                    {%- if show_atc -%}
                       <button
-                        type="button"
-                        class="szc-main-product__wishlist-btn"
-                        data-wishlist-toggle
-                        data-product-handle="{{ product.handle }}"
-                        data-product-id="{{ current_variant.id | default: product.id }}"
-                        data-product-title="{{ product.title | escape }}"
-                        data-product-price="{{ current_variant.price | default: product.price | money }}"
-                        data-product-compare-price="{% if current_variant.compare_at_price > current_variant.price %}{{ current_variant.compare_at_price | money }}{% endif %}"
-                        data-product-image="{% if product.featured_media != blank %}{{ product.featured_media | image_url: width: 600 }}{% endif %}"
-                        data-product-url="{{ product.url }}"
-                        data-product-vendor="{{ product.vendor | escape }}"
-                        data-product-available="{{ current_variant.available }}"
-                        aria-label="Add to Wishlist"
+                        type="submit"
+                        name="add"
+                        class="szc-button szc-button--primary szc-main-product__add-btn"
+                        {% if current_variant.available == false %}
+                          disabled
+                        {% endif %}
+                        data-add-to-cart-btn
                       >
-                        <span class="szc-wishlist-icon-wrap">
-                          <svg
-                            width="18"
-                            height="18"
-                            viewBox="0 0 24 24"
-                            fill="none"
-                            stroke="currentColor"
-                            stroke-width="2"
-                          >
-                            <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l8.78-8.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path>
-                          </svg>
+                        <span class="szc-btn-text">
+                          {%- if current_variant.available -%}
+                            ADD TO BAG
+                          {%- else -%}
+                            SOLD OUT
+                          {%- endif -%}
                         </span>
                       </button>
                     {%- endif -%}
-                  </div>
 
-                  <button type="button" class="szc-button szc-button--outline szc-main-product__buy-now-btn" data-buy-now-btn>
-                    <span class="szc-btn-text">BUY IT NOW</span>
-                  </button>
+                    {%- if block.settings.show_dynamic_checkout != false -%}
+                      <button
+                        type="button"
+                        class="szc-button szc-button--outline szc-main-product__buy-now-btn"
+                        data-buy-now-btn
+                        {% if current_variant.available == false %}
+                          disabled
+                        {% endif %}
+                      >
+                        <span class="szc-btn-text">BUY IT NOW</span>
+                      </button>
+                    {%- endif -%}
+                  </div>
                 {%- endform -%}
               </product-form>
             </div>
@@ -542,101 +744,7 @@
             {%- endif -%}
 
           {%- when 'share' -%}
-            <div class="szc-main-product__share" {{ block.shopify_attributes }}>
-              {%- assign share_title = block.settings.share_title | default: 'Share this product:' -%}
-              {%- if share_title != blank -%}
-                <span class="szc-share__title">{{ share_title }}</span>
-              {%- endif -%}
-              <div class="szc-share__buttons">
-                {%- if block.settings.show_facebook != false -%}
-                  <a
-                    href="https://www.facebook.com/sharer/sharer.php?u={{ shop.url | append: product.url | url_encode }}"
-                    target="_blank"
-                    rel="noopener"
-                    class="szc-share-btn szc-share-btn--facebook"
-                    title="Share on Facebook"
-                    aria-label="Share on Facebook"
-                  >
-                    {%- if block.settings.facebook_icon != blank -%}
-                      {{ block.settings.facebook_icon | image_url: width: 40 | image_tag: width: 18, height: 18, class: 'szc-share-custom-img', loading: 'lazy' }}
-                    {%- else -%}
-                      <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z"></path></svg>
-                    {%- endif -%}
-                  </a>
-                {%- endif -%}
-
-                {%- if block.settings.show_twitter != false -%}
-                  <a
-                    href="https://twitter.com/intent/tweet?text={{ product.title | url_encode }}&url={{ shop.url | append: product.url | url_encode }}"
-                    target="_blank"
-                    rel="noopener"
-                    class="szc-share-btn szc-share-btn--twitter"
-                    title="Share on X / Twitter"
-                    aria-label="Share on X / Twitter"
-                  >
-                    {%- if block.settings.twitter_icon != blank -%}
-                      {{ block.settings.twitter_icon | image_url: width: 40 | image_tag: width: 18, height: 18, class: 'szc-share-custom-img', loading: 'lazy' }}
-                    {%- else -%}
-                      <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M23 3a10.9 10.9 0 0 1-3.14 1.53 4.48 4.48 0 0 0-7.86 3v1A10.66 10.66 0 0 1 3 4s-4 9 5 13a11.64 11.64 0 0 1-7 2c9 5 20 0 20-11.5a4.5 4.5 0 0 0-.08-.83A7.72 7.72 0 0 0 23 3z"></path></svg>
-                    {%- endif -%}
-                  </a>
-                {%- endif -%}
-
-                {%- if block.settings.show_pinterest != false -%}
-                  {%- assign pinterest_image = product.featured_media | image_url: width: 1000 -%}
-                  <a
-                    href="https://pinterest.com/pin/create/button/?url={{ shop.url | append: product.url | url_encode }}&media={{ pinterest_image | url_encode }}&description={{ product.title | url_encode }}"
-                    target="_blank"
-                    rel="noopener"
-                    class="szc-share-btn szc-share-btn--pinterest"
-                    title="Pin on Pinterest"
-                    aria-label="Pin on Pinterest"
-                  >
-                    {%- if block.settings.pinterest_icon != blank -%}
-                      {{ block.settings.pinterest_icon | image_url: width: 40 | image_tag: width: 18, height: 18, class: 'szc-share-custom-img', loading: 'lazy' }}
-                    {%- else -%}
-                      <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2a10 10 0 0 0-3.6 19.3c.1-.8.2-2.1.4-3l1.4-6s-.4-.7-.4-1.8c0-1.7 1-3 2.2-3 1 0 1.5.8 1.5 1.7 0 1-.7 2.6-1 4a1.8 1.8 0 0 0 1.9 2.2c2.2 0 4-2.4 4-5.8 0-3-2.2-5.2-5.3-5.2-3.6 0-5.7 2.7-5.7 5.5 0 1.1.4 2.3 1 3 .1.1.1.2.1.3l-.3 1.3c0 .2-.2.3-.4.2-1.4-.7-2.3-2.8-2.3-4.5 0-3.9 2.8-7.5 8.2-7.5 4.3 0 7.7 3.1 7.7 7.2 0 4.3-2.7 7.7-6.4 7.7-1.3 0-2.4-.7-2.8-1.5l-.8 3c-.3 1.1-1.1 2.5-1.6 3.4A10 10 0 1 0 12 2z"></path></svg>
-                    {%- endif -%}
-                  </a>
-                {%- endif -%}
-
-                {%- if block.settings.show_email != false -%}
-                  <a
-                    href="mailto:?subject={{ product.title | url_encode }}&body=Check out this product: {{ shop.url | append: product.url | url_encode }}"
-                    class="szc-share-btn szc-share-btn--email"
-                    title="Share via Email"
-                    aria-label="Share via Email"
-                  >
-                    {%- if block.settings.email_icon != blank -%}
-                      {{ block.settings.email_icon | image_url: width: 40 | image_tag: width: 18, height: 18, class: 'szc-share-custom-img', loading: 'lazy' }}
-                    {%- else -%}
-                      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path><polyline points="22,6 12,13 2,6"></polyline></svg>
-                    {%- endif -%}
-                  </a>
-                {%- endif -%}
-
-                {%- if block.settings.show_copy_link != false -%}
-                  <button
-                    type="button"
-                    class="szc-share-btn szc-share-btn--copy"
-                    title="Copy link"
-                    aria-label="Copy link"
-                    onclick="
-                      navigator.clipboard.writeText('{{ shop.url | append: product.url }}');
-                      const tt = this.querySelector('.szc-share-tooltip');
-                      if (tt) { tt.classList.add('is-active'); setTimeout(() => tt.classList.remove('is-active'), 2000); }
-                    "
-                  >
-                    <span class="szc-share-tooltip">Copied!</span>
-                    {%- if block.settings.copy_icon != blank -%}
-                      {{ block.settings.copy_icon | image_url: width: 40 | image_tag: width: 18, height: 18, class: 'szc-share-custom-img', loading: 'lazy' }}
-                    {%- else -%}
-                      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg>
-                    {%- endif -%}
-                  </button>
-                {%- endif -%}
-              </div>
-            </div>
+            {%- comment -%} Old bottom share block removed per product-share-redesign requirement {%- endcomment -%}
         {%- endcase -%}
       {%- endfor -%}
     </div>
@@ -644,64 +752,63 @@
 
   {%- assign tab_blocks = section.blocks | where: 'type', 'tab' -%}
   {%- if section.settings.enable_product_tabs != false and tab_blocks.size > 0 -%}
-    <!-- 4. Product Details Tabs Section (Section Blocks & Dynamic Sources Sourced) -->
-    <div class="szc-product-tabs">
-      <div class="szc-product-tabs__header" role="tablist">
-        {%- assign active_tab_found = false -%}
+    <!-- 4. Lower Content Area: Product Details Horizontal Tabs Card (Reference Matching) -->
+    <div
+      class="szc-product-tabs-card"
+      style="--tab-nav-bg: {{ section.settings.tab_bg_color | default: '#111111' }};"
+    >
+      <div class="szc-product-tabs__header" role="tablist" aria-label="Product Information Tabs">
         {%- for block in tab_blocks -%}
           {%- liquid
-            assign raw_content = block.settings.tab_content
-            assign heading_upper = block.settings.heading | default: '' | upcase
-            assign default_metafield = nil
-
-            if heading_upper contains 'FABRIC' or heading_upper contains 'CARE'
-              assign default_metafield = product.metafields.custom.care_instructions | default: product.metafields.custom.fabric_care | default: product.metafields.custom.fabric_and_care
-            elsif heading_upper contains 'SIZE'
-              assign default_metafield = product.metafields.custom.size_guide_table | default: product.metafields.custom.size_guide
-            elsif heading_upper contains 'SHIPPING' or heading_upper contains 'RETURN'
-              assign default_metafield = product.metafields.custom.shipping_returns | default: product.metafields.custom.shipping_and_returns
-            elsif heading_upper contains 'DESCRIPTION'
-              if raw_content == blank
-                assign raw_content = product.description
-              endif
+            assign is_active = false
+            if forloop.first
+              assign is_active = true
             endif
           -%}
-
-          {%- capture rendered_content -%}
-            {% render 'render-tab-content', content: raw_content, metafield: default_metafield %}
-          {%- endcapture -%}
-
-          {%- assign stripped_content = rendered_content | strip_html | strip -%}
-
-          {%- if rendered_content != blank and stripped_content != blank -%}
-            <button
-              type="button"
-              class="szc-tab-btn{% if active_tab_found == false %} is-active{% endif %}"
-              data-tab="tab-{{ block.id }}"
-              {{ block.shopify_attributes }}
-            >
-              {{ block.settings.heading | default: 'TAB' }}
-            </button>
-            {%- assign active_tab_found = true -%}
-          {%- endif -%}
+          <button
+            type="button"
+            role="tab"
+            id="TabBtn-{{ block.id }}"
+            class="szc-tab-btn{% if is_active %} is-active{% endif %}"
+            aria-selected="{% if is_active %}true{% else %}false{% endif %}"
+            aria-controls="TabPane-{{ block.id }}"
+            tabindex="{% if is_active %}0{% else %}-1{% endif %}"
+            data-tab="TabPane-{{ block.id }}"
+            {{ block.shopify_attributes }}
+          >
+            <span class="szc-tab-btn__text">{{ block.settings.heading | default: 'DETAILS' | upcase }}</span>
+          </button>
         {%- endfor -%}
       </div>
 
       <div class="szc-product-tabs__content">
-        {%- assign active_pane_found = false -%}
         {%- for block in tab_blocks -%}
           {%- liquid
+            assign is_active = false
+            if forloop.first
+              assign is_active = true
+            endif
+
             assign raw_content = block.settings.tab_content
             assign heading_upper = block.settings.heading | default: '' | upcase
-            assign default_metafield = nil
+            assign default_metafield = null
 
-            if heading_upper contains 'FABRIC' or heading_upper contains 'CARE'
-              assign default_metafield = product.metafields.custom.care_instructions | default: product.metafields.custom.fabric_care | default: product.metafields.custom.fabric_and_care
+            if heading_upper contains 'FABRIC' or heading_upper contains 'CARE' or heading_upper contains 'MATERIAL'
+              assign default_metafield = product.metafields.custom.care_instructions | default: product.metafields.custom.fabric_care | default: product.metafields.custom.fabric_and_care | default: product.metafields.custom.materials_care
+              if raw_content == blank and default_metafield == blank
+                assign raw_content = '<p>Hand wash cold or gentle machine wash with similar colors. Do not bleach or tumble dry. Dry flat in shade. Cool iron on reverse side if required.</p>'
+              endif
             elsif heading_upper contains 'SIZE'
               assign default_metafield = product.metafields.custom.size_guide_table | default: product.metafields.custom.size_guide
+              if raw_content == blank and default_metafield == blank
+                assign raw_content = 'Size Chart not available. Please refer to the product description for sizing information.'
+              endif
             elsif heading_upper contains 'SHIPPING' or heading_upper contains 'RETURN'
               assign default_metafield = product.metafields.custom.shipping_returns | default: product.metafields.custom.shipping_and_returns
-            elsif heading_upper contains 'DESCRIPTION'
+              if raw_content == blank and default_metafield == blank
+                assign raw_content = '<p>Orders are dispatched within 24-48 business hours. Complimentary standard delivery on all domestic orders over $100. Hassle-free 30-day return policy for unused items in original packaging.</p>'
+              endif
+            elsif heading_upper contains 'DESCRIPTION' or heading_upper contains 'DETAIL' or heading_upper contains 'FIT'
               if raw_content == blank
                 assign raw_content = product.description
               endif
@@ -712,28 +819,183 @@
             {% render 'render-tab-content', content: raw_content, metafield: default_metafield %}
           {%- endcapture -%}
 
-          {%- assign stripped_content = rendered_content | strip_html | strip -%}
-
-          {%- if rendered_content != blank and stripped_content != blank -%}
-            <div
-              id="tab-{{ block.id }}"
-              class="szc-tab-pane{% if active_pane_found == false %} is-active{% endif %}"
-              {{ block.shopify_attributes }}
-            >
-              {%- if heading_upper contains 'DESCRIPTION' -%}
-                <div class="szc-product-description-content">
-                  {{ rendered_content }}
-                </div>
-              {%- else -%}
-                <div class="szc-tab-pane-table-wrapper">
-                  {{ rendered_content }}
-                </div>
-              {%- endif -%}
-            </div>
-            {%- assign active_pane_found = true -%}
-          {%- endif -%}
+          <div
+            id="TabPane-{{ block.id }}"
+            class="szc-tab-pane{% if is_active %} is-active{% endif %}"
+            role="tabpanel"
+            aria-labelledby="TabBtn-{{ block.id }}"
+            tabindex="0"
+            {% unless is_active %}hidden{% endunless %}
+            {{ block.shopify_attributes }}
+          >
+            {%- if heading_upper contains 'DESCRIPTION' or heading_upper contains 'DETAIL' or heading_upper contains 'FIT' -%}
+              <div class="szc-product-description-content">
+                {{ rendered_content }}
+              </div>
+            {%- else -%}
+              <div class="szc-tab-pane-table-wrapper">
+                {{ rendered_content }}
+              </div>
+            {%- endif -%}
+          </div>
         {%- endfor -%}
       </div>
+    </div>
+  {%- endif -%}
+
+  {%- liquid
+    assign show_related_blog = true
+    if section.settings.show_related_blog == false
+      assign show_related_blog = false
+    endif
+
+    assign related_articles = product.metafields.custom.related_articles.value
+    if related_articles == blank
+      assign related_articles = product.metafields.custom['related_articles'].value
+    endif
+
+    assign valid_articles_count = 0
+    if related_articles != blank
+      for item in related_articles
+        assign article = item.value | default: item
+        if article.title != blank
+          assign valid_articles_count = valid_articles_count | plus: 1
+        endif
+      endfor
+    endif
+  -%}
+
+  <!-- 4.5 Product Related Blog Carousel (Home Page Recent Blog Posts Design) -->
+  {%- if show_related_blog and valid_articles_count > 0 -%}
+    <div
+      class="szc-product-related-blog szc-recent-blog-posts"
+      id="RecentBlogPosts-{{ section.id }}-related"
+      data-animate="slide-up"
+    >
+      <div class="szc-recent-blog-posts__header">
+        <div class="szc-recent-blog-posts__header-text">
+          <h2 class="szc-recent-blog-posts__title">{{ section.settings.related_blog_heading | default: 'Related Blog' }}</h2>
+        </div>
+
+        {%- if valid_articles_count > 1 -%}
+          <div class="szc-recent-blog-posts__nav" aria-label="Carousel navigation">
+            <button
+              type="button"
+              class="szc-recent-blog-carousel__arrow szc-recent-blog-carousel__arrow--prev"
+              aria-label="Previous articles"
+            >
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                <line x1="19" y1="12" x2="5" y2="12"></line>
+                <polyline points="12 19 5 12 12 5"></polyline>
+              </svg>
+            </button>
+            <button
+              type="button"
+              class="szc-recent-blog-carousel__arrow szc-recent-blog-carousel__arrow--next"
+              aria-label="Next articles"
+            >
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                <line x1="5" y1="12" x2="19" y2="12"></line>
+                <polyline points="12 5 19 12 12 19"></polyline>
+              </svg>
+            </button>
+          </div>
+        {%- endif -%}
+      </div>
+
+      <recent-blog-carousel
+        class="szc-recent-blog-carousel"
+        data-section-id="{{ section.id }}-related"
+        data-autoplay="false"
+        data-autoplay-speed="5000"
+        style="--carousel-cols: 3; --carousel-cols-tablet: 2; --carousel-gap: 24px; --panel-bg: rgba(255, 255, 255, 0.72); --panel-blur: 18px;"
+        role="region"
+        aria-roledescription="carousel"
+        aria-label="{{ section.settings.related_blog_heading | default: 'Related Blog' }}"
+      >
+        <div class="szc-recent-blog-carousel__viewport">
+          <div class="szc-recent-blog-carousel__track" id="RecentBlogPostsGrid-{{ section.id }}-related">
+            {%- assign slide_index = 0 -%}
+            {%- for item in related_articles -%}
+              {%- assign article = item.value | default: item -%}
+              {%- if article.title != blank -%}
+                {%- liquid
+                  assign words = article.content | default: article.excerpt | strip_html | split: ' ' | size
+                  assign read_mins = words | divided_by: 200 | at_least: 1
+                -%}
+                <div
+                  class="szc-recent-blog-carousel__slide"
+                  data-slide-index="{{ slide_index }}"
+                  role="group"
+                  aria-roledescription="slide"
+                  aria-label="{{ slide_index | plus: 1 }} of {{ valid_articles_count }}"
+                >
+                  <article class="szc-blog-card">
+                    <a href="{{ article.url }}" class="szc-blog-card__link" aria-label="{{ article.title | escape }}">
+                      <div class="szc-blog-card__media">
+                        {%- if article.image -%}
+                          {{
+                            article.image
+                            | image_url: width: 900
+                            | image_tag:
+                              class: 'szc-blog-card__img',
+                              loading: 'lazy',
+                              alt: article.title,
+                              widths: '400, 600, 800, 1000'
+                          }}
+                        {%- else -%}
+                          <div class="szc-blog-card__placeholder" aria-hidden="true">
+                            {{ 'lifestyle-1' | placeholder_svg_tag: 'szc-blog-card__placeholder-svg' }}
+                          </div>
+                        {%- endif -%}
+                      </div>
+
+                      <div class="szc-blog-card__panel">
+                        <div class="szc-blog-card__meta">
+                          <span class="szc-blog-card__badge">
+                            {%- if article.tags.size > 0 -%}
+                              {{ article.tags.first | capitalize }}
+                            {%- else -%}
+                              {{ article.blog.title | default: 'Blog' | capitalize }}
+                            {%- endif -%}
+                          </span>
+
+                          {%- if article.published_at -%}
+                            <span class="szc-blog-card__dot" aria-hidden="true">•</span>
+                            <time class="szc-blog-card__date" datetime="{{ article.published_at | date: '%Y-%m-%d' }}">
+                              {{ article.published_at | date: "%b %d, %Y" }}
+                            </time>
+                          {%- endif -%}
+
+                          <span class="szc-blog-card__dot" aria-hidden="true">•</span>
+                          <span class="szc-blog-card__read-time">{{ read_mins }} mins read</span>
+                        </div>
+
+                        <h3 class="szc-blog-card__title">{{ article.title }}</h3>
+
+                        <div class="szc-blog-card__bottom">
+                          {%- assign article_excerpt = article.excerpt_or_content | default: article.excerpt | default: article.content | strip_html | truncate: 110 -%}
+                          <p class="szc-blog-card__excerpt">
+                            {{ article_excerpt | default: 'Discover the full story, inspiration, and styling insights.' }}
+                          </p>
+
+                          <span class="szc-blog-card__arrow-btn" aria-hidden="true">
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                              <line x1="5" y1="12" x2="19" y2="12"></line>
+                              <polyline points="12 5 19 12 12 19"></polyline>
+                            </svg>
+                          </span>
+                        </div>
+                      </div>
+                    </a>
+                  </article>
+                </div>
+                {%- assign slide_index = slide_index | plus: 1 -%}
+              {%- endif -%}
+            {%- endfor -%}
+          </div>
+        </div>
+      </recent-blog-carousel>
     </div>
   {%- endif -%}
 
@@ -744,7 +1006,11 @@
         <div class="szc-sticky-atc-bar__product">
           <div class="szc-sticky-atc-bar__img-wrap">
             {%- if featured_media != blank -%}
-              {{ featured_media.preview_image | image_url: width: 120 | image_tag: class: 'szc-sticky-atc-bar__img', data-sticky-img: '' }}
+              {{
+                featured_media.preview_image
+                | image_url: width: 120
+                | image_tag: class: 'szc-sticky-atc-bar__img', data-sticky-img: ''
+              }}
             {%- else -%}
               {{ 'product-1' | placeholder_svg_tag: 'szc-sticky-atc-bar__img' }}
             {%- endif -%}
@@ -754,7 +1020,12 @@
             <div class="szc-sticky-atc-bar__price-wrap" data-sticky-price-wrap>
               <div class="szc-sticky-atc-bar__price" data-sticky-price>
                 <span class="szc-price__item--sale">{{ current_variant.price | money }}</span>
-                <s class="szc-price__item--regular" {% if current_variant.compare_at_price <= current_variant.price %}style="display:none;"{% endif %}>
+                <s
+                  class="szc-price__item--regular"
+                  {% if current_variant.compare_at_price <= current_variant.price %}
+                    style="display:none;"
+                  {% endif %}
+                >
                   {{ current_variant.compare_at_price | money }}
                 </s>
               </div>
@@ -844,64 +1115,113 @@
 
 <!-- 6. Shopify Style Native Zoom Modal Lightbox (Crystal Clear Ultra High-Res + Top-to-Bottom Scrollable) -->
 <div class="szc-zoom-modal" id="ProductZoomModal" aria-hidden="true" data-zoom-modal>
-    <div class="szc-zoom-modal__header">
-      <span class="szc-zoom-modal__counter" data-zoom-counter>1 / {{ product.media.size }}</span>
-      <div class="szc-zoom-modal__controls">
-        <button
-          type="button"
-          class="szc-zoom-modal__ctrl-btn"
-          aria-label="Zoom In"
-          data-zoom-in-btn
-          title="Zoom In (+)"
-        >
-          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-            <circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line><line x1="11" y1="8" x2="11" y2="14"></line><line x1="8" y1="11" x2="14" y2="11"></line>
-          </svg>
-        </button>
-        <button
-          type="button"
-          class="szc-zoom-modal__ctrl-btn"
-          aria-label="Zoom Out"
-          data-zoom-out-btn
-          title="Zoom Out (-)"
-        >
-          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-            <circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line><line x1="11" y1="8" x2="11" y2="14"></line>
-          </svg>
-        </button>
-        <button
-          type="button"
-          class="szc-zoom-modal__ctrl-btn szc-zoom-modal__ctrl-btn--close"
-          aria-label="Close"
-          data-zoom-close
-          title="Close (Esc)"
-        >
-          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
-        </button>
-      </div>
-    </div>
-
-    <button type="button" class="szc-zoom-modal__arrow szc-zoom-modal__arrow--prev" data-zoom-prev aria-label="Previous image">
-      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><polyline points="15 18 9 12 15 6"></polyline></svg>
-    </button>
-
-    <div class="szc-zoom-modal__viewport" data-zoom-viewport>
-      <img
-        id="ZoomModalImg"
-        src="{{ featured_media.preview_image | image_url: width: 2400 }}"
-        alt="{{ product.title | escape }}"
-        width="2400"
-        height="2400"
-        loading="lazy"
-        class="szc-zoom-modal__img"
-        data-zoom-target
+  <div class="szc-zoom-modal__header">
+    <span class="szc-zoom-modal__counter" data-zoom-counter>1 / {{ product.media.size }}</span>
+    <div class="szc-zoom-modal__controls">
+      <button
+        type="button"
+        class="szc-zoom-modal__ctrl-btn"
+        aria-label="Zoom In"
+        data-zoom-in-btn
+        title="Zoom In (+)"
       >
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line><line x1="11" y1="8" x2="11" y2="14"></line><line x1="8" y1="11" x2="14" y2="11"></line>
+        </svg>
+      </button>
+      <button
+        type="button"
+        class="szc-zoom-modal__ctrl-btn"
+        aria-label="Zoom Out"
+        data-zoom-out-btn
+        title="Zoom Out (-)"
+      >
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line><line x1="11" y1="8" x2="11" y2="14"></line>
+        </svg>
+      </button>
+      <button
+        type="button"
+        class="szc-zoom-modal__ctrl-btn szc-zoom-modal__ctrl-btn--close"
+        aria-label="Close"
+        data-zoom-close
+        title="Close (Esc)"
+      >
+        <svg
+          width="18"
+          height="18"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="2"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+          aria-hidden="true"
+          focusable="false"
+        >
+          <line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line>
+        </svg>
+      </button>
     </div>
-
-    <button type="button" class="szc-zoom-modal__arrow szc-zoom-modal__arrow--next" data-zoom-next aria-label="Next image">
-      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><polyline points="9 18 15 12 9 6"></polyline></svg>
-    </button>
   </div>
+
+  <button
+    type="button"
+    class="szc-zoom-modal__arrow szc-zoom-modal__arrow--prev"
+    data-zoom-prev
+    aria-label="Previous image"
+  >
+    <svg
+      width="22"
+      height="22"
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      stroke-width="2"
+      stroke-linecap="round"
+      stroke-linejoin="round"
+      aria-hidden="true"
+      focusable="false"
+    >
+      <polyline points="15 18 9 12 15 6"></polyline>
+    </svg>
+  </button>
+
+  <div class="szc-zoom-modal__viewport" data-zoom-viewport>
+    <img
+      id="ZoomModalImg"
+      src="{{ featured_media.preview_image | image_url: width: 2400 }}"
+      alt="{{ product.title | escape }}"
+      width="2400"
+      height="2400"
+      loading="lazy"
+      class="szc-zoom-modal__img"
+      data-zoom-target
+    >
+  </div>
+
+  <button
+    type="button"
+    class="szc-zoom-modal__arrow szc-zoom-modal__arrow--next"
+    data-zoom-next
+    aria-label="Next image"
+  >
+    <svg
+      width="22"
+      height="22"
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      stroke-width="2"
+      stroke-linecap="round"
+      stroke-linejoin="round"
+      aria-hidden="true"
+      focusable="false"
+    >
+      <polyline points="9 18 15 12 9 6"></polyline>
+    </svg>
+  </button>
+</div>
 
 {% stylesheet %}
   .szc-main-product {
@@ -1453,9 +1773,12 @@
 
   /* Sticky Info Column */
   .szc-main-product__info-col {
+    position: relative;
     display: flex;
     flex-direction: column;
     gap: 16px;
+    min-width: 0;
+    max-width: 100%;
   }
 
   @media (min-width: 990px) {
@@ -1464,6 +1787,83 @@
       top: 24px;
       align-self: start;
     }
+  }
+
+  /* Top-Right Action Buttons: Wishlist & Share */
+  .szc-main-product__top-actions {
+    position: absolute;
+    top: 0;
+    right: 0;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    z-index: 35;
+  }
+
+  .szc-main-product__action-btn {
+    position: relative;
+    width: 44px;
+    height: 44px;
+    border-radius: 50%;
+    border: 1px solid #e5e5e5;
+    background: #ffffff;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    color: #111111;
+    box-shadow: 0 1px 4px rgba(0, 0, 0, 0.04);
+    transition: all 180ms ease;
+    padding: 0;
+  }
+
+  .szc-main-product__action-btn:hover {
+    border-color: #111111;
+    transform: scale(1.05);
+  }
+
+  .szc-main-product__top-actions .szc-main-product__wishlist-btn--top {
+    position: static;
+  }
+
+  .szc-main-product__wishlist-btn--top:hover {
+    border-color: #111111;
+    color: #e63946;
+    transform: scale(1.05);
+  }
+
+  .szc-main-product__wishlist-btn--top.is-active {
+    border-color: #e63946;
+    color: #e63946;
+  }
+
+  .szc-main-product__wishlist-btn--top .szc-wishlist-icon-wrap {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    line-height: 1;
+  }
+
+  .szc-main-product__wishlist-btn--top .szc-wishlist-icon-wrap svg {
+    width: 19px !important;
+    height: 19px !important;
+    display: block;
+    transition: transform 150ms ease;
+  }
+
+  .szc-main-product__wishlist-btn--top.is-pop {
+    animation: szcHeartPop 0.35s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+  }
+
+  .szc-main-product__share-btn.is-active {
+    border-color: #111111;
+    background-color: #f7f7f7;
+  }
+
+  @keyframes szcHeartPop {
+    0% { transform: scale(1); }
+    50% { transform: scale(1.22); }
+    100% { transform: scale(1); }
   }
 
   .szc-main-product__badge-wrap {
@@ -1484,18 +1884,39 @@
 
   .szc-main-product__vendor {
     font-size: 11px;
+    font-weight: 600;
     text-transform: uppercase;
     letter-spacing: 0.12em;
-    color: #757575;
+    color: #737373;
+    padding-right: 104px;
+    box-sizing: border-box;
   }
 
   .szc-main-product__title {
     margin: 0;
-    font-family: var(--szc-font-family-heading, Georgia, serif);
-    font-size: clamp(26px, 3.2vw, 36px);
-    font-weight: 600;
+    font-family: var(--szc-font-family-heading, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif);
+    font-size: clamp(24px, 2.6vw, 32px);
+    font-weight: 700;
     color: #111111;
-    line-height: 1.2;
+    line-height: 1.25;
+    letter-spacing: -0.01em;
+    padding-right: 104px;
+    box-sizing: border-box;
+  }
+
+  .szc-main-product__description {
+    font-size: 14px;
+    line-height: 1.65;
+    color: #444444;
+    margin: 4px 0 8px 0;
+  }
+
+  .szc-main-product__description p {
+    margin: 0 0 10px 0;
+  }
+
+  .szc-main-product__description p:last-child {
+    margin-bottom: 0;
   }
 
   .szc-main-product__price-wrap {
@@ -1617,77 +2038,126 @@
     box-sizing: border-box;
   }
 
-  /* Buy Buttons Row */
+  /* Buy Buttons Row - Side-by-Side 50/50 Desktop */
+  .szc-main-product__buy-buttons {
+    width: 100%;
+    margin-top: 4px;
+  }
+
+  .szc-main-product__form {
+    width: 100%;
+  }
+
   .szc-main-product__btn-row {
     display: flex;
-    gap: 10px;
+    gap: 12px;
     align-items: center;
+    width: 100%;
+    margin-top: 6px;
   }
 
-  .szc-main-product__add-btn {
-    flex: 1;
-    height: 50px;
-    background-color: #000000;
-    color: #ffffff;
-    font-weight: 700;
-    letter-spacing: 0.08em;
-    border: none;
+  .szc-main-product__quantity {
+    flex: 0 0 124px;
+    width: 124px;
+    height: 52px;
+    box-sizing: border-box;
+  }
+
+  .szc-main-product__quantity .szc-quantity-input {
+    width: 100%;
+    height: 52px;
     border-radius: 4px;
-    cursor: pointer;
-    transition: background-color 150ms ease;
-  }
-
-  .szc-main-product__add-btn:hover {
-    background-color: #222222;
-  }
-
-  .szc-main-product__wishlist-btn {
-    width: 50px;
-    height: 50px;
-    flex-shrink: 0;
     border: 1px solid #e5e5e5;
-    border-radius: 4px;
-    background: #ffffff;
+    background-color: #f7f7f7;
+    box-sizing: border-box;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 4px;
+  }
+
+  .szc-main-product__quantity .szc-quantity-input__button {
+    width: 36px;
+    height: 100%;
     display: flex;
     align-items: center;
     justify-content: center;
-    cursor: pointer;
     color: #111111;
-    transition: all 150ms ease;
+    background: transparent;
+    border: none;
+    cursor: pointer;
+    transition: opacity 150ms ease;
   }
 
-  .szc-main-product__wishlist-btn:hover {
-    border-color: #111111;
-    color: #e63946;
+  .szc-main-product__quantity .szc-quantity-input__button:hover:not([disabled]) {
+    opacity: 0.7;
+    background: transparent;
   }
 
+  .szc-main-product__quantity .szc-quantity-input__button:disabled {
+    opacity: 0.3;
+    cursor: not-allowed;
+  }
+
+  .szc-main-product__quantity .szc-quantity-input__field {
+    width: calc(100% - 72px);
+    height: 100%;
+    font-size: 14px;
+    font-weight: 700;
+    text-align: center;
+    color: #111111;
+    background: transparent;
+    border: none;
+    padding: 0;
+  }
+
+  .szc-main-product__add-btn,
   .szc-main-product__buy-now-btn {
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
+    flex: 1 1 0;
+    min-width: 0;
     width: 100%;
-    height: 48px;
-    margin-top: 10px;
-    background-color: #ffffff;
-    color: #111111 !important;
-    border: 1px solid #111111;
-    border-radius: 4px;
+    height: 52px;
+    min-height: 52px;
+    margin: 0 !important;
+    padding: 0 16px;
     font-size: 13px;
     font-weight: 700;
     letter-spacing: 0.08em;
     text-transform: uppercase;
+    border-radius: 4px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
     cursor: pointer;
-    transition: background-color 150ms ease, color 150ms ease, border-color 150ms ease;
+    box-sizing: border-box;
+    transition: background-color 150ms ease, color 150ms ease, border-color 150ms ease, transform 150ms ease;
   }
 
-  .szc-main-product__buy-now-btn:hover {
+  .szc-main-product__add-btn {
+    background-color: #000000;
+    color: #ffffff;
+    border: 1.5px solid #000000;
+  }
+
+  .szc-main-product__add-btn:hover:not([disabled]) {
+    background-color: #222222;
+    border-color: #222222;
+  }
+
+  .szc-main-product__buy-now-btn {
+    background-color: #ffffff;
+    color: #111111 !important;
+    border: 1.5px solid #111111;
+  }
+
+  .szc-main-product__buy-now-btn:hover:not([disabled]) {
     background-color: #111111 !important;
     color: #ffffff !important;
     border-color: #111111 !important;
   }
 
-  .szc-main-product__buy-now-btn:hover .szc-btn-text,
-  .szc-main-product__buy-now-btn:hover span {
+  .szc-main-product__buy-now-btn:hover:not([disabled]) .szc-btn-text,
+  .szc-main-product__buy-now-btn:hover:not([disabled]) span {
     color: #ffffff !important;
   }
 
@@ -1709,38 +2179,75 @@
     display: inline-block;
   }
 
+  .szc-main-product__add-btn:disabled,
+  .szc-main-product__buy-now-btn:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+  }
+
+  @media (max-width: 520px) {
+    .szc-main-product__btn-row {
+      flex-wrap: wrap;
+      gap: 10px;
+    }
+
+    .szc-main-product__quantity {
+      flex: 0 0 100%;
+      width: 100%;
+    }
+
+    .szc-main-product__add-btn,
+    .szc-main-product__buy-now-btn {
+      flex: 1 1 0;
+      min-width: 0;
+    }
+  }
+
+  @media (max-width: 380px) {
+    .szc-main-product__add-btn,
+    .szc-main-product__buy-now-btn {
+      flex: 0 0 100%;
+      width: 100%;
+    }
+  }
+
   /* Trust Badges Block (Fully Dynamic via Schema Settings) */
   .szc-main-product__trust-badges {
     display: flex;
     align-items: center;
-    flex-wrap: wrap;
+    justify-content: space-between;
     gap: 16px;
-    padding: 12px 14px;
+    padding: 18px 0;
+    margin-top: 20px;
+    margin-bottom: 4px;
+    border-top: 1px solid #eeeeee;
+    border-bottom: 1px solid #eeeeee;
     background-color: var(--tb-bg-color, transparent);
-    border: 1px solid var(--tb-border-color, transparent);
-    border-radius: var(--tb-border-radius, 0px);
-    margin-top: 8px;
     transition: all 150ms ease;
   }
 
   .szc-trust-badge {
     display: flex;
     flex-direction: row;
-    align-items: flex-start;
+    align-items: center;
     text-align: left;
-    gap: 10px;
+    gap: 12px;
+    flex: 1 1 0;
+    min-width: 0;
   }
 
   .szc-trust-badge__icon {
     flex-shrink: 0;
-    margin-top: 2px;
-    color: var(--tb-icon-color, #b07d4f);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--tb-icon-color, #e76f51);
   }
 
   .szc-trust-badge__icon svg {
     width: var(--tb-icon-size, 22px);
     height: var(--tb-icon-size, 22px);
-    stroke: var(--tb-icon-color, #b07d4f);
+    stroke: var(--tb-icon-color, #e76f51);
   }
 
   .szc-trust-badge__text strong {
@@ -1748,7 +2255,7 @@
     font-size: var(--tb-title-size, 12px);
     font-weight: var(--tb-title-weight, 700);
     color: var(--tb-title-color, #111111);
-    line-height: 1.3;
+    line-height: 1.25;
   }
 
   .szc-trust-badge__text span {
@@ -1756,52 +2263,97 @@
     font-size: var(--tb-subtext-size, 11px);
     font-weight: var(--tb-subtext-weight, 400);
     color: var(--tb-subtext-color, #666666);
-    line-height: 1.3;
+    line-height: 1.25;
     margin-top: 2px;
   }
 
-  /* Tabs Section */
-  .szc-product-tabs {
+  @media (max-width: 640px) {
+    .szc-main-product__trust-badges {
+      flex-direction: column;
+      gap: 14px;
+      align-items: stretch;
+    }
+  }
+
+  /* 4. Lower Content Area: Product Details Horizontal Tabs Card (Reference Matching) */
+  .szc-product-tabs-card {
     margin-top: 56px;
-    border-top: 1px solid #e5e5e5;
-    padding-top: 32px;
+    background-color: #ffffff;
+    border-radius: 12px;
+    border: 1px solid #dcdfe3;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
+    overflow: hidden;
+    width: 100%;
   }
 
   .szc-product-tabs__header {
+    background: var(--tab-nav-bg, #111111);
     display: flex;
-    gap: 32px;
-    border-bottom: 1px solid #e5e5e5;
+    align-items: center;
+    gap: 10px;
+    padding: 12px 14px;
+    border-bottom: 1px solid rgba(0, 0, 0, 0.06);
     overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none;
+  }
+
+  .szc-product-tabs__header::-webkit-scrollbar {
+    display: none;
   }
 
   .szc-tab-btn {
-    background: transparent;
+    flex: 1 1 0;
+    min-width: 0;
+    height: 48px;
+    padding: 0 16px;
+    background-color: transparent;
     border: none;
-    padding: 12px 0;
-    font-size: 12px;
+    border-radius: 8px;
+    color: #ffffff;
+    font-family: inherit;
+    font-size: 13px;
     font-weight: 700;
-    letter-spacing: 0.08em;
-    color: #757575;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
     cursor: pointer;
-    position: relative;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    white-space: nowrap;
+    transition: all 0.2s cubic-bezier(0.2, 0.8, 0.2, 1);
+    outline: none;
+    user-select: none;
+  }
+
+  .szc-tab-btn:hover {
+    background-color: rgba(255, 255, 255, 0.12);
+    color: #ffffff;
+  }
+
+  .szc-tab-btn:focus-visible {
+    outline: 2px solid #ffffff;
+    outline-offset: 2px;
   }
 
   .szc-tab-btn.is-active {
+    background-color: #ffffff;
     color: #111111;
+    font-weight: 700;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.18);
   }
 
-  .szc-tab-btn.is-active::after {
-    content: '';
-    position: absolute;
-    bottom: -1px;
-    left: 0;
-    right: 0;
-    height: 2px;
-    background-color: #111111;
+  .szc-tab-btn__text {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
   }
 
   .szc-product-tabs__content {
-    padding-top: 24px;
+    padding: 32px 36px;
+    background-color: #ffffff;
+    min-height: 180px;
   }
 
   .szc-tab-pane {
@@ -1810,6 +2362,29 @@
 
   .szc-tab-pane.is-active {
     display: block;
+    animation: szcTabPaneFadeIn 0.25s ease-out;
+  }
+
+  @keyframes szcTabPaneFadeIn {
+    from {
+      opacity: 0;
+      transform: translateY(4px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  .szc-tab-pane p {
+    margin: 0 0 14px 0;
+    font-size: 14.5px;
+    line-height: 1.7;
+    color: #444444;
+  }
+
+  .szc-tab-pane p:last-child {
+    margin-bottom: 0;
   }
 
   .szc-tab-pane-table-wrapper {
@@ -1823,13 +2398,13 @@
     width: 100%;
     border-collapse: collapse;
     margin: 12px 0;
-    font-size: 14px;
+    font-size: 13px;
     text-align: left;
   }
 
   .szc-tab-pane table th,
   .szc-tab-pane table td {
-    padding: 12px 16px;
+    padding: 10px 14px;
     border-bottom: 1px solid rgba(0, 0, 0, 0.08);
   }
 
@@ -1837,13 +2412,386 @@
     font-weight: 700;
     text-transform: uppercase;
     letter-spacing: 0.05em;
-    font-size: 12px;
+    font-size: 11px;
     background-color: rgba(0, 0, 0, 0.03);
     color: #111111;
   }
 
   .szc-tab-pane table tr:hover {
     background-color: rgba(0, 0, 0, 0.015);
+  }
+
+  @media (max-width: 989px) {
+    .szc-tab-btn {
+      font-size: 12px;
+      padding: 0 12px;
+      height: 44px;
+    }
+
+    .szc-product-tabs__content {
+      padding: 24px 24px;
+    }
+  }
+
+  @media (max-width: 680px) {
+    .szc-product-tabs-card {
+      margin-top: 40px;
+      border-radius: 10px;
+    }
+
+    .szc-product-tabs__header {
+      padding: 10px 10px;
+      gap: 8px;
+    }
+
+    .szc-tab-btn {
+      flex: 0 0 auto;
+      height: 40px;
+      padding: 0 16px;
+      font-size: 11.5px;
+    }
+
+    .szc-product-tabs__content {
+      padding: 20px 16px;
+    }
+  }
+
+  /* Product Related Blog Section & Carousel (Matching Home Page Recent Blog Posts) */
+  .szc-product-related-blog {
+    /* margin-top: 56px;
+    border-top: 1px solid #eeeeee; */
+    padding-top: 48px;
+    padding-bottom: 24px;
+    position: relative;
+    width: 100%;
+  }
+
+  .szc-product-related-blog .szc-recent-blog-posts__header {
+    display: flex;
+    align-items: flex-end;
+    justify-content: space-between;
+    gap: 24px;
+    margin-bottom: 32px;
+  }
+
+  .szc-product-related-blog .szc-recent-blog-posts__header-text {
+    flex: 1;
+  }
+
+  .szc-product-related-blog .szc-recent-blog-posts__title {
+    font-family: var(--szc-font-family-heading, Georgia, serif);
+    font-size: 32px;
+    font-weight: 500;
+    color: #111111;
+    margin: 0;
+    letter-spacing: -0.015em;
+    line-height: 1.25;
+  }
+
+  .szc-product-related-blog .szc-recent-blog-posts__nav {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    flex-shrink: 0;
+  }
+
+  .szc-product-related-blog .szc-recent-blog-carousel__arrow {
+    width: 44px;
+    height: 44px;
+    border-radius: 50%;
+    border: 1px solid #e5e5e5;
+    background-color: #ffffff;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    color: #111111;
+    cursor: pointer;
+    transition: all 0.22s cubic-bezier(0.2, 0.8, 0.2, 1);
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.04);
+    padding: 0;
+  }
+
+  .szc-product-related-blog .szc-recent-blog-carousel__arrow:hover {
+    background-color: #111111;
+    color: #ffffff;
+    border-color: #111111;
+    transform: scale(1.06);
+    box-shadow: 0 4px 14px rgba(0, 0, 0, 0.12);
+  }
+
+  .szc-product-related-blog .szc-recent-blog-carousel__arrow:focus-visible {
+    outline: 2px solid #111111;
+    outline-offset: 2px;
+  }
+
+  .szc-product-related-blog .szc-recent-blog-carousel__arrow svg {
+    pointer-events: none;
+  }
+
+  .szc-product-related-blog .szc-recent-blog-carousel {
+    display: block;
+    position: relative;
+    width: 100%;
+  }
+
+  .szc-product-related-blog .szc-recent-blog-carousel__viewport {
+    width: 100%;
+    overflow: hidden;
+    position: relative;
+    padding: 8px 0 16px 0;
+    margin: -8px 0 -16px 0;
+  }
+
+  .szc-product-related-blog .szc-recent-blog-carousel__track {
+    display: flex;
+    gap: var(--carousel-gap, 24px);
+    will-change: transform;
+    user-select: none;
+    -webkit-user-select: none;
+    touch-action: pan-y;
+    cursor: grab;
+  }
+
+  .szc-product-related-blog .szc-recent-blog-carousel__track.is-dragging {
+    cursor: grabbing;
+  }
+
+  .szc-product-related-blog .szc-recent-blog-carousel__slide {
+    flex: 0 0 calc((100% - (var(--carousel-gap, 24px) * (var(--carousel-cols, 3) - 1))) / var(--carousel-cols, 3));
+    min-width: 0;
+    box-sizing: border-box;
+  }
+
+  @media (max-width: 1024px) {
+    .szc-product-related-blog .szc-recent-blog-carousel__slide {
+      flex: 0 0 calc((100% - (var(--carousel-gap, 20px) * (var(--carousel-cols-tablet, 2) - 1))) / var(--carousel-cols-tablet, 2));
+    }
+  }
+
+  @media (max-width: 640px) {
+    .szc-product-related-blog .szc-recent-blog-carousel__slide {
+      flex: 0 0 85%;
+      max-width: 360px;
+    }
+  }
+
+  @media (max-width: 380px) {
+    .szc-product-related-blog .szc-recent-blog-carousel__slide {
+      flex: 0 0 88%;
+      max-width: 310px;
+    }
+  }
+
+  /* Reference-Matching Editorial Blog Card */
+  .szc-product-related-blog .szc-blog-card {
+    position: relative;
+    border-radius: 20px;
+    overflow: hidden;
+    background-color: #f7f7f7;
+    height: 100%;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
+    transition: transform 0.3s cubic-bezier(0.2, 0.8, 0.2, 1), box-shadow 0.3s ease;
+  }
+
+  .szc-product-related-blog .szc-blog-card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 12px 32px rgba(0, 0, 0, 0.1);
+  }
+
+  .szc-product-related-blog .szc-blog-card__link {
+    display: block;
+    position: relative;
+    width: 100%;
+    height: 100%;
+    text-decoration: none;
+    color: inherit;
+    -webkit-user-drag: none;
+    user-select: none;
+  }
+
+  .szc-product-related-blog .szc-blog-card__media {
+    position: relative;
+    width: 100%;
+    aspect-ratio: 16 / 13;
+    min-height: 380px;
+    overflow: hidden;
+    background-color: #f0f0f0;
+  }
+
+  @media (max-width: 640px) {
+    .szc-product-related-blog .szc-blog-card__media {
+      aspect-ratio: 16 / 14;
+      min-height: 330px;
+    }
+  }
+
+  .szc-product-related-blog .szc-blog-card__img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: center;
+    display: block;
+    pointer-events: none;
+    user-select: none;
+    -webkit-user-drag: none;
+    transition: transform 0.6s cubic-bezier(0.2, 0.8, 0.2, 1);
+  }
+
+  .szc-product-related-blog .szc-blog-card:hover .szc-blog-card__img {
+    transform: scale(1.05);
+  }
+
+  .szc-product-related-blog .szc-blog-card__placeholder {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: #f4f5f7;
+    color: #999999;
+  }
+
+  .szc-product-related-blog .szc-blog-card__placeholder-svg {
+    width: 64px;
+    height: 64px;
+    opacity: 0.6;
+    pointer-events: none;
+    user-select: none;
+    -webkit-user-drag: none;
+  }
+
+  .szc-product-related-blog .szc-blog-card__panel {
+    position: absolute;
+    left: 14px;
+    right: 14px;
+    bottom: 14px;
+    background: var(--panel-bg, rgba(255, 255, 255, 0.72));
+    backdrop-filter: blur(var(--panel-blur, 18px));
+    -webkit-backdrop-filter: blur(var(--panel-blur, 18px));
+    border: 1px solid rgba(255, 255, 255, 0.7);
+    border-radius: 16px;
+    padding: 16px 18px 18px 18px;
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.08);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    z-index: 2;
+  }
+
+  .szc-product-related-blog .szc-blog-card:hover .szc-blog-card__panel {
+    transform: translateY(-2px);
+    box-shadow: 0 10px 28px rgba(0, 0, 0, 0.12);
+  }
+
+  .szc-product-related-blog .szc-blog-card__meta {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    flex-wrap: wrap;
+    margin-bottom: 8px;
+  }
+
+  .szc-product-related-blog .szc-blog-card__badge {
+    display: inline-flex;
+    align-items: center;
+    padding: 3px 10px;
+    border-radius: 999px;
+    background: rgba(0, 0, 0, 0.06);
+    font-size: 11px;
+    font-weight: 600;
+    color: #111111;
+    letter-spacing: 0.02em;
+    line-height: 1.2;
+  }
+
+  .szc-product-related-blog .szc-blog-card__dot {
+    color: #999999;
+    font-size: 11px;
+  }
+
+  .szc-product-related-blog .szc-blog-card__date,
+  .szc-product-related-blog .szc-blog-card__read-time {
+    font-size: 11.5px;
+    color: #666666;
+    font-weight: 500;
+  }
+
+  .szc-product-related-blog .szc-blog-card__title {
+    font-family: var(--szc-font-family-heading, Georgia, serif);
+    font-size: 18px;
+    font-weight: 600;
+    line-height: 1.32;
+    color: #111111;
+    margin: 0 0 8px 0;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+
+  .szc-product-related-blog .szc-blog-card__bottom {
+    display: flex;
+    align-items: flex-end;
+    justify-content: space-between;
+    gap: 14px;
+  }
+
+  .szc-product-related-blog .szc-blog-card__excerpt {
+    font-size: 12.5px;
+    color: #555555;
+    line-height: 1.45;
+    margin: 0;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    flex: 1;
+  }
+
+  .szc-product-related-blog .szc-blog-card__arrow-btn {
+    width: 34px;
+    height: 34px;
+    border-radius: 50%;
+    background-color: #ffffff;
+    border: 1px solid #e2e2e2;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    color: #111111;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.06);
+    transition: all 0.25s ease;
+    pointer-events: none;
+  }
+
+  .szc-product-related-blog .szc-blog-card:hover .szc-blog-card__arrow-btn {
+    transform: scale(1.08) translateX(2px);
+    background-color: #111111;
+    color: #ffffff;
+    border-color: #111111;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15);
+  }
+
+  @media (max-width: 576px) {
+    .szc-product-related-blog {
+      padding-top: 36px;
+      padding-bottom: 36px;
+      margin-top: 40px;
+    }
+
+    .szc-product-related-blog .szc-recent-blog-posts__title {
+      font-size: 26px;
+    }
+
+    .szc-product-related-blog .szc-blog-card__panel {
+      left: 10px;
+      right: 10px;
+      bottom: 10px;
+      padding: 14px 14px 16px 14px;
+      border-radius: 14px;
+    }
+
+    .szc-product-related-blog .szc-blog-card__title {
+      font-size: 16px;
+    }
   }
 
   /* Size Guide Reusable Modal Styling */
@@ -2335,97 +3283,142 @@
     }
   }
 
-  /* Share Block Styles */
-  .szc-main-product__share {
+  /* New Product Share Floating Popover Component */
+  .szc-product-share-wrap {
+    position: relative;
+    display: inline-block;
+  }
+
+  .szc-share-menu {
+    position: absolute;
+    top: calc(100% + 8px);
+    right: 0;
+    width: 195px;
+    max-width: calc(100vw - 32px);
+    background: #ffffff;
+    border: 1px solid #eeeeee;
+    border-radius: 12px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.12), 0 2px 6px rgba(0, 0, 0, 0.04);
+    padding: 8px 6px;
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    opacity: 0;
+    visibility: hidden;
+    transform: translateY(-6px) scale(0.98);
+    transition: opacity 0.18s ease, transform 0.18s ease, visibility 0.18s ease;
+    z-index: 100;
+    pointer-events: none;
+  }
+
+  .szc-share-menu.is-open {
+    opacity: 1;
+    visibility: visible;
+    transform: translateY(0) scale(1);
+    pointer-events: auto;
+  }
+
+  .szc-share-menu__item {
     display: flex;
     align-items: center;
-    gap: 12px;
-    margin-top: 16px;
-    padding-top: 16px;
-    border-top: 1px solid #eaeaea;
+    gap: 10px;
+    padding: 7px 10px;
+    border-radius: 8px;
+    font-size: 13px;
+    font-weight: 500;
+    color: #222222;
+    text-decoration: none;
+    background: transparent;
+    border: none;
+    width: 100%;
+    text-align: left;
+    cursor: pointer;
+    box-sizing: border-box;
+    transition: background-color 0.15s ease, color 0.15s ease;
+    font-family: inherit;
+    line-height: 1.4;
   }
 
-  .szc-share__title {
-    font-size: 12px;
-    font-weight: 600;
-    text-transform: uppercase;
-    letter-spacing: 0.05em;
-    color: #555555;
+  .szc-share-menu__item:hover,
+  .szc-share-menu__item:focus-visible {
+    background-color: #f5f5f5;
+    color: #000000;
+    outline: none;
   }
 
-  .szc-share__buttons {
-    display: flex;
-    align-items: center;
-    gap: 8px;
-  }
-
-  .szc-share-btn {
+  .szc-share-menu__icon {
     display: inline-flex;
     align-items: center;
     justify-content: center;
-    width: 32px;
-    height: 32px;
-    border-radius: 50%;
-    background-color: #f5f5f5;
+    width: 20px;
+    height: 20px;
     color: #333333;
-    border: 1px solid #e0e0e0;
-    transition: all 0.2s ease;
-    cursor: pointer;
-    text-decoration: none;
+    flex-shrink: 0;
+    transition: color 0.15s ease;
   }
 
-  .szc-share-btn:hover {
-    background-color: #111111;
+  .szc-share-menu__icon-badge {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 20px;
+    height: 20px;
+    border-radius: 5px;
     color: #ffffff;
-    border-color: #111111;
-    transform: translateY(-2px);
+    flex-shrink: 0;
   }
 
-  .szc-share-custom-img {
-    width: 18px;
-    height: 18px;
-    object-fit: contain;
-    display: block;
+  .szc-share-menu__icon-badge--whatsapp {
+    background-color: #25d366;
   }
 
-  .szc-share-btn--copy {
-    position: relative;
+  .szc-share-menu__icon-badge--facebook {
+    background-color: #1877f2;
   }
 
-  .szc-share-tooltip {
-    position: absolute;
-    bottom: calc(100% + 6px);
-    left: 50%;
-    transform: translateX(-50%) translateY(4px);
-    background-color: #111111;
-    color: #ffffff;
-    font-size: 10px;
-    font-weight: 600;
-    padding: 3px 8px;
-    border-radius: 4px;
+  .szc-share-menu__icon-badge--x {
+    background-color: #000000;
+  }
+
+  .szc-share-menu__icon-badge--pinterest {
+    background-color: #e60023;
+    border-radius: 50%;
+  }
+
+  .szc-share-menu__label {
+    flex: 1;
     white-space: nowrap;
-    opacity: 0;
-    visibility: hidden;
-    transition: all 0.2s ease;
-    pointer-events: none;
-    z-index: 10;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    transition: color 0.15s ease;
   }
 
-  .szc-share-tooltip::after {
-    content: '';
-    position: absolute;
-    top: 100%;
-    left: 50%;
-    transform: translateX(-50%);
-    border-width: 4px;
-    border-style: solid;
-    border-color: #111111 transparent transparent transparent;
+  .szc-share-menu__item--copied .szc-share-menu__label {
+    color: #10b981;
+    font-weight: 600;
   }
 
-  .szc-share-tooltip.is-active {
-    opacity: 1;
-    visibility: visible;
-    transform: translateX(-50%) translateY(0);
+  .szc-share-menu__item--copied .szc-share-menu__icon {
+    color: #10b981;
+  }
+
+  /* Desktop: hide More options item */
+  .szc-share-menu__item--more {
+    display: none;
+  }
+
+  /* Tablet & Mobile: show More options item */
+  @media (max-width: 1024px) {
+    .szc-share-menu__item--more {
+      display: flex;
+    }
+  }
+
+  @media (max-width: 480px) {
+    .szc-share-menu {
+      right: 0;
+      width: 185px;
+    }
   }
 {% endstylesheet %}
 
@@ -2682,21 +3675,70 @@
       }
     });
 
-    // Tabs Switcher Logic
-    const tabBtns = document.querySelectorAll('.szc-tab-btn');
-    const tabPanes = document.querySelectorAll('.szc-tab-pane');
+    // Tabs Switcher Logic (Accessible & Mobile Scroll Support)
+    const tabCards = document.querySelectorAll('.szc-product-tabs-card');
 
-    tabBtns.forEach((btn) => {
-      btn.addEventListener('click', function () {
-        const targetId = this.dataset.tab;
-        tabBtns.forEach((b) => b.classList.remove('is-active'));
-        tabPanes.forEach((p) => p.classList.remove('is-active'));
+    tabCards.forEach((card) => {
+      const tabs = card.querySelectorAll('.szc-tab-btn');
+      const panels = card.querySelectorAll('.szc-tab-pane');
+      const header = card.querySelector('.szc-product-tabs__header');
 
-        this.classList.add('is-active');
-        const targetPane = document.getElementById(targetId);
-        if (targetPane) {
-          targetPane.classList.add('is-active');
+      function activateTab(tab, focus = false) {
+        const targetId = tab.dataset.tab;
+        tabs.forEach((t) => {
+          t.classList.remove('is-active');
+          t.setAttribute('aria-selected', 'false');
+          t.setAttribute('tabindex', '-1');
+        });
+        panels.forEach((p) => {
+          p.classList.remove('is-active');
+          p.setAttribute('hidden', '');
+        });
+
+        tab.classList.add('is-active');
+        tab.setAttribute('aria-selected', 'true');
+        tab.setAttribute('tabindex', '0');
+        if (focus) tab.focus();
+
+        const targetPanel = document.getElementById(targetId);
+        if (targetPanel) {
+          targetPanel.classList.add('is-active');
+          targetPanel.removeAttribute('hidden');
         }
+
+        if (header) {
+          const tabLeft = tab.offsetLeft;
+          const tabWidth = tab.offsetWidth;
+          const headerWidth = header.offsetWidth;
+          header.scrollTo({
+            left: tabLeft - (headerWidth / 2) + (tabWidth / 2),
+            behavior: 'smooth'
+          });
+        }
+      }
+
+      tabs.forEach((tab, index) => {
+        tab.addEventListener('click', () => {
+          activateTab(tab, false);
+        });
+
+        tab.addEventListener('keydown', (e) => {
+          let nextIndex = null;
+          if (e.key === 'ArrowRight') {
+            nextIndex = (index + 1) % tabs.length;
+          } else if (e.key === 'ArrowLeft') {
+            nextIndex = (index - 1 + tabs.length) % tabs.length;
+          } else if (e.key === 'Home') {
+            nextIndex = 0;
+          } else if (e.key === 'End') {
+            nextIndex = tabs.length - 1;
+          }
+
+          if (nextIndex !== null) {
+            e.preventDefault();
+            activateTab(tabs[nextIndex], true);
+          }
+        });
       });
     });
 
@@ -2763,7 +3805,12 @@
 
     if (stickyBtn && mainAddBtn) {
       stickyBtn.addEventListener('click', (e) => {
-        if (stickyBtn.classList.contains('szc-btn--loading') || stickyBtn.classList.contains('is-loading') || stickyBtn.disabled) return;
+        if (
+          stickyBtn.classList.contains('szc-btn--loading') ||
+          stickyBtn.classList.contains('is-loading') ||
+          stickyBtn.disabled
+        )
+          return;
         stickyBtn.classList.add('szc-btn--loading', 'is-loading');
         stickyBtn.setAttribute('aria-disabled', 'true');
         stickyBtn.disabled = true;
@@ -2790,6 +3837,515 @@
     document.addEventListener('DOMContentLoaded', initProductPageGallery);
   } else {
     initProductPageGallery();
+  }
+
+  // Product Share Popover Web Component
+  if (!customElements.get('product-share-popover')) {
+    customElements.define(
+      'product-share-popover',
+      class ProductSharePopover extends HTMLElement {
+        constructor() {
+          super();
+          this.trigger = this.querySelector('[data-share-trigger]');
+          this.menu = this.querySelector('[data-share-menu]');
+          if (!this.trigger || !this.menu) return;
+
+          this.onTriggerClick = this.toggle.bind(this);
+          this.onDocumentClick = this.onDocumentClick.bind(this);
+          this.onKeyDown = this.onKeyDown.bind(this);
+          this.onActionClick = this.onActionClick.bind(this);
+
+          this.trigger.addEventListener('click', this.onTriggerClick);
+          this.menu.addEventListener('click', this.onActionClick);
+        }
+
+        connectedCallback() {
+          document.addEventListener('click', this.onDocumentClick);
+          document.addEventListener('keydown', this.onKeyDown);
+        }
+
+        disconnectedCallback() {
+          document.removeEventListener('click', this.onDocumentClick);
+          document.removeEventListener('keydown', this.onKeyDown);
+        }
+
+        toggle(e) {
+          if (e) {
+            e.preventDefault();
+            e.stopPropagation();
+          }
+          const isOpen = this.menu.classList.contains('is-open');
+          if (isOpen) {
+            this.close();
+          } else {
+            this.open();
+          }
+        }
+
+        open() {
+          this.menu.classList.add('is-open');
+          this.trigger.classList.add('is-active');
+          this.trigger.setAttribute('aria-expanded', 'true');
+          this.menu.setAttribute('aria-hidden', 'false');
+        }
+
+        close() {
+          this.menu.classList.remove('is-open');
+          this.trigger.classList.remove('is-active');
+          this.trigger.setAttribute('aria-expanded', 'false');
+          this.menu.setAttribute('aria-hidden', 'true');
+        }
+
+        onDocumentClick(e) {
+          if (!this.contains(e.target)) {
+            this.close();
+          }
+        }
+
+        onKeyDown(e) {
+          if (e.key === 'Escape' && this.menu.classList.contains('is-open')) {
+            this.close();
+            this.trigger.focus();
+          }
+        }
+
+        getUrl() {
+          return this.dataset.shareUrl || window.location.href;
+        }
+
+        getTitle() {
+          return this.dataset.shareTitle || document.title;
+        }
+
+        getImage() {
+          return this.dataset.shareImg || '';
+        }
+
+        async onActionClick(e) {
+          const item = e.target.closest('[data-share-action]');
+          if (!item) return;
+
+          const action = item.dataset.shareAction;
+          const url = this.getUrl();
+          const title = this.getTitle();
+          const image = this.getImage();
+
+          if (action === 'copy') {
+            e.preventDefault();
+            let copied = false;
+            if (navigator.clipboard && navigator.clipboard.writeText) {
+              try {
+                await navigator.clipboard.writeText(url);
+                copied = true;
+              } catch (err) {
+                copied = false;
+              }
+            }
+            if (!copied) {
+              try {
+                const input = document.createElement('input');
+                input.value = url;
+                document.body.appendChild(input);
+                input.select();
+                document.execCommand('copy');
+                document.body.removeChild(input);
+                copied = true;
+              } catch (err) {
+                copied = false;
+              }
+            }
+
+            const labelEl = item.querySelector('[data-copy-label]');
+            const iconWrap = item.querySelector('[data-copy-icon-wrap]');
+            if (labelEl) {
+              const originalText = labelEl.textContent;
+              const originalSvg = iconWrap ? iconWrap.innerHTML : '';
+              labelEl.textContent = 'Link copied!';
+              item.classList.add('szc-share-menu__item--copied');
+              if (iconWrap) {
+                iconWrap.innerHTML = '<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="20 6 9 17 4 12"></polyline></svg>';
+              }
+              setTimeout(() => {
+                labelEl.textContent = originalText;
+                item.classList.remove('szc-share-menu__item--copied');
+                if (iconWrap) iconWrap.innerHTML = originalSvg;
+              }, 2000);
+            }
+          } else if (action === 'more') {
+            e.preventDefault();
+            if (navigator.share) {
+              try {
+                await navigator.share({
+                  title: title,
+                  text: title,
+                  url: url
+                });
+                this.close();
+              } catch (err) {
+                // User cancelled or share dismissed
+              }
+            } else {
+              const copyBtn = this.querySelector('[data-share-action="copy"]');
+              if (copyBtn) copyBtn.click();
+            }
+          } else if (action === 'whatsapp') {
+            e.preventDefault();
+            const whatsappUrl = `https://api.whatsapp.com/send?text=${encodeURIComponent(title + ' ' + url)}`;
+            window.open(whatsappUrl, '_blank', 'noopener,noreferrer');
+            this.close();
+          } else if (action === 'facebook') {
+            e.preventDefault();
+            const fbUrl = `https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(url)}`;
+            window.open(fbUrl, '_blank', 'noopener,noreferrer');
+            this.close();
+          } else if (action === 'twitter') {
+            e.preventDefault();
+            const twitterUrl = `https://twitter.com/intent/tweet?text=${encodeURIComponent(title)}&url=${encodeURIComponent(url)}`;
+            window.open(twitterUrl, '_blank', 'noopener,noreferrer');
+            this.close();
+          } else if (action === 'pinterest') {
+            e.preventDefault();
+            const pinUrl = `https://pinterest.com/pin/create/button/?url=${encodeURIComponent(url)}&media=${encodeURIComponent(image)}&description=${encodeURIComponent(title)}`;
+            window.open(pinUrl, '_blank', 'noopener,noreferrer');
+            this.close();
+          } else if (action === 'email') {
+            this.close();
+          }
+        }
+      }
+    );
+  }
+
+  if (!customElements.get('recent-blog-carousel')) {
+    customElements.define(
+      'recent-blog-carousel',
+      class RecentBlogCarousel extends HTMLElement {
+        constructor() {
+          super();
+          this.currentIndex = 0;
+          this.currentTranslate = 0;
+          this.isPointerDown = false;
+          this.isDragging = false;
+          this.hasDragged = false;
+          this.startX = 0;
+          this.startY = 0;
+          this.startTranslate = 0;
+          this.startTime = 0;
+          this.animTimeout = null;
+        }
+
+        connectedCallback() {
+          this.track = this.querySelector('.szc-recent-blog-carousel__track');
+          this.viewport = this.querySelector('.szc-recent-blog-carousel__viewport');
+
+          const sectionId = this.dataset.sectionId;
+          const section = this.closest('.szc-recent-blog-posts') || (sectionId ? document.getElementById(`RecentBlogPosts-${sectionId}`) : null);
+          this.prevBtn = section ? section.querySelector('.szc-recent-blog-carousel__arrow--prev') : null;
+          this.nextBtn = section ? section.querySelector('.szc-recent-blog-carousel__arrow--next') : null;
+
+          if (!this.track || !this.viewport) return;
+
+          this.originalSlides = Array.from(this.track.children);
+          this.origCount = this.originalSlides.length;
+
+          if (this.origCount === 0) return;
+
+          if (this.origCount === 1) {
+            if (this.prevBtn) this.prevBtn.style.display = 'none';
+            if (this.nextBtn) this.nextBtn.style.display = 'none';
+            return;
+          }
+
+          this.enableAutoplay = this.dataset.autoplay === 'true';
+          this.autoplaySpeed = parseInt(this.dataset.autoplaySpeed, 10) || 5000;
+
+          this.setupInfiniteLoop();
+          this.bindEvents();
+
+          if (this.enableAutoplay) {
+            this.startAutoplay();
+          }
+        }
+
+        disconnectedCallback() {
+          this.stopAutoplay();
+          if (this.animTimeout) clearTimeout(this.animTimeout);
+          if (this.resizeObserver) {
+            this.resizeObserver.disconnect();
+          }
+        }
+
+        setupInfiniteLoop() {
+          let baseSlides = this.originalSlides;
+          while (baseSlides.length < 6) {
+            for (let i = 0; i < this.origCount; i++) {
+              const dup = this.originalSlides[i].cloneNode(true);
+              this.track.appendChild(dup);
+            }
+            baseSlides = Array.from(this.track.children);
+          }
+
+          this.baseCount = baseSlides.length;
+          this.bufferCount = 4;
+
+          const startClones = [];
+          for (let i = this.baseCount - this.bufferCount; i < this.baseCount; i++) {
+            const clone = baseSlides[i].cloneNode(true);
+            clone.setAttribute('data-clone', 'start');
+            clone.setAttribute('aria-hidden', 'true');
+            clone.querySelectorAll('a, button').forEach(el => el.setAttribute('tabindex', '-1'));
+            startClones.push(clone);
+          }
+          startClones.slice().reverse().forEach(clone => {
+            this.track.insertBefore(clone, this.track.firstElementChild);
+          });
+
+          for (let i = 0; i < this.bufferCount; i++) {
+            const clone = baseSlides[i].cloneNode(true);
+            clone.setAttribute('data-clone', 'end');
+            clone.setAttribute('aria-hidden', 'true');
+            clone.querySelectorAll('a, button').forEach(el => el.setAttribute('tabindex', '-1'));
+            this.track.appendChild(clone);
+          }
+
+          this.currentIndex = this.bufferCount;
+
+          requestAnimationFrame(() => {
+            this.updatePosition(false);
+          });
+        }
+
+        getStep() {
+          if (!this.track.children[1] || !this.track.children[0]) return 360;
+          const step = this.track.children[1].offsetLeft - this.track.children[0].offsetLeft;
+          return step > 0 ? step : 360;
+        }
+
+        updatePosition(animate = true) {
+          if (!this.track.children[this.currentIndex]) return;
+
+          const targetX = -this.track.children[this.currentIndex].offsetLeft;
+          const isSamePosition = Math.abs(this.currentTranslate - targetX) < 1;
+
+          this.currentTranslate = targetX;
+
+          if (animate && !isSamePosition) {
+            const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+            const duration = prefersReducedMotion ? 0 : 380;
+            this.track.style.transition = `transform ${duration}ms cubic-bezier(0.25, 1, 0.5, 1)`;
+
+            clearTimeout(this.animTimeout);
+            this.animTimeout = setTimeout(() => {
+              this.checkBoundary();
+            }, duration + 30);
+          } else {
+            this.track.style.transition = 'none';
+          }
+
+          this.track.style.transform = `translate3d(${targetX}px, 0, 0)`;
+        }
+
+        goTo(index, animate = true) {
+          this.currentIndex = index;
+          this.updatePosition(animate);
+        }
+
+        next() {
+          this.stopAutoplay();
+          this.goTo(this.currentIndex + 1, true);
+        }
+
+        prev() {
+          this.stopAutoplay();
+          this.goTo(this.currentIndex - 1, true);
+        }
+
+        checkBoundary() {
+          let needsReset = false;
+          while (this.currentIndex >= this.bufferCount + this.baseCount) {
+            this.currentIndex -= this.baseCount;
+            needsReset = true;
+          }
+          while (this.currentIndex < this.bufferCount) {
+            this.currentIndex += this.baseCount;
+            needsReset = true;
+          }
+
+          if (needsReset) {
+            this.track.style.transition = 'none';
+            const resetX = -this.track.children[this.currentIndex].offsetLeft;
+            this.currentTranslate = resetX;
+            this.track.style.transform = `translate3d(${resetX}px, 0, 0)`;
+            void this.track.offsetHeight;
+          }
+        }
+
+        bindEvents() {
+          if (this.prevBtn) {
+            this.prevBtn.addEventListener('click', (e) => {
+              e.preventDefault();
+              e.stopPropagation();
+              this.prev();
+              if (this.enableAutoplay) this.startAutoplay();
+            });
+          }
+
+          if (this.nextBtn) {
+            this.nextBtn.addEventListener('click', (e) => {
+              e.preventDefault();
+              e.stopPropagation();
+              this.next();
+              if (this.enableAutoplay) this.startAutoplay();
+            });
+          }
+
+          this.track.addEventListener('transitionend', (e) => {
+            if (e.target !== this.track) return;
+            clearTimeout(this.animTimeout);
+            this.checkBoundary();
+          });
+
+          this.resizeObserver = new ResizeObserver(() => {
+            if (!this.isPointerDown && !this.isDragging) {
+              this.updatePosition(false);
+            }
+          });
+          this.resizeObserver.observe(this.viewport);
+
+          window.addEventListener('load', () => {
+            this.updatePosition(false);
+          }, { once: true });
+
+          this.setupDragEvents();
+
+          if (this.enableAutoplay) {
+            this.addEventListener('mouseenter', () => this.stopAutoplay());
+            this.addEventListener('mouseleave', () => this.startAutoplay());
+            this.addEventListener('focusin', () => this.stopAutoplay());
+            this.addEventListener('focusout', () => this.startAutoplay());
+          }
+
+          this.addEventListener('keydown', (e) => {
+            if (e.key === 'ArrowLeft') {
+              this.prev();
+            } else if (e.key === 'ArrowRight') {
+              this.next();
+            }
+          });
+        }
+
+        setupDragEvents() {
+          const onPointerDown = (e) => {
+            if (e.button && e.button !== 0) return;
+
+            this.isPointerDown = true;
+            this.isDragging = false;
+            this.hasDragged = false;
+            this.startX = e.clientX;
+            this.startY = e.clientY;
+            this.startTime = Date.now();
+            this.startTranslate = this.currentTranslate;
+            this.stopAutoplay();
+          };
+
+          const onPointerMove = (e) => {
+            if (!this.isPointerDown) return;
+
+            const diffX = e.clientX - this.startX;
+            const diffY = e.clientY - this.startY;
+
+            if (!this.isDragging) {
+              if (Math.abs(diffY) > Math.abs(diffX) && Math.abs(diffY) > 8) {
+                this.isPointerDown = false;
+                return;
+              }
+
+              if (Math.abs(diffX) > 6) {
+                this.isDragging = true;
+                this.hasDragged = true;
+                this.track.classList.add('is-dragging');
+                this.track.style.transition = 'none';
+
+                try {
+                  if (e.pointerId && this.track.setPointerCapture) {
+                    this.track.setPointerCapture(e.pointerId);
+                  }
+                } catch (_) {}
+              }
+            }
+
+            if (this.isDragging) {
+              if (e.cancelable) e.preventDefault();
+              this.currentTranslate = this.startTranslate + diffX;
+              this.track.style.transform = `translate3d(${this.currentTranslate}px, 0, 0)`;
+            }
+          };
+
+          const onPointerUp = (e) => {
+            if (!this.isPointerDown && !this.isDragging) return;
+            this.isPointerDown = false;
+
+            if (this.isDragging) {
+              this.isDragging = false;
+              this.track.classList.remove('is-dragging');
+
+              try {
+                if (e.pointerId && this.track.releasePointerCapture) {
+                  this.track.releasePointerCapture(e.pointerId);
+                }
+              } catch (_) {}
+
+              const diffX = e.clientX - this.startX;
+              const elapsed = Date.now() - this.startTime;
+              const velocity = Math.abs(diffX) / (elapsed || 1);
+              const step = this.getStep();
+
+              const moved = Math.round(-diffX / step);
+              let targetIndex = this.currentIndex;
+
+              if (moved !== 0) {
+                targetIndex = this.currentIndex + moved;
+              } else if (Math.abs(diffX) > step * 0.15 || velocity > 0.25) {
+                targetIndex = this.currentIndex + (diffX < 0 ? 1 : -1);
+              }
+
+              this.goTo(targetIndex, true);
+            }
+
+            if (this.enableAutoplay) {
+              this.startAutoplay();
+            }
+          };
+
+          this.track.addEventListener('pointerdown', onPointerDown);
+          this.track.addEventListener('pointermove', onPointerMove);
+          this.track.addEventListener('pointerup', onPointerUp);
+          this.track.addEventListener('pointercancel', onPointerUp);
+
+          this.track.addEventListener('click', (e) => {
+            if (this.hasDragged) {
+              e.preventDefault();
+              e.stopPropagation();
+              this.hasDragged = false;
+            }
+          }, true);
+        }
+
+        startAutoplay() {
+          this.stopAutoplay();
+          this.autoplayTimer = setInterval(() => {
+            this.next();
+          }, this.autoplaySpeed);
+        }
+
+        stopAutoplay() {
+          if (this.autoplayTimer) {
+            clearInterval(this.autoplayTimer);
+            this.autoplayTimer = null;
+          }
+        }
+      }
+    );
   }
 {% endjavascript %}
 
@@ -2850,6 +4406,12 @@
       "name": "Buy buttons",
       "limit": 1,
       "settings": [
+        {
+          "type": "checkbox",
+          "id": "show_add_to_cart",
+          "default": true,
+          "label": "Show Add to Cart button"
+        },
         {
           "type": "checkbox",
           "id": "show_dynamic_checkout",
@@ -3213,12 +4775,30 @@
       "default": true
     },
     {
-      "type": "paragraph",
-      "content": "Tab content can be connected to product data using Shopify Dynamic Sources. For product-specific content, create and fill the corresponding product metafield in Shopify Admin, then connect it using the Dynamic Source icon."
+      "type": "color",
+      "id": "tab_bg_color",
+      "label": "Tab Background Color",
+      "default": "#111111"
+    },
+    {
+      "type": "header",
+      "content": "Related Blog"
     },
     {
       "type": "paragraph",
-      "content": "Size Guide content is product-specific. Add the size chart data to the product's Size Guide metafield in Shopify Admin. The table will automatically appear in this tab."
+      "content": "Assign multiple blog posts in Shopify Admin: Products > Metafields > Related Blogs (custom.related_articles). The section displays assigned articles in order, or stays hidden if none are assigned."
+    },
+    {
+      "type": "checkbox",
+      "id": "show_related_blog",
+      "label": "Show Related Blog",
+      "default": true
+    },
+    {
+      "type": "text",
+      "id": "related_blog_heading",
+      "label": "Related Blog Heading",
+      "default": "Related Blog"
     }
   ]
 }

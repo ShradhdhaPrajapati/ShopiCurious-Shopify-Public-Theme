@@ -1,21 +1,35 @@
-{% doc %}
+{% comment %}
   Renders Shopify's native country and currency selector form with country flag support.
   Uses native localization.available_countries and localization.country.
 
   @param {string} [id_prefix] - Unique ID prefix for form and list (e.g. 'AnnouncementBar')
   @param {string} [class] - Optional extra CSS classes
   @param {string} [display_format] - 'flag_currency' (default), 'country_currency', 'flag_country'
-{% enddoc %}
+{% endcomment %}
 
 {%- liquid
   assign prefix = id_prefix | default: 'AnnouncementBar'
   assign form_id = prefix | append: 'CountryForm'
   assign list_id = prefix | append: 'CountryList'
+
   assign current_country = localization.country
+  if current_country != blank and current_country.iso_code != blank
+    assign current_country_code = current_country.iso_code
+    assign current_country_name = current_country.name
+    assign current_currency_code = current_country.currency.iso_code
+    assign current_currency_symbol = current_country.currency.symbol
+  else
+    assign current_country_code = shop.address.country_code
+    assign current_country_name = shop.address.country
+    assign current_currency_code = shop.currency
+    assign current_currency_symbol = cart.currency.symbol
+  endif
+
   assign format = display_format | default: 'flag_currency'
+  assign available_countries_count = localization.available_countries.size
 -%}
 
-{%- if localization.available_countries.size > 0 -%}
+{%- if available_countries_count > 0 -%}
   <country-selector-form class="szc-country-selector {{ class }}">
     {%- form 'localization', id: form_id, class: 'szc-localization-form' -%}
       <div class="szc-localization-wrapper">
@@ -25,116 +39,130 @@
           aria-expanded="false"
           aria-haspopup="listbox"
           aria-controls="{{ list_id }}"
-          aria-label="{{ current_country.name }} ({{ current_country.currency.iso_code }} {{ current_country.currency.symbol }})"
+          aria-label="{{ current_country_name }}{% if current_currency_code != blank %} ({{ current_currency_code }}{% if current_currency_symbol != blank %} {{ current_currency_symbol }}{% endif %}){% endif %}"
+          {% if available_countries_count <= 1 %}disabled style="cursor: default;"{% endif %}
         >
           {%- unless format == 'country_currency' -%}
+            {%- if current_country_code != blank -%}
+              <span class="szc-country-flag" aria-hidden="true">
+                <img
+                  class="szc-country-flag-img"
+                  src="https://flagcdn.com/w40/{{ current_country_code | downcase }}.png"
+                  srcset="https://flagcdn.com/w80/{{ current_country_code | downcase }}.png 2x"
+                  width="16"
+                  height="11"
+                  alt=""
+                  loading="eager"
+                >
+              </span>
+            {%- endif -%}
+          {%- endunless -%}
+          <span class="szc-localization-current-name">
+            {%- if format == 'flag_country' -%}
+              {{ current_country_name }}
+            {%- elsif format == 'country_currency' -%}
+              {{ current_country_name }}{% if current_currency_code != blank %} · {{ current_currency_code }}{% endif %}
+            {%- else -%}
+              {{ current_currency_code | default: current_country_name }}
+            {%- endif -%}
+          </span>
+          {%- if available_countries_count > 1 -%}
+            <svg class="szc-localization-caret" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false">
+              <polyline points="6 9 12 15 18 9"/>
+            </svg>
+          {%- endif -%}
+        </button>
+
+        {%- if available_countries_count > 1 -%}
+          <ul
+            id="{{ list_id }}"
+            role="listbox"
+            class="szc-localization-dropdown szc-country-dropdown"
+            aria-label="{{ 'localization.country_label' | t | default: 'Select Country' }}"
+            hidden
+          >
+            {%- for country in localization.available_countries -%}
+              <li
+                class="szc-localization-item szc-country-item"
+                role="option"
+                {% if country.iso_code == current_country_code %}aria-selected="true"{% endif %}
+              >
+                <a
+                  class="szc-localization-link szc-country-link {% if country.iso_code == current_country_code %}is-active{% endif %}"
+                  href="#"
+                  {% if country.iso_code == current_country_code %}aria-current="true"{% endif %}
+                  data-value="{{ country.iso_code }}"
+                  tabindex="-1"
+                >
+                  {%- if country.iso_code != blank -%}
+                    <span class="szc-country-flag" aria-hidden="true">
+                      <img
+                        class="szc-country-flag-img"
+                        src="https://flagcdn.com/w40/{{ country.iso_code | downcase }}.png"
+                        srcset="https://flagcdn.com/w80/{{ country.iso_code | downcase }}.png 2x"
+                        width="16"
+                        height="11"
+                        alt=""
+                        loading="lazy"
+                      >
+                    </span>
+                  {%- endif -%}
+                  <span class="szc-country-name">{{ country.name }}</span>
+                  <span class="szc-country-currency">{{ country.currency.iso_code }} {{ country.currency.symbol }}</span>
+                  {%- if country.iso_code == current_country_code -%}
+                    <svg class="szc-country-check" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                      <polyline points="20 6 9 17 4 12"/>
+                    </svg>
+                  {%- endif -%}
+                </a>
+              </li>
+            {%- endfor -%}
+          </ul>
+        {%- endif -%}
+
+        <input type="hidden" name="country_code" value="{{ current_country_code }}">
+        {%- if localization.language.iso_code != blank -%}
+          <input type="hidden" name="language_code" value="{{ localization.language.iso_code }}">
+        {%- endif -%}
+        <input type="hidden" name="return_to" value="{{ request.path }}">
+      </div>
+    {%- endform -%}
+  </country-selector-form>
+{%- elsif current_country_name != blank or current_currency_code != blank -%}
+  {%- comment -%} Fallback single country/currency display with flag {%- endcomment -%}
+  <div class="szc-country-selector szc-country-selector--single {{ class }}">
+    <div class="szc-localization-wrapper">
+      <button
+        type="button"
+        class="szc-localization-toggle-btn szc-country-toggle-btn"
+        aria-label="{{ current_country_name }}{% if current_currency_code != blank %} ({{ current_currency_code }}){% endif %}"
+        disabled
+        style="cursor: default;"
+      >
+        {%- unless format == 'country_currency' -%}
+          {%- if current_country_code != blank -%}
             <span class="szc-country-flag" aria-hidden="true">
               <img
                 class="szc-country-flag-img"
-                src="https://flagcdn.com/w40/{{ current_country.iso_code | downcase }}.png"
-                srcset="https://flagcdn.com/w80/{{ current_country.iso_code | downcase }}.png 2x"
+                src="https://flagcdn.com/w40/{{ current_country_code | downcase }}.png"
+                srcset="https://flagcdn.com/w80/{{ current_country_code | downcase }}.png 2x"
                 width="16"
                 height="11"
                 alt=""
                 loading="eager"
               >
             </span>
-          {%- endunless -%}
-          <span class="szc-localization-current-name">
-            {%- if format == 'flag_country' -%}
-              {{ current_country.name }}
-            {%- elsif format == 'country_currency' -%}
-              {{ current_country.name }} · {{ current_country.currency.iso_code }}
-            {%- else -%}
-              {{ current_country.currency.iso_code }}
-            {%- endif -%}
-          </span>
-          <svg class="szc-localization-caret" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false">
-            <polyline points="6 9 12 15 18 9"/>
-          </svg>
-        </button>
-
-        <ul
-          id="{{ list_id }}"
-          role="listbox"
-          class="szc-localization-dropdown szc-country-dropdown"
-          aria-label="{{ 'localization.country_label' | t | default: 'Select Country' }}"
-          hidden
-        >
-          {%- for country in localization.available_countries -%}
-            <li
-              class="szc-localization-item szc-country-item"
-              role="option"
-              {% if country.iso_code == current_country.iso_code %}aria-selected="true"{% endif %}
-            >
-              <a
-                class="szc-localization-link szc-country-link {% if country.iso_code == current_country.iso_code %}is-active{% endif %}"
-                href="#"
-                {% if country.iso_code == current_country.iso_code %}aria-current="true"{% endif %}
-                data-value="{{ country.iso_code }}"
-                tabindex="-1"
-              >
-                <span class="szc-country-flag" aria-hidden="true">
-                  <img
-                    class="szc-country-flag-img"
-                    src="https://flagcdn.com/w40/{{ country.iso_code | downcase }}.png"
-                    srcset="https://flagcdn.com/w80/{{ country.iso_code | downcase }}.png 2x"
-                    width="16"
-                    height="11"
-                    alt=""
-                    loading="lazy"
-                  >
-                </span>
-                <span class="szc-country-name">{{ country.name }}</span>
-                <span class="szc-country-currency">{{ country.currency.iso_code }} {{ country.currency.symbol }}</span>
-                {%- if country.iso_code == current_country.iso_code -%}
-                  <svg class="szc-country-check" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-                    <polyline points="20 6 9 17 4 12"/>
-                  </svg>
-                {%- endif -%}
-              </a>
-            </li>
-          {%- endfor -%}
-        </ul>
-
-        <input type="hidden" name="country_code" value="{{ current_country.iso_code }}">
-      </div>
-    {%- endform -%}
-  </country-selector-form>
-{%- elsif current_country != blank -%}
-  {%- comment -%} Fallback single country display with flag {%- endcomment -%}
-  <div class="szc-country-selector szc-country-selector--single {{ class }}">
-    <div class="szc-localization-wrapper">
-      <button
-        type="button"
-        class="szc-localization-toggle-btn szc-country-toggle-btn"
-        aria-label="{{ current_country.name }} ({{ current_country.currency.iso_code }})"
-      >
-        {%- unless format == 'country_currency' -%}
-          <span class="szc-country-flag" aria-hidden="true">
-            <img
-              class="szc-country-flag-img"
-              src="https://flagcdn.com/w40/{{ current_country.iso_code | downcase }}.png"
-              srcset="https://flagcdn.com/w80/{{ current_country.iso_code | downcase }}.png 2x"
-              width="16"
-              height="11"
-              alt=""
-              loading="eager"
-            >
-          </span>
+          {%- endif -%}
         {%- endunless -%}
         <span class="szc-localization-current-name">
           {%- if format == 'flag_country' -%}
-            {{ current_country.name }}
+            {{ current_country_name }}
           {%- elsif format == 'country_currency' -%}
-            {{ current_country.name }} · {{ current_country.currency.iso_code }}
+            {{ current_country_name }}{% if current_currency_code != blank %} · {{ current_currency_code }}{% endif %}
           {%- else -%}
-            {{ current_country.currency.iso_code }}
+            {{ current_currency_code | default: current_country_name }}
           {%- endif -%}
         </span>
-        <svg class="szc-localization-caret" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false">
-          <polyline points="6 9 12 15 18 9"/>
-        </svg>
       </button>
     </div>
   </div>
@@ -398,6 +426,23 @@
     customElements.define('country-selector-form', class CountrySelectorForm extends HTMLElement {
       constructor() {
         super();
+        this.initialized = false;
+      }
+
+      connectedCallback() {
+        if (this.querySelector('button')) {
+          this.init();
+        } else {
+          if (document.readyState === 'loading') {
+            document.addEventListener('DOMContentLoaded', () => this.init(), { once: true });
+          } else {
+            setTimeout(() => this.init(), 0);
+          }
+        }
+      }
+
+      init() {
+        if (this.initialized) return;
         this.form = this.querySelector('form');
         this.button = this.querySelector('.szc-country-toggle-btn');
         this.dropdown = this.querySelector('.szc-country-dropdown');
@@ -405,72 +450,76 @@
         this.links = this.querySelectorAll('.szc-country-link');
         this.parentBar = this.closest('.szc-announcement-bar');
 
-        if (!this.button || !this.dropdown) return;
+        if (!this.button) return;
+        this.initialized = true;
 
-        this.button.addEventListener('click', (e) => {
-          e.preventDefault();
-          e.stopPropagation();
-          this.toggle();
-        });
-
-        // Keyboard navigation: Escape closes dropdown and refocuses button
-        this.addEventListener('keydown', (e) => {
-          if (e.key === 'Escape' || e.code === 'Escape') {
-            this.close();
-            this.button.focus();
-          } else if (e.key === 'ArrowDown') {
-            if (this.dropdown.hasAttribute('hidden')) {
-              this.open();
-            }
-            const activeLink = this.dropdown.querySelector('.szc-country-link.is-active') || this.links[0];
-            activeLink?.focus();
+        if (this.dropdown) {
+          this.button.addEventListener('click', (e) => {
             e.preventDefault();
-          }
-        });
+            e.stopPropagation();
+            this.toggle();
+          });
 
-        // Close when clicking or tapping outside
-        document.addEventListener('click', (e) => {
-          if (!this.contains(e.target)) {
-            this.close();
-          }
-        });
-
-        // Close on blur outside element
-        this.addEventListener('focusout', (e) => {
-          if (!this.contains(e.relatedTarget)) {
-            this.close();
-          }
-        });
-
-        // Country selection & native Shopify submission
-        this.links.forEach((link, idx) => {
-          link.addEventListener('click', (e) => {
-            e.preventDefault();
-            if (this.input && this.form) {
-              this.input.value = link.dataset.value;
-              this.form.submit();
+          // Keyboard navigation: Escape closes dropdown and refocuses button
+          this.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape' || e.code === 'Escape') {
+              this.close();
+              this.button.focus();
+            } else if (e.key === 'ArrowDown') {
+              if (this.dropdown.hasAttribute('hidden')) {
+                this.open();
+              }
+              const activeLink = this.dropdown.querySelector('.szc-country-link.is-active') || this.links[0];
+              activeLink?.focus();
+              e.preventDefault();
             }
           });
 
-          // Keyboard arrow navigation between options
-          link.addEventListener('keydown', (e) => {
-            if (e.key === 'ArrowDown') {
-              e.preventDefault();
-              const nextLink = this.links[idx + 1] || this.links[0];
-              nextLink?.focus();
-            } else if (e.key === 'ArrowUp') {
-              e.preventDefault();
-              const prevLink = this.links[idx - 1] || this.links[this.links.length - 1];
-              prevLink?.focus();
-            } else if (e.key === 'Enter' || e.key === ' ') {
-              e.preventDefault();
-              link.click();
+          // Close when clicking or tapping outside
+          document.addEventListener('click', (e) => {
+            if (!this.contains(e.target)) {
+              this.close();
             }
           });
-        });
+
+          // Close on blur outside element
+          this.addEventListener('focusout', (e) => {
+            if (!this.contains(e.relatedTarget)) {
+              this.close();
+            }
+          });
+
+          // Country selection & native Shopify submission
+          this.links.forEach((link, idx) => {
+            link.addEventListener('click', (e) => {
+              e.preventDefault();
+              if (this.input && this.form) {
+                this.input.value = link.dataset.value;
+                this.form.submit();
+              }
+            });
+
+            // Keyboard arrow navigation between options
+            link.addEventListener('keydown', (e) => {
+              if (e.key === 'ArrowDown') {
+                e.preventDefault();
+                const nextLink = this.links[idx + 1] || this.links[0];
+                nextLink?.focus();
+              } else if (e.key === 'ArrowUp') {
+                e.preventDefault();
+                const prevLink = this.links[idx - 1] || this.links[this.links.length - 1];
+                prevLink?.focus();
+              } else if (e.key === 'Enter' || e.key === ' ') {
+                e.preventDefault();
+                link.click();
+              }
+            });
+          });
+        }
       }
 
       toggle() {
+        if (!this.dropdown) return;
         const expanded = this.button.getAttribute('aria-expanded') === 'true';
         if (expanded) {
           this.close();
@@ -480,6 +529,7 @@
       }
 
       open() {
+        if (!this.dropdown) return;
         this.button.setAttribute('aria-expanded', 'true');
         this.dropdown.removeAttribute('hidden');
         if (this.parentBar) {
@@ -488,6 +538,7 @@
       }
 
       close() {
+        if (!this.dropdown) return;
         this.button.setAttribute('aria-expanded', 'false');
         this.dropdown.setAttribute('hidden', '');
         if (this.parentBar) {

@@ -1,53 +1,95 @@
 {% doc %}
-  Renders Shopify's native Dawn-style language selector form.
+  Renders Shopify's native language selector form.
   Uses native localization.available_languages and localization.language.
 
+  @param {string} [id_prefix] - Unique prefix for form and list IDs (default: 'Header')
   @param {string} [class] - Optional extra CSS classes
 {% enddoc %}
 
-{%- if localization.available_languages.size > 1 -%}
+{%- liquid
+  assign prefix = id_prefix | default: 'Header'
+  assign form_id = prefix | append: 'LanguageForm'
+  assign list_id = prefix | append: 'LanguageList'
+
+  assign current_language = localization.language
+  if current_language != blank and current_language.iso_code != blank
+    assign current_language_name = current_language.endonym_name | default: current_language.name
+    assign current_language_code = current_language.iso_code
+  else
+    assign current_language_name = request.locale.endonym_name | default: request.locale.name | default: shop.locale
+    assign current_language_code = request.locale.iso_code
+  endif
+  assign available_languages_count = localization.available_languages.size
+-%}
+
+{%- if available_languages_count > 0 -%}
   <localization-form class="szc-language-selector {{ class }}">
-    {%- form 'localization', id: 'HeaderLanguageForm', class: 'szc-localization-form' -%}
+    {%- form 'localization', id: form_id, class: 'szc-localization-form' -%}
       <div class="szc-localization-wrapper">
         <button
           type="button"
           class="szc-localization-toggle-btn"
           aria-expanded="false"
-          aria-controls="HeaderLanguageList"
-          aria-label="{{ localization.language.endonym_name | default: localization.language.name }}"
+          aria-controls="{{ list_id }}"
+          aria-label="{{ current_language_name }}"
+          {% if available_languages_count <= 1 %}disabled style="cursor: default;"{% endif %}
         >
           <span class="szc-localization-current-name">
-            {{ localization.language.endonym_name | default: localization.language.name | capitalize }}
+            {{ current_language_name | capitalize }}
           </span>
-          {% render 'icon', icon: 'chevron-down', class: 'szc-localization-caret' %}
+          {%- if available_languages_count > 1 -%}
+            {% render 'icon', icon: 'chevron-down', class: 'szc-localization-caret' %}
+          {%- endif -%}
         </button>
 
-        <ul
-          id="HeaderLanguageList"
-          role="list"
-          class="szc-localization-dropdown"
-          hidden
-        >
-          {%- for language in localization.available_languages -%}
-            <li class="szc-localization-item">
-              <a
-                class="szc-localization-link {% if language.iso_code == localization.language.iso_code %}is-active{% endif %}"
-                href="#"
-                hreflang="{{ language.iso_code }}"
-                lang="{{ language.iso_code }}"
-                {% if language.iso_code == localization.language.iso_code %}aria-current="true"{% endif %}
-                data-value="{{ language.iso_code }}"
-              >
-                {{ language.endonym_name | default: language.name | capitalize }}
-              </a>
-            </li>
-          {%- endfor -%}
-        </ul>
+        {%- if available_languages_count > 1 -%}
+          <ul
+            id="{{ list_id }}"
+            role="list"
+            class="szc-localization-dropdown"
+            hidden
+          >
+            {%- for language in localization.available_languages -%}
+              <li class="szc-localization-item">
+                <a
+                  class="szc-localization-link {% if language.iso_code == current_language_code %}is-active{% endif %}"
+                  href="#"
+                  hreflang="{{ language.iso_code }}"
+                  lang="{{ language.iso_code }}"
+                  {% if language.iso_code == current_language_code %}aria-current="true"{% endif %}
+                  data-value="{{ language.iso_code }}"
+                >
+                  {{ language.endonym_name | default: language.name | capitalize }}
+                </a>
+              </li>
+            {%- endfor -%}
+          </ul>
+        {%- endif -%}
 
-        <input type="hidden" name="language_code" value="{{ localization.language.iso_code }}">
+        <input type="hidden" name="language_code" value="{{ current_language_code }}">
+        {%- if localization.country.iso_code != blank -%}
+          <input type="hidden" name="country_code" value="{{ localization.country.iso_code }}">
+        {%- endif -%}
+        <input type="hidden" name="return_to" value="{{ request.path }}">
       </div>
     {%- endform -%}
   </localization-form>
+{%- elsif current_language_name != blank -%}
+  <div class="szc-language-selector szc-language-selector--single {{ class }}">
+    <div class="szc-localization-wrapper">
+      <button
+        type="button"
+        class="szc-localization-toggle-btn"
+        aria-label="{{ current_language_name }}"
+        disabled
+        style="cursor: default;"
+      >
+        <span class="szc-localization-current-name">
+          {{ current_language_name | capitalize }}
+        </span>
+      </button>
+    </div>
+  </div>
 {%- endif -%}
 
 {% stylesheet %}
@@ -87,7 +129,7 @@
     transition: border-color 150ms ease, background-color 150ms ease;
   }
 
-  .szc-localization-toggle-btn:hover,
+  .szc-localization-toggle-btn:hover:not([disabled]),
   .szc-localization-toggle-btn[aria-expanded="true"] {
     border-color: var(--szc-color-secondary, #d4a373);
     background-color: var(--szc-color-surface, #fafafa);
@@ -116,7 +158,7 @@
     list-style: none;
     margin: 0;
     padding: 4px 0;
-    z-index: 100;
+    z-index: 1010;
   }
 
   .szc-localization-dropdown[hidden] {
@@ -145,6 +187,13 @@
     font-weight: 600;
   }
 
+  /* Mobile Drawer Placement: Open upwards above bottom bar */
+  .mobile-drawer-lang-selector .szc-localization-dropdown {
+    top: auto;
+    bottom: calc(100% + 4px);
+    box-shadow: 0 -4px 16px rgba(0, 0, 0, 0.12);
+  }
+
   html[dir="rtl"] .szc-localization-dropdown {
     right: auto !important;
     left: 0 !important;
@@ -156,35 +205,70 @@
     customElements.define('localization-form', class LocalizationForm extends HTMLElement {
       constructor() {
         super();
+        this.initialized = false;
+      }
+
+      connectedCallback() {
+        if (this.querySelector('button')) {
+          this.init();
+        } else {
+          if (document.readyState === 'loading') {
+            document.addEventListener('DOMContentLoaded', () => this.init(), { once: true });
+          } else {
+            setTimeout(() => this.init(), 0);
+          }
+        }
+      }
+
+      init() {
+        if (this.initialized) return;
         this.form = this.querySelector('form');
         this.button = this.querySelector('.szc-localization-toggle-btn');
         this.dropdown = this.querySelector('.szc-localization-dropdown');
         this.input = this.querySelector('input[name="language_code"]');
         this.links = this.querySelectorAll('.szc-localization-link');
 
-        if (!this.button || !this.dropdown) return;
+        if (!this.button) return;
+        this.initialized = true;
 
-        this.button.addEventListener('click', this.toggle.bind(this));
-        this.addEventListener('keyup', (e) => {
-          if (e.code === 'Escape') this.close();
-        });
-
-        document.addEventListener('click', (e) => {
-          if (!this.contains(e.target)) this.close();
-        });
-
-        this.links.forEach(link => {
-          link.addEventListener('click', (e) => {
+        if (this.dropdown) {
+          this.button.addEventListener('click', (e) => {
             e.preventDefault();
-            if (this.input) {
-              this.input.value = link.dataset.value;
-              this.form.submit();
+            e.stopPropagation();
+            this.toggle();
+          });
+
+          this.addEventListener('keyup', (e) => {
+            if (e.code === 'Escape' || e.key === 'Escape') {
+              this.close();
+              this.button.focus();
             }
           });
-        });
+
+          document.addEventListener('click', (e) => {
+            if (!this.contains(e.target)) this.close();
+          });
+
+          this.addEventListener('focusout', (e) => {
+            if (!this.contains(e.relatedTarget)) {
+              this.close();
+            }
+          });
+
+          this.links.forEach(link => {
+            link.addEventListener('click', (e) => {
+              e.preventDefault();
+              if (this.input && this.form) {
+                this.input.value = link.dataset.value;
+                this.form.submit();
+              }
+            });
+          });
+        }
       }
 
       toggle() {
+        if (!this.dropdown) return;
         const expanded = this.button.getAttribute('aria-expanded') === 'true';
         if (expanded) {
           this.close();
@@ -194,11 +278,13 @@
       }
 
       open() {
+        if (!this.dropdown) return;
         this.button.setAttribute('aria-expanded', 'true');
         this.dropdown.removeAttribute('hidden');
       }
 
       close() {
+        if (!this.dropdown) return;
         this.button.setAttribute('aria-expanded', 'false');
         this.dropdown.setAttribute('hidden', '');
       }

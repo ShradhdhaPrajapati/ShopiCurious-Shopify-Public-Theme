@@ -1,6 +1,6 @@
 {% doc %}
   Renders the ShopziCurious luxury slide-out AJAX Cart Drawer pixel-matched to approved UI design.
-  Includes free shipping progress bar, line items, order notes, financial summary breakdown, 
+  Includes free shipping progress bar, line items, order notes, financial summary breakdown,
   checkout CTAs, and footer trust badges.
 
   @example
@@ -86,7 +86,11 @@
                       data-action="minus"
                       data-line="{{ forloop.index }}"
                       aria-label="Decrease quantity"
-                    >-</button>
+                    >
+                      <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                        <line x1="5" y1="12" x2="19" y2="12"></line>
+                      </svg>
+                    </button>
                     <input
                       type="number"
                       class="szc-cart-drawer__qty-input"
@@ -102,7 +106,12 @@
                       data-action="plus"
                       data-line="{{ forloop.index }}"
                       aria-label="Increase quantity"
-                    >+</button>
+                    >
+                      <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                        <line x1="12" y1="5" x2="12" y2="19"></line>
+                        <line x1="5" y1="12" x2="19" y2="12"></line>
+                      </svg>
+                    </button>
                   </div>
 
                   <button
@@ -294,7 +303,7 @@
 
           <div class="szc-summary-row">
             <span class="szc-summary-row__label">
-              Estimated Taxes 
+              Estimated Taxes
               <span class="szc-tooltip-icon" title="Taxes estimated based on location">?</span>
             </span>
             <span class="szc-summary-row__val">{{ cart.total_tax | money }}</span>
@@ -537,6 +546,12 @@
 
   .szc-cart-drawer__qty-btn:hover {
     background-color: #f5f5f5;
+  }
+
+  .szc-cart-drawer__qty-btn svg {
+    width: 12px;
+    height: 12px;
+    display: block;
   }
 
   .szc-cart-drawer__qty-input {
