@@ -375,7 +375,7 @@
       ],
       "name": "Diagonal Marquee",
       "settings": {
-        "bg_color": "#FFFFFF",
+        "bg_color": "#ffffff",
         "height_desktop": 280,
         "height_mobile": 200,
         "padding_top": 0,
@@ -1201,6 +1201,79 @@
         "usp_4"
       ],
       "settings": {}
+    },
+    "instagram_gallery_VrMzKx": {
+      "type": "instagram-gallery",
+      "blocks": {
+        "instagram_post_9WNwfm": {
+          "type": "instagram_post",
+          "settings": {
+            "link": "",
+            "caption": ""
+          }
+        },
+        "instagram_post_wEa4Db": {
+          "type": "instagram_post",
+          "settings": {
+            "link": "",
+            "caption": ""
+          }
+        },
+        "instagram_post_eHkzkt": {
+          "type": "instagram_post",
+          "settings": {
+            "link": "",
+            "caption": ""
+          }
+        },
+        "instagram_post_CP8DQD": {
+          "type": "instagram_post",
+          "settings": {
+            "link": "",
+            "caption": ""
+          }
+        },
+        "instagram_post_rgVBRE": {
+          "type": "instagram_post",
+          "settings": {
+            "link": "",
+            "caption": ""
+          }
+        },
+        "instagram_post_r4p8bY": {
+          "type": "instagram_post",
+          "settings": {
+            "link": "",
+            "caption": ""
+          }
+        }
+      },
+      "block_order": [
+        "instagram_post_9WNwfm",
+        "instagram_post_wEa4Db",
+        "instagram_post_eHkzkt",
+        "instagram_post_CP8DQD",
+        "instagram_post_rgVBRE",
+        "instagram_post_r4p8bY"
+      ],
+      "name": "Instagram gallery",
+      "settings": {
+        "subtitle": "FOLLOW US ON INSTAGRAM",
+        "title": "@shopzicurious",
+        "link": "",
+        "heading_alignment": "center",
+        "tile_size_desktop": 260,
+        "tile_size_mobile": 150,
+        "tile_gap": 4,
+        "animation_speed": 35,
+        "pause_on_hover": true,
+        "reverse_directions": false,
+        "bg_color": "#ffffff",
+        "heading_color": "#111111",
+        "eyebrow_color": "#666666",
+        "padding_top": 56,
+        "padding_bottom": 56
+      }
     }
   },
   "order": [
@@ -1219,6 +1292,7 @@
     "instagram_gallery",
     "instagram_reels_TNhw9D",
     "recent_blog_posts_TxPkBy",
-    "bottom_usp_bar"
+    "bottom_usp_bar",
+    "instagram_gallery_VrMzKx"
   ]
 }

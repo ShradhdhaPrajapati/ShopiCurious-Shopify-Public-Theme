@@ -39,6 +39,28 @@ html[dir="rtl"] .szc-header__dropdown {
   right: 0 !important;
 }
 
+html[dir="rtl"] .szc-header__sub-chevron {
+  margin-left: 0 !important;
+  margin-right: auto !important;
+  transform: scaleX(-1) !important;
+}
+
+html[dir="rtl"] .szc-header__dropdown-item:hover > .szc-header__dropdown-link .szc-header__sub-chevron {
+  transform: scaleX(-1) translateX(2px) !important;
+}
+
+html[dir="rtl"] .szc-header__sub-dropdown {
+  left: auto !important;
+  right: 100% !important;
+  transform: translateX(-6px) !important;
+}
+
+html[dir="rtl"] .szc-header__dropdown-item:hover > .szc-header__sub-dropdown,
+html[dir="rtl"] .szc-header__dropdown-item:focus-within > .szc-header__sub-dropdown,
+html[dir="rtl"] .szc-header__dropdown-item.is-expanded > .szc-header__sub-dropdown {
+  transform: translateX(0) !important;
+}
+
 html[dir="rtl"] .szc-mega-menu {
   left: 0 !important;
   right: 0 !important;
@@ -98,14 +120,19 @@ html[dir="rtl"] .szc-mobile-drawer {
   right: 0 !important;
 }
 
-html[dir="rtl"] .szc-mobile-drawer__inner {
+html[dir="rtl"] .szc-mobile-drawer__panel {
   right: 0 !important;
   left: auto !important;
   transform: translateX(100%) !important;
+  box-shadow: -4px 0 24px rgba(0, 0, 0, 0.15) !important;
 }
 
-html[dir="rtl"] .szc-mobile-drawer.is-open .szc-mobile-drawer__inner {
+html[dir="rtl"] .szc-mobile-drawer.is-open .szc-mobile-drawer__panel {
   transform: translateX(0) !important;
+}
+
+html[dir="rtl"] .szc-mobile-drawer__sub-menu {
+  padding: 8px 12px 16px 0 !important;
 }
 
 html[dir="rtl"] .szc-mobile-drawer__sublink-chevron,
@@ -114,13 +141,14 @@ html[dir="rtl"] .szc-mobile-drawer__back-btn svg {
 }
 
 /* 6. COLLECTION FILTER DRAWER & SIDEBAR */
-html[dir="rtl"] .szc-facets-drawer__inner {
-  right: auto !important;
-  left: 0 !important;
-  transform: translateX(-100%) !important;
+html[dir="rtl"] .szc-filter-drawer {
+  right: 0 !important;
+  left: auto !important;
+  transform: translateX(100%) !important;
+  box-shadow: -4px 0 24px rgba(0, 0, 0, 0.12) !important;
 }
 
-html[dir="rtl"] .szc-facets-drawer.is-open .szc-facets-drawer__inner {
+html[dir="rtl"] .szc-filter-drawer.is-open {
   transform: translateX(0) !important;
 }
 

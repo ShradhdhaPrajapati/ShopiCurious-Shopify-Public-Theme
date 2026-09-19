@@ -1,10 +1,11 @@
 {% comment %}
   Predictive Search Section Template - Returns HTML for 3-column popover modal results.
+  Predictive Search Section Template - Returns HTML for 3-column slide-down drawer results.
 {% endcomment %}
 
 {%- if predictive_search.performed -%}
   <div id="PredictiveSearchResults" class="szc-search-results-grid">
-    
+
     <!-- COLUMN 1: SUGGESTIONS -->
     <div class="szc-search-col szc-search-col--suggestions">
       <h4 class="szc-search-col__title">{{ 'general.search.suggestions' | t | default: 'SUGGESTIONS' }}</h4>
@@ -14,6 +15,7 @@
             <li>
               <a href="{{ query.url }}" class="szc-suggestion-link">
                 <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
                 <span>{{ query.text }}</span>
               </a>
             </li>
@@ -32,8 +34,11 @@
               <div class="szc-search-product-thumb">
                 {%- if product.featured_media != blank -%}
                   {{ product.featured_media | image_url: width: 140 | image_tag: loading: 'lazy', alt: product.title }}
+                {%- elsif product.featured_image != blank -%}
+                  {{ product.featured_image | image_url: width: 140 | image_tag: loading: 'lazy', alt: product.title }}
                 {%- else -%}
                   <img src="{{ 'about-story-1.png' | asset_url }}" alt="{{ product.title }}" width="70" height="85" loading="lazy">
+                  {{ 'product-1' | placeholder_svg_tag: 'szc-placeholder-svg' }}
                 {%- endif -%}
               </div>
               <div class="szc-search-product-info">
@@ -55,8 +60,11 @@
               <div class="szc-search-product-thumb">
                 {%- if product.featured_media != blank -%}
                   {{ product.featured_media | image_url: width: 140 | image_tag: loading: 'lazy', alt: product.title }}
+                {%- elsif product.featured_image != blank -%}
+                  {{ product.featured_image | image_url: width: 140 | image_tag: loading: 'lazy', alt: product.title }}
                 {%- else -%}
                   <img src="{{ 'about-story-1.png' | asset_url }}" alt="{{ product.title }}" width="70" height="85" loading="lazy">
+                  {{ 'product-1' | placeholder_svg_tag: 'szc-placeholder-svg' }}
                 {%- endif -%}
               </div>
               <div class="szc-search-product-info">
@@ -86,16 +94,23 @@
               <div class="szc-search-collection-thumb">
                 {%- if collection.featured_image != blank -%}
                   {{ collection.featured_image | image_url: width: 160 | image_tag: loading: 'lazy', alt: collection.title }}
+                  {{ collection.featured_image | image_url: width: 180 | image_tag: loading: 'lazy', alt: collection.title }}
                 {%- elsif collection.products.first.featured_media != blank -%}
                   {{ collection.products.first.featured_media | image_url: width: 160 | image_tag: loading: 'lazy', alt: collection.title }}
+                  {{ collection.products.first.featured_media | image_url: width: 180 | image_tag: loading: 'lazy', alt: collection.title }}
                 {%- else -%}
                   <img src="{{ 'about-story-1.png' | asset_url }}" alt="{{ collection.title }}" width="90" height="65" loading="lazy">
+                  {{ 'collection-1' | placeholder_svg_tag: 'szc-placeholder-svg' }}
                 {%- endif -%}
               </div>
               <div class="szc-search-collection-info">
                 <h5 class="szc-search-collection-title">{{ collection.title }}</h5>
+                <h5 class="szc-search-collection-title">{{ collection.title | upcase }}</h5>
                 <div class="szc-search-collection-count">{{ collection.all_products_count | default: 24 }} {{ 'sections.predictive_search.items' | t | default: 'items' }}</div>
               </div>
+              <svg class="szc-search-collection-arrow" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <polyline points="9 18 15 12 9 6"></polyline>
+              </svg>
             </a>
           {%- endfor -%}
         {%- else -%}
@@ -112,12 +127,17 @@
                       {{ collection.products.first.featured_media | image_url: width: 180 | image_tag: loading: 'lazy', alt: collection.title }}
                     {%- else -%}
                       <img src="{{ 'about-story-1.png' | asset_url }}" alt="{{ collection.title }}" width="90" height="65" loading="lazy">
+                      {{ 'collection-1' | placeholder_svg_tag: 'szc-placeholder-svg' }}
                     {%- endif -%}
                   </div>
                   <div class="szc-search-collection-info">
                     <h5 class="szc-search-collection-title">{{ collection.title }}</h5>
+                    <h5 class="szc-search-collection-title">{{ collection.title | upcase }}</h5>
                     <div class="szc-search-collection-count">{{ collection.all_products_count | default: 12 }} {{ 'sections.predictive_search.items' | t | default: 'items' }}</div>
                   </div>
+                  <svg class="szc-search-collection-arrow" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <polyline points="9 18 15 12 9 6"></polyline>
+                  </svg>
                 </a>
               {%- endif -%}
             {%- endunless -%}

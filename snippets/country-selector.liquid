@@ -78,7 +78,7 @@
             id="{{ list_id }}"
             role="listbox"
             class="szc-localization-dropdown szc-country-dropdown"
-            aria-label="{{ 'localization.country_label' | t | default: 'Select Country' }}"
+            aria-label="{{ 'localization.country_label' | t }}"
             hidden
           >
             {%- for country in localization.available_countries -%}

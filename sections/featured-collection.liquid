@@ -61,20 +61,26 @@
           %}
         </div>
       {%- endfor -%}
+    {%- elsif collection != blank -%}
+      <div class="szc-featured-collection__empty">
+        <p class="szc-featured-collection__empty-text">{{ 'sections.collection_template.empty' | t }}</p>
+      </div>
     {%- else -%}
-      <!-- Demo 4 Items matching 4-column layout -->
-      <div class="szc-featured-collection__item">
-        {% render 'product-card', card_product: nil, title_override: 'Oversized Knit Sweater', price_override: '$59.99', show_price: section.settings.show_price, show_add_to_cart: section.settings.show_add_to_cart, show_quick_add: section.settings.show_add_to_cart, media_aspect_ratio: image_ratio, class: 'szc-product-card--box-hover' %}
-      </div>
-      <div class="szc-featured-collection__item">
-        {% render 'product-card', card_product: nil, title_override: 'Linen Blend Shirt', price_override: '$49.99', show_price: section.settings.show_price, show_add_to_cart: section.settings.show_add_to_cart, show_quick_add: section.settings.show_add_to_cart, media_aspect_ratio: image_ratio, class: 'szc-product-card--box-hover' %}
-      </div>
-      <div class="szc-featured-collection__item">
-        {% render 'product-card', card_product: nil, title_override: 'Satin Slip Dress', price_override: '$69.99', show_price: section.settings.show_price, show_add_to_cart: section.settings.show_add_to_cart, show_quick_add: section.settings.show_add_to_cart, media_aspect_ratio: image_ratio, class: 'szc-product-card--box-hover' %}
-      </div>
-      <div class="szc-featured-collection__item">
-        {% render 'product-card', card_product: nil, title_override: 'Classic Denim Jacket', price_override: '$78.99', show_price: section.settings.show_price, show_add_to_cart: section.settings.show_add_to_cart, show_quick_add: section.settings.show_add_to_cart, media_aspect_ratio: image_ratio, class: 'szc-product-card--box-hover' %}
-      </div>
+      {%- for i in (1..4) -%}
+        {%- assign placeholder_index = forloop.index | modulo: 6 | plus: 1 -%}
+        <div class="szc-featured-collection__item">
+          <div class="szc-product-card szc-product-card--placeholder {% if is_fixed_aspect %}szc-product-card--fixed-ratio{% endif %} szc-product-card--box-hover">
+            <div class="szc-product-card__media-container" style="aspect-ratio: {{ image_ratio }};">
+              {{ 'product-' | append: placeholder_index | placeholder_svg_tag: 'szc-image-placeholder' }}
+            </div>
+            <div class="szc-product-card__info">
+              <h3 class="szc-product-card__title">
+                <span class="szc-product-card__title-link">{{ 'onboarding.product_title' | t }}</span>
+              </h3>
+            </div>
+          </div>
+        </div>
+      {%- endfor -%}
     {%- endif -%}
   </div>
 </section>
@@ -110,6 +116,19 @@
     margin: 0 auto;
     padding-left: var(--szc-space-6, 24px);
     padding-right: var(--szc-space-6, 24px);
+  }
+
+  .szc-featured-collection__empty {
+    grid-column: 1 / -1;
+    width: 100%;
+    text-align: center;
+    padding: var(--szc-space-12, 48px) var(--szc-space-4, 16px);
+  }
+
+  .szc-featured-collection__empty-text {
+    font-size: 15px;
+    color: var(--szc-color-text-secondary, #777777);
+    margin: 0;
   }
 
   .szc-section-header {

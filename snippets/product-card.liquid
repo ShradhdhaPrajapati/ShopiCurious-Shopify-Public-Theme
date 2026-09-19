@@ -103,8 +103,9 @@
   assign featured_img = product.featured_media.preview_image
   assign second_img = product.media[1].preview_image
 
-  assign demo_title = title_override | default: 'Oversized Knit Sweater'
-  assign demo_price = price_override | default: '$59.99'
+  assign default_placeholder_title = 'onboarding.product_title' | t
+  assign demo_title = title_override | default: default_placeholder_title
+  assign demo_price = price_override
 -%}
 
 {%- if product != blank -%}
@@ -338,7 +339,7 @@
       <h3 class="szc-product-card__title">
         <span class="szc-product-card__title-link">{{ demo_title }}</span>
       </h3>
-      {%- if display_price -%}
+      {%- if display_price and demo_price != blank -%}
         <div class="szc-product-card__price-wrapper">
           <span class="szc-price__item">{{ demo_price }}</span>
         </div>

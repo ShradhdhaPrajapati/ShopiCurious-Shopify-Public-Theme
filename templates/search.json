@@ -13,9 +13,10 @@
       "type": "main-search",
       "settings": {
         "products_per_page": 16,
-        "columns_desktop": 4,
+        "columns_desktop": 3,
         "columns_mobile": "2",
-        "pagination_type": "load_more",
+        "pagination_type": "infinite_scroll",
+        "show_add_to_cart": false,
         "enable_filtering": true,
         "enable_sorting": true
       }

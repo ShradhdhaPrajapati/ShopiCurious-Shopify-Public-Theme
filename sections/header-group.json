@@ -118,90 +118,124 @@
     "header": {
       "type": "header",
       "blocks": {
-        "mega_menu_nkaKVj": {
+        "mega_menu_r4z8kJ": {
           "type": "mega_menu",
           "settings": {
-            "menu_item_title": "WOMEN",
-            "menu_type": "mega",
+            "menu_item_title": "ABOUT",
+            "menu_type": "dropdown_flyout",
             "show_banner": true,
-            "banner_image": "shopify://shop_images/OversizedKnitSweater_199ef7ef-06f6-4497-8352-f71cf1f0649c.png",
-            "banner_subtitle": "NEW COLLECTION",
-            "banner_heading": "Elevate Your Every Day Style",
-            "banner_description": "Timeless pieces, modern silhouettes.",
-            "banner_button_label": "SHOP NOW",
+            "banner_subtitle": "",
+            "banner_heading": "",
+            "banner_description": "",
+            "banner_button_label": "",
             "banner_button_link": "",
+            "show_categories": true,
+            "category_title": "",
+            "categories_menu": "",
+            "categories_view_all_url": "",
+            "show_occasions": true,
+            "occasions_title": "",
+            "occasions_menu": "about-mega-menu",
+            "occasions_view_all_url": "",
+            "show_collections_col": true,
+            "collections_col_title": "SHOP BY COLLECTION",
+            "collections_col_menu": "",
+            "collections_col_view_all_url": "",
+            "show_new_arrivals": true,
+            "new_arrivals_title": "TRENDING PRODUCTS",
+            "new_arrivals_collection": "",
+            "products_to_show": 4,
+            "show_card_1": true,
+            "card_1_title": "",
+            "card_1_subheading": "",
+            "card_1_description": "",
+            "card_1_button_label": "",
+            "card_1_button_link": ""
+          }
+        },
+        "mega_menu_aG4tdc": {
+          "type": "mega_menu",
+          "settings": {
+            "menu_item_title": "NEW IN",
+            "menu_type": "mega_image_left",
+            "show_banner": true,
+            "banner_image": "shopify://shop_images/ChatGPT_Image_Sep_10_2026_01_51_46_PM.png",
+            "banner_subtitle": "NEW COLLECTION",
+            "banner_heading": "ELEVATE YOUR EVERYDAY STYLE",
+            "banner_description": "",
+            "banner_button_label": "SHOP  NOW",
+            "banner_button_link": "shopify://collections/new-in",
             "show_categories": true,
             "category_title": "SHOP BY CATEGORY",
             "categories_menu": "shop-by-occasion",
+            "categories_view_all_url": "shopify://collections/new-in",
             "show_occasions": true,
-            "occasions_title": "SHOP BY OCCASION",
+            "occasions_title": "SHOP BY OCCASSION",
             "occasions_menu": "shop-by-occasion",
+            "occasions_view_all_url": "shopify://collections/new-in",
+            "show_collections_col": true,
+            "collections_col_title": "SHOP BY COLLECTION",
+            "collections_col_menu": "",
+            "collections_col_view_all_url": "",
             "show_new_arrivals": true,
-            "new_arrivals_title": "NEW ARRIVAL",
+            "new_arrivals_title": "TRENDING PRODUCTS",
             "new_arrivals_collection": "new-in",
             "products_to_show": 4,
             "show_card_1": true,
-            "card_1_title": "FEATURED COLLECTION",
-            "card_1_image": "shopify://shop_images/Sunglassesforwomen1.png",
-            "card_1_subheading": "Summer Edit",
-            "card_1_description": "Light, Breezy & Chic",
-            "card_1_button_label": "SHOP COLLECTION",
-            "card_1_button_link": "",
-            "show_card_2": true,
-            "card_2_title": "BEST SELLERS",
-            "card_2_image": "shopify://shop_images/WristWatch_e9cd5aad-5e33-43ea-b5ca-7347eab12a3c.png",
-            "card_2_subheading": "Minimal Stones",
-            "card_2_description": "Timeless Brilliance",
-            "card_2_button_label": "EXPLORE NOW",
-            "card_2_button_link": "",
-            "show_trust_bar": true
+            "card_1_title": "",
+            "card_1_subheading": "",
+            "card_1_description": "",
+            "card_1_button_label": "",
+            "card_1_button_link": ""
           }
         },
-        "usp_item_qUeQ4Q": {
-          "type": "usp_item",
+        "mega_menu_CHcCTh": {
+          "type": "mega_menu",
           "settings": {
-            "icon": "secure",
-            "title": "Secure Payments",
-            "subtitle": "100% Protected"
-          }
-        },
-        "usp_item_LnXqCU": {
-          "type": "usp_item",
-          "settings": {
-            "icon": "quality",
-            "title": "Certified Quality",
-            "subtitle": "Premium Materials"
-          }
-        },
-        "usp_item_MY84zQ": {
-          "type": "usp_item",
-          "settings": {
-            "icon": "returns",
-            "title": "Easy Returns",
-            "subtitle": "30-Day Return Policy"
-          }
-        },
-        "usp_item_Uy4P8K": {
-          "type": "usp_item",
-          "settings": {
-            "icon": "support",
-            "title": "Dedicated Support",
-            "subtitle": "24/7 Customer Support"
+            "menu_item_title": "WOMEN",
+            "menu_type": "mega_products_right",
+            "show_banner": true,
+            "banner_subtitle": "",
+            "banner_heading": "",
+            "banner_description": "",
+            "banner_button_label": "",
+            "banner_button_link": "",
+            "show_categories": true,
+            "category_title": "Trending",
+            "categories_menu": "shop-by-occasion",
+            "categories_view_all_url": "shopify://collections",
+            "show_occasions": true,
+            "occasions_title": "Occasion",
+            "occasions_menu": "shop-by-occasion",
+            "occasions_view_all_url": "",
+            "show_collections_col": true,
+            "collections_col_title": "SHOP BY COLLECTION",
+            "collections_col_menu": "shop-by-occasion",
+            "collections_col_view_all_url": "shopify://collections/frontpage",
+            "show_new_arrivals": true,
+            "new_arrivals_title": "",
+            "new_arrivals_collection": "women",
+            "products_to_show": 4,
+            "show_card_1": true,
+            "card_1_title": "",
+            "card_1_subheading": "",
+            "card_1_description": "",
+            "card_1_button_label": "",
+            "card_1_button_link": ""
           }
         }
       },
       "block_order": [
-        "mega_menu_nkaKVj",
-        "usp_item_qUeQ4Q",
-        "usp_item_LnXqCU",
-        "usp_item_MY84zQ",
-        "usp_item_Uy4P8K"
+        "mega_menu_r4z8kJ",
+        "mega_menu_aG4tdc",
+        "mega_menu_CHcCTh"
       ],
       "settings": {
+        "logo": "shopify://shop_images/logo_file.png",
         "logo_width": 140,
         "menu": "main-menu",
         "enable_sticky_header": true,
-        "show_logo_underline": true,
+        "show_logo_underline": false,
         "show_country_selector": true,
         "accent_color": "#c87a38"
       }

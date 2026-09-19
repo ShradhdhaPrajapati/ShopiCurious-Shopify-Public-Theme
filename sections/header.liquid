@@ -157,8 +157,18 @@
                   endif
                 endfor
 
+                assign mega_type = 'mega_image_left'
                 if mega_block != null
-                  assign display_type = 'mega'
+                  assign mega_type = mega_block.settings.menu_type | default: 'mega_image_left'
+                  if mega_type == 'mega'
+                    assign mega_type = 'mega_image_left'
+                  endif
+
+                  if mega_type == 'dropdown_flyout'
+                    assign display_type = 'dropdown'
+                  else
+                    assign display_type = 'mega'
+                  endif
                 elsif link.links != blank
                   assign display_type = 'dropdown'
                 else
@@ -183,7 +193,7 @@
                   {% render 'mega-menu', link: link, mega_block: mega_block, section: section %}
                 {%- endif -%}
 
-                <!-- STANDARD DROPDOWN (If Menu Type is Dropdown) -->
+                <!-- TYPE 3: SIMPLE DROPDOWN & MULTI-LEVEL FLYOUT SUB MENU -->
                 {%- if display_type == 'dropdown' -%}
                   {%- liquid
                     assign dropdown_links = link.links
@@ -206,15 +216,38 @@
                     endif
                   -%}
                   {%- if dropdown_links != blank and dropdown_links.size > 0 -%}
-                    <ul class="szc-header__dropdown" role="list">
+                    <ul class="szc-header__dropdown szc-header__dropdown--multilevel" role="list">
                       {%- for childlink in dropdown_links -%}
-                        <li class="szc-header__dropdown-item">
+                        {%- assign has_sub = false -%}
+                        {%- if childlink.links != blank and childlink.links.size > 0 -%}
+                          {%- assign has_sub = true -%}
+                        {%- endif -%}
+                        <li class="szc-header__dropdown-item {% if has_sub %}has-submenu{% endif %}">
                           <a
                             href="{{ childlink.url }}"
                             class="szc-header__dropdown-link {% if childlink.active %}is-active{% endif %}"
+                            {% if has_sub %}aria-haspopup="true" aria-expanded="false"{% endif %}
                           >
-                            {{ childlink.title }}
+                            <span>{{ childlink.title }}</span>
+                            {%- if has_sub -%}
+                              <svg class="szc-header__sub-chevron" width="10" height="10" viewBox="0 0 10 10" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="3 1 7 5 3 9"></polyline></svg>
+                            {%- endif -%}
                           </a>
+
+                          {%- if has_sub -%}
+                            <ul class="szc-header__sub-dropdown" role="list">
+                              {%- for grandchildlink in childlink.links -%}
+                                <li class="szc-header__sub-dropdown-item">
+                                  <a
+                                    href="{{ grandchildlink.url }}"
+                                    class="szc-header__sub-dropdown-link {% if grandchildlink.active %}is-active{% endif %}"
+                                  >
+                                    {{ grandchildlink.title }}
+                                  </a>
+                                </li>
+                              {%- endfor -%}
+                            </ul>
+                          {%- endif -%}
                         </li>
                       {%- endfor -%}
                     </ul>
@@ -535,17 +568,17 @@
     }
   }
 
-  /* Standard Dropdown Menu */
+  /* Standard & Multi-Level Dropdown Menu (Type 3) */
   .szc-header__dropdown {
     position: absolute;
     top: 100%;
     left: 0;
-    min-width: 200px;
+    min-width: 220px;
     background-color: var(--szc-color-background, #ffffff);
     border: 1px solid var(--szc-color-border, #e5e5e5);
-    border-radius: var(--szc-radius-card, 4px);
-    box-shadow: var(--szc-shadow-md);
-    padding: var(--szc-space-2, 8px) 0;
+    border-radius: var(--szc-radius-card, 6px);
+    box-shadow: 0 10px 28px rgba(0, 0, 0, 0.09);
+    padding: 8px 0;
     list-style: none;
     opacity: 0;
     visibility: hidden;
@@ -562,17 +595,104 @@
     transform: translateY(0);
   }
 
-  .szc-header__dropdown-link {
-    display: block;
-    padding: 8px 16px;
-    font-size: 13px;
-    color: var(--szc-color-text-primary, #2b2b2b);
-    text-decoration: none;
-    transition: background-color var(--szc-transition-fast, 150ms ease);
+  .szc-header__dropdown-item {
+    position: relative;
+    list-style: none;
   }
 
-  .szc-header__dropdown-link:hover {
+  .szc-header__dropdown-link {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 9px 18px;
+    font-size: 13.5px;
+    color: var(--szc-color-text-primary, #2b2b2b);
+    text-decoration: none;
+    transition: background-color var(--szc-transition-fast, 150ms ease), color var(--szc-transition-fast, 150ms ease);
+  }
+
+  .szc-header__dropdown-link:hover,
+  .szc-header__dropdown-item:hover > .szc-header__dropdown-link,
+  .szc-header__dropdown-item:focus-within > .szc-header__dropdown-link {
     background-color: var(--szc-color-surface, #f8f9fa);
+    color: var(--szc-color-secondary, #d4a373);
+  }
+
+  .szc-header__sub-chevron {
+    margin-left: auto;
+    color: #888888;
+    transition: transform 150ms ease;
+  }
+
+  .szc-header__dropdown-item:hover > .szc-header__dropdown-link .szc-header__sub-chevron {
+    color: var(--szc-color-secondary, #d4a373);
+    transform: translateX(2px);
+  }
+
+  /* Multi-Level Flyout Submenu (Type 3) */
+  .szc-header__sub-dropdown {
+    position: absolute;
+    top: -8px;
+    left: 100%;
+    min-width: 220px;
+    background-color: #ffffff;
+    border: 1px solid var(--szc-color-border, #eeeeee);
+    border-radius: 6px;
+    box-shadow: 0 10px 28px rgba(0, 0, 0, 0.09);
+    padding: 8px 0;
+    list-style: none;
+    opacity: 0;
+    visibility: hidden;
+    transform: translateX(6px);
+    transition: opacity 180ms ease, transform 180ms ease, visibility 180ms ease;
+    z-index: 450;
+  }
+
+  .szc-header__dropdown-item:hover > .szc-header__sub-dropdown,
+  .szc-header__dropdown-item:focus-within > .szc-header__sub-dropdown,
+  .szc-header__dropdown-item.is-expanded > .szc-header__sub-dropdown {
+    opacity: 1;
+    visibility: visible;
+    transform: translateX(0);
+  }
+
+  html[dir="rtl"] .szc-header__sub-chevron {
+    margin-left: 0;
+    margin-right: auto;
+    transform: scaleX(-1);
+  }
+
+  html[dir="rtl"] .szc-header__dropdown-item:hover > .szc-header__dropdown-link .szc-header__sub-chevron {
+    transform: scaleX(-1) translateX(2px);
+  }
+
+  html[dir="rtl"] .szc-header__sub-dropdown {
+    left: auto;
+    right: 100%;
+    transform: translateX(-6px);
+  }
+
+  html[dir="rtl"] .szc-header__dropdown-item:hover > .szc-header__sub-dropdown,
+  html[dir="rtl"] .szc-header__dropdown-item:focus-within > .szc-header__sub-dropdown,
+  html[dir="rtl"] .szc-header__dropdown-item.is-expanded > .szc-header__sub-dropdown {
+    transform: translateX(0);
+  }
+
+  .szc-header__sub-dropdown-item {
+    list-style: none;
+  }
+
+  .szc-header__sub-dropdown-link {
+    display: block;
+    padding: 8px 18px;
+    font-size: 13px;
+    color: var(--szc-color-text-primary, #333333);
+    text-decoration: none;
+    transition: background-color 150ms ease, color 150ms ease;
+  }
+
+  .szc-header__sub-dropdown-link:hover {
+    background-color: #f8f9fa;
     color: var(--szc-color-secondary, #d4a373);
   }
 
@@ -612,13 +732,87 @@
     padding: 24px var(--szc-space-6, 24px) 0 var(--szc-space-6, 24px);
   }
 
-  /* CSS AUTO GRID LAYOUT: Auto Resizing & Stretching */
+  /* Thin 1px Vertical Dividers (Exact Match to Reference Screenshot) */
+  .szc-mega-divider {
+    width: 1px;
+    background-color: #eeeeee;
+    align-self: stretch;
+    flex-shrink: 0;
+    margin: 0 4px;
+  }
+
+  .szc-mega-divider--major {
+    margin: 0 14px;
+  }
+
+  /* Base Mega Menu Grid */
   .szc-mega-menu__grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(170px, 1fr));
-    gap: 28px;
-    align-items: start;
+    display: flex;
+    flex-direction: row;
+    align-items: stretch;
+    justify-content: space-between;
+    gap: 16px;
     padding-bottom: 24px;
+  }
+
+  /* TYPE 1: MEGA MENU (IMAGE LEFT) */
+  .szc-mega-menu__grid--image-left {
+    display: flex;
+    flex-direction: row;
+    align-items: stretch;
+    justify-content: space-between;
+    gap: 16px;
+    padding-bottom: 24px;
+  }
+
+  .szc-mega-menu__grid--image-left .szc-mega-col--banner {
+    flex: 1.15;
+    min-width: 220px;
+    max-width: 260px;
+  }
+
+  .szc-mega-menu__grid--image-left .szc-mega-col--links {
+    flex: 1;
+    min-width: 140px;
+  }
+
+  .szc-mega-menu__grid--image-left .szc-mega-col--products {
+    flex: 1.25;
+    min-width: 200px;
+  }
+
+  .szc-mega-menu__grid--image-left .szc-mega-col--promo {
+    flex: 1.15;
+    min-width: 200px;
+    max-width: 250px;
+  }
+
+  /* TYPE 2: MEGA MENU (PRODUCTS RIGHT) */
+  .szc-mega-menu__grid--products-right {
+    display: flex;
+    flex-direction: row;
+    align-items: stretch;
+    gap: 18px;
+    padding-bottom: 24px;
+  }
+
+  .szc-mega-menu__left-nav {
+    display: flex;
+    flex: 1.1;
+    align-items: stretch;
+    justify-content: space-between;
+    gap: 16px;
+  }
+
+  .szc-mega-menu__left-nav .szc-mega-col--links {
+    flex: 1;
+    min-width: 140px;
+  }
+
+  .szc-mega-col--showcase {
+    flex: 1.5;
+    display: flex;
+    flex-direction: column;
   }
 
   .szc-mega-col--banner {
@@ -935,42 +1129,185 @@
     color: #c86d51;
   }
 
-  /* BOTTOM USP / TRUST BANNER (Dynamic Grid) */
-  .szc-mega-trust-bar {
+  /* TYPE 2: PRODUCT SHOWCASE GRID (4 HORIZONTAL CARDS) */
+  .szc-mega-products-showcase {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-    gap: 20px;
-    padding: 16px 20px;
-    border-top: 1px solid #eeeeee;
-    background: #fcfbf9;
-    margin: 0 -24px;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 16px;
+    align-items: stretch;
   }
 
-  .szc-mega-trust-item {
-    display: flex;
-    align-items: center;
-    gap: 12px;
-  }
-
-  .szc-trust-icon {
-    color: #c86d51;
-    flex-shrink: 0;
-  }
-
-  .szc-trust-text {
+  .szc-mega-showcase-card {
     display: flex;
     flex-direction: column;
+    text-decoration: none;
+    background: transparent;
+    border-radius: 6px;
+    overflow: hidden;
+    transition: transform 180ms ease;
   }
 
-  .szc-trust-title {
-    font-size: 12.5px;
+  .szc-mega-showcase-card:hover {
+    transform: translateY(-3px);
+  }
+
+  .szc-mega-showcase-thumb {
+    position: relative;
+    width: 100%;
+    aspect-ratio: 3 / 4;
+    background-color: #f6f6f6;
+    border-radius: 6px;
+    overflow: hidden;
+    margin-bottom: 10px;
+  }
+
+  .szc-mega-showcase-thumb img,
+  .szc-mega-showcase-thumb svg {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 350ms ease;
+  }
+
+  .szc-mega-showcase-card:hover .szc-mega-showcase-thumb img {
+    transform: scale(1.04);
+  }
+
+  .szc-showcase-badge {
+    position: absolute;
+    top: 8px;
+    left: 8px;
+    z-index: 2;
+    font-size: 10px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    padding: 3px 8px;
+    border-radius: 3px;
+    color: #ffffff;
+    line-height: 1.1;
+  }
+
+  .szc-showcase-badge--sale {
+    background-color: #d85a38;
+  }
+
+  .szc-showcase-badge--new {
+    background-color: #5b8c6c;
+  }
+
+  .szc-mega-showcase-title {
+    font-size: 13px;
+    font-weight: 600;
+    color: #111111;
+    margin: 0 0 4px 0;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  .szc-mega-showcase-pricing {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 13px;
+  }
+
+  .szc-mega-showcase-price {
     font-weight: 700;
     color: #111111;
   }
 
-  .szc-trust-sub {
-    font-size: 11px;
-    color: #777777;
+  .szc-mega-showcase-price.is-sale-price {
+    color: #d85a38;
+  }
+
+  .szc-mega-showcase-compare {
+    font-size: 12px;
+    color: #888888;
+    text-decoration: line-through;
+  }
+
+  /* View All Link (Bottom of Link Columns) */
+  .szc-mega-view-all-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    font-size: 12px;
+    font-weight: 600;
+    color: #111111;
+    text-decoration: none;
+    margin-top: 14px;
+    transition: color 150ms ease;
+  }
+
+  .szc-mega-view-all-link:hover {
+    color: #c87a38;
+  }
+
+  .szc-view-all-svg,
+  .szc-btn-svg {
+    display: inline-block;
+    transition: transform 150ms ease;
+    vertical-align: middle;
+    flex-shrink: 0;
+  }
+
+  .szc-mega-view-all-link:hover .szc-view-all-svg,
+  .szc-mega-banner-btn:hover .szc-btn-svg,
+  .szc-mega-card-btn:hover .szc-btn-svg {
+    transform: translateX(4px);
+  }
+
+  /* Responsive styling for Mega Menu Variations */
+  @media (max-width: 1200px) {
+    .szc-mega-menu__container {
+      padding-left: 16px;
+      padding-right: 16px;
+    }
+    .szc-mega-menu__grid--image-left {
+      gap: 10px;
+    }
+    .szc-mega-menu__grid--image-left .szc-mega-col--banner {
+      flex: 1 1 170px;
+      min-width: 160px;
+      max-width: 210px;
+    }
+    .szc-mega-menu__grid--image-left .szc-mega-col--links {
+      flex: 1 1 120px;
+      min-width: 110px;
+    }
+    .szc-mega-menu__grid--image-left .szc-mega-col--trending-rows {
+      flex: 1 1 150px;
+      min-width: 140px;
+    }
+    .szc-mega-menu__grid--image-left .szc-mega-col--featured-card {
+      flex: 1 1 160px;
+      min-width: 150px;
+    }
+    .szc-mega-menu__grid--products-right {
+      gap: 12px;
+    }
+    .szc-mega-menu__left-nav {
+      gap: 10px;
+    }
+    .szc-mega-menu__left-nav .szc-mega-col--links {
+      flex: 1 1 120px;
+      min-width: 110px;
+    }
+    .szc-mega-showcase-card {
+      min-width: 120px;
+    }
+    .szc-mega-divider {
+      margin: 0 2px;
+    }
+    .szc-mega-divider--major {
+      margin: 0 8px;
+    }
+    .szc-mega-products-showcase {
+      grid-template-columns: repeat(2, 1fr);
+      gap: 12px;
+    }
   }
 
   /* Header Action Icons */
@@ -1495,6 +1832,43 @@
       });
     });
 
+    const subMenuItems = document.querySelectorAll('.szc-header__dropdown-item.has-submenu');
+    subMenuItems.forEach(subItem => {
+      const toggle = subItem.querySelector('.szc-header__dropdown-link');
+      if (!toggle) return;
+
+      subItem.addEventListener('mouseenter', () => {
+        toggle.setAttribute('aria-expanded', 'true');
+        subItem.classList.add('is-expanded');
+      });
+
+      subItem.addEventListener('mouseleave', () => {
+        toggle.setAttribute('aria-expanded', 'false');
+        subItem.classList.remove('is-expanded');
+      });
+
+      subItem.addEventListener('focusin', () => {
+        toggle.setAttribute('aria-expanded', 'true');
+        subItem.classList.add('is-expanded');
+      });
+
+      subItem.addEventListener('focusout', (e) => {
+        if (!subItem.contains(e.relatedTarget)) {
+          toggle.setAttribute('aria-expanded', 'false');
+          subItem.classList.remove('is-expanded');
+        }
+      });
+
+      subItem.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape') {
+          e.stopPropagation();
+          toggle.setAttribute('aria-expanded', 'false');
+          subItem.classList.remove('is-expanded');
+          toggle.focus();
+        }
+      });
+    });
+
     const triggerBtns = document.querySelectorAll('[data-mobile-menu-trigger]');
     const drawer = document.getElementById('MobileMenuDrawer');
     const closeBtns = document.querySelectorAll('[data-mobile-menu-close]');
@@ -1637,11 +2011,14 @@
         {
           "type": "select",
           "id": "menu_type",
-          "label": "Menu Display Type",
+          "label": "Menu Layout Type",
           "options": [
-            { "value": "mega", "label": "Full Mega Menu" }
+            { "value": "mega_image_left", "label": "1. Mega Menu (Image Left)" },
+            { "value": "mega_products_right", "label": "2. Mega Menu (Products Right)" },
+            { "value": "dropdown_flyout", "label": "3. Simple Dropdown (Multi-Level Sub Menu)" },
+            { "value": "mega", "label": "Legacy Full Mega Menu" }
           ],
-          "default": "mega"
+          "default": "mega_image_left"
         },
         {
           "type": "header",
@@ -1704,6 +2081,11 @@
           "label": "Categories menu (Optional override)"
         },
         {
+          "type": "url",
+          "id": "categories_view_all_url",
+          "label": "Categories View All link"
+        },
+        {
           "type": "header",
           "content": "3. Occasion Column"
         },
@@ -1724,19 +2106,51 @@
           "label": "Occasion menu"
         },
         {
+          "type": "url",
+          "id": "occasions_view_all_url",
+          "label": "Occasion View All link"
+        },
+        {
           "type": "header",
-          "content": "4. Products / New Arrivals"
+          "content": "Type 2: Third Column (Shop By Collection)"
+        },
+        {
+          "type": "checkbox",
+          "id": "show_collections_col",
+          "label": "Show collection column (Type 2)",
+          "default": true
+        },
+        {
+          "type": "text",
+          "id": "collections_col_title",
+          "label": "Collection column title",
+          "default": "SHOP BY COLLECTION"
+        },
+        {
+          "type": "link_list",
+          "id": "collections_col_menu",
+          "label": "Collection column menu"
+        },
+        {
+          "type": "url",
+          "id": "collections_col_view_all_url",
+          "label": "Collection View All link"
+        },
+        {
+          "type": "header",
+          "content": "4. Products / New Arrivals & Showcase"
         },
         {
           "type": "checkbox",
           "id": "show_new_arrivals",
-          "label": "Show products column",
+          "label": "Show products column / showcase",
           "default": true
         },
         {
           "type": "text",
           "id": "new_arrivals_title",
-          "label": "Column title"
+          "label": "Column / Showcase title",
+          "default": "TRENDING PRODUCTS"
         },
         {
           "type": "collection",
@@ -1791,85 +2205,6 @@
           "type": "url",
           "id": "card_1_button_link",
           "label": "Entire card link"
-        },
-        {
-          "type": "header",
-          "content": "6. Featured Promo Card 2"
-        },
-        {
-          "type": "checkbox",
-          "id": "show_card_2",
-          "label": "Show promo card 2",
-          "default": true
-        },
-        {
-          "type": "text",
-          "id": "card_2_title",
-          "label": "Card title"
-        },
-        {
-          "type": "image_picker",
-          "id": "card_2_image",
-          "label": "Card image"
-        },
-        {
-          "type": "text",
-          "id": "card_2_subheading",
-          "label": "Subheading"
-        },
-        {
-          "type": "text",
-          "id": "card_2_description",
-          "label": "Description"
-        },
-        {
-          "type": "text",
-          "id": "card_2_button_label",
-          "label": "Link text"
-        },
-        {
-          "type": "url",
-          "id": "card_2_button_link",
-          "label": "Entire card link"
-        },
-        {
-          "type": "header",
-          "content": "7. Bottom Trust / USP Bar"
-        },
-        {
-          "type": "checkbox",
-          "id": "show_trust_bar",
-          "label": "Show bottom trust bar",
-          "default": true
-        }
-      ]
-    },
-    {
-      "type": "usp_item",
-      "name": "Trust / USP Item",
-      "settings": [
-        {
-          "type": "select",
-          "id": "icon",
-          "label": "Icon",
-          "options": [
-            { "value": "secure", "label": "Secure Lock" },
-            { "value": "quality", "label": "Certified Quality" },
-            { "value": "returns", "label": "Easy Returns" },
-            { "value": "support", "label": "24/7 Support" },
-            { "value": "shipping", "label": "Free Shipping" }
-          ],
-          "default": "secure"
-        },
-        {
-          "type": "text",
-          "id": "title",
-          "label": "Title"
-        },
-        {
-          "type": "text",
-          "id": "subtitle",
-          "label": "Subtitle"
         }
       ]
     }

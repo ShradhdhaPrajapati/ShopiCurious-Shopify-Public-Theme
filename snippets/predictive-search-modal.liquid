@@ -1,6 +1,6 @@
 {% comment %}
-  ShopziCurious - 100% Dynamic Mobile & Desktop Predictive Search Modal
-  Matching User's Reference Screenshots 1:1
+  ShopziCurious - 100% Dynamic Top 0 Slide-Down Predictive Search Drawer
+  Matching User's Reference Screenshot 1:1
 {% endcomment %}
 
 <div
@@ -14,51 +14,10 @@
   <!-- Overlay Backdrop -->
   <div class="szc-search-modal__backdrop" data-search-close></div>
 
-  <!-- Popover / Fullscreen Mobile Container -->
-  <div class="szc-search-modal__popover">
-    <!-- Desktop Pointer Arrow -->
-    <div class="szc-search-modal__arrow" id="SearchModalArrow"></div>
-
-    <div class="szc-search-modal__content">
-      <!-- Top Mobile Navigation Header Bar (Image 1) -->
-      <div class="szc-search-modal-top-bar">
-        <button type="button" class="szc-search-back-btn" data-search-close aria-label="Back">
-          <svg
-            width="22"
-            height="22"
-            viewBox="0 0 24 24"
-            fill="none"
-            stroke="currentColor"
-            stroke-width="2"
-            stroke-linecap="round"
-            stroke-linejoin="round"
-          >
-            <line x1="19" y1="12" x2="5" y2="12"></line>
-            <polyline points="12 19 5 12 12 5"></polyline>
-          </svg>
-        </button>
-
-        <div class="szc-search-brand-title">
-          <span class="szc-brand-name">{{ shop.name | upcase }}</span>
-          <span class="szc-brand-sub">PREMIUM FASHION</span>
-        </div>
-
-        <div class="szc-search-top-icons">
-          <a href="{{ routes.account_url }}" class="szc-top-icon-link" aria-label="Account">
-            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
-              <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle>
-            </svg>
-          </a>
-          <a href="{{ routes.cart_url }}" class="szc-top-icon-link szc-cart-badge-wrap" aria-label="Cart">
-            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
-              <path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"></path><line x1="3" y1="6" x2="21" y2="6"></line><path d="M16 10a4 4 0 0 1-8 0"></path>
-            </svg>
-            <span class="szc-cart-badge-count">{{ cart.item_count | default: 1 }}</span>
-          </a>
-        </div>
-      </div>
-
-      <!-- Top Search Form Input Bar (Image 1) -->
+  <!-- Top Full-Width Slide-Down Drawer Container -->
+  <div class="szc-search-modal__drawer">
+    <div class="szc-search-modal__container page-width">
+      <!-- Search Form Input Bar (Matches Reference Screenshot 1:1) -->
       <form
         action="{{ routes.search_url }}"
         method="get"
@@ -74,7 +33,7 @@
             viewBox="0 0 24 24"
             fill="none"
             stroke="currentColor"
-            stroke-width="2"
+            stroke-width="1.8"
             stroke-linecap="round"
             stroke-linejoin="round"
           >
@@ -87,7 +46,7 @@
             name="q"
             id="SearchInputPredictive"
             class="szc-search-input-field"
-            placeholder="Search products, collections..."
+            placeholder="{{ 'general.search.placeholder' | t | default: 'Search products, collections...' }}"
             value=""
             autocomplete="off"
             autocorrect="off"
@@ -97,7 +56,13 @@
             aria-controls="PredictiveSearchResults"
           >
 
-          <button type="button" class="szc-search-clear-btn" id="SearchClearBtn" aria-label="Clear Search">
+          <button
+            type="button"
+            class="szc-search-close-btn"
+            id="SearchCloseBtn"
+            data-search-close
+            aria-label="Close Search"
+          >
             <svg
               width="15"
               height="15"
@@ -115,7 +80,7 @@
         </div>
       </form>
 
-      <!-- 3-Column Desktop / Vertical Stack Mobile Search Results -->
+      <!-- 3-Column Search Results Grid -->
       <div id="PredictiveSearchResults" class="szc-search-results-grid">
         <!-- SECTION 1: SUGGESTIONS / TRENDING KEYWORDS -->
         <div class="szc-search-col szc-search-col--suggestions" id="ColSuggestions">
@@ -129,7 +94,10 @@
               {%- if clean_kw != blank -%}
                 <li>
                   <a href="{{ routes.search_url }}?q={{ clean_kw | url_encode }}" class="szc-suggestion-link">
-                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+                      <circle cx="11" cy="11" r="8"></circle>
+                      <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+                    </svg>
                     <span>{{ clean_kw }}</span>
                   </a>
                 </li>
@@ -236,13 +204,13 @@
         </div>
       </div>
 
-      <!-- Bottom View All Button (Matches User Screenshot 1:1) -->
+      <!-- Bottom View All Button (Matches Reference Screenshot 1:1) -->
       <div class="szc-search-modal__footer" id="SearchModalFooter">
         <a href="{{ routes.search_url }}" class="szc-search-view-all-btn" id="SearchSubmitBtn">
           <span>VIEW ALL RESULTS</span>
           <svg
-            width="18"
-            height="18"
+            width="16"
+            height="16"
             viewBox="0 0 24 24"
             fill="none"
             stroke="currentColor"
@@ -263,79 +231,72 @@
   /* Root Search Modal Backdrop Overlay */
   .szc-search-modal-wrapper {
     position: fixed;
-    inset: 0;
-    z-index: 99999;
-    display: none;
-    opacity: 0;
-    transition: opacity 200ms ease;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 100000;
+    visibility: hidden;
+    pointer-events: none;
+    transition: visibility 0s linear 320ms;
   }
 
   .szc-search-modal-wrapper.is-open {
-    display: block;
-    opacity: 1;
+    visibility: visible;
+    pointer-events: auto;
+    transition-delay: 0s;
   }
 
+  /* Backdrop Overlay (Dims the page behind the drawer) */
   .szc-search-modal__backdrop {
     position: absolute;
     inset: 0;
     background: rgba(0, 0, 0, 0.45);
     backdrop-filter: blur(2px);
+    -webkit-backdrop-filter: blur(2px);
+    opacity: 0;
+    transition: opacity 300ms ease;
+    cursor: pointer;
   }
 
-  /* Popover Floating Box (Desktop) */
-  .szc-search-modal__popover {
+  .szc-search-modal-wrapper.is-open .szc-search-modal__backdrop {
+    opacity: 1;
+  }
+
+  /* Top Full-Width Slide-Down Drawer */
+  .szc-search-modal__drawer {
     position: absolute;
-    top: 75px;
-    right: max(24px, calc((100vw - 1200px) / 2));
-    width: 900px;
-    max-width: calc(100vw - 32px);
+    top: 0;
+    left: 0;
+    width: 100%;
     background: #ffffff;
-    border-radius: 14px;
-    box-shadow: 0 16px 48px rgba(0, 0, 0, 0.16);
-    border: 1px solid #eaeaea;
+    box-shadow: 0 12px 36px rgba(0, 0, 0, 0.09);
+    border-bottom: 1px solid #e2e2e2;
+    transform: translateY(-100%);
+    transition: transform 320ms cubic-bezier(0.16, 1, 0.3, 1);
+    max-height: 88vh;
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
     z-index: 2;
-    overflow: visible;
-    animation: szcSearchPopIn 220ms cubic-bezier(0.16, 1, 0.3, 1);
   }
 
-  @keyframes szcSearchPopIn {
-    from {
-      opacity: 0;
-      transform: translateY(-8px) scale(0.98);
-    }
-    to {
-      opacity: 1;
-      transform: translateY(0) scale(1);
-    }
+  .szc-search-modal-wrapper.is-open .szc-search-modal__drawer {
+    transform: translateY(0);
   }
 
-  /* Triangle Pointer Arrow */
-  .szc-search-modal__arrow {
-    position: absolute;
-    top: -9px;
-    right: 145px;
-    width: 16px;
-    height: 16px;
-    background: #ffffff;
-    border-left: 1px solid #eaeaea;
-    border-top: 1px solid #eaeaea;
-    transform: rotate(45deg);
-    z-index: 3;
-  }
-
-  .szc-search-modal__content {
-    padding: 24px 28px 20px;
+  /* Container */
+  .szc-search-modal__container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 30px 24px 26px;
     box-sizing: border-box;
   }
 
-  /* Top Mobile Navigation Header Bar (Hidden on Desktop) */
-  .szc-search-modal-top-bar {
-    display: none;
-  }
-
-  /* Search Input Field */
+  /* Search Input Form */
   .szc-search-form {
-    margin-bottom: 24px;
+    max-width: 720px;
+    margin: 0 auto 30px;
+    width: 100%;
   }
 
   .szc-search-input-wrap {
@@ -343,10 +304,11 @@
     display: flex;
     align-items: center;
     background: #ffffff;
-    border: 1px solid #111111;
-    border-radius: 8px;
+    border: 1px solid #555555;
+    border-radius: 4px;
     padding: 0 16px;
     height: 48px;
+    box-sizing: border-box;
     transition: border-color 150ms ease, box-shadow 150ms ease;
   }
 
@@ -356,27 +318,25 @@
   }
 
   .szc-search-icon-input {
-    color: #444444;
+    color: #555555;
     flex-shrink: 0;
     margin-right: 12px;
   }
 
-  /* Strict fix to remove inner border/outline & native webkit cancel button on input */
-  .szc-search-input-field,
-  .szc-search-input-field:focus,
-  .szc-search-input-field:focus-visible,
-  .szc-search-input-field:active {
+  .szc-search-input-field {
+    flex: 1;
     width: 100%;
     border: none !important;
     outline: none !important;
     box-shadow: none !important;
     background: transparent !important;
-    font-size: 15px;
-    font-weight: 500;
+    font-size: 14.5px;
+    font-weight: 400;
     color: #111111;
     font-family: inherit;
     -webkit-appearance: none;
     appearance: none;
+    padding: 0;
   }
 
   .szc-search-input-field::-webkit-search-cancel-button,
@@ -389,46 +349,47 @@
   }
 
   .szc-search-input-field::placeholder {
-    color: #777777;
+    color: #767676;
   }
 
-  .szc-search-clear-btn {
+  .szc-search-close-btn {
     background: transparent;
     border: none;
-    color: #666666;
+    color: #555555;
     cursor: pointer;
     padding: 4px;
     display: flex;
     align-items: center;
     justify-content: center;
-    border-radius: 50%;
-    transition: color 150ms ease, background-color 150ms ease;
+    border-radius: 4px;
+    flex-shrink: 0;
+    margin-left: 8px;
+    transition: color 150ms ease;
   }
 
-  .szc-search-clear-btn:hover {
+  .szc-search-close-btn:hover {
     color: #000000;
-    background-color: #f2f2f2;
   }
 
-  /* 3-Column Grid Layout (Desktop) */
+  /* 3-Column Results Grid */
   .szc-search-results-grid {
     display: grid;
-    grid-template-columns: 220px 1.25fr 1fr;
-    gap: 28px;
-    min-height: 360px;
-    padding-bottom: 12px;
+    grid-template-columns: 200px 1.35fr 1fr;
+    gap: 36px;
+    align-items: start;
+    min-height: 280px;
   }
 
   .szc-search-col__title {
-    font-size: 12px;
+    font-size: 11.5px;
     font-weight: 700;
     letter-spacing: 0.06em;
     text-transform: uppercase;
-    color: #222222;
-    margin: 0 0 18px;
+    color: #111111;
+    margin: 0 0 16px;
   }
 
-  /* Column 1: Suggestions List */
+  /* Column 1: Suggestions */
   .szc-suggestions-list {
     list-style: none;
     padding: 0;
@@ -442,28 +403,27 @@
     display: inline-flex;
     align-items: center;
     gap: 10px;
-    color: #333333;
+    color: #2b2b2b;
     text-decoration: none;
-    font-size: 13.5px;
-    font-weight: 500;
+    font-size: 13px;
+    font-weight: 400;
     transition: color 150ms ease;
   }
 
   .szc-suggestion-link svg {
-    color: #777777;
+    color: #666666;
     flex-shrink: 0;
   }
 
   .szc-suggestion-link:hover {
     color: #000000;
-    font-weight: 600;
   }
 
-  /* Column 2: Popular Products List */
+  /* Column 2: Popular Products */
   .szc-search-products-list {
     display: flex;
     flex-direction: column;
-    gap: 14px;
+    gap: 12px;
   }
 
   .szc-search-product-card {
@@ -471,57 +431,62 @@
     align-items: center;
     gap: 14px;
     text-decoration: none;
-    padding: 6px;
-    border-radius: 8px;
-    transition: background-color 150ms ease;
+    padding: 3px 0;
+    border-radius: 4px;
+    transition: opacity 150ms ease;
   }
 
   .szc-search-product-card:hover {
-    background-color: #fafafa;
+    opacity: 0.8;
   }
 
   .szc-search-product-thumb {
-    width: 62px;
-    height: 74px;
-    border-radius: 8px;
+    width: 52px;
+    height: 52px;
+    border-radius: 4px;
     overflow: hidden;
-    background-color: #f4f4f4;
+    background-color: #f2f0ec;
     flex-shrink: 0;
-    border: 1px solid #efefef;
   }
 
   .szc-search-product-thumb img {
     width: 100%;
     height: 100%;
     object-fit: cover;
+    display: block;
   }
 
   .szc-search-product-info {
     display: flex;
     flex-direction: column;
     justify-content: center;
+    min-width: 0;
   }
 
   .szc-search-product-title {
-    font-size: 14px;
+    font-size: 13px;
     font-weight: 700;
     color: #111111;
-    margin: 0 0 4px;
-    line-height: 1.3;
+    margin: 0 0 3px;
+    line-height: 1.35;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
   }
 
   .szc-search-product-price {
-    font-size: 14px;
-    font-weight: 800;
+    font-size: 13px;
+    font-weight: 700;
     color: #111111;
-    margin-bottom: 0;
+    margin: 0;
   }
 
-  /* Column 3: Collections List */
+  /* Column 3: Collections */
   .szc-search-collections-list {
     display: flex;
     flex-direction: column;
-    gap: 14px;
+    gap: 12px;
   }
 
   .szc-search-collection-card {
@@ -529,60 +494,62 @@
     align-items: center;
     gap: 14px;
     text-decoration: none;
-    padding: 6px;
-    border-radius: 8px;
-    transition: background-color 150ms ease;
+    padding: 3px 0;
+    border-radius: 4px;
+    width: 100%;
+    transition: opacity 150ms ease;
   }
 
   .szc-search-collection-card:hover {
-    background-color: #fafafa;
+    opacity: 0.8;
   }
 
   .szc-search-collection-thumb {
-    width: 80px;
-    height: 56px;
-    border-radius: 6px;
+    width: 66px;
+    height: 44px;
+    border-radius: 4px;
     overflow: hidden;
-    background-color: #f4f4f4;
+    background-color: #eae6df;
     flex-shrink: 0;
-    border: 1px solid #efefef;
   }
 
   .szc-search-collection-thumb img {
     width: 100%;
     height: 100%;
     object-fit: cover;
+    display: block;
   }
 
   .szc-search-collection-info {
     display: flex;
     flex-direction: column;
     flex: 1;
+    min-width: 0;
   }
 
   .szc-search-collection-title {
-    font-size: 13.5px;
+    font-size: 12.5px;
     font-weight: 700;
     letter-spacing: 0.04em;
     color: #111111;
-    margin: 0 0 3px;
+    margin: 0 0 2px;
     text-transform: uppercase;
   }
 
   .szc-search-collection-count {
-    font-size: 12px;
+    font-size: 11.5px;
     color: #777777;
   }
 
   .szc-search-collection-arrow {
-    color: #999999;
+    color: #888888;
     flex-shrink: 0;
+    margin-left: auto;
   }
 
-  /* Bottom Footer Bar */
+  /* Footer "VIEW ALL RESULTS ->" */
   .szc-search-modal__footer {
-    border-top: 1px solid #eeeeee;
-    padding-top: 18px;
+    margin-top: 26px;
     text-align: center;
   }
 
@@ -592,8 +559,8 @@
     justify-content: center;
     gap: 8px;
     color: #111111;
-    font-size: 12px;
-    font-weight: 800;
+    font-size: 11.5px;
+    font-weight: 700;
     letter-spacing: 0.08em;
     text-transform: uppercase;
     text-decoration: none;
@@ -605,91 +572,24 @@
     transform: translateX(3px);
   }
 
-  /* MOBILE VIEW LUXURY UI/UX (Matching Screenshots 1 & 2 1:1) */
+  /* Responsive / Mobile */
   @media (max-width: 767px) {
-    .szc-search-modal__popover {
-      position: fixed;
-      top: 0;
-      left: 0;
-      right: 0;
-      bottom: 0;
-      width: 100vw;
-      height: 100vh;
-      max-width: 100vw;
-      border-radius: 0;
-      border: none;
-      box-shadow: none;
-      background: #ffffff;
-      overflow-y: auto;
-      z-index: 999999;
-      animation: none;
+    .szc-search-modal__container {
+      padding: 20px 16px 24px;
     }
 
-    .szc-search-modal__arrow {
-      display: none !important;
+    .szc-search-form {
+      margin-bottom: 20px;
     }
 
-    .szc-search-modal__content {
-      padding: 14px 18px 40px 18px;
-      min-height: auto;
-      display: block;
-      box-sizing: border-box;
-    }
-
-    /* Mobile Header Bar - Show Back Arrow only, hide brand title and user/cart icons */
-    .szc-search-modal-top-bar {
-      display: flex !important;
-      align-items: center;
-      justify-content: flex-start;
-      margin-bottom: 12px;
-      padding-bottom: 0;
-      border-bottom: none;
-    }
-
-    .szc-search-back-btn {
-      background: transparent;
-      border: none;
-      color: #111111;
-      cursor: pointer;
-      padding: 4px;
-      display: flex !important;
-      align-items: center;
-    }
-
-    .szc-search-brand-title,
-    .szc-search-top-icons {
-      display: none !important;
-    }
-
-    /* Stacked Sections Layout */
     .szc-search-results-grid {
-      display: flex;
-      flex-direction: column;
-      gap: 24px;
+      grid-template-columns: 1fr;
+      gap: 22px;
       min-height: auto;
-      padding-bottom: 0;
     }
 
-    .szc-search-product-thumb {
-      width: 76px;
-      height: 90px;
-      border-radius: 10px;
-    }
-
-    /* Hide COLLECTIONS on Mobile Search Modal per user request */
-    .szc-search-col--collections {
-      display: none !important;
-    }
-
-    /* SHOW VIEW ALL RESULTS button directly below POPULAR PRODUCTS (Red Mark Area) */
-    .szc-search-modal__footer {
-      display: block !important;
-      margin-top: 24px;
-      padding-top: 18px;
-      padding-bottom: 24px;
-      border-top: 1px solid #eeeeee;
-      text-align: center;
-      background: transparent;
+    .szc-search-product-title {
+      white-space: normal;
     }
   }
 </style>
@@ -698,10 +598,8 @@
   document.addEventListener('DOMContentLoaded', function () {
     const modal = document.getElementById('PredictiveSearchModal');
     const input = document.getElementById('SearchInputPredictive');
-    const clearBtn = document.getElementById('SearchClearBtn');
-    const displayTerm = document.getElementById('SearchTermDisplay');
+    const closeBtn = document.getElementById('SearchCloseBtn');
     const submitBtn = document.getElementById('SearchSubmitBtn');
-    const arrow = document.getElementById('SearchModalArrow');
 
     const colSuggestions = document.getElementById('ColSuggestions');
     const suggestionsList = document.getElementById('SearchSuggestionsList');
@@ -712,50 +610,32 @@
     const closers = document.querySelectorAll('[data-search-close]');
 
     // Cache initial default markup for empty input state
+    const initialSuggestionsHTML = suggestionsList ? suggestionsList.innerHTML : '';
     const initialProductsHTML = productsList ? productsList.innerHTML : '';
     const initialCollectionsHTML = collectionsList ? collectionsList.innerHTML : '';
 
     let debounceTimer = null;
 
-    // Dynamically position popover pointer arrow under header search icon
-    function alignArrowToSearchIcon() {
-      if (window.innerWidth < 768) return;
-      const searchBtn = document.querySelector('.szc-search-trigger');
-      const popover = document.querySelector('.szc-search-modal__popover');
-      if (searchBtn && popover && arrow) {
-        const btnRect = searchBtn.getBoundingClientRect();
-        const popoverRect = popover.getBoundingClientRect();
-        const arrowRightOffset = popoverRect.right - btnRect.left - btnRect.width / 2 - 8;
-        if (arrowRightOffset > 10 && arrowRightOffset < popoverRect.width - 20) {
-          arrow.style.right = arrowRightOffset + 'px';
-        }
-      }
-    }
-
     // Open Modal
     function openModal() {
       if (!modal) return;
-      modal.setAttribute('aria-hidden', 'false');
       modal.classList.add('is-open');
+      modal.setAttribute('aria-hidden', 'false');
       document.body.style.overflow = 'hidden';
-      alignArrowToSearchIcon();
       setTimeout(() => {
         if (input) input.focus();
-        alignArrowToSearchIcon();
-      }, 80);
+      }, 100);
     }
 
     // Close Modal
     function closeModal() {
       if (!modal) return;
-      modal.setAttribute('aria-hidden', 'true');
       modal.classList.remove('is-open');
+      modal.setAttribute('aria-hidden', 'true');
       document.body.style.overflow = '';
     }
 
-    window.addEventListener('resize', alignArrowToSearchIcon);
-
-    // Bind triggers
+    // Bind triggers (Header search icon)
     triggers.forEach((trig) => {
       trig.addEventListener('click', function (e) {
         e.preventDefault();
@@ -763,32 +643,30 @@
       });
     });
 
+    // Bind closers (backdrop and close button)
     closers.forEach((c) => {
-      c.addEventListener('click', closeModal);
+      c.addEventListener('click', function (e) {
+        if (c.id === 'SearchCloseBtn' && input && input.value.trim() !== '') {
+          input.value = '';
+          input.focus();
+          updateDisplayTerm('');
+          resetToInitialState();
+          return;
+        }
+        closeModal();
+      });
     });
 
-    // Close on ESC
+    // Close on ESC key
     document.addEventListener('keydown', function (e) {
       if (e.key === 'Escape' && modal && modal.classList.contains('is-open')) {
         closeModal();
       }
     });
 
-    // Clear input
-    if (clearBtn) {
-      clearBtn.addEventListener('click', function () {
-        if (input) {
-          input.value = '';
-          input.focus();
-          updateDisplayTerm('');
-          resetToInitialState();
-        }
-      });
-    }
-
     function resetToInitialState() {
-      if (colSuggestions) colSuggestions.style.display = 'none';
-      if (suggestionsList) suggestionsList.innerHTML = '';
+      if (colSuggestions) colSuggestions.style.display = 'block';
+      if (suggestionsList) suggestionsList.innerHTML = initialSuggestionsHTML;
       if (productsList) productsList.innerHTML = initialProductsHTML;
       if (collectionsList) collectionsList.innerHTML = initialCollectionsHTML;
     }
@@ -863,7 +741,7 @@
       const collections = results.collections || [];
       const queries = results.queries || [];
 
-      // 1. Render Suggestions Column ONLY when real query suggestions exist
+      // 1. Render Suggestions Column
       if (suggestionsList && colSuggestions) {
         if (queries.length > 0) {
           let sugHTML = '';
@@ -871,7 +749,10 @@
             sugHTML += `
               <li>
                 <a href="${q.url}" class="szc-suggestion-link">
-                  <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+                    <circle cx="11" cy="11" r="8"></circle>
+                    <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+                  </svg>
                   <span>${q.text}</span>
                 </a>
               </li>`;
@@ -898,7 +779,7 @@
             prodHTML += `
               <a href="${p.url}" class="szc-search-product-card">
                 <div class="szc-search-product-thumb">
-                  <img src="${imgSrc}" alt="${p.title}" width="70" height="85" loading="lazy">
+                  <img src="${imgSrc}" alt="${p.title}" width="52" height="52" loading="lazy">
                 </div>
                 <div class="szc-search-product-info">
                   <h5 class="szc-search-product-title">${p.title}</h5>
@@ -919,7 +800,7 @@
             collHTML += `
               <a href="${c.url}" class="szc-search-collection-card">
                 <div class="szc-search-collection-thumb">
-                  <img src="${collImg}" alt="${c.title}" width="90" height="65" loading="lazy">
+                  <img src="${collImg}" alt="${c.title}" width="66" height="44" loading="lazy">
                 </div>
                 <div class="szc-search-collection-info">
                   <h5 class="szc-search-collection-title">${c.title.toUpperCase()}</h5>

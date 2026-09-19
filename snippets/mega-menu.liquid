@@ -1,178 +1,345 @@
 {% doc %}
-  Renders a dynamic mega menu grid panel for a header navigation link.
+  Renders a 100% dynamic mega menu panel for a header navigation link.
+  Supports Type 1 (Mega Menu - Image Left) and Type 2 (Mega Menu - Products Right).
+  Zero static dummy text or hardcoded products. All arrows are inline SVGs.
 
   @param {object} link - The parent link object
   @param {object} mega_block - The mega menu block object
   @param {object} section - The parent section object
 {% enddoc %}
 
-<div class="szc-mega-menu" id="MegaMenu-{{ link.handle }}" role="region" aria-label="Mega menu for {{ link.title }}">
+{%- assign menu_type = mega_block.settings.menu_type | default: 'mega_image_left' -%}
+{%- if menu_type == 'mega' -%}
+  {%- assign menu_type = 'mega_image_left' -%}
+{%- endif -%}
+
+<div class="szc-mega-menu szc-mega-menu--{{ menu_type }}" id="MegaMenu-{{ link.handle }}" role="region" aria-label="Mega menu for {{ link.title }}">
   <div class="szc-mega-menu__container page-width">
-    
-    <!-- DYNAMIC CSS AUTO GRID LAYOUT -->
-    <div class="szc-mega-menu__grid">
-      
-      <!-- COLUMN 1: LEFT PROMO BANNER -->
-      {%- if mega_block.settings.show_banner -%}
-        {%- assign has_banner_content = false -%}
-        {%- if mega_block.settings.banner_image != blank or mega_block.settings.banner_heading != blank or mega_block.settings.banner_subtitle != blank or mega_block.settings.banner_description != blank or mega_block.settings.banner_button_label != blank -%}
-          {%- assign has_banner_content = true -%}
-        {%- endif -%}
-        {%- if has_banner_content or request.design_mode -%}
-          <div class="szc-mega-col szc-mega-col--banner">
-            <div class="szc-mega-banner-card">
-              <div class="szc-mega-banner-img-wrap">
-                {%- if mega_block.settings.banner_image != blank -%}
-                  {{ mega_block.settings.banner_image | image_url: width: 600 | image_tag: loading: 'lazy', alt: mega_block.settings.banner_heading | default: link.title }}
-                {%- else -%}
-                  {{ 'lifestyle-1' | placeholder_svg_tag: 'szc-placeholder-svg' }}
+
+    {%- if menu_type == 'mega_products_right' -%}
+      <!-- ===================================================================
+           TYPE 2: MEGA MENU — PRODUCTS RIGHT (100% DYNAMIC)
+           =================================================================== -->
+      <div class="szc-mega-menu__grid szc-mega-menu__grid--products-right">
+        <!-- 3 LEFT LINK COLUMNS -->
+        <div class="szc-mega-menu__left-nav">
+
+          <!-- COLUMN 1: SHOP BY CATEGORY -->
+          {%- if mega_block.settings.show_categories != false -%}
+            {%- assign cat_setting = mega_block.settings.categories_menu -%}
+            {%- assign category_links = nil -%}
+            {%- if cat_setting != blank -%}
+              {%- if cat_setting.links != blank -%}
+                {%- assign category_links = cat_setting.links -%}
+              {%- elsif linklists[cat_setting] != blank and linklists[cat_setting].links != blank -%}
+                {%- assign category_links = linklists[cat_setting].links -%}
+              {%- endif -%}
+            {%- endif -%}
+            {%- if category_links == nil and link.links.size > 0 -%}
+              {%- assign category_links = link.links -%}
+            {%- endif -%}
+
+            {%- if category_links != blank and category_links.size > 0 -%}
+              <div class="szc-mega-col szc-mega-col--links">
+                {%- if mega_block.settings.category_title != blank -%}
+                  <h4 class="szc-mega-col__title">{{ mega_block.settings.category_title }}</h4>
+                {%- elsif cat_setting.title != blank -%}
+                  <h4 class="szc-mega-col__title">{{ cat_setting.title }}</h4>
                 {%- endif -%}
-              </div>
-              <div class="szc-mega-banner-content">
-                {%- if mega_block.settings.banner_subtitle != blank -%}
-                  <span class="szc-mega-banner-sub">{{ mega_block.settings.banner_subtitle }}</span>
-                {%- endif -%}
-                {%- if mega_block.settings.banner_heading != blank -%}
-                  <h3 class="szc-mega-banner-title">{{ mega_block.settings.banner_heading }}</h3>
-                {%- endif -%}
-                {%- if mega_block.settings.banner_description != blank -%}
-                  <p class="szc-mega-banner-desc">{{ mega_block.settings.banner_description }}</p>
-                {%- endif -%}
-                {%- if mega_block.settings.banner_button_label != blank -%}
-                  <a href="{{ mega_block.settings.banner_button_link | default: link.url }}" class="szc-mega-banner-btn">
-                    {{ mega_block.settings.banner_button_label }}
+                <ul class="szc-mega-links-list">
+                  {%- for cat_l in category_links -%}
+                    <li><a href="{{ cat_l.url }}" class="szc-mega-simple-link">{{ cat_l.title }}</a></li>
+                  {%- endfor -%}
+                </ul>
+                {%- if mega_block.settings.categories_view_all_url != blank -%}
+                  <a href="{{ mega_block.settings.categories_view_all_url }}" class="szc-mega-view-all-link">
+                    <span>{{ 'sections.collection_list.view_all' | t }}</span>
+                    <svg class="szc-view-all-svg" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg>
                   </a>
                 {%- endif -%}
               </div>
-            </div>
-          </div>
-        {%- endif -%}
-      {%- endif -%}
-
-      <!-- COLUMN 2: CATEGORIES (Auto-fetched or Custom Menu) -->
-      {%- if mega_block.settings.show_categories -%}
-        {%- assign cat_setting = mega_block.settings.categories_menu -%}
-        {%- assign category_links = nil -%}
-        {%- if cat_setting != blank -%}
-          {%- if cat_setting.links != blank -%}
-            {%- assign category_links = cat_setting.links -%}
-          {%- elsif linklists[cat_setting] != blank and linklists[cat_setting].links != blank -%}
-            {%- assign category_links = linklists[cat_setting].links -%}
-          {%- endif -%}
-        {%- endif -%}
-        {%- if category_links == nil and link.links.size > 0 -%}
-          {%- assign category_links = link.links -%}
-        {%- endif -%}
-
-        {%- if category_links != blank and category_links.size > 0 or request.design_mode -%}
-          <div class="szc-mega-col szc-mega-col--categories">
-            {%- if mega_block.settings.category_title != blank -%}
-              <h4 class="szc-mega-col__title">{{ mega_block.settings.category_title }}</h4>
+              <div class="szc-mega-divider"></div>
             {%- endif -%}
-            <ul class="szc-mega-categories-list">
-              {%- if category_links != blank and category_links.size > 0 -%}
-                {%- for cat_link in category_links -%}
-                  {%- assign cat_name = cat_link.title | downcase -%}
-                  <li class="szc-mega-cat-item">
-                    <a href="{{ cat_link.url }}" class="szc-mega-cat-link">
-                      <span class="szc-mega-cat-icon">
-                        {%- if cat_name contains 'top' or cat_name contains 'shirt' -%}
-                          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M20.38 3.46L16 2a4 4 0 01-8 0L3.62 3.46a2 2 0 00-1.34 2.23l.58 3.47a1 1 0 00.99.84H6v10a2 2 0 002 2h8a2 2 0 002-2V10h2.15a1 1 0 00.99-.84l.58-3.47a2 2 0 00-1.34-2.23z"/></svg>
-                        {%- elsif cat_name contains 'dress' -%}
-                          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M9 2h6l2 5-3 3v12H10V10L7 7l2-5z"/></svg>
-                        {%- elsif cat_name contains 'bottom' or cat_name contains 'pant' or cat_name contains 'trouser' -%}
-                          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M4 2h16v3l-2 17h-5l-1-10-1 10H6L4 5V2z"/></svg>
-                        {%- elsif cat_name contains 'outerwear' or cat_name contains 'jacket' or cat_name contains 'coat' -%}
-                          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M6 2h12l3 5v15H3V7l3-5zm6 0v20M6 7h12"/></svg>
-                        {%- elsif cat_name contains 'active' or cat_name contains 'sport' -%}
-                          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M7 2h10l-2 6h4l-8 14V14H6.5L7 2z"/></svg>
-                        {%- else -%}
-                          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/></svg>
-                        {%- endif -%}
-                      </span>
-                      <span class="szc-mega-cat-name">{{ cat_link.title }}</span>
-                    </a>
-                    {%- if cat_link.links.size > 0 -%}
-                      <ul class="szc-mega-subcategories-list">
-                        {%- for sub_link in cat_link.links -%}
-                          <li><a href="{{ sub_link.url }}" class="szc-mega-subcat-link">{{ sub_link.title }}</a></li>
-                        {%- endfor -%}
-                      </ul>
-                    {%- endif -%}
-                  </li>
-                {%- endfor -%}
-              {%- elsif request.design_mode -%}
-                {%- for i in (1..4) -%}
-                  <li class="szc-mega-cat-item">
-                    <a href="#" class="szc-mega-cat-link">
-                      <span class="szc-mega-cat-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"/></svg></span>
-                      <span class="szc-mega-cat-name">Category Link {{ i }}</span>
-                    </a>
-                  </li>
-                {%- endfor -%}
-              {%- endif -%}
-            </ul>
-          </div>
-        {%- endif -%}
-      {%- endif -%}
-
-      <!-- COLUMN 3: OCCASIONS (Manual Menu Selector) -->
-      {%- if mega_block.settings.show_occasions -%}
-        {%- assign occ_setting = mega_block.settings.occasions_menu -%}
-        {%- assign occ_links = nil -%}
-        {%- if occ_setting != blank -%}
-          {%- if occ_setting.links != blank -%}
-            {%- assign occ_links = occ_setting.links -%}
-          {%- elsif linklists[occ_setting] != blank and linklists[occ_setting].links != blank -%}
-            {%- assign occ_links = linklists[occ_setting].links -%}
           {%- endif -%}
-        {%- endif -%}
-        {%- if occ_links != blank and occ_links.size > 0 or request.design_mode -%}
-          <div class="szc-mega-col szc-mega-col--occasions">
-            {%- if mega_block.settings.occasions_title != blank -%}
-              <h4 class="szc-mega-col__title">{{ mega_block.settings.occasions_title }}</h4>
+
+          <!-- COLUMN 2: SHOP BY OCCASION -->
+          {%- if mega_block.settings.show_occasions != false -%}
+            {%- assign occ_setting = mega_block.settings.occasions_menu -%}
+            {%- assign occ_links = nil -%}
+            {%- if occ_setting != blank -%}
+              {%- if occ_setting.links != blank -%}
+                {%- assign occ_links = occ_setting.links -%}
+              {%- elsif linklists[occ_setting] != blank and linklists[occ_setting].links != blank -%}
+                {%- assign occ_links = linklists[occ_setting].links -%}
+              {%- endif -%}
             {%- endif -%}
-            <ul class="szc-mega-links-list">
-              {%- if occ_links != blank and occ_links.size > 0 -%}
-                {%- for occ_link in occ_links -%}
-                  <li><a href="{{ occ_link.url }}" class="szc-mega-simple-link">{{ occ_link.title }}</a></li>
-                {%- endfor -%}
-              {%- elsif request.design_mode -%}
-                {%- for i in (1..4) -%}
-                  <li><a href="#" class="szc-mega-simple-link">Occasion {{ i }}</a></li>
-                {%- endfor -%}
-              {%- endif -%}
-            </ul>
-          </div>
-        {%- endif -%}
-      {%- endif -%}
 
-      <!-- COLUMN 4: PRODUCTS / NEW ARRIVALS -->
-      {%- if mega_block.settings.show_new_arrivals -%}
-        {%- assign col_setting = mega_block.settings.new_arrivals_collection -%}
-        {%- assign arrival_collection = nil -%}
-        {%- if col_setting != blank -%}
-          {%- if col_setting.products != blank -%}
-            {%- assign arrival_collection = col_setting -%}
-          {%- elsif collections[col_setting] != blank -%}
-            {%- assign arrival_collection = collections[col_setting] -%}
+            {%- if occ_links != blank and occ_links.size > 0 -%}
+              <div class="szc-mega-col szc-mega-col--links">
+                {%- if mega_block.settings.occasions_title != blank -%}
+                  <h4 class="szc-mega-col__title">{{ mega_block.settings.occasions_title }}</h4>
+                {%- elsif occ_setting.title != blank -%}
+                  <h4 class="szc-mega-col__title">{{ occ_setting.title }}</h4>
+                {%- endif -%}
+                <ul class="szc-mega-links-list">
+                  {%- for occ_l in occ_links -%}
+                    <li><a href="{{ occ_l.url }}" class="szc-mega-simple-link">{{ occ_l.title }}</a></li>
+                  {%- endfor -%}
+                </ul>
+                {%- if mega_block.settings.occasions_view_all_url != blank -%}
+                  <a href="{{ mega_block.settings.occasions_view_all_url }}" class="szc-mega-view-all-link">
+                    <span>{{ 'sections.collection_list.view_all' | t }}</span>
+                    <svg class="szc-view-all-svg" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg>
+                  </a>
+                {%- endif -%}
+              </div>
+              <div class="szc-mega-divider"></div>
+            {%- endif -%}
+          {%- endif -%}
+
+          <!-- COLUMN 3: SHOP BY COLLECTION -->
+          {%- if mega_block.settings.show_collections_col != false -%}
+            {%- assign coll_setting = mega_block.settings.collections_col_menu -%}
+            {%- assign col_links = nil -%}
+            {%- if coll_setting != blank -%}
+              {%- if coll_setting.links != blank -%}
+                {%- assign col_links = coll_setting.links -%}
+              {%- elsif linklists[coll_setting] != blank and linklists[coll_setting].links != blank -%}
+                {%- assign col_links = linklists[coll_setting].links -%}
+              {%- endif -%}
+            {%- endif -%}
+
+            {%- if col_links != blank and col_links.size > 0 -%}
+              <div class="szc-mega-col szc-mega-col--links">
+                {%- if mega_block.settings.collections_col_title != blank -%}
+                  <h4 class="szc-mega-col__title">{{ mega_block.settings.collections_col_title }}</h4>
+                {%- elsif coll_setting.title != blank -%}
+                  <h4 class="szc-mega-col__title">{{ coll_setting.title }}</h4>
+                {%- endif -%}
+                <ul class="szc-mega-links-list">
+                  {%- for cl in col_links -%}
+                    <li><a href="{{ cl.url }}" class="szc-mega-simple-link">{{ cl.title }}</a></li>
+                  {%- endfor -%}
+                </ul>
+                {%- if mega_block.settings.collections_col_view_all_url != blank -%}
+                  <a href="{{ mega_block.settings.collections_col_view_all_url }}" class="szc-mega-view-all-link">
+                    <span>{{ 'sections.collection_list.view_all' | t }}</span>
+                    <svg class="szc-view-all-svg" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg>
+                  </a>
+                {%- endif -%}
+              </div>
+            {%- endif -%}
+          {%- endif -%}
+        </div>
+
+        <div class="szc-mega-divider szc-mega-divider--major"></div>
+
+        <!-- RIGHT SIDE: DYNAMIC HORIZONTAL PRODUCT CARDS SHOWCASE -->
+        {%- assign showcase_col = mega_block.settings.new_arrivals_collection -%}
+        {%- assign showcase_products = nil -%}
+        {%- if showcase_col != blank -%}
+          {%- if showcase_col.products != blank -%}
+            {%- assign showcase_products = showcase_col.products -%}
+          {%- elsif collections[showcase_col] != blank -%}
+            {%- assign showcase_products = collections[showcase_col].products -%}
           {%- endif -%}
         {%- endif -%}
-        {%- assign product_limit = mega_block.settings.products_to_show | default: 4 -%}
-        {%- if arrival_collection != blank and arrival_collection.products != blank and arrival_collection.products.size > 0 or request.design_mode -%}
-          <div class="szc-mega-col szc-mega-col--new-arrivals">
+        {%- if showcase_products == nil or showcase_products.size == 0 -%}
+          {%- if link.type == 'collection_link' and link.object.products.size > 0 -%}
+            {%- assign showcase_products = link.object.products -%}
+          {%- else -%}
+            {%- assign showcase_products = collections.all.products -%}
+          {%- endif -%}
+        {%- endif -%}
+
+        {%- if showcase_products != blank and showcase_products.size > 0 -%}
+          <div class="szc-mega-col szc-mega-col--showcase">
             {%- if mega_block.settings.new_arrivals_title != blank -%}
               <h4 class="szc-mega-col__title">{{ mega_block.settings.new_arrivals_title }}</h4>
             {%- endif -%}
-            <div class="szc-mega-products-list">
-              {%- if arrival_collection != blank and arrival_collection.products != blank and arrival_collection.products.size > 0 -%}
-                {%- for product in arrival_collection.products limit: product_limit -%}
+            <div class="szc-mega-products-showcase">
+              {%- assign showcase_limit = mega_block.settings.products_to_show | default: 4 -%}
+              {%- for product in showcase_products limit: showcase_limit -%}
+                {%- assign is_on_sale = false -%}
+                {%- if product.compare_at_price > product.price -%}
+                  {%- assign is_on_sale = true -%}
+                {%- endif -%}
+                <a href="{{ product.url }}" class="szc-mega-showcase-card">
+                  <div class="szc-mega-showcase-thumb">
+                    {%- if is_on_sale -%}
+                      <span class="szc-showcase-badge szc-showcase-badge--sale">{{ 'products.product.on_sale' | t | default: 'Sale' }}</span>
+                    {%- elsif product.tags contains 'new' or product.tags contains 'New' -%}
+                      <span class="szc-showcase-badge szc-showcase-badge--new">{{ 'products.product.new' | t }}</span>
+                    {%- endif -%}
+                    {%- if product.featured_media != blank -%}
+                      {{ product.featured_media | image_url: width: 340 | image_tag: loading: 'lazy', alt: product.title }}
+                    {%- elsif product.featured_image != blank -%}
+                      {{ product.featured_image | image_url: width: 340 | image_tag: loading: 'lazy', alt: product.title }}
+                    {%- else -%}
+                      {{ 'product-1' | placeholder_svg_tag: 'szc-placeholder-svg' }}
+                    {%- endif -%}
+                  </div>
+                  <h5 class="szc-mega-showcase-title">{{ product.title }}</h5>
+                  <div class="szc-mega-showcase-pricing">
+                    <span class="szc-mega-showcase-price {% if is_on_sale %}is-sale-price{% endif %}">{{ product.price | money }}</span>
+                    {%- if is_on_sale -%}
+                      <span class="szc-mega-showcase-compare">{{ product.compare_at_price | money }}</span>
+                    {%- endif -%}
+                  </div>
+                </a>
+              {%- endfor -%}
+            </div>
+          </div>
+        {%- endif -%}
+      </div>
+
+    {%- else -%}
+      <!-- ===================================================================
+           TYPE 1: MEGA MENU — IMAGE LEFT (100% DYNAMIC)
+           =================================================================== -->
+      <div class="szc-mega-menu__grid szc-mega-menu__grid--image-left">
+
+        <!-- COLUMN 1: LEFT PROMO BANNER (DYNAMIC) -->
+        {%- if mega_block.settings.show_banner -%}
+          {%- if mega_block.settings.banner_image != blank or mega_block.settings.banner_heading != blank -%}
+            <div class="szc-mega-col szc-mega-col--banner">
+              <div class="szc-mega-banner-card">
+                <div class="szc-mega-banner-img-wrap">
+                  {%- if mega_block.settings.banner_image != blank -%}
+                    {{ mega_block.settings.banner_image | image_url: width: 600 | image_tag: loading: 'lazy', alt: mega_block.settings.banner_heading | default: link.title }}
+                  {%- else -%}
+                    {{ 'lifestyle-1' | placeholder_svg_tag: 'szc-placeholder-svg' }}
+                  {%- endif -%}
+                </div>
+                <div class="szc-mega-banner-content">
+                  {%- if mega_block.settings.banner_subtitle != blank -%}
+                    <span class="szc-mega-banner-sub">{{ mega_block.settings.banner_subtitle }}</span>
+                  {%- endif -%}
+                  {%- if mega_block.settings.banner_heading != blank -%}
+                    <h3 class="szc-mega-banner-title">{{ mega_block.settings.banner_heading }}</h3>
+                  {%- endif -%}
+                  {%- if mega_block.settings.banner_description != blank -%}
+                    <p class="szc-mega-banner-desc">{{ mega_block.settings.banner_description }}</p>
+                  {%- endif -%}
+                  {%- if mega_block.settings.banner_button_label != blank -%}
+                    <a href="{{ mega_block.settings.banner_button_link | default: link.url }}" class="szc-mega-banner-btn">
+                      <span>{{ mega_block.settings.banner_button_label }}</span>
+                      <svg class="szc-btn-svg" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg>
+                    </a>
+                  {%- endif -%}
+                </div>
+              </div>
+            </div>
+            <div class="szc-mega-divider"></div>
+          {%- endif -%}
+        {%- endif -%}
+
+        <!-- COLUMN 2: SHOP BY CATEGORY (DYNAMIC) -->
+        {%- if mega_block.settings.show_categories != false -%}
+          {%- assign cat_setting = mega_block.settings.categories_menu -%}
+          {%- assign category_links = nil -%}
+          {%- if cat_setting != blank -%}
+            {%- if cat_setting.links != blank -%}
+              {%- assign category_links = cat_setting.links -%}
+            {%- elsif linklists[cat_setting] != blank and linklists[cat_setting].links != blank -%}
+              {%- assign category_links = linklists[cat_setting].links -%}
+            {%- endif -%}
+          {%- endif -%}
+          {%- if category_links == nil and link.links.size > 0 -%}
+            {%- assign category_links = link.links -%}
+          {%- endif -%}
+
+          {%- if category_links != blank and category_links.size > 0 -%}
+            <div class="szc-mega-col szc-mega-col--links">
+              {%- if mega_block.settings.category_title != blank -%}
+                <h4 class="szc-mega-col__title">{{ mega_block.settings.category_title }}</h4>
+              {%- elsif cat_setting.title != blank -%}
+                <h4 class="szc-mega-col__title">{{ cat_setting.title }}</h4>
+              {%- endif -%}
+              <ul class="szc-mega-links-list">
+                {%- for cat_l in category_links -%}
+                  <li><a href="{{ cat_l.url }}" class="szc-mega-simple-link">{{ cat_l.title }}</a></li>
+                {%- endfor -%}
+              </ul>
+              {%- if mega_block.settings.categories_view_all_url != blank -%}
+                <a href="{{ mega_block.settings.categories_view_all_url }}" class="szc-mega-view-all-link">
+                  <span>{{ 'sections.collection_list.view_all' | t }}</span>
+                  <svg class="szc-view-all-svg" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg>
+                </a>
+              {%- endif -%}
+            </div>
+            <div class="szc-mega-divider"></div>
+          {%- endif -%}
+        {%- endif -%}
+
+        <!-- COLUMN 3: SHOP BY OCCASION (DYNAMIC) -->
+        {%- if mega_block.settings.show_occasions != false -%}
+          {%- assign occ_setting = mega_block.settings.occasions_menu -%}
+          {%- assign occ_links = nil -%}
+          {%- if occ_setting != blank -%}
+            {%- if occ_setting.links != blank -%}
+              {%- assign occ_links = occ_setting.links -%}
+            {%- elsif linklists[occ_setting] != blank and linklists[occ_setting].links != blank -%}
+              {%- assign occ_links = linklists[occ_setting].links -%}
+            {%- endif -%}
+          {%- endif -%}
+
+          {%- if occ_links != blank and occ_links.size > 0 -%}
+            <div class="szc-mega-col szc-mega-col--links">
+              {%- if mega_block.settings.occasions_title != blank -%}
+                <h4 class="szc-mega-col__title">{{ mega_block.settings.occasions_title }}</h4>
+              {%- elsif occ_setting.title != blank -%}
+                <h4 class="szc-mega-col__title">{{ occ_setting.title }}</h4>
+              {%- endif -%}
+              <ul class="szc-mega-links-list">
+                {%- for occ_l in occ_links -%}
+                  <li><a href="{{ occ_l.url }}" class="szc-mega-simple-link">{{ occ_l.title }}</a></li>
+                {%- endfor -%}
+              </ul>
+              {%- if mega_block.settings.occasions_view_all_url != blank -%}
+                <a href="{{ mega_block.settings.occasions_view_all_url }}" class="szc-mega-view-all-link">
+                  <span>{{ 'sections.collection_list.view_all' | t }}</span>
+                  <svg class="szc-view-all-svg" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg>
+                </a>
+              {%- endif -%}
+            </div>
+            <div class="szc-mega-divider"></div>
+          {%- endif -%}
+        {%- endif -%}
+
+        <!-- COLUMN 4: NEW ARRIVALS / MINI PRODUCTS (DYNAMIC) -->
+        {%- if mega_block.settings.show_new_arrivals != false -%}
+          {%- assign arrival_col = mega_block.settings.new_arrivals_collection -%}
+          {%- assign arrival_products = nil -%}
+          {%- if arrival_col != blank -%}
+            {%- if arrival_col.products != blank -%}
+              {%- assign arrival_products = arrival_col.products -%}
+            {%- elsif collections[arrival_col] != blank -%}
+              {%- assign arrival_products = collections[arrival_col].products -%}
+            {%- endif -%}
+          {%- endif -%}
+          {%- if arrival_products == nil or arrival_products.size == 0 -%}
+            {%- if link.type == 'collection_link' and link.object.products.size > 0 -%}
+              {%- assign arrival_products = link.object.products -%}
+            {%- else -%}
+              {%- assign arrival_products = collections.all.products -%}
+            {%- endif -%}
+          {%- endif -%}
+
+          {%- if arrival_products != blank and arrival_products.size > 0 -%}
+            <div class="szc-mega-col szc-mega-col--trending-rows">
+              {%- if mega_block.settings.new_arrivals_title != blank -%}
+                <h4 class="szc-mega-col__title">{{ mega_block.settings.new_arrivals_title }}</h4>
+              {%- endif -%}
+              <div class="szc-mega-products-list">
+                {%- assign arrivals_limit = mega_block.settings.products_to_show | default: 4 -%}
+                {%- for product in arrival_products limit: arrivals_limit -%}
                   <a href="{{ product.url }}" class="szc-mega-product-item">
                     <div class="szc-mega-prod-thumb">
                       {%- if product.featured_media != blank -%}
-                        {{ product.featured_media | image_url: width: 100 | image_tag: loading: 'lazy', alt: product.title }}
+                        {{ product.featured_media | image_url: width: 120 | image_tag: loading: 'lazy', alt: product.title }}
                       {%- elsif product.featured_image != blank -%}
-                        {{ product.featured_image | image_url: width: 100 | image_tag: loading: 'lazy', alt: product.title }}
+                        {{ product.featured_image | image_url: width: 120 | image_tag: loading: 'lazy', alt: product.title }}
                       {%- else -%}
                         {{ 'product-1' | placeholder_svg_tag: 'szc-placeholder-svg' }}
                       {%- endif -%}
@@ -183,45 +350,28 @@
                     </div>
                   </a>
                 {%- endfor -%}
-              {%- elsif request.design_mode -%}
-                {%- for i in (1..product_limit) -%}
-                  <a href="#" class="szc-mega-product-item">
-                    <div class="szc-mega-prod-thumb">
-                      {{ 'product-1' | placeholder_svg_tag: 'szc-placeholder-svg' }}
-                    </div>
-                    <div class="szc-mega-prod-info">
-                      <h5 class="szc-mega-prod-title">Sample Product {{ i }}</h5>
-                      <div class="szc-mega-prod-price">$19.99</div>
-                    </div>
-                  </a>
-                {%- endfor -%}
-              {%- endif -%}
+              </div>
             </div>
-          </div>
+            <div class="szc-mega-divider"></div>
+          {%- endif -%}
         {%- endif -%}
-      {%- endif -%}
 
-      <!-- COLUMN 5: FEATURED PROMO CARD 1 -->
-      {%- if mega_block.settings.show_card_1 -%}
-        {%- assign has_card_1 = false -%}
-        {%- if mega_block.settings.card_1_image != blank or mega_block.settings.card_1_title != blank or mega_block.settings.card_1_subheading != blank or mega_block.settings.card_1_description != blank or mega_block.settings.card_1_button_label != blank -%}
-          {%- assign has_card_1 = true -%}
-        {%- endif -%}
-        {%- if has_card_1 or request.design_mode -%}
-          <div class="szc-mega-col szc-mega-col--card">
-            {%- if mega_block.settings.card_1_title != blank -%}
-              <h4 class="szc-mega-col__title">{{ mega_block.settings.card_1_title }}</h4>
-            {%- endif -%}
-            <a href="{{ mega_block.settings.card_1_button_link | default: '#' }}" class="szc-mega-promo-card-wrap">
-              <div class="szc-mega-promo-card">
+        <!-- COLUMN 5: FEATURED PROMO CARD (DYNAMIC) -->
+        {%- if mega_block.settings.show_card_1 -%}
+          {%- if mega_block.settings.card_1_image != blank or mega_block.settings.card_1_subheading != blank or mega_block.settings.card_1_title != blank -%}
+            <div class="szc-mega-col szc-mega-col--featured-card">
+              {%- if mega_block.settings.card_1_title != blank -%}
+                <h4 class="szc-mega-col__title">{{ mega_block.settings.card_1_title }}</h4>
+              {%- endif -%}
+              <div class="szc-mega-featured-card">
                 <div class="szc-mega-card-img-wrap">
                   {%- if mega_block.settings.card_1_image != blank -%}
-                    {{ mega_block.settings.card_1_image | image_url: width: 400 | image_tag: loading: 'lazy', alt: mega_block.settings.card_1_subheading | default: 'Promo Card 1' }}
+                    {{ mega_block.settings.card_1_image | image_url: width: 500 | image_tag: loading: 'lazy', alt: mega_block.settings.card_1_subheading | default: 'Featured Collection' }}
                   {%- else -%}
                     {{ 'collection-1' | placeholder_svg_tag: 'szc-placeholder-svg' }}
                   {%- endif -%}
                 </div>
-                <div class="szc-mega-card-content">
+                <div class="szc-mega-card-overlay">
                   {%- if mega_block.settings.card_1_subheading != blank -%}
                     <h5 class="szc-mega-card-heading">{{ mega_block.settings.card_1_subheading }}</h5>
                   {%- endif -%}
@@ -229,96 +379,18 @@
                     <p class="szc-mega-card-desc">{{ mega_block.settings.card_1_description }}</p>
                   {%- endif -%}
                   {%- if mega_block.settings.card_1_button_label != blank -%}
-                    <span class="szc-mega-card-link">{{ mega_block.settings.card_1_button_label }}</span>
+                    <a href="{{ mega_block.settings.card_1_button_link | default: '#' }}" class="szc-mega-card-btn">
+                      <span>{{ mega_block.settings.card_1_button_label }}</span>
+                      <svg class="szc-btn-svg" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg>
+                    </a>
                   {%- endif -%}
                 </div>
               </div>
-            </a>
-          </div>
-        {%- endif -%}
-      {%- endif -%}
-
-      <!-- COLUMN 6: FEATURED PROMO CARD 2 -->
-      {%- if mega_block.settings.show_card_2 -%}
-        {%- assign has_card_2 = false -%}
-        {%- if mega_block.settings.card_2_image != blank or mega_block.settings.card_2_title != blank or mega_block.settings.card_2_subheading != blank or mega_block.settings.card_2_description != blank or mega_block.settings.card_2_button_label != blank -%}
-          {%- assign has_card_2 = true -%}
-        {%- endif -%}
-        {%- if has_card_2 or request.design_mode -%}
-          <div class="szc-mega-col szc-mega-col--card">
-            {%- if mega_block.settings.card_2_title != blank -%}
-              <h4 class="szc-mega-col__title">{{ mega_block.settings.card_2_title }}</h4>
-            {%- endif -%}
-            <a href="{{ mega_block.settings.card_2_button_link | default: '#' }}" class="szc-mega-promo-card-wrap">
-              <div class="szc-mega-promo-card">
-                <div class="szc-mega-card-img-wrap">
-                  {%- if mega_block.settings.card_2_image != blank -%}
-                    {{ mega_block.settings.card_2_image | image_url: width: 400 | image_tag: loading: 'lazy', alt: mega_block.settings.card_2_subheading | default: 'Promo Card 2' }}
-                  {%- else -%}
-                    {{ 'collection-2' | placeholder_svg_tag: 'szc-placeholder-svg' }}
-                  {%- endif -%}
-                </div>
-                <div class="szc-mega-card-content">
-                  {%- if mega_block.settings.card_2_subheading != blank -%}
-                    <h5 class="szc-mega-card-heading">{{ mega_block.settings.card_2_subheading }}</h5>
-                  {%- endif -%}
-                  {%- if mega_block.settings.card_2_description != blank -%}
-                    <p class="szc-mega-card-desc">{{ mega_block.settings.card_2_description }}</p>
-                  {%- endif -%}
-                  {%- if mega_block.settings.card_2_button_label != blank -%}
-                    <span class="szc-mega-card-link">{{ mega_block.settings.card_2_button_label }}</span>
-                  {%- endif -%}
-                </div>
-              </div>
-            </a>
-          </div>
-        {%- endif -%}
-      {%- endif -%}
-
-    </div>
-
-    <!-- DYNAMIC BOTTOM USP / TRUST BANNER -->
-    {%- if mega_block.settings.show_trust_bar -%}
-      {%- assign usp_blocks = section.blocks | where: 'type', 'usp_item' -%}
-      {%- if usp_blocks.size > 0 or request.design_mode -%}
-        <div class="szc-mega-trust-bar">
-          {%- if usp_blocks.size > 0 -%}
-            {%- for block in usp_blocks -%}
-              <div class="szc-mega-trust-item" {{ block.shopify_attributes }}>
-                <span class="szc-trust-icon">
-                  {%- case block.settings.icon -%}
-                    {%- when 'secure' -%}
-                      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
-                    {%- when 'quality' -%}
-                      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M6 3h12l4 6-10 12L2 9z"/><path d="M11 3v18"/><path d="M2 9h20"/></svg>
-                    {%- when 'returns' -%}
-                      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><polyline points="23 4 23 10 17 10"/><polyline points="1 20 1 14 7 14"/><path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"/></svg>
-                    {%- when 'support' -%}
-                      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/></svg>
-                    {%- when 'shipping' -%}
-                      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><rect x="1" y="3" width="15" height="13" rx="1"/><polygon points="16 8 20 8 23 11 23 16 16 16 16 8"/><circle cx="5.5" cy="18.5" r="2.5"/><circle cx="18.5" cy="18.5" r="2.5"/></svg>
-                    {%- else -%}
-                      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><rect x="1" y="3" width="15" height="13" rx="1"/><polygon points="16 8 20 8 23 11 23 16 16 16 16 8"/><circle cx="5.5" cy="18.5" r="2.5"/><circle cx="18.5" cy="18.5" r="2.5"/></svg>
-                  {%- endcase -%}
-                </span>
-                <div class="szc-trust-text">
-                  {%- if block.settings.title != blank -%}
-                    <strong class="szc-trust-title">{{ block.settings.title }}</strong>
-                  {%- endif -%}
-                  {%- if block.settings.subtitle != blank -%}
-                    <span class="szc-trust-sub">{{ block.settings.subtitle }}</span>
-                  {%- endif -%}
-                </div>
-              </div>
-            {%- endfor -%}
-          {%- elsif request.design_mode -%}
-            <div class="szc-mega-trust-item"><span class="szc-trust-icon"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg></span><div class="szc-trust-text"><strong class="szc-trust-title">Secure Payments</strong><span class="szc-trust-sub">100% Protected</span></div></div>
-            <div class="szc-mega-trust-item"><span class="szc-trust-icon"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M6 3h12l4 6-10 12L2 9z"/><path d="M11 3v18"/><path d="M2 9h20"/></svg></span><div class="szc-trust-text"><strong class="szc-trust-title">Certified Quality</strong><span class="szc-trust-sub">Premium Materials</span></div></div>
-            <div class="szc-mega-trust-item"><span class="szc-trust-icon"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><polyline points="23 4 23 10 17 10"/><polyline points="1 20 1 14 7 14"/><path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"/></svg></span><div class="szc-trust-text"><strong class="szc-trust-title">Easy Returns</strong><span class="szc-trust-sub">30-Day Return Policy</span></div></div>
-            <div class="szc-mega-trust-item"><span class="szc-trust-icon"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/></svg></span><div class="szc-trust-text"><strong class="szc-trust-title">Dedicated Support</strong><span class="szc-trust-sub">24/7 Customer Support</span></div></div>
+            </div>
           {%- endif -%}
-        </div>
-      {%- endif -%}
+        {%- endif -%}
+
+      </div>
     {%- endif -%}
 
   </div>

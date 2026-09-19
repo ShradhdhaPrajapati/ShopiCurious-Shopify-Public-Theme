@@ -126,6 +126,32 @@
                       {%- endif -%}
                     {%- endif -%}
 
+                    <!-- 2.1 COLLECTIONS (TYPE 2) -->
+                    {%- if mob_mega.settings.show_collections_col -%}
+                      {%- assign col_nav_setting_mob = mob_mega.settings.collections_col_menu -%}
+                      {%- assign coll_nav_links_mob = nil -%}
+                      {%- if col_nav_setting_mob != blank -%}
+                        {%- if col_nav_setting_mob.links != blank -%}
+                          {%- assign coll_nav_links_mob = col_nav_setting_mob.links -%}
+                        {%- elsif linklists[col_nav_setting_mob] != blank and linklists[col_nav_setting_mob].links != blank -%}
+                          {%- assign coll_nav_links_mob = linklists[col_nav_setting_mob].links -%}
+                        {%- endif -%}
+                      {%- endif -%}
+
+                      {%- if coll_nav_links_mob != blank -%}
+                        <div class="szc-mob-section">
+                          {%- if mob_mega.settings.collections_col_title != blank -%}
+                            <h5 class="szc-mob-section-title">{{ mob_mega.settings.collections_col_title }}</h5>
+                          {%- endif -%}
+                          <ul class="szc-mob-links-list">
+                            {%- for col_nl in coll_nav_links_mob -%}
+                              <li><a href="{{ col_nl.url }}" class="szc-mob-link">{{ col_nl.title }}</a></li>
+                            {%- endfor -%}
+                          </ul>
+                        </div>
+                      {%- endif -%}
+                    {%- endif -%}
+
                     <!-- 3. PRODUCTS / NEW ARRIVALS -->
                     {%- if mob_mega.settings.show_new_arrivals -%}
                       {%- assign col_setting_mob = mob_mega.settings.new_arrivals_collection -%}
@@ -166,76 +192,58 @@
                     {%- endif -%}
 
                     <!-- 4. PROMO CARDS -->
-                    {%- if mob_mega.settings.show_card_1 and mob_mega.settings.card_1_image != blank or mob_mega.settings.card_1_button_label != blank -%}
-                      <div class="szc-mob-section">
-                        {%- if mob_mega.settings.card_1_title != blank -%}
-                          <h5 class="szc-mob-section-title">{{ mob_mega.settings.card_1_title }}</h5>
-                        {%- endif -%}
-                        <a href="{{ mob_mega.settings.card_1_button_link | default: '#' }}" class="szc-mob-promo-card">
-                          {%- if mob_mega.settings.card_1_image != blank -%}
-                            <div class="szc-mob-promo-img">
-                              {{ mob_mega.settings.card_1_image | image_url: width: 400 | image_tag: loading: 'lazy', alt: mob_mega.settings.card_1_subheading | default: 'Promo Card 1' }}
-                            </div>
+                    {%- if mob_mega.settings.show_card_1 -%}
+                      {%- if mob_mega.settings.card_1_image != blank or mob_mega.settings.card_1_button_label != blank -%}
+                        <div class="szc-mob-section">
+                          {%- if mob_mega.settings.card_1_title != blank -%}
+                            <h5 class="szc-mob-section-title">{{ mob_mega.settings.card_1_title }}</h5>
                           {%- endif -%}
-                          <div class="szc-mob-promo-text">
-                            {%- if mob_mega.settings.card_1_subheading != blank -%}
-                              <strong class="szc-mob-promo-sub">{{ mob_mega.settings.card_1_subheading }}</strong>
+                          <a href="{{ mob_mega.settings.card_1_button_link | default: '#' }}" class="szc-mob-promo-card">
+                            {%- if mob_mega.settings.card_1_image != blank -%}
+                              <div class="szc-mob-promo-img">
+                                {{ mob_mega.settings.card_1_image | image_url: width: 400 | image_tag: loading: 'lazy', alt: mob_mega.settings.card_1_subheading | default: 'Promo Card 1' }}
+                              </div>
                             {%- endif -%}
-                            {%- if mob_mega.settings.card_1_button_label != blank -%}
-                              <span class="szc-mob-promo-link-btn">{{ mob_mega.settings.card_1_button_label }}</span>
-                            {%- endif -%}
-                          </div>
-                        </a>
-                      </div>
+                            <div class="szc-mob-promo-text">
+                              {%- if mob_mega.settings.card_1_subheading != blank -%}
+                                <strong class="szc-mob-promo-sub">{{ mob_mega.settings.card_1_subheading }}</strong>
+                              {%- endif -%}
+                              {%- if mob_mega.settings.card_1_button_label != blank -%}
+                                <span class="szc-mob-promo-link-btn">{{ mob_mega.settings.card_1_button_label }}</span>
+                              {%- endif -%}
+                            </div>
+                          </a>
+                        </div>
+                      {%- endif -%}
                     {%- endif -%}
 
-                    {%- if mob_mega.settings.show_card_2 and mob_mega.settings.card_2_image != blank or mob_mega.settings.card_2_button_label != blank -%}
-                      <div class="szc-mob-section">
-                        {%- if mob_mega.settings.card_2_title != blank -%}
-                          <h5 class="szc-mob-section-title">{{ mob_mega.settings.card_2_title }}</h5>
-                        {%- endif -%}
-                        <a href="{{ mob_mega.settings.card_2_button_link | default: '#' }}" class="szc-mob-promo-card">
-                          {%- if mob_mega.settings.card_2_image != blank -%}
-                            <div class="szc-mob-promo-img">
-                              {{ mob_mega.settings.card_2_image | image_url: width: 400 | image_tag: loading: 'lazy', alt: mob_mega.settings.card_2_subheading | default: 'Promo Card 2' }}
-                            </div>
-                          {%- endif -%}
-                          <div class="szc-mob-promo-text">
-                            {%- if mob_mega.settings.card_2_subheading != blank -%}
-                              <strong class="szc-mob-promo-sub">{{ mob_mega.settings.card_2_subheading }}</strong>
-                            {%- endif -%}
-                            {%- if mob_mega.settings.card_2_button_label != blank -%}
-                              <span class="szc-mob-promo-link-btn">{{ mob_mega.settings.card_2_button_label }}</span>
-                            {%- endif -%}
-                          </div>
-                        </a>
-                      </div>
-                    {%- endif -%}
 
                     <!-- 5. PROMO BANNER -->
-                    {%- if mob_mega.settings.show_banner and mob_mega.settings.banner_heading != blank or mob_mega.settings.banner_image != blank -%}
-                      <div class="szc-mob-section">
-                        <div class="szc-mob-banner-card">
-                          {%- if mob_mega.settings.banner_image != blank -%}
-                            <div class="szc-mob-banner-img">
-                              {{ mob_mega.settings.banner_image | image_url: width: 400 | image_tag: loading: 'lazy', alt: mob_mega.settings.banner_heading | default: link.title }}
+                    {%- if mob_mega.settings.show_banner -%}
+                      {%- if mob_mega.settings.banner_heading != blank or mob_mega.settings.banner_image != blank -%}
+                        <div class="szc-mob-section">
+                          <div class="szc-mob-banner-card">
+                            {%- if mob_mega.settings.banner_image != blank -%}
+                              <div class="szc-mob-banner-img">
+                                {{ mob_mega.settings.banner_image | image_url: width: 400 | image_tag: loading: 'lazy', alt: mob_mega.settings.banner_heading | default: link.title }}
+                              </div>
+                            {%- endif -%}
+                            <div class="szc-mob-banner-content">
+                              {%- if mob_mega.settings.banner_subtitle != blank -%}
+                                <span class="szc-mob-banner-sub">{{ mob_mega.settings.banner_subtitle }}</span>
+                              {%- endif -%}
+                              {%- if mob_mega.settings.banner_heading != blank -%}
+                                <h4 class="szc-mob-banner-title">{{ mob_mega.settings.banner_heading }}</h4>
+                              {%- endif -%}
+                              {%- if mob_mega.settings.banner_button_label != blank -%}
+                                <a href="{{ mob_mega.settings.banner_button_link | default: link.url }}" class="szc-mob-banner-btn">
+                                  {{ mob_mega.settings.banner_button_label }}
+                                </a>
+                              {%- endif -%}
                             </div>
-                          {%- endif -%}
-                          <div class="szc-mob-banner-content">
-                            {%- if mob_mega.settings.banner_subtitle != blank -%}
-                              <span class="szc-mob-banner-sub">{{ mob_mega.settings.banner_subtitle }}</span>
-                            {%- endif -%}
-                            {%- if mob_mega.settings.banner_heading != blank -%}
-                              <h4 class="szc-mob-banner-title">{{ mob_mega.settings.banner_heading }}</h4>
-                            {%- endif -%}
-                            {%- if mob_mega.settings.banner_button_label != blank -%}
-                              <a href="{{ mob_mega.settings.banner_button_link | default: link.url }}" class="szc-mob-banner-btn">
-                                {{ mob_mega.settings.banner_button_label }}
-                              </a>
-                            {%- endif -%}
                           </div>
                         </div>
-                      </div>
+                      {%- endif -%}
                     {%- endif -%}
 
                   {%- else -%}

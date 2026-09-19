@@ -1,12 +1,19 @@
+{%- liquid
+  assign lang_iso = request.locale.iso_code | downcase | slice: 0, 2
+  assign is_rtl = false
+  if lang_iso == 'ar' or lang_iso == 'he' or lang_iso == 'fa' or lang_iso == 'ur'
+    assign is_rtl = true
+  endif
+-%}
 <!doctype html>
-<html class="no-js {% if request.design_mode %}shopify-design-mode{% endif %}" lang="{{ request.locale.iso_code }}" dir="{% if request.locale.iso_code == 'ar' or request.locale.iso_code == 'he' or request.locale.iso_code == 'fa' or request.locale.iso_code == 'ur' %}rtl{% else %}ltr{% endif %}">
+<html class="no-js {% if request.design_mode %}shopify-design-mode{% endif %}" lang="{{ request.locale.iso_code }}" dir="{% if is_rtl %}rtl{% else %}ltr{% endif %}">
   <head>
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, height=device-height, minimum-scale=1.0">
     <meta name="theme-color" content="{{ settings.color_primary | default: '#0f0f0f' }}">
     <link rel="canonical" href="{{ canonical_url }}">
-    
+
     {%- if settings.favicon != blank -%}
       <link rel="icon" type="image/png" href="{{ settings.favicon | image_url: width: 32, height: 32 }}">
     {%- endif -%}
@@ -40,7 +47,7 @@
     {{ 'animations.css' | asset_url | stylesheet_tag }}
     {{ 'responsive.css' | asset_url | stylesheet_tag }}
 
-    {%- if request.locale.iso_code == 'ar' or request.locale.iso_code == 'he' or request.locale.iso_code == 'fa' or request.locale.iso_code == 'ur' -%}
+    {%- if is_rtl -%}
       {{ 'rtl.css' | asset_url | stylesheet_tag }}
     {%- endif -%}
 
@@ -114,6 +121,6 @@
     {% render 'predictive-search-modal' %}
     {% render 'back-to-top' %}
 
- 
+
   </body>
 </html>

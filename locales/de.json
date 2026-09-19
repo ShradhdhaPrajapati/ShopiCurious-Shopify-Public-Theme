@@ -181,7 +181,8 @@
       "view_all": "View All"
     },
     "collection_list": {
-      "items": "Artikel"
+      "items": "Artikel",
+      "view_all": "Alle anzeigen"
     },
     "collection_template": {
       "empty": "Keine Produkte gefunden",
@@ -258,7 +259,9 @@
         "pick_up_unavailable": "Pickup unavailable",
         "refresh": "Refresh",
         "check_other_stores": "Check availability at other stores"
-      }
+      },
+      "new": "Neu",
+      "view": "Ansehen"
     },
     "facets": {
       "active_filters": "Active Filters:",
@@ -312,5 +315,11 @@
     "submit": "Suchen",
     "no_results_html": "No results found for {{ terms }}",
     "results_for_html": "{{ count }} results found for {{ terms }}"
+  },
+  "localization": {
+    "country_label": "Land/Region"
+  },
+  "onboarding": {
+    "product_title": "Beispiel-Produkttitel"
   }
 }

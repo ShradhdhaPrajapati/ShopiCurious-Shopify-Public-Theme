@@ -1,17 +1,47 @@
+/*
+ * ------------------------------------------------------------
+ * IMPORTANT: The contents of this file are auto-generated.
+ *
+ * This file may be updated by the Shopify admin theme editor
+ * or related systems. Please exercise caution as any changes
+ * made to this file may be overwritten.
+ * ------------------------------------------------------------
+ */
 {
   "type": "custom.overlay",
   "name": "Popups",
   "sections": {
     "popup": {
       "type": "popup",
+      "disabled": true,
       "settings": {
-        "enable": false
+        "enable": true,
+        "heading": "Get 15% Off Your First Order",
+        "subheading": "Subscribe to receive exclusive offers, new arrival updates, and secret discounts.",
+        "offer_text": "USE CODE: WELCOME15",
+        "show_newsletter": true,
+        "button_label": "CLAIM DISCOUNT",
+        "button_link": "",
+        "display_delay": 3,
+        "frequency": "session",
+        "bg_color": "#ffffff",
+        "text_color": "#111111",
+        "accent_color": "#d4a373",
+        "overlay_opacity": 60
       }
     },
     "age_verifier": {
       "type": "age-verifier",
+      "disabled": true,
       "settings": {
-        "enable": false
+        "enable": true,
+        "age_verifier_min_age": "18",
+        "age_verifier_heading": "Age Verification Required",
+        "age_verifier_text": "You must be of legal age to enter this store. Please confirm your age to proceed.",
+        "age_verifier_confirm_text": "",
+        "age_verifier_decline_text": "",
+        "age_verifier_decline_url": "",
+        "age_verifier_overlay_opacity": 80
       }
     }
   },
