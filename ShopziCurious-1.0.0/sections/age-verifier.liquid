@@ -1,0 +1,361 @@
+{%- liquid
+  assign enable = section.settings.enable
+  assign min_age = section.settings.age_verifier_min_age | default: '18'
+  assign heading = section.settings.age_verifier_heading
+  assign text = section.settings.age_verifier_text
+  assign confirm_text = section.settings.age_verifier_confirm_text
+  assign decline_text = section.settings.age_verifier_decline_text
+  assign decline_url = section.settings.age_verifier_decline_url | default: 'https://www.google.com'
+  assign bg_image = section.settings.age_verifier_bg_image
+  assign overlay_opacity = section.settings.age_verifier_overlay_opacity | default: 80
+-%}
+
+{%- if enable -%}
+  <div
+    class="szc-age-verifier-backdrop{% if request.design_mode %} is-editor-open{% endif %}"
+    id="SzcAgeVerifierModal"
+    role="dialog"
+    aria-modal="true"
+    aria-labelledby="SzcAgeVerifierHeading"
+    aria-describedby="SzcAgeVerifierDescription"
+    tabindex="-1"
+    style="--szc-overlay-opacity: {{ overlay_opacity | divided_by: 100.0 }};"
+  >
+    {%- if bg_image != blank -%}
+      <div class="szc-age-verifier__bg">
+        {{
+          bg_image
+          | image_url: width: 1920
+          | image_tag: loading: 'eager', class: 'szc-age-verifier__bg-img'
+        }}
+      </div>
+    {%- endif -%}
+
+    <div class="szc-age-verifier__card">
+      <div class="szc-age-verifier__icon">
+        <svg
+          width="36"
+          height="36"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="2"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+          aria-hidden="true"
+          focusable="false"
+        >
+          <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
+        </svg>
+      </div>
+
+      <h2 id="SzcAgeVerifierHeading" class="szc-age-verifier__heading">
+        {%- if heading != blank -%}
+          {{ heading }}
+        {%- else -%}
+          {{ 'general.age_verifier.heading' | t | default: 'Age Verification Required' }}
+        {%- endif -%}
+      </h2>
+
+      <div id="SzcAgeVerifierDescription" class="szc-age-verifier__description">
+        {%- if text != blank -%}
+          {{ text }}
+        {%- else -%}
+          {{ 'general.age_verifier.description' | t | default: 'You must be of legal age to enter this store. Please confirm your age to proceed.' }}
+        {%- endif -%}
+      </div>
+
+      <div class="szc-age-verifier__actions">
+        <button
+          type="button"
+          class="szc-button szc-button--primary szc-age-verifier__confirm"
+          id="SzcAgeConfirmBtn"
+        >
+          {%- if confirm_text != blank and confirm_text != 'I am 18 or older' and confirm_text != 'I am 21 or older' -%}
+            {{ confirm_text }}
+          {%- else -%}
+            {{ 'general.age_verifier.confirm' | t: min_age: min_age | default: 'I am 18 or older' | replace: '18', min_age }}
+          {%- endif -%}
+        </button>
+
+        <button
+          type="button"
+          class="szc-button szc-button--outline szc-age-verifier__decline"
+          id="SzcAgeDeclineBtn"
+          data-redirect-url="{{ decline_url }}"
+        >
+          {%- if decline_text != blank and decline_text != 'I am under 18' and decline_text != 'I am under 21' -%}
+            {{ decline_text }}
+          {%- else -%}
+            {{ 'general.age_verifier.decline' | t: min_age: min_age | default: 'I am under 18' | replace: '18', min_age }}
+          {%- endif -%}
+        </button>
+      </div>
+    </div>
+  </div>
+{%- endif -%}
+
+{% stylesheet %}
+  .section-age-verifier {
+    opacity: 1 !important;
+    visibility: visible !important;
+    transform: none !important;
+    perspective: none !important;
+    filter: none !important;
+    will-change: auto !important;
+  }
+
+  .szc-age-verifier-backdrop {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    z-index: 99999;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: rgba(0, 0, 0, var(--szc-overlay-opacity, 0.8));
+    backdrop-filter: blur(8px);
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity 0.3s ease, visibility 0.3s ease;
+    padding: 20px;
+    box-sizing: border-box;
+  }
+
+  .szc-age-verifier-backdrop.is-active,
+  .szc-age-verifier-backdrop.is-editor-open {
+    opacity: 1;
+    visibility: visible;
+  }
+
+  .szc-age-verifier__bg {
+    position: absolute;
+    inset: 0;
+    z-index: -1;
+    overflow: hidden;
+  }
+
+  .szc-age-verifier__bg-img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    opacity: 0.4;
+  }
+
+  .szc-age-verifier__card {
+    background: var(--szc-color-surface, #ffffff);
+    color: var(--szc-color-text-primary, #111111);
+    max-width: 460px;
+    width: 100%;
+    padding: 36px 28px;
+    border-radius: var(--szc-card-corner-radius, 8px);
+    text-align: center;
+    box-shadow: 0 20px 50px rgba(0, 0, 0, 0.35);
+    position: relative;
+    z-index: 1;
+    box-sizing: border-box;
+  }
+
+  .szc-age-verifier__icon {
+    width: 60px;
+    height: 60px;
+    margin: 0 auto 18px;
+    border-radius: 50%;
+    background: var(--szc-color-background, #f8f9fa);
+    color: var(--szc-color-primary, #111111);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: 1px solid var(--szc-color-border, #e5e5e5);
+  }
+
+  .szc-age-verifier__heading {
+    font-family: var(--szc-font-family-heading);
+    font-size: var(--szc-font-size-2xl, 22px);
+    font-weight: 700;
+    margin: 0 0 10px 0;
+    color: var(--szc-color-heading, #111111);
+    line-height: 1.3;
+  }
+
+  .szc-age-verifier__description {
+    font-size: var(--szc-font-size-base, 15px);
+    color: var(--szc-color-text-muted, #666666);
+    line-height: 1.55;
+    margin-bottom: 24px;
+  }
+
+  .szc-age-verifier__actions {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+  }
+
+  .szc-age-verifier__confirm,
+  .szc-age-verifier__decline {
+    width: 100%;
+    min-height: 48px;
+    justify-content: center;
+    font-weight: 600;
+    box-sizing: border-box;
+  }
+
+  @media (max-width: 480px) {
+    .szc-age-verifier-backdrop {
+      padding: 16px;
+    }
+    .szc-age-verifier__card {
+      padding: 26px 18px;
+    }
+    .szc-age-verifier__heading {
+      font-size: 19px;
+    }
+    .szc-age-verifier__description {
+      font-size: 14px;
+      margin-bottom: 20px;
+    }
+  }
+{% endstylesheet %}
+
+{% javascript %}
+  (function () {
+    const modal = document.getElementById('SzcAgeVerifierModal');
+    if (!modal) return;
+
+    const storageKey = 'szc_age_verified';
+    const isEditor = (window.Shopify && window.Shopify.designMode) || document.documentElement.classList.contains('shopify-design-mode');
+    const isVerified = sessionStorage.getItem(storageKey);
+
+    function showModal() {
+      modal.classList.add('is-active');
+      document.body.style.overflow = 'hidden';
+    }
+
+    function closeModal() {
+      modal.classList.remove('is-active');
+      modal.classList.remove('is-editor-open');
+      document.body.style.overflow = '';
+    }
+
+    if (isEditor) {
+      showModal();
+    } else if (isVerified !== 'true') {
+      showModal();
+    }
+
+    const confirmBtn = document.getElementById('SzcAgeConfirmBtn');
+    const declineBtn = document.getElementById('SzcAgeDeclineBtn');
+
+    if (confirmBtn) {
+      confirmBtn.addEventListener('click', function () {
+        sessionStorage.setItem(storageKey, 'true');
+        closeModal();
+      });
+    }
+
+    if (declineBtn) {
+      declineBtn.addEventListener('click', function () {
+        if (isEditor) {
+          closeModal();
+        } else {
+          const redirectUrl = declineBtn.getAttribute('data-redirect-url') || 'https://www.google.com';
+          closeModal();
+          window.location.href = redirectUrl;
+        }
+      });
+    }
+
+    if (isEditor) {
+      document.addEventListener('shopify:section:select', function (e) {
+        if (e.target.contains(modal) || e.target === modal.closest('.shopify-section')) {
+          showModal();
+        }
+      });
+      document.addEventListener('shopify:section:deselect', function (e) {
+        if (e.target.contains(modal) || e.target === modal.closest('.shopify-section')) {
+          closeModal();
+        }
+      });
+    }
+  })();
+{% endjavascript %}
+
+{% schema %}
+{
+  "name": "Age verification popup",
+  "tag": "section",
+  "class": "section-age-verifier",
+  "enabled_on": {
+    "groups": ["custom.overlay"]
+  },
+  "settings": [
+    {
+      "type": "checkbox",
+      "id": "enable",
+      "label": "Enable Age Verification Popup",
+      "default": false
+    },
+    {
+      "type": "select",
+      "id": "age_verifier_min_age",
+      "label": "Minimum Age Requirement",
+      "options": [
+        { "value": "18", "label": "18 Years Old" },
+        { "value": "21", "label": "21 Years Old" }
+      ],
+      "default": "18"
+    },
+    {
+      "type": "text",
+      "id": "age_verifier_heading",
+      "label": "Modal Heading",
+      "default": "Age Verification Required"
+    },
+    {
+      "type": "textarea",
+      "id": "age_verifier_text",
+      "label": "Modal Description",
+      "default": "You must be of legal age to enter this store. Please confirm your age to proceed."
+    },
+    {
+      "type": "text",
+      "id": "age_verifier_confirm_text",
+      "label": "Confirm Button Label",
+      "info": "Leave empty for automatic label based on Minimum Age Requirement"
+    },
+    {
+      "type": "text",
+      "id": "age_verifier_decline_text",
+      "label": "Decline Button Label",
+      "info": "Leave empty for automatic label based on Minimum Age Requirement"
+    },
+    {
+      "type": "url",
+      "id": "age_verifier_decline_url",
+      "label": "Decline Redirect URL"
+    },
+    {
+      "type": "image_picker",
+      "id": "age_verifier_bg_image",
+      "label": "Background Image (Optional)"
+    },
+    {
+      "type": "range",
+      "id": "age_verifier_overlay_opacity",
+      "min": 0,
+      "max": 90,
+      "step": 10,
+      "unit": "%",
+      "label": "Backdrop Overlay Opacity",
+      "default": 80
+    }
+  ],
+  "presets": [
+    {
+      "name": "Age verification popup"
+    }
+  ]
+}
+{% endschema %}

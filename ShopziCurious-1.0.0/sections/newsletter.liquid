@@ -1,0 +1,572 @@
+{%- comment -%}
+  ShopziCurious - Newsletter Section (Part 10)
+  Displays a split image newsletter subscription banner matching the approved UI screenshot pixel-for-pixel.
+{%- endcomment -%}
+
+{%- liquid
+  assign shop_club_default = 'JOIN THE ' | append: shop.name | append: ' CLUB' | upcase
+  assign subtitle = section.settings.subtitle | default: shop_club_default
+  if subtitle == 'JOIN THE LUMIÈRE CLUB'
+    assign subtitle = shop_club_default
+  endif
+  assign title = section.settings.title | default: 'Be the First to Know'
+  assign description = section.settings.description | default: 'Get early access to new collections, exclusive offers, and insider updates.'
+  assign button_label = section.settings.button_label | default: 'SUBSCRIBE'
+  assign image = section.settings.image
+  assign badge_1 = section.settings.badge_1 | default: 'Exclusive Offers'
+  assign badge_2 = section.settings.badge_2 | default: 'New Arrivals'
+  assign badge_3 = section.settings.badge_3 | default: 'Style Inspiration'
+-%}
+
+<section id="Newsletter-{{ section.id }}" class="szc-newsletter-section page-width">
+  <div class="szc-newsletter">
+    <!-- Left Media Image -->
+    <div class="szc-newsletter__media" data-animate="slide-right">
+      {%- if image != blank -%}
+        {% render 'image', image: image, loading: 'lazy', class: 'szc-newsletter__image' %}
+      {%- else -%}
+        <div class="szc-newsletter__placeholder">
+          {{ 'lifestyle-2' | placeholder_svg_tag: 'szc-placeholder-svg' }}
+        </div>
+      {%- endif -%}
+    </div>
+
+    <!-- Right Content Box -->
+    <div class="szc-newsletter__content" data-animate="slide-left">
+      <div
+        class="szc-newsletter__content-inner"
+        style="
+          --subtitle-color: {{ section.settings.subtitle_color | default: '#666666' }};
+          --subtitle-size: {{ section.settings.subtitle_size | default: 11 }}px;
+          --subtitle-weight: {{ section.settings.subtitle_weight | default: '600' }};
+          --title-color: {{ section.settings.title_color | default: '#111111' }};
+          --title-size: {{ section.settings.title_size | default: 32 }}px;
+          --title-weight: {{ section.settings.title_weight | default: '500' }};
+          --desc-color: {{ section.settings.desc_color | default: '#555555' }};
+          --desc-size: {{ section.settings.desc_size | default: 13 }}px;
+          --desc-weight: {{ section.settings.desc_weight | default: '400' }};
+        "
+      >
+        {%- if subtitle != blank -%}
+          <span class="szc-newsletter__subtitle">{{ subtitle }}</span>
+        {%- endif -%}
+
+        {%- if title != blank -%}
+          <h2 class="szc-newsletter__title">{{ title }}</h2>
+        {%- endif -%}
+
+        {%- if description != blank -%}
+          <p class="szc-newsletter__description">{{ description }}</p>
+        {%- endif -%}
+
+        <!-- Newsletter Form -->
+        {% form 'customer', class: 'szc-newsletter__form' %}
+          <input type="hidden" name="contact[tags]" value="newsletter">
+
+          <div class="szc-newsletter__form-field">
+            <input
+              id="NewsletterEmail-{{ section.id }}"
+              type="email"
+              name="contact[email]"
+              class="szc-newsletter__input"
+              value="{{ form.email }}"
+              aria-required="true"
+              autocorrect="off"
+              autocapitalize="off"
+              autocomplete="email"
+              placeholder="{{ 'sections.newsletter.label' | t | default: 'Enter your email' }}"
+              required
+            >
+
+            <button
+              type="submit"
+              class="szc-newsletter__btn"
+              name="commit"
+              id="Subscribe-{{ section.id }}"
+            >
+              <span>{{ button_label }}</span>
+            </button>
+          </div>
+
+          {%- if form.posted_successfully? -%}
+            <p class="szc-newsletter__success" tabindex="-1" autofocus>
+              {{ 'sections.newsletter.success' | t | default: 'Thanks for subscribing!' }}
+            </p>
+          {%- endif -%}
+
+          {%- if form.errors -%}
+            <small class="szc-newsletter__error" id="Newsletter-error--{{ section.id }}">
+              {{ form.errors.translated_fields.email | capitalize }}
+              {{ form.errors.messages.email }}
+            </small>
+          {%- endif -%}
+        {% endform %}
+
+        <!-- Bottom Feature Badges -->
+        {%- if badge_1 != blank or badge_2 != blank or badge_3 != blank -%}
+          <div class="szc-newsletter__badges">
+            {%- if badge_1 != blank -%}
+              <div class="szc-newsletter__badge">
+                <svg
+                  class="szc-newsletter__badge-icon"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="1.8"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  aria-hidden="true"
+                >
+                  <circle cx="12" cy="12" r="9"/><polyline points="9 12 11 14 15 10"/>
+                </svg>
+                <span>{{ badge_1 }}</span>
+              </div>
+            {%- endif -%}
+
+            {%- if badge_2 != blank -%}
+              <div class="szc-newsletter__badge">
+                <svg
+                  class="szc-newsletter__badge-icon"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="1.8"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  aria-hidden="true"
+                >
+                  <path d="M20.59 13.41l-7.17 7.17a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.82z"/><line x1="7" y1="7" x2="7.01" y2="7"/>
+                </svg>
+                <span>{{ badge_2 }}</span>
+              </div>
+            {%- endif -%}
+
+            {%- if badge_3 != blank -%}
+              <div class="szc-newsletter__badge">
+                <svg
+                  class="szc-newsletter__badge-icon"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="1.8"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  aria-hidden="true"
+                >
+                  <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/>
+                </svg>
+                <span>{{ badge_3 }}</span>
+              </div>
+            {%- endif -%}
+          </div>
+        {%- endif -%}
+      </div>
+    </div>
+  </div>
+</section>
+
+{% stylesheet %}
+  .szc-newsletter-section {
+    padding-top: var(--szc-space-12, 48px);
+    padding-bottom: var(--szc-space-12, 48px);
+    max-width: var(--szc-page-max-width, 1400px);
+    margin: 0 auto;
+    padding-left: var(--szc-space-6, 24px);
+    padding-right: var(--szc-space-6, 24px);
+  }
+
+  .szc-newsletter {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    border-radius: 16px;
+    background-color: #f7f4ee;
+    overflow: hidden;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.03);
+  }
+
+  @media (min-width: 990px) {
+    .szc-newsletter {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      align-items: stretch;
+      min-height: 420px;
+    }
+  }
+
+  /* Left Media Area */
+  .szc-newsletter__media {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+    background-color: #ede8df;
+  }
+
+  .szc-newsletter__image {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+    transition: transform 700ms ease;
+  }
+
+  .szc-newsletter:hover .szc-newsletter__image {
+    transform: scale(1.03);
+  }
+
+  .szc-newsletter__placeholder {
+    width: 100%;
+    height: 100%;
+    min-height: 320px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: #e8e3d8;
+    color: #a8a090;
+  }
+
+  /* Right Content Area */
+  .szc-newsletter__content {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    padding: 40px 32px;
+    background-color: #f7f4ee;
+  }
+
+  @media (min-width: 990px) {
+    .szc-newsletter__content {
+      padding: 56px 64px;
+    }
+  }
+
+  .szc-newsletter__content-inner {
+    max-width: 440px;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .szc-newsletter__subtitle {
+    display: block;
+    font-family: var(--szc-font-family-body, sans-serif);
+    font-size: var(--subtitle-size, 11px);
+    font-weight: var(--subtitle-weight, 600);
+    text-transform: uppercase;
+    letter-spacing: 0.14em;
+    color: var(--subtitle-color, #666666);
+    margin-bottom: 10px;
+  }
+
+  .szc-newsletter__title {
+    margin: 0 0 12px 0;
+    font-family: var(--szc-font-family-heading, Georgia, 'Playfair Display', serif);
+    font-size: var(--title-size, 32px);
+    font-weight: var(--title-weight, 500);
+    color: var(--title-color, #111111);
+    line-height: 1.25;
+  }
+
+  .szc-newsletter__description {
+    margin: 0 0 24px 0;
+    font-family: var(--szc-font-family-body, sans-serif);
+    font-size: var(--desc-size, 13px);
+    font-weight: var(--desc-weight, 400);
+    color: var(--desc-color, #555555);
+    line-height: 1.5;
+  }
+
+  /* Form & Inputs */
+  .szc-newsletter__form {
+    width: 100%;
+    margin-bottom: 28px;
+  }
+
+  .szc-newsletter__form-field {
+    display: flex;
+    width: 100%;
+    border-radius: 6px;
+    overflow: hidden;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+  }
+
+  .szc-newsletter__input {
+    flex: 1;
+    min-width: 0;
+    height: 48px;
+    padding: 0 18px;
+    font-family: var(--szc-font-family-body, sans-serif);
+    font-size: 13px;
+    color: #111111;
+    background-color: #ffffff;
+    border: 1px solid #e0dad0;
+    border-right: none;
+    border-radius: 6px 0 0 6px;
+    outline: none;
+    box-sizing: border-box;
+    transition: border-color 200ms ease;
+  }
+
+  .szc-newsletter__input:focus {
+    border-color: #111111;
+  }
+
+  .szc-newsletter__btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    height: 48px;
+    padding: 0 24px;
+    background-color: #242424;
+    color: #ffffff;
+    font-family: var(--szc-font-family-body, sans-serif);
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    border: none;
+    border-radius: 0 6px 6px 0;
+    cursor: pointer;
+    white-space: nowrap;
+    flex-shrink: 0;
+    box-sizing: border-box;
+    transition: background-color 200ms ease;
+  }
+
+  @media (max-width: 749px) {
+    .szc-newsletter__content {
+      padding: 32px 20px;
+    }
+
+    .szc-newsletter__content-inner {
+      max-width: 100%;
+      width: 100%;
+    }
+
+    .szc-newsletter__btn {
+      padding: 0 18px;
+      font-size: 11px;
+      letter-spacing: 0.08em;
+    }
+
+    .szc-newsletter__input {
+      padding: 0 14px;
+    }
+  }
+
+  @media (max-width: 380px) {
+    .szc-newsletter__btn {
+      padding: 0 12px;
+      font-size: 10px;
+      letter-spacing: 0.05em;
+    }
+  }
+
+  .szc-newsletter__btn:hover {
+    background-color: #000000;
+  }
+
+  .szc-newsletter__success {
+    margin: 10px 0 0 0;
+    font-size: 13px;
+    color: #2e7d32;
+    font-weight: 500;
+  }
+
+  .szc-newsletter__error {
+    display: block;
+    margin: 10px 0 0 0;
+    font-size: 12px;
+    color: #d32f2f;
+  }
+
+  /* Badges at bottom */
+  .szc-newsletter__badges {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 20px;
+    padding-top: 4px;
+  }
+
+  .szc-newsletter__badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    font-family: var(--szc-font-family-body, sans-serif);
+    font-size: 11px;
+    font-weight: 600;
+    color: #444444;
+  }
+
+  .szc-newsletter__badge-icon {
+    width: 16px;
+    height: 16px;
+    color: #222222;
+    flex-shrink: 0;
+  }
+{% endstylesheet %}
+
+{% schema %}
+{
+  "name": "Newsletter",
+  "tag": "section",
+  "class": "section-newsletter",
+  "settings": [
+    {
+      "type": "image_picker",
+      "id": "image",
+      "label": "Left Banner Image"
+    },
+    {
+      "type": "text",
+      "id": "subtitle",
+      "default": "JOIN OUR CLUB",
+      "label": "Subtitle"
+    },
+    {
+      "type": "text",
+      "id": "title",
+      "default": "Be the First to Know",
+      "label": "Title"
+    },
+    {
+      "type": "textarea",
+      "id": "description",
+      "default": "Get early access to new collections, exclusive offers, and insider updates.",
+      "label": "Description"
+    },
+    {
+      "type": "text",
+      "id": "button_label",
+      "default": "SUBSCRIBE",
+      "label": "Button label"
+    },
+    {
+      "type": "header",
+      "content": "Subtitle Styling"
+    },
+    {
+      "type": "color",
+      "id": "subtitle_color",
+      "label": "Subtitle Color",
+      "default": "#666666"
+    },
+    {
+      "type": "range",
+      "id": "subtitle_size",
+      "min": 10,
+      "max": 24,
+      "step": 1,
+      "unit": "px",
+      "label": "Subtitle Font Size",
+      "default": 11
+    },
+    {
+      "type": "select",
+      "id": "subtitle_weight",
+      "label": "Subtitle Font Weight",
+      "options": [
+        { "value": "400", "label": "Normal (400)" },
+        { "value": "500", "label": "Medium (500)" },
+        { "value": "600", "label": "Semi Bold (600)" },
+        { "value": "700", "label": "Bold (700)" }
+      ],
+      "default": "600"
+    },
+    {
+      "type": "header",
+      "content": "Title Styling"
+    },
+    {
+      "type": "color",
+      "id": "title_color",
+      "label": "Title Color",
+      "default": "#111111"
+    },
+    {
+      "type": "range",
+      "id": "title_size",
+      "min": 18,
+      "max": 60,
+      "step": 1,
+      "unit": "px",
+      "label": "Title Font Size",
+      "default": 32
+    },
+    {
+      "type": "select",
+      "id": "title_weight",
+      "label": "Title Font Weight",
+      "options": [
+        { "value": "300", "label": "Light (300)" },
+        { "value": "400", "label": "Normal (400)" },
+        { "value": "500", "label": "Medium (500)" },
+        { "value": "600", "label": "Semi Bold (600)" },
+        { "value": "700", "label": "Bold (700)" }
+      ],
+      "default": "500"
+    },
+    {
+      "type": "header",
+      "content": "Description Styling"
+    },
+    {
+      "type": "color",
+      "id": "desc_color",
+      "label": "Description Color",
+      "default": "#555555"
+    },
+    {
+      "type": "range",
+      "id": "desc_size",
+      "min": 12,
+      "max": 24,
+      "step": 1,
+      "unit": "px",
+      "label": "Description Font Size",
+      "default": 13
+    },
+    {
+      "type": "select",
+      "id": "desc_weight",
+      "label": "Description Font Weight",
+      "options": [
+        { "value": "300", "label": "Light (300)" },
+        { "value": "400", "label": "Normal (400)" },
+        { "value": "500", "label": "Medium (500)" },
+        { "value": "600", "label": "Semi Bold (600)" }
+      ],
+      "default": "400"
+    },
+    {
+      "type": "header",
+      "content": "Feature Badges"
+    },
+    {
+      "type": "text",
+      "id": "badge_1",
+      "default": "Exclusive Offers",
+      "label": "Badge 1 text"
+    },
+    {
+      "type": "text",
+      "id": "badge_2",
+      "default": "New Arrivals",
+      "label": "Badge 2 text"
+    },
+    {
+      "type": "text",
+      "id": "badge_3",
+      "default": "Style Inspiration",
+      "label": "Badge 3 text"
+    }
+  ],
+  "presets": [
+    {
+      "name": "Newsletter"
+    }
+  ]
+}
+{% endschema %}

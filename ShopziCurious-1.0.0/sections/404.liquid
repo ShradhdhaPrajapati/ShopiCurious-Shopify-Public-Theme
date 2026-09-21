@@ -1,0 +1,64 @@
+{% comment %}
+  This section renders the 404 template, with automatic instant client-side fallback for Wishlist, Contact, and About Us page routes.
+{% endcomment %}
+
+<div id="Standard404View" class="szc-404-container" style="text-align: center; padding: 80px 20px; min-height: 50vh;">
+  <h1 style="font-size: 48px; margin-bottom: 16px;">{{ '404.title' | t | default: '404' }}</h1>
+  <p style="font-size: 16px; color: #666; margin-bottom: 24px;">{{ '404.not_found' | t | default: 'Page not found.' }}</p>
+  <a href="{{ routes.all_products_collection_url }}" class="szc-btn-primary" style="display: inline-block; padding: 12px 24px; background: #111; color: #fff; text-decoration: none; border-radius: 4px;">
+    {{ '404.back_to_shopping' | t | default: 'Back to shopping' }}
+  </a>
+</div>
+
+<div id="WishlistFallbackView" style="display: none;">
+  {% render 'main-wishlist-content' %}
+</div>
+
+<div id="ContactFallbackView" style="display: none;">
+  {% render 'main-contact-content' %}
+</div>
+
+<div id="AboutFallbackView" style="display: none;">
+  {% render 'main-about-content' %}
+</div>
+
+<script>
+  (function() {
+    const path = window.location.pathname.toLowerCase();
+
+    function activateFallback(elementId, title) {
+      const standard404 = document.getElementById('Standard404View');
+      const targetView = document.getElementById(elementId);
+      if (standard404) standard404.style.display = 'none';
+      if (targetView) targetView.style.display = 'block';
+
+      const shopName = {{ shop.name | json }};
+      document.title = title + (shopName ? " – " + shopName : "");
+    }
+
+    // Path matching takes strict precedence over query string parameters
+    if (path.includes('contact')) {
+      activateFallback('ContactFallbackView', 'Contact Us');
+    } else if (path.includes('wishlist')) {
+      activateFallback('WishlistFallbackView', 'My Wishlist');
+    } else if (path.includes('about')) {
+      activateFallback('AboutFallbackView', 'About Us');
+    } else {
+      const search = window.location.search.toLowerCase();
+      if (search.includes('view=contact')) {
+        activateFallback('ContactFallbackView', 'Contact Us');
+      } else if (search.includes('view=wishlist')) {
+        activateFallback('WishlistFallbackView', 'My Wishlist');
+      } else if (search.includes('view=about')) {
+        activateFallback('AboutFallbackView', 'About Us');
+      }
+    }
+  })();
+</script>
+
+{% schema %}
+{
+  "name": "404 Page",
+  "settings": []
+}
+{% endschema %}

@@ -1,0 +1,151 @@
+/**
+ * Kaizen Theme - Layout & Container Architecture (layout.css)
+ * Purpose: Responsive container wrappers, CSS Grid framework, Flexbox utilities,
+ * section spacing tokens, and structural wrappers.
+ */
+
+/* CONTAINER SYSTEM */
+.page-width,
+.szc-container {
+  width: 100%;
+  max-width: var(--page-width, 1320px);
+  margin-left: auto;
+  margin-right: auto;
+  padding-left: var(--page-margin, 20px);
+  padding-right: var(--page-margin, 20px);
+  box-sizing: border-box;
+}
+
+/* VISUALLY HIDDEN UTILITY (Accessibility text hidden visually) */
+.visually-hidden,
+.szc-visually-hidden {
+  position: absolute !important;
+  width: 1px !important;
+  height: 1px !important;
+  padding: 0 !important;
+  margin: -1px !important;
+  overflow: hidden !important;
+  clip: rect(0, 0, 0, 0) !important;
+  white-space: nowrap !important;
+  border: 0 !important;
+}
+
+.szc-container--narrow {
+  max-width: var(--szc-container-narrow-width);
+}
+
+.szc-container--full {
+  max-width: 100%;
+  padding-left: var(--szc-container-padding);
+  padding-right: var(--szc-container-padding);
+}
+
+.szc-container--no-padding {
+  padding-left: 0;
+  padding-right: 0;
+}
+
+/* SECTION SPACING SYSTEM */
+.szc-section {
+  position: relative;
+  width: 100%;
+}
+
+.szc-section-padding {
+  padding-top: var(--szc-section-spacing-mobile);
+  padding-bottom: var(--szc-section-spacing-mobile);
+}
+
+@media screen and (min-width: 768px) {
+  .szc-section-padding {
+    padding-top: var(--szc-section-spacing-desktop);
+    padding-bottom: var(--szc-section-spacing-desktop);
+  }
+}
+
+/* FLEXBOX SYSTEM */
+.szc-flex {
+  display: flex;
+}
+
+.szc-flex-col {
+  display: flex;
+  flex-direction: column;
+}
+
+.szc-flex-wrap {
+  flex-wrap: wrap;
+}
+
+.szc-items-start {
+  align-items: flex-start;
+}
+
+.szc-items-center {
+  align-items: center;
+}
+
+.szc-items-end {
+  align-items: flex-end;
+}
+
+.szc-items-stretch {
+  align-items: stretch;
+}
+
+.szc-justify-start {
+  justify-content: flex-start;
+}
+
+.szc-justify-center {
+  justify-content: center;
+}
+
+.szc-justify-end {
+  justify-content: flex-end;
+}
+
+.szc-justify-between {
+  justify-content: space-between;
+}
+
+.szc-justify-around {
+  justify-content: space-around;
+}
+
+.szc-gap-1 { gap: var(--szc-space-1); }
+.szc-gap-2 { gap: var(--szc-space-2); }
+.szc-gap-3 { gap: var(--szc-space-3); }
+.szc-gap-4 { gap: var(--szc-space-4); }
+.szc-gap-6 { gap: var(--szc-space-6); }
+.szc-gap-8 { gap: var(--szc-space-8); }
+.szc-gap-10 { gap: var(--szc-space-10); }
+
+/* CSS GRID SYSTEM (Mobile-First Modular Layouts) */
+.szc-grid {
+  display: grid;
+  grid-template-columns: repeat(1, 1fr);
+  gap: var(--szc-grid-gap, var(--szc-space-6, 24px));
+}
+
+/* Responsive Column Variants */
+@media screen and (min-width: 576px) {
+  .szc-grid--col-2-sm { grid-template-columns: repeat(2, 1fr); }
+}
+
+@media screen and (min-width: 768px) {
+  .szc-grid--col-2 { grid-template-columns: repeat(2, 1fr); }
+  .szc-grid--col-3 { grid-template-columns: repeat(3, 1fr); }
+  .szc-grid--col-4 { grid-template-columns: repeat(2, 1fr); } /* 2 cols on tablet */
+}
+
+@media screen and (min-width: 992px) {
+  .szc-grid--col-4 { grid-template-columns: repeat(4, 1fr); }
+  .szc-grid--col-5 { grid-template-columns: repeat(5, 1fr); }
+  .szc-grid--col-6 { grid-template-columns: repeat(6, 1fr); }
+}
+
+/* Custom Grid Gap Overrides */
+.szc-grid--gap-sm { gap: var(--szc-space-3); }
+.szc-grid--gap-md { gap: var(--szc-space-6); }
+.szc-grid--gap-lg { gap: var(--szc-space-10); }

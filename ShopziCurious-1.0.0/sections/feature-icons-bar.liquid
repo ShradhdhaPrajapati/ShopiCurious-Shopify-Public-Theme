@@ -1,0 +1,335 @@
+{%- comment -%}
+  ShopziCurious - Feature Icons Bar Section (Part 04)
+  Displays 5 key trust pillars in a clean floating white card overlapping the banner above it,
+  matching the approved design screenshot pixel-for-pixel.
+{%- endcomment -%}
+
+{%- liquid
+  assign bg_color = section.settings.background_color | default: '#ffffff'
+  assign text_color = section.settings.text_color | default: '#111111'
+  assign border_color = section.settings.border_color | default: 'rgba(0, 0, 0, 0.06)'
+-%}
+
+<section
+  id="FeatureIconsBar-{{ section.id }}"
+  class="szc-feature-icons-bar"
+  style="--szc-fib-bg: {{ bg_color }}; --szc-fib-text: {{ text_color }}; --szc-fib-border: {{ border_color }};"
+>
+  <div class="szc-feature-icons-bar__container page-width">
+    <div class="szc-feature-icons-bar__grid">
+      {%- for block in section.blocks -%}
+        {%- case block.type -%}
+          {%- when 'feature' -%}
+            <div class="szc-feature-icons-bar__item" {{ block.shopify_attributes }}>
+              {%- if block.settings.link != blank -%}
+                <a href="{{ block.settings.link }}" class="szc-feature-icons-bar__link">
+              {%- endif -%}
+
+              <div class="szc-feature-icons-bar__icon-wrapper">
+                {% render 'icon', icon: block.settings.icon, class: 'szc-feature-icons-bar__icon' %}
+              </div>
+
+              <div class="szc-feature-icons-bar__content">
+                {%- if block.settings.title != blank -%}
+                  <h3 class="szc-feature-icons-bar__title">{{ block.settings.title | escape }}</h3>
+                {%- endif -%}
+
+                {%- if block.settings.text != blank -%}
+                  <p class="szc-feature-icons-bar__text">{{ block.settings.text | escape }}</p>
+                {%- endif -%}
+              </div>
+
+              {%- if block.settings.link != blank -%}
+                </a>
+              {%- endif -%}
+            </div>
+        {%- endcase -%}
+      {%- else -%}
+        <!-- Default 5 Floating Banner Overlay Trust Pillars -->
+        <div class="szc-feature-icons-bar__item">
+          <div class="szc-feature-icons-bar__icon-wrapper">
+            {% render 'icon', icon: 'truck', class: 'szc-feature-icons-bar__icon' %}
+          </div>
+          <div class="szc-feature-icons-bar__content">
+            <h3 class="szc-feature-icons-bar__title">Free Shipping</h3>
+            <p class="szc-feature-icons-bar__text">On orders over $100</p>
+          </div>
+        </div>
+
+        <div class="szc-feature-icons-bar__item">
+          <div class="szc-feature-icons-bar__icon-wrapper">
+            {% render 'icon', icon: 'returns', class: 'szc-feature-icons-bar__icon' %}
+          </div>
+          <div class="szc-feature-icons-bar__content">
+            <h3 class="szc-feature-icons-bar__title">Easy Returns</h3>
+            <p class="szc-feature-icons-bar__text">30-day return policy</p>
+          </div>
+        </div>
+
+        <div class="szc-feature-icons-bar__item">
+          <div class="szc-feature-icons-bar__icon-wrapper">
+            {% render 'icon', icon: 'lock', class: 'szc-feature-icons-bar__icon' %}
+          </div>
+          <div class="szc-feature-icons-bar__content">
+            <h3 class="szc-feature-icons-bar__title">Secure Payments</h3>
+            <p class="szc-feature-icons-bar__text">100% Protected</p>
+          </div>
+        </div>
+
+        <div class="szc-feature-icons-bar__item">
+          <div class="szc-feature-icons-bar__icon-wrapper">
+            {% render 'icon', icon: 'diamond', class: 'szc-feature-icons-bar__icon' %}
+          </div>
+          <div class="szc-feature-icons-bar__content">
+            <h3 class="szc-feature-icons-bar__title">Premium Quality</h3>
+            <p class="szc-feature-icons-bar__text">Crafted with care</p>
+          </div>
+        </div>
+
+        <div class="szc-feature-icons-bar__item">
+          <div class="szc-feature-icons-bar__icon-wrapper">
+            {% render 'icon', icon: 'package', class: 'szc-feature-icons-bar__icon' %}
+          </div>
+          <div class="szc-feature-icons-bar__content">
+            <h3 class="szc-feature-icons-bar__title">Elegant Packaging</h3>
+            <p class="szc-feature-icons-bar__text">Perfect for Gifting</p>
+          </div>
+        </div>
+      {%- endfor -%}
+    </div>
+  </div>
+</section>
+
+{% stylesheet %}
+  .szc-feature-icons-bar {
+    position: relative;
+    z-index: 25;
+    margin-top: 32px;
+    margin-bottom: 24px;
+    background: transparent;
+    padding: 0;
+  }
+
+  @media (max-width: 768px) {
+    .szc-feature-icons-bar {
+      margin-top: 0;
+    }
+  }
+
+  .szc-feature-icons-bar__container {
+    max-width: var(--szc-page-max-width, 1400px);
+    margin: 0 auto;
+    padding: 22px 28px;
+    background-color: var(--szc-fib-bg, #ffffff);
+  }
+
+  .szc-feature-icons-bar__grid {
+    display: grid;
+    grid-template-columns: repeat(1, minmax(0, 1fr));
+    gap: 20px;
+  }
+
+  @media (min-width: 550px) {
+    .szc-feature-icons-bar__grid {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+  }
+
+  @media (min-width: 850px) {
+    .szc-feature-icons-bar__grid {
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+    }
+  }
+
+  @media (min-width: 1100px) {
+    .szc-feature-icons-bar__grid {
+      grid-template-columns: repeat(5, minmax(0, 1fr));
+      gap: 16px;
+    }
+  }
+
+  .szc-feature-icons-bar__item {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    padding: 4px 6px;
+    transition: transform var(--szc-transition-fast, 150ms ease);
+  }
+
+  .szc-feature-icons-bar__item:hover {
+    transform: translateY(-2px);
+  }
+
+  .szc-feature-icons-bar__link {
+    color: inherit;
+    text-decoration: none;
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    width: 100%;
+  }
+
+  .szc-feature-icons-bar__icon-wrapper {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 44px;
+    height: 44px;
+    border-radius: 50%;
+    background-color: #f7f4ee;
+    flex-shrink: 0;
+    color: #111111;
+    transition: background-color 200ms ease;
+  }
+
+  .szc-feature-icons-bar__item:hover .szc-feature-icons-bar__icon-wrapper {
+    background-color: #eee9df;
+  }
+
+  .szc-feature-icons-bar__icon {
+    width: 20px;
+    height: 20px;
+  }
+
+  .szc-feature-icons-bar__content {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+  }
+
+  .szc-feature-icons-bar__title {
+    margin: 0;
+    font-family: var(--szc-font-family-body, sans-serif);
+    font-size: 13px;
+    font-weight: 700;
+    line-height: 1.25;
+    color: var(--szc-fib-text, #111111);
+    letter-spacing: -0.01em;
+  }
+
+  .szc-feature-icons-bar__text {
+    margin: 0;
+    font-family: var(--szc-font-family-body, sans-serif);
+    font-size: 11px;
+    line-height: 1.3;
+    color: var(--szc-color-text-muted, #666666);
+  }
+{% endstylesheet %}
+
+{% schema %}
+{
+  "name": "Feature Icons Bar",
+  "tag": "section",
+  "class": "section-feature-icons-bar",
+  "max_blocks": 6,
+  "settings": [
+    {
+      "type": "color",
+      "id": "background_color",
+      "label": "Card Background color",
+      "default": "#ffffff"
+    },
+    {
+      "type": "color",
+      "id": "text_color",
+      "label": "Text color",
+      "default": "#111111"
+    },
+    {
+      "type": "color",
+      "id": "border_color",
+      "label": "Border color",
+      "default": "rgba(0, 0, 0, 0.06)"
+    }
+  ],
+  "blocks": [
+    {
+      "type": "feature",
+      "name": "Feature Item",
+      "settings": [
+        {
+          "type": "select",
+          "id": "icon",
+          "label": "Icon",
+          "options": [
+            { "value": "truck", "label": "Shipping Truck" },
+            { "value": "returns", "label": "Easy Returns" },
+            { "value": "lock", "label": "Secure Lock" },
+            { "value": "diamond", "label": "Diamond Quality" },
+            { "value": "package", "label": "Elegant Packaging" },
+            { "value": "shield", "label": "Security Shield" },
+            { "value": "award", "label": "Quality Ribbon" },
+            { "value": "bag", "label": "Shopping Bag" },
+            { "value": "user", "label": "Customer Support" }
+          ],
+          "default": "truck"
+        },
+        {
+          "type": "text",
+          "id": "title",
+          "default": "Free Shipping",
+          "label": "Heading"
+        },
+        {
+          "type": "text",
+          "id": "text",
+          "default": "On orders over $100",
+          "label": "Description"
+        },
+        {
+          "type": "url",
+          "id": "link",
+          "label": "Link (Optional)"
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "Feature Icons Bar",
+      "blocks": [
+        {
+          "type": "feature",
+          "settings": {
+            "icon": "truck",
+            "title": "Free Shipping",
+            "text": "On orders over $100"
+          }
+        },
+        {
+          "type": "feature",
+          "settings": {
+            "icon": "returns",
+            "title": "Easy Returns",
+            "text": "30-day return policy"
+          }
+        },
+        {
+          "type": "feature",
+          "settings": {
+            "icon": "lock",
+            "title": "Secure Payments",
+            "text": "100% Protected"
+          }
+        },
+        {
+          "type": "feature",
+          "settings": {
+            "icon": "diamond",
+            "title": "Premium Quality",
+            "text": "Crafted with care"
+          }
+        },
+        {
+          "type": "feature",
+          "settings": {
+            "icon": "package",
+            "title": "Elegant Packaging",
+            "text": "Perfect for Gifting"
+          }
+        }
+      ]
+    }
+  ]
+}
+{% endschema %}

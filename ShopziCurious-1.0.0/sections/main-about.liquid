@@ -1,0 +1,282 @@
+{% comment %}
+  Renders the dedicated About Us Page section with full schema customization and toggle options.
+{% endcomment %}
+
+{% render 'main-about-content', section: section %}
+
+{% schema %}
+{
+  "name": "About Us Page",
+  "tag": "section",
+  "class": "section-main-about",
+  "settings": [
+    {
+      "type": "header",
+      "content": "Hero Banner Settings"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_hero",
+      "label": "Show Hero Banner",
+      "default": true
+    },
+    {
+      "type": "text",
+      "id": "hero_title",
+      "default": "About Us",
+      "label": "Hero Title"
+    },
+    {
+      "type": "text",
+      "id": "hero_tagline",
+      "default": "Timeless style. Thoughtful design. Created for every moment.",
+      "label": "Hero Tagline"
+    },
+    {
+      "type": "textarea",
+      "id": "hero_desc",
+      "default": "We believe fashion is more than just what you wear—it's how you express yourself. Our collections are crafted with care, inspired by elegance, and designed to empower.",
+      "label": "Hero Description"
+    },
+    {
+      "type": "text",
+      "id": "hero_btn_label",
+      "default": "OUR STORY",
+      "label": "Hero Button Label"
+    },
+    {
+      "type": "url",
+      "id": "hero_btn_link",
+      "label": "Hero Button Link"
+    },
+    {
+      "type": "image_picker",
+      "id": "hero_image",
+      "label": "Hero Image"
+    },
+    {
+      "type": "header",
+      "content": "Value Proposition Cards"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_values",
+      "label": "Show Value Cards",
+      "default": true
+    },
+    {
+      "type": "text",
+      "id": "val_1_title",
+      "default": "Timeless Design",
+      "label": "Card 1 Title"
+    },
+    {
+      "type": "text",
+      "id": "val_1_desc",
+      "default": "Styles that never go out of fashion",
+      "label": "Card 1 Subtitle"
+    },
+    {
+      "type": "text",
+      "id": "val_2_title",
+      "default": "Quality You Can Trust",
+      "label": "Card 2 Title"
+    },
+    {
+      "type": "text",
+      "id": "val_2_desc",
+      "default": "Premium materials, perfect finish",
+      "label": "Card 2 Subtitle"
+    },
+    {
+      "type": "text",
+      "id": "val_3_title",
+      "default": "Sustainable Approach",
+      "label": "Card 3 Title"
+    },
+    {
+      "type": "text",
+      "id": "val_3_desc",
+      "default": "Thoughtful choices for a better planet",
+      "label": "Card 3 Subtitle"
+    },
+    {
+      "type": "text",
+      "id": "val_4_title",
+      "default": "Customer First",
+      "label": "Card 4 Title"
+    },
+    {
+      "type": "text",
+      "id": "val_4_desc",
+      "default": "Your satisfaction is our priority",
+      "label": "Card 4 Subtitle"
+    },
+    {
+      "type": "header",
+      "content": "Our Story Section"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_story",
+      "label": "Show Our Story Section",
+      "default": true
+    },
+    {
+      "type": "text",
+      "id": "story_title",
+      "default": "Our Story",
+      "label": "Story Heading"
+    },
+    {
+      "type": "textarea",
+      "id": "story_p1",
+      "default": "Founded with a simple mission—to create fashion that blends timeless elegance with everyday comfort. What began as a small idea has grown into a brand trusted by thousands of customers worldwide.",
+      "label": "Story Paragraph 1"
+    },
+    {
+      "type": "textarea",
+      "id": "story_p2",
+      "default": "We collaborate with skilled artisans and use high-quality materials to create pieces that are made to last and loved for years to come.",
+      "label": "Story Paragraph 2"
+    },
+    {
+      "type": "text",
+      "id": "stat_1_num",
+      "default": "20K+",
+      "label": "Stat 1 Value"
+    },
+    {
+      "type": "text",
+      "id": "stat_1_label",
+      "default": "Happy Customers",
+      "label": "Stat 1 Label"
+    },
+    {
+      "type": "text",
+      "id": "stat_2_num",
+      "default": "150+",
+      "label": "Stat 2 Value"
+    },
+    {
+      "type": "text",
+      "id": "stat_2_label",
+      "default": "Premium Products",
+      "label": "Stat 2 Label"
+    },
+    {
+      "type": "text",
+      "id": "stat_3_num",
+      "default": "50+",
+      "label": "Stat 3 Value"
+    },
+    {
+      "type": "text",
+      "id": "stat_3_label",
+      "default": "Countries Served",
+      "label": "Stat 3 Label"
+    },
+    {
+      "type": "image_picker",
+      "id": "story_img_1",
+      "label": "Collage Image 1 (Top Left)"
+    },
+    {
+      "type": "image_picker",
+      "id": "story_img_2",
+      "label": "Collage Image 2 (Top Right)"
+    },
+    {
+      "type": "image_picker",
+      "id": "story_img_3",
+      "label": "Collage Image 3 (Bottom Left)"
+    },
+    {
+      "type": "image_picker",
+      "id": "story_img_4",
+      "label": "Collage Image 4 (Bottom Right)"
+    },
+    {
+      "type": "header",
+      "content": "Our Journey Timeline"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_journey",
+      "label": "Show Journey Timeline Section",
+      "default": true
+    },
+    {
+      "type": "text",
+      "id": "journey_title",
+      "default": "Our Journey",
+      "label": "Journey Heading"
+    }
+  ],
+  "blocks": [
+    {
+      "type": "timeline_step",
+      "name": "Timeline Step",
+      "settings": [
+        {
+          "type": "text",
+          "id": "year",
+          "default": "2020+",
+          "label": "Year Label"
+        },
+        {
+          "type": "text",
+          "id": "title",
+          "default": "The Beginning",
+          "label": "Step Title"
+        },
+        {
+          "type": "textarea",
+          "id": "desc",
+          "default": "ShopziCurious was founded with a vision to redefine everyday fashion.",
+          "label": "Step Description"
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "About Us Page",
+      "blocks": [
+        {
+          "type": "timeline_step",
+          "settings": {
+            "year": "2020+",
+            "title": "The Beginning",
+            "desc": "Our brand was founded with a vision to redefine everyday fashion."
+          }
+        },
+        {
+          "type": "timeline_step",
+          "settings": {
+            "year": "2021",
+            "title": "First Collection",
+            "desc": "Launched our first collection focused on timeless wardrobe essentials."
+          }
+        },
+        {
+          "type": "timeline_step",
+          "settings": {
+            "year": "2022",
+            "title": "Growing Together",
+            "desc": "Expanded our reach and became a trusted name in fashion."
+          }
+        },
+        {
+          "type": "timeline_step",
+          "settings": {
+            "year": "2024 & Beyond",
+            "title": "Future Forward",
+            "desc": "Continuing our journey with sustainability, innovation, and you."
+          }
+        }
+      ]
+    }
+  ]
+}
+{% endschema %}

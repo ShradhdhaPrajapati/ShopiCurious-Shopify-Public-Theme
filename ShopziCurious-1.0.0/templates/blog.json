@@ -1,0 +1,35 @@
+/*
+ * ------------------------------------------------------------
+ * IMPORTANT: The contents of this file are auto-generated.
+ *
+ * This file may be updated by the Shopify admin theme editor
+ * or related systems. Please exercise caution as any changes
+ * made to this file may be overwritten.
+ * ------------------------------------------------------------
+ */
+{
+  "sections": {
+    "main": {
+      "type": "blog",
+      "settings": {
+        "articles_per_page": 6,
+        "pagination_type": "load_more",
+        "show_sidebar": true,
+        "show_search": true,
+        "show_categories": true,
+        "show_recent_posts": true,
+        "show_newsletter": true,
+        "show_excerpt": true,
+        "show_date": true,
+        "show_read_time": true,
+        "journal_heading": "OUR JOURNAL",
+        "journal_subtitle": "Style tips, fashion trends, and inspiration to elevate your everyday.",
+        "newsletter_title": "Stay in the Loop",
+        "newsletter_subtitle": "Subscribe to get style tips, new arrivals, and exclusive offers."
+      }
+    }
+  },
+  "order": [
+    "main"
+  ]
+}

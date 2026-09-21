@@ -1,0 +1,112 @@
+{
+  "general": {
+    "404": "Nicht gefunden",
+    "article": "Artikel",
+    "block": "Block",
+    "blog": "Blog",
+    "cart": "Warenkorb",
+    "collection": "Kollektion",
+    "collections": "Kollektionen",
+    "collection_card": "Kollektionskarte",
+    "collections_grid": "Kollektionsraster",
+    "colors": "Farben",
+    "column": "Spalte",
+    "content": "Inhalt",
+    "custom_section": "Benutzerdefinierter Bereich",
+    "fonts": "Schriftarten",
+    "footer": "Fußzeile",
+    "group": "Gruppe",
+    "header": "Kopfzeile",
+    "layout": "Layout",
+    "main": "Hauptbereich",
+    "page": "Seite",
+    "password": "Passwort",
+    "primary": "Primär",
+    "product": "Produkt",
+    "row": "Zeile",
+    "search": "Suche",
+    "secondary": "Sekundär",
+    "section": "Abschnitt",
+    "settings": "Einstellungen",
+    "sidebar": "Seitenleiste",
+    "text": "Text",
+    "theme": "Theme",
+    "typography": "Typografie"
+  },
+  "labels": {
+    "alignment": "Ausrichtung",
+    "background": "Hintergrund",
+    "foreground": "Vordergrund",
+    "grid_gap": "Rasterabstand",
+    "grid_item_width": "Rasterelementbreite",
+    "input_corner_radius": "Eingabefeld-Eckenradius",
+    "layout_direction": "Layout-Richtung",
+    "menu": "Menü",
+    "customer_account_menu": "Kundenkonto-Menü",
+    "padding": "Innenabstand",
+    "page_margin": "Seitenrand",
+    "page_width": "Seitenbreite",
+    "show_payment_icons": "Zahlungssymbole anzeigen",
+    "text_style": "Textstil",
+    "text": "Text"
+  },
+  "options": {
+    "alignment": {
+      "left": "Links",
+      "center": "Zentriert",
+      "right": "Rechts"
+    },
+    "direction": {
+      "horizontal": "Horizontal",
+      "vertical": "Vertikal"
+    },
+    "page_width": {
+      "narrow": "Schmal",
+      "wide": "Breit"
+    },
+    "size": {
+      "large": "Groß",
+      "small": "Klein"
+    },
+    "text_style": {
+      "title": "Titel",
+      "subtitle": "Untertitel",
+      "normal": "Normaler Text"
+    }
+  },
+  "sections": {
+    "announcement-bar": {
+      "name": "Ankündigungsleiste",
+      "presets": {
+        "name": "Ankündigungsleiste"
+      },
+      "settings": {
+        "background_color": {
+          "label": "Hintergrundfarbe"
+        },
+        "text_color": {
+          "label": "Textfarbe"
+        },
+        "border_color": {
+          "label": "Rahmenfarbe"
+        }
+      },
+      "blocks": {
+        "announcement": {
+          "name": "Ankündigung",
+          "settings": {
+            "icon": {
+              "label": "Symbol"
+            },
+            "text": {
+              "label": "Text"
+            },
+            "link": {
+              "label": "Link"
+            }
+          }
+        }
+      }
+    }
+  }
+}

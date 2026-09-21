@@ -1,0 +1,527 @@
+{%- liquid
+  assign enable = section.settings.enable | default: false
+  assign image = section.settings.image
+  assign heading = section.settings.heading | default: 'Get 15% Off Your First Order'
+  assign subheading = section.settings.subheading | default: 'Subscribe to receive exclusive offers, new arrival updates, and secret discounts.'
+  assign offer_text = section.settings.offer_text | default: 'USE CODE: WELCOME15'
+  assign show_newsletter = section.settings.show_newsletter
+  assign button_label = section.settings.button_label | default: 'CLAIM DISCOUNT'
+  assign button_link = section.settings.button_link
+  assign display_delay = section.settings.display_delay | default: 3
+  assign frequency = section.settings.frequency | default: 'session'
+-%}
+
+{%- if enable -%}
+  <div
+    id="SzcPromoPopup-{{ section.id }}"
+    class="szc-promo-popup-backdrop{% if request.design_mode %} is-editor-open{% endif %}"
+    aria-hidden="true"
+    data-promo-popup
+    data-delay="{{ display_delay }}"
+    data-frequency="{{ frequency }}"
+    style="
+      --szc-popup-bg: {{ section.settings.bg_color | default: '#ffffff' }};
+      --szc-popup-text: {{ section.settings.text_color | default: '#111111' }};
+      --szc-popup-accent: {{ section.settings.accent_color | default: '#d4a373' }};
+      --szc-popup-overlay: rgba(0, 0, 0, {{ section.settings.overlay_opacity | default: 60 | divided_by: 100.0 }});
+    "
+  >
+    <div
+      class="szc-promo-popup-card"
+      role="dialog"
+      aria-modal="true"
+      aria-labelledby="SzcPromoPopupHeading-{{ section.id }}"
+      aria-describedby="SzcPromoPopupDesc-{{ section.id }}"
+    >
+      <button
+        type="button"
+        class="szc-promo-popup__close"
+        aria-label="{{ 'general.popup.close' | t | default: 'Close popup' }}"
+        data-popup-close
+      >
+        <svg class="szc-icon szc-icon-close" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+          <line x1="18" y1="6" x2="6" y2="18"></line>
+          <line x1="6" y1="6" x2="18" y2="18"></line>
+        </svg>
+      </button>
+
+      <div class="szc-promo-popup__inner{% if image != blank %} szc-promo-popup__inner--has-image{% endif %}">
+        {%- if image != blank -%}
+          <div class="szc-promo-popup__media">
+            {{
+              image
+              | image_url: width: 800
+              | image_tag: loading: 'lazy', class: 'szc-promo-popup__image', alt: heading
+            }}
+          </div>
+        {%- endif -%}
+
+        <div class="szc-promo-popup__content">
+          {%- if offer_text != blank -%}
+            <span class="szc-promo-popup__badge">{{ offer_text }}</span>
+          {%- endif -%}
+
+          {%- if heading != blank -%}
+            <h2 id="SzcPromoPopupHeading-{{ section.id }}" class="szc-promo-popup__heading">
+              {{ heading }}
+            </h2>
+          {%- endif -%}
+
+          {%- if subheading != blank -%}
+            <p id="SzcPromoPopupDesc-{{ section.id }}" class="szc-promo-popup__subheading">
+              {{ subheading }}
+            </p>
+          {%- endif -%}
+
+          {%- if show_newsletter -%}
+            {% form 'customer', class: 'szc-promo-popup__form' %}
+              <input type="hidden" name="contact[tags]" value="newsletter">
+              {%- if form.posted_successfully? -%}
+                <div class="szc-promo-popup__success">
+                  {{ 'general.popup.success' | t | default: 'Thank you for subscribing!' }}
+                </div>
+              {%- else -%}
+                {%- if form.errors -%}
+                  <div class="szc-promo-popup__error">
+                    {{ form.errors.translated_fields.email | capitalize }}
+                    {{ form.errors.messages.email }}
+                  </div>
+                {%- endif -%}
+                <div class="szc-promo-popup__form-field">
+                  <input
+                    type="email"
+                    name="contact[email]"
+                    class="szc-promo-popup__input"
+                    value="{{ form.email }}"
+                    placeholder="{{ 'general.popup.email_placeholder' | t | default: 'Enter your email' }}"
+                    required
+                    aria-label="{{ 'general.popup.email_placeholder' | t | default: 'Enter your email' }}"
+                  >
+                  <button type="submit" class="szc-button szc-promo-popup__btn">
+                    {{ button_label }}
+                  </button>
+                </div>
+              {%- endif -%}
+            {% endform %}
+          {%- elsif button_label != blank -%}
+            <div class="szc-promo-popup__cta">
+              <a href="{{ button_link | default: '/collections/all' }}" class="szc-button szc-promo-popup__btn">
+                {{ button_label }}
+              </a>
+            </div>
+          {%- endif -%}
+        </div>
+      </div>
+    </div>
+  </div>
+{%- endif -%}
+
+{% stylesheet %}
+  .section-promo-popup {
+    opacity: 1 !important;
+    visibility: visible !important;
+    transform: none !important;
+    perspective: none !important;
+    filter: none !important;
+    will-change: auto !important;
+  }
+
+  .szc-promo-popup-backdrop {
+    position: fixed;
+    inset: 0;
+    z-index: 10000;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+    background-color: var(--szc-popup-overlay, rgba(0, 0, 0, 0.6));
+    backdrop-filter: blur(4px);
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity 0.3s ease, visibility 0.3s ease;
+  }
+
+  .szc-promo-popup-backdrop.is-active,
+  .szc-promo-popup-backdrop.is-editor-open {
+    opacity: 1;
+    visibility: visible;
+  }
+
+  .szc-promo-popup-card {
+    position: relative;
+    width: 100%;
+    max-width: 680px;
+    background-color: var(--szc-popup-bg, #ffffff);
+    color: var(--szc-popup-text, #111111);
+    border-radius: var(--szc-card-corner-radius, 12px);
+    box-shadow: 0 20px 50px rgba(0, 0, 0, 0.3);
+    overflow: hidden;
+    transform: scale(0.95);
+    transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+  }
+
+  .szc-promo-popup-backdrop.is-active .szc-promo-popup-card,
+  .szc-promo-popup-backdrop.is-editor-open .szc-promo-popup-card {
+    transform: scale(1);
+  }
+
+  .szc-promo-popup__close {
+    position: absolute;
+    top: 14px;
+    right: 14px;
+    z-index: 10;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 36px;
+    height: 36px;
+    border: none;
+    border-radius: 50%;
+    background: rgba(0, 0, 0, 0.06);
+    color: var(--szc-popup-text, #111111);
+    cursor: pointer;
+    transition: background-color 0.2s ease, transform 0.2s ease;
+  }
+
+  .szc-promo-popup__close:hover {
+    background: rgba(0, 0, 0, 0.12);
+    transform: scale(1.05);
+  }
+
+  .szc-promo-popup__close svg {
+    width: 18px;
+    height: 18px;
+  }
+
+  .szc-promo-popup__inner {
+    display: flex;
+    flex-direction: column;
+  }
+
+  .szc-promo-popup__inner--has-image {
+    display: grid;
+    grid-template-columns: 1fr;
+  }
+
+  @media (min-width: 640px) {
+    .szc-promo-popup__inner--has-image {
+      grid-template-columns: 1fr 1fr;
+    }
+  }
+
+  .szc-promo-popup__media {
+    position: relative;
+    min-height: 220px;
+    background-color: #f4f4f4;
+  }
+
+  .szc-promo-popup__image {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+  }
+
+  .szc-promo-popup__content {
+    padding: 36px 28px;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    justify-content: center;
+  }
+
+  .szc-promo-popup__badge {
+    display: inline-block;
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--szc-popup-accent, #d4a373);
+    margin-bottom: 10px;
+  }
+
+  .szc-promo-popup__heading {
+    font-family: var(--szc-font-family-heading);
+    font-size: clamp(20px, 3vw, 26px);
+    font-weight: 700;
+    margin: 0 0 10px 0;
+    color: var(--szc-popup-text, #111111);
+    line-height: 1.25;
+  }
+
+  .szc-promo-popup__subheading {
+    font-size: 14px;
+    margin: 0 0 20px 0;
+    opacity: 0.8;
+    line-height: 1.55;
+  }
+
+  .szc-promo-popup__form {
+    width: 100%;
+  }
+
+  .szc-promo-popup__form-field {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    width: 100%;
+  }
+
+  .szc-promo-popup__input {
+    width: 100%;
+    padding: 12px 16px;
+    border: 1px solid var(--szc-color-border, #e5e5e5);
+    border-radius: var(--szc-input-corner-radius, 6px);
+    font-size: 14px;
+    box-sizing: border-box;
+  }
+
+  .szc-promo-popup__input:focus {
+    outline: none;
+    border-color: var(--szc-popup-accent, #d4a373);
+  }
+
+  .szc-promo-popup__btn {
+    width: 100%;
+    background-color: var(--szc-popup-accent, #d4a373);
+    color: #ffffff;
+    font-weight: 700;
+    padding: 12px 24px;
+    border-radius: var(--szc-button-corner-radius, 6px);
+    border: none;
+    cursor: pointer;
+    text-decoration: none;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    transition: opacity 0.2s ease;
+  }
+
+  .szc-promo-popup__btn:hover {
+    opacity: 0.9;
+  }
+
+  .szc-promo-popup__success {
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--szc-color-success, #2a9d8f);
+    padding: 10px 0;
+  }
+
+  .szc-promo-popup__error {
+    font-size: 13px;
+    color: var(--szc-color-error, #e63946);
+    margin-bottom: 8px;
+  }
+
+  @media (max-width: 480px) {
+    .szc-promo-popup-backdrop {
+      padding: 12px;
+    }
+    .szc-promo-popup__content {
+      padding: 24px 18px;
+    }
+  }
+{% endstylesheet %}
+
+{% javascript %}
+  (function () {
+    function initPromoPopup(backdrop) {
+      if (!backdrop) return;
+
+      const closeBtn = backdrop.querySelector('[data-popup-close]');
+      const delay = (parseInt(backdrop.getAttribute('data-delay')) || 0) * 1000;
+      const frequency = backdrop.getAttribute('data-frequency') || 'session';
+      const storageKey = 'szc_promo_popup_dismissed_v2';
+      const storageTimeKey = 'szc_promo_popup_time_v2';
+      const isEditor = (window.Shopify && window.Shopify.designMode) || document.documentElement.classList.contains('shopify-design-mode');
+
+      function isDismissed() {
+        if (isEditor) return false;
+        if (frequency === 'always') return false;
+        if (frequency === 'session') {
+          return sessionStorage.getItem(storageKey) === 'true';
+        }
+        const rawTime = localStorage.getItem(storageTimeKey);
+        if (!rawTime) return false;
+        const lastTime = parseInt(rawTime, 10);
+        if (isNaN(lastTime) || lastTime <= 0) return false;
+        const now = Date.now();
+        if (frequency === 'day' && now - lastTime < 86400000) return true;
+        if (frequency === 'week' && now - lastTime < 604800000) return true;
+        if (frequency === 'month' && now - lastTime < 2592000000) return true;
+        return false;
+      }
+
+      function dismiss() {
+        backdrop.classList.remove('is-active');
+        backdrop.classList.remove('is-editor-open');
+        backdrop.setAttribute('aria-hidden', 'true');
+        document.body.style.overflow = '';
+        if (frequency === 'session') {
+          sessionStorage.setItem(storageKey, 'true');
+        }
+        localStorage.setItem(storageTimeKey, Date.now().toString());
+      }
+
+      function show() {
+        if (isDismissed()) return;
+        backdrop.classList.add('is-active');
+        backdrop.setAttribute('aria-hidden', 'false');
+      }
+
+      setTimeout(show, delay);
+
+      if (closeBtn) {
+        closeBtn.addEventListener('click', dismiss);
+      }
+
+      backdrop.addEventListener('click', function (e) {
+        if (e.target === backdrop) {
+          dismiss();
+        }
+      });
+
+      document.addEventListener('keydown', function (e) {
+        if (e.key === 'Escape' && (backdrop.classList.contains('is-active') || backdrop.classList.contains('is-editor-open'))) {
+          dismiss();
+        }
+      });
+
+      if (isEditor) {
+        document.addEventListener('shopify:section:select', function (e) {
+          if (e.target.contains(backdrop) || e.target === backdrop.closest('.shopify-section')) {
+            backdrop.classList.add('is-editor-open');
+            backdrop.setAttribute('aria-hidden', 'false');
+          }
+        });
+        document.addEventListener('shopify:section:deselect', function (e) {
+          if (e.target.contains(backdrop) || e.target === backdrop.closest('.shopify-section')) {
+            dismiss();
+          }
+        });
+      }
+    }
+
+    document.querySelectorAll('[data-promo-popup]').forEach(initPromoPopup);
+  })();
+{% endjavascript %}
+
+{% schema %}
+{
+  "name": "Popup",
+  "tag": "section",
+  "class": "section-promo-popup",
+  "enabled_on": {
+    "groups": ["custom.overlay"]
+  },
+  "settings": [
+    {
+      "type": "checkbox",
+      "id": "enable",
+      "label": "Enable Promo Popup",
+      "default": false
+    },
+    {
+      "type": "image_picker",
+      "id": "image",
+      "label": "Popup Image (Optional)"
+    },
+    {
+      "type": "text",
+      "id": "heading",
+      "label": "Heading",
+      "default": "Get 15% Off Your First Order"
+    },
+    {
+      "type": "textarea",
+      "id": "subheading",
+      "label": "Subheading",
+      "default": "Subscribe to receive exclusive offers, new arrival updates, and secret discounts."
+    },
+    {
+      "type": "text",
+      "id": "offer_text",
+      "label": "Offer / Discount Text",
+      "default": "USE CODE: WELCOME15"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_newsletter",
+      "label": "Show Newsletter Signup Form",
+      "default": true
+    },
+    {
+      "type": "text",
+      "id": "button_label",
+      "label": "Button Label",
+      "default": "CLAIM DISCOUNT"
+    },
+    {
+      "type": "url",
+      "id": "button_link",
+      "label": "Button Link (Optional)"
+    },
+    {
+      "type": "range",
+      "id": "display_delay",
+      "min": 0,
+      "max": 30,
+      "step": 1,
+      "unit": "s",
+      "label": "Display Delay",
+      "default": 3
+    },
+    {
+      "type": "select",
+      "id": "frequency",
+      "label": "Show Popup Frequency",
+      "options": [
+        { "value": "session", "label": "Once per session" },
+        { "value": "day", "label": "Once per day" },
+        { "value": "week", "label": "Once every 7 days" },
+        { "value": "month", "label": "Once every 30 days" },
+        { "value": "always", "label": "Always show" }
+      ],
+      "default": "session"
+    },
+    {
+      "type": "header",
+      "content": "Color Customization"
+    },
+    {
+      "type": "color",
+      "id": "bg_color",
+      "label": "Background Color",
+      "default": "#ffffff"
+    },
+    {
+      "type": "color",
+      "id": "text_color",
+      "label": "Text Color",
+      "default": "#111111"
+    },
+    {
+      "type": "color",
+      "id": "accent_color",
+      "label": "Accent Color",
+      "default": "#d4a373"
+    },
+    {
+      "type": "range",
+      "id": "overlay_opacity",
+      "min": 0,
+      "max": 90,
+      "step": 10,
+      "unit": "%",
+      "label": "Backdrop Opacity",
+      "default": 60
+    }
+  ],
+  "presets": [
+    {
+      "name": "Popup"
+    }
+  ]
+}
+{% endschema %}
