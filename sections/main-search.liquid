@@ -93,85 +93,121 @@
           {%- if search.performed and search.terms != blank -%}
             RESULTS FOR "{{ search.terms | upcase }}"
           {%- else -%}
-            SEARCH RESULTS
+            EXPLORE OUR COLLECTION
           {%- endif -%}
         </h2>
         <span class="szc-search-results-count">
-          {%- if search.performed -%}
+          {%- if search.performed and search.terms != blank -%}
             {{ search.results_count }} results found
           {%- else -%}
-            0 results found
+            {{ collections['all'].products_count | default: collections['all'].products.size | default: 0 }} products
           {%- endif -%}
         </span>
       </div>
 
-      {%- if search.performed and search.results_count > 0 -%}
-        {%- paginate search.results by per_page -%}
-          <div class="szc-main-search__grid" id="SearchResultsGrid">
-            {%- for item in search.results -%}
-              {%- if item.object_type == 'product' -%}
-                <div class="szc-main-search__item szc-animate-fade-up">
-                  {% render 'product-card',
-                    card_product: item,
-                    show_add_to_cart: section.settings.show_add_to_cart,
-                    show_quick_add: section.settings.show_add_to_cart,
-                    show_quick_view: true
-                  %}
-                </div>
-              {%- elsif item.object_type == 'article' -%}
-                <div class="szc-main-search__item szc-animate-fade-up">
-                  {% render 'article-card', article: item %}
-                </div>
-              {%- endif -%}
-            {%- endfor -%}
+      {%- if search.performed and search.terms != blank -%}
+        {%- if search.results_count > 0 -%}
+          {%- paginate search.results by per_page -%}
+            <div class="szc-main-search__grid" id="SearchResultsGrid">
+              {%- for item in search.results -%}
+                {%- if item.object_type == 'product' -%}
+                  <div class="szc-main-search__item szc-animate-fade-up">
+                    {% render 'product-card',
+                      card_product: item,
+                      show_add_to_cart: section.settings.show_add_to_cart,
+                      show_quick_add: section.settings.show_add_to_cart,
+                      show_quick_view: true
+                    %}
+                  </div>
+                {%- elsif item.object_type == 'article' -%}
+                  <div class="szc-main-search__item szc-animate-fade-up">
+                    {% render 'article-card', article: item %}
+                  </div>
+                {%- endif -%}
+              {%- endfor -%}
+            </div>
+
+            {%- if paginate.pages > 1 -%}
+              {% render 'pagination', paginate: paginate, anchor: '#SearchResultsGrid', pagination_type: pag_type %}
+            {%- endif -%}
+          {%- endpaginate -%}
+        {%- else -%}
+          <!-- 0 results for non-empty search query -->
+          <div class="szc-search-empty szc-animate-fade-up" role="status" aria-live="polite">
+            <div class="szc-search-empty__card">
+              <div class="szc-search-empty__icon-wrap">
+                <svg class="szc-search-empty__icon" width="44" height="44" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                  <circle cx="11" cy="11" r="8"></circle>
+                  <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+                  <line x1="8" y1="11" x2="14" y2="11"></line>
+                </svg>
+              </div>
+              <h3 class="szc-search-empty__title">
+                No results found for &ldquo;{{ search.terms }}&rdquo;
+              </h3>
+              <p class="szc-search-empty__desc">
+                Check your spelling or try searching with more general keywords.
+              </p>
+              <div class="szc-search-empty__actions">
+                <a href="{{ routes.all_products_collection_url }}" class="szc-btn szc-btn--primary szc-search-empty__btn">
+                  CONTINUE SHOPPING
+                </a>
+              </div>
+            </div>
           </div>
 
-          {%- if paginate.pages > 1 -%}
-            {% render 'pagination', paginate: paginate, anchor: '#SearchResultsGrid', pagination_type: pag_type %}
-          {%- endif -%}
-        {%- endpaginate -%}
-      {%- else -%}
-        <!-- Fallback Grid if empty search or 0 results -->
-        <div class="szc-main-search__grid" id="SearchResultsGrid">
-          {%- for product in collections['all'].products limit: 4 -%}
-            <div class="szc-main-search__item szc-animate-fade-up">
-              {% render 'product-card',
-                card_product: product,
-                show_add_to_cart: section.settings.show_add_to_cart,
-                show_quick_add: section.settings.show_add_to_cart,
-                show_quick_view: true
-              %}
-        <div class="szc-search-empty szc-animate-fade-up" id="SearchResultsGrid" role="status" aria-live="polite">
-          <div class="szc-search-empty__card">
-            <div class="szc-search-empty__icon-wrap">
-              <svg class="szc-search-empty__icon" width="44" height="44" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-                <circle cx="11" cy="11" r="8"></circle>
-                <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
-                <line x1="8" y1="11" x2="14" y2="11"></line>
-              </svg>
+          {%- if collections['all'].products.size > 0 -%}
+            <div class="szc-search-popular-section">
+              <h3 class="szc-search-popular-title">POPULAR PICKS</h3>
+              <div class="szc-main-search__grid">
+                {%- for product in collections['all'].products limit: 4 -%}
+                  <div class="szc-main-search__item szc-animate-fade-up">
+                    {% render 'product-card',
+                      card_product: product,
+                      show_add_to_cart: section.settings.show_add_to_cart,
+                      show_quick_add: section.settings.show_add_to_cart,
+                      show_quick_view: true
+                    %}
+                  </div>
+                {%- endfor -%}
+              </div>
             </div>
-          {%- endfor -%}
-            <h3 class="szc-search-empty__title">
-              {%- if search.performed and search.terms != blank -%}
-                No results found for &ldquo;{{ search.terms }}&rdquo;
-              {%- else -%}
-                Explore Our Catalog
-              {%- endif -%}
-            </h3>
-            <p class="szc-search-empty__desc">
-              {%- if search.performed and search.terms != blank -%}
-                Check your spelling or try searching with more general keywords.
-              {%- else -%}
-                Start typing in the search bar above to discover our collection.
-              {%- endif -%}
-            </p>
-            <div class="szc-search-empty__actions">
-              <a href="{{ routes.all_products_collection_url }}" class="szc-btn szc-btn--primary szc-search-empty__btn">
-                CONTINUE SHOPPING
-              </a>
+          {%- endif -%}
+        {%- endif -%}
+      {%- else -%}
+        <!-- Empty search query: display catalog products in full responsive grid -->
+        {%- if collections['all'].products.size > 0 -%}
+          <div class="szc-main-search__grid" id="SearchResultsGrid">
+            {%- for product in collections['all'].products limit: per_page -%}
+              <div class="szc-main-search__item szc-animate-fade-up">
+                {% render 'product-card',
+                  card_product: product,
+                  show_add_to_cart: section.settings.show_add_to_cart,
+                  show_quick_add: section.settings.show_add_to_cart,
+                  show_quick_view: true
+                %}
+              </div>
+            {%- endfor -%}
+          </div>
+        {%- else -%}
+          <div class="szc-search-empty szc-animate-fade-up" role="status" aria-live="polite">
+            <div class="szc-search-empty__card">
+              <div class="szc-search-empty__icon-wrap">
+                <svg class="szc-search-empty__icon" width="44" height="44" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                  <circle cx="11" cy="11" r="8"></circle>
+                  <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+                </svg>
+              </div>
+              <h3 class="szc-search-empty__title">Explore Our Collection</h3>
+              <p class="szc-search-empty__desc">Start typing in the search bar above to discover our collection.</p>
+              <div class="szc-search-empty__actions">
+                <a href="{{ routes.all_products_collection_url }}" class="szc-btn szc-btn--primary szc-search-empty__btn">
+                  CONTINUE SHOPPING
+                </a>
+              </div>
             </div>
           </div>
-        </div>
+        {%- endif -%}
       {%- endif -%}
     </main>
 

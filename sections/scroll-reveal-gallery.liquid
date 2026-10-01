@@ -220,10 +220,11 @@
 
                         {%- if block.settings.button_label != blank -%}
                           <div class="szc-srg__card-action">
+                            {%- assign btn_style = block.settings.button_style | default: 'primary' -%}
                             {% render 'button',
                               label: block.settings.button_label,
                               url: block.settings.button_link,
-                              style: block.settings.button_style | default: 'primary',
+                              style: btn_style,
                               class: 'szc-srg__card-btn'
                             %}
                           </div>

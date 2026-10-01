@@ -22,7 +22,7 @@
   endcapture
 
   capture html_text
-    if metafield != blank and metafield.type == 'rich_text_field'
+    if metafield != blank and metafield.type contains 'rich'
       echo metafield | metafield_tag
     elsif content != blank and content contains '"type":"root"'
       echo content | metafield_tag
@@ -125,14 +125,32 @@
   elsif content != blank
     assign rendered_output = content
   elsif metafield != blank
-    if metafield.type == 'rich_text_field'
+    if metafield.type contains 'rich'
       assign rendered_output = metafield | metafield_tag
-    elsif metafield.type == 'multi_line_text_field'
+      if rendered_output == blank or rendered_output contains 'Liquid error'
+        assign rendered_output = metafield.value | default: metafield
+      endif
+    elsif metafield.type contains 'multi_line'
       assign rendered_output = metafield.value | newline_to_br
+    elsif metafield.type contains 'list'
+      capture list_html
+        echo '<ul class="szc-tab-list">'
+        for item in metafield.value
+          echo '<li>'
+          echo item
+          echo '</li>'
+        endfor
+        echo '</ul>'
+      endcapture
+      assign rendered_output = list_html
     else
       assign rendered_output = metafield.value | default: metafield
+    endif
+    if rendered_output == blank
+      assign rendered_output = metafield
     endif
   endif
 -%}
 
 {{ rendered_output }}
+

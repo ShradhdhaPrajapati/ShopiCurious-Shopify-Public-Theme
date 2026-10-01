@@ -215,8 +215,9 @@
                     alt: block.settings.title | default: 'Brand feature icon'
                   }}
                 {%- else -%}
+                  {%- assign sts_icon = block.settings.icon | default: 'fabric' -%}
                   {% render 'icon',
-                    icon: block.settings.icon | default: 'fabric',
+                    icon: sts_icon,
                     class: 'szc-sts__feature-icon'
                   %}
                 {%- endif -%}

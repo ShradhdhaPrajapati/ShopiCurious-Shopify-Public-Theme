@@ -92,9 +92,10 @@
                           alt: block.settings.title | default: "Brand feature icon"
                       }}
                     {%- else -%}
-                      {% render "icon",
-                        icon: block.settings.icon | default: "fabric",
-                        class: "szc-promo-banner__feature-icon"
+                      {%- assign feature_icon = block.settings.icon | default: 'fabric' -%}
+                      {% render 'icon',
+                        icon: feature_icon,
+                        class: 'szc-promo-banner__feature-icon'
                       %}
                     {%- endif -%}
                   </div>

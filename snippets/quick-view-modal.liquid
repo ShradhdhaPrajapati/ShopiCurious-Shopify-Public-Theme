@@ -10,11 +10,11 @@
         assign badge_title_key = 'badge_' | append: i | append: '_title'
         assign badge_subtext_key = 'badge_' | append: i | append: '_subtext'
         assign badge_icon_key = 'badge_' | append: i | append: '_icon'
-        
+
         assign trust_title_key = 'trust_badge_' | append: i | append: '_title'
         assign trust_subtext_key = 'trust_badge_' | append: i | append: '_subtext'
         assign trust_icon_key = 'trust_badge_' | append: i | append: '_icon'
-        
+
         assign b_title = settings[trust_title_key] | default: settings[badge_title_key]
         assign b_subtext = settings[trust_subtext_key] | default: settings[badge_subtext_key]
         assign b_icon = settings[trust_icon_key] | default: settings[badge_icon_key]

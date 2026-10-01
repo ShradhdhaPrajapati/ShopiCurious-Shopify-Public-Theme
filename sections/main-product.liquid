@@ -807,9 +807,9 @@
             assign default_metafield = null
 
             assign is_desc_tab = false
-            if block_id_lower contains 'desc' or block_id_lower contains 'detail' or block_id_lower contains 'fit'
+            if block_id_lower contains 'desc' or block_id_lower contains 'detail' or block_id_lower contains 'deatil' or block_id_lower contains 'fit'
               assign is_desc_tab = true
-            elsif heading_upper contains 'DESCRIPTION' or heading_upper contains 'DETAIL' or heading_upper contains 'FIT'
+            elsif heading_upper contains 'DESCRIPTION' or heading_upper contains 'DETAIL' or heading_upper contains 'DEATIL' or heading_upper contains 'FIT'
               assign is_desc_tab = true
             elsif heading_upper contains 'الوصف' or heading_upper contains 'تفاصيل' or heading_upper contains 'المواصفات'
               assign is_desc_tab = true
@@ -849,12 +849,20 @@
             elsif is_shipping_tab
               assign default_metafield = product.metafields.custom.shipping_returns | default: product.metafields.custom.shipping_and_returns
             elsif is_desc_tab
-              if raw_content == blank
+              assign default_metafield = product.metafields.custom.description_more | default: product.metafields.custom.more_description | default: product.metafields.custom.deatilfit | default: product.metafields.custom.detailfit | default: product.metafields.custom.deatil_fit | default: product.metafields.custom.detail_fit | default: product.metafields.custom.deatils_fit | default: product.metafields.custom.detailsfit | default: product.metafields.custom.details_fit | default: product.metafields.custom.deatil_and_fit | default: product.metafields.custom.detail_and_fit | default: product.metafields.custom.details_and_fit | default: product.metafields.custom.deatil | default: product.metafields.custom.detail | default: product.metafields.custom.details | default: product.metafields.custom.fit | default: product.metafields.custom.product_details | default: product.metafields.custom.fit_details | default: product.metafields.custom.fit_and_details | default: product.metafields.custom.size_and_fit | default: product.metafields.custom.size_fit | default: product.metafields.custom.specifications | default: product.metafields.custom.features | default: product.metafields.my_fields.description_more | default: product.metafields.my_fields.deatilfit | default: product.metafields.my_fields.detailfit | default: product.metafields.my_fields.deatil_fit | default: product.metafields.my_fields.detail_fit | default: product.metafields.my_fields.details_fit | default: product.metafields.my_fields.details_and_fit
+              if default_metafield != blank
+                assign raw_content = ''
+              elsif raw_content == blank
                 assign raw_content = product.description
               endif
             elsif forloop.first and raw_content == blank
               assign is_desc_tab = true
-              assign raw_content = product.description
+              assign default_metafield = product.metafields.custom.description_more | default: product.metafields.custom.more_description | default: product.metafields.custom.deatilfit | default: product.metafields.custom.detailfit | default: product.metafields.custom.deatil_fit | default: product.metafields.custom.detail_fit | default: product.metafields.custom.deatils_fit | default: product.metafields.custom.detailsfit | default: product.metafields.custom.details_fit | default: product.metafields.custom.deatil_and_fit | default: product.metafields.custom.detail_and_fit | default: product.metafields.custom.details_and_fit | default: product.metafields.custom.deatil | default: product.metafields.custom.detail | default: product.metafields.custom.details | default: product.metafields.custom.fit | default: product.metafields.custom.product_details | default: product.metafields.custom.fit_details | default: product.metafields.custom.fit_and_details | default: product.metafields.custom.size_and_fit | default: product.metafields.custom.size_fit | default: product.metafields.custom.specifications | default: product.metafields.custom.features | default: product.metafields.my_fields.description_more | default: product.metafields.my_fields.deatilfit | default: product.metafields.my_fields.detailfit | default: product.metafields.my_fields.deatil_fit | default: product.metafields.my_fields.detail_fit | default: product.metafields.my_fields.details_fit | default: product.metafields.my_fields.details_and_fit
+              if default_metafield != blank
+                assign raw_content = ''
+              else
+                assign raw_content = product.description
+              endif
             endif
           -%}
 
