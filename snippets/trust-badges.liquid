@@ -23,16 +23,27 @@
   assign icon_color = settings.icon_color | default: '#111111'
   assign icon_size = settings.icon_size | default: 20
 
+  assign current_currency_symbol = localization.country.currency.symbol | default: cart.currency.symbol | default: '$'
+
   assign b1_title = settings.trust_badge_1_title | default: settings.badge_1_title | default: 'Free Shipping'
   assign b1_subtext = settings.trust_badge_1_subtext | default: settings.badge_1_subtext | default: 'On orders over $100'
+  if current_currency_symbol != '$' and b1_subtext contains '$'
+    assign b1_subtext = b1_subtext | replace: '$', current_currency_symbol
+  endif
   assign b1_icon = settings.trust_badge_1_icon | default: settings.badge_1_icon | default: 'shipping'
 
   assign b2_title = settings.trust_badge_2_title | default: settings.badge_2_title | default: 'Easy Returns'
   assign b2_subtext = settings.trust_badge_2_subtext | default: settings.badge_2_subtext | default: '30-day returns'
+  if current_currency_symbol != '$' and b2_subtext contains '$'
+    assign b2_subtext = b2_subtext | replace: '$', current_currency_symbol
+  endif
   assign b2_icon = settings.trust_badge_2_icon | default: settings.badge_2_icon | default: 'returns'
 
   assign b3_title = settings.trust_badge_3_title | default: settings.badge_3_title | default: 'Secure Payment'
   assign b3_subtext = settings.trust_badge_3_subtext | default: settings.badge_3_subtext | default: '100% secure checkout'
+  if current_currency_symbol != '$' and b3_subtext contains '$'
+    assign b3_subtext = b3_subtext | replace: '$', current_currency_symbol
+  endif
   assign b3_icon = settings.trust_badge_3_icon | default: settings.badge_3_icon | default: 'secure'
 -%}
 

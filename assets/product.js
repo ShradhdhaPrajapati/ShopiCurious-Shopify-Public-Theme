@@ -10,6 +10,9 @@
   class ProductForm extends HTMLElement {
     constructor() {
       super();
+    }
+
+    connectedCallback() {
       this.form = this.querySelector('form');
       if (!this.form) return;
       this.submitButton = this.querySelector('[type="submit"]');
@@ -19,6 +22,14 @@
     async onSubmitHandler(evt) {
       evt.preventDefault();
       if (!this.submitButton || this.submitButton.classList.contains('szc-btn--loading')) return;
+
+      const idInput = this.form.querySelector('input[name="id"]');
+      if (!idInput || !idInput.value) {
+        if (window.ShopziCurious && window.ShopziCurious.showToast) {
+          window.ShopziCurious.showToast('Please select an available variant', 'error');
+        }
+        return;
+      }
 
       const stickyBtn = document.querySelector('[data-sticky-atc-btn]');
       const activeSticky = document.activeElement && document.activeElement.closest('[data-sticky-atc-bar]');

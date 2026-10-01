@@ -40,7 +40,15 @@
    * Shopify Currency Formatter
    * Converts cents to formatted money string (e.g. 1999 -> $19.99)
    */
-  ShopziCurious.helpers.formatMoney = function (cents, format = '${{amount}}') {
+  ShopziCurious.helpers.formatMoney = function (cents, format) {
+    if (!format) {
+      format =
+        (window.ShopziCurious && window.ShopziCurious.moneyFormat) ||
+        (window.Shopify && window.Shopify.money_format) ||
+        (window.ShopziCurious && window.ShopziCurious.currencySymbol
+          ? `${window.ShopziCurious.currencySymbol}{{amount}}`
+          : '${{amount}}');
+    }
     if (typeof cents === 'string') {
       cents = cents.replace('.', '');
     }
@@ -77,7 +85,8 @@
         break;
     }
 
-    return format.replace(placeholderRegex, value);
+    const cleanFormat = format.replace(/<[^>]*>/g, '');
+    return cleanFormat.replace(placeholderRegex, value);
   };
 
   /**

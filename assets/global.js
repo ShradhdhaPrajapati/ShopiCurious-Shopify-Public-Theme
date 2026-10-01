@@ -18,9 +18,14 @@
    */
   ShopziCurious.defineCustomElement = function (name, constructorClass) {
     if (!customElements.get(name)) {
-      customElements.define(name, constructorClass);
+      try {
+        customElements.define(name, constructorClass);
+      } catch (e) {
+        console.warn(`[ShopziCurious] Could not define custom element ${name}:`, e);
+      }
     }
   };
+
 
   /**
    * Global Event PubSub System (Publish / Subscribe)
@@ -737,5 +742,27 @@
 
     ShopziCurious.pubsub.subscribe(ShopziCurious.events.CART_UPDATED, updateCartBadgesAndPage);
     ShopziCurious.pubsub.subscribe('cart:updated', updateCartBadgesAndPage);
+
+    // Product Card Secondary Video Hover Playback
+    document.addEventListener('mouseover', function (e) {
+      const card = e.target.closest('product-card, .szc-product-card');
+      if (!card) return;
+      const video = card.querySelector('[data-card-video].szc-product-card__video--secondary');
+      if (video && video.paused) {
+        video.play().catch(function () {});
+      }
+    });
+
+    document.addEventListener('mouseout', function (e) {
+      const card = e.target.closest('product-card, .szc-product-card');
+      if (!card) return;
+      const related = e.relatedTarget;
+      if (related && card.contains(related)) return;
+      const video = card.querySelector('[data-card-video].szc-product-card__video--secondary');
+      if (video && !video.paused) {
+        video.pause();
+        video.currentTime = 0;
+      }
+    });
   });
 })();

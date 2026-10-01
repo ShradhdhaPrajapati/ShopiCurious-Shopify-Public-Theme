@@ -85,7 +85,19 @@
         cart_url: '{{ routes.cart_url }}',
         predictive_search_url: '{{ routes.predictive_search_url }}'
       };
-      window.ShopziCurious.moneyFormat = {{ shop.money_format | json }};
+      {%- liquid
+        assign rendered_sample = 10000 | money | strip_html | strip
+        if rendered_sample contains '100.00'
+          assign dynamic_money_format = rendered_sample | replace: '100.00', '{{amount}}'
+        elsif rendered_sample contains '100,00'
+          assign dynamic_money_format = rendered_sample | replace: '100,00', '{{amount}}'
+        elsif rendered_sample contains '100'
+          assign dynamic_money_format = rendered_sample | replace: '100', '{{amount_no_decimals}}'
+        else
+          assign dynamic_money_format = shop.money_format | strip_html | strip
+        endif
+      -%}
+      window.ShopziCurious.moneyFormat = {{ dynamic_money_format | default: shop.money_format | json }};
       window.ShopziCurious.currency = {{ cart.currency.iso_code | json }};
       window.ShopziCurious.currencySymbol = {{ localization.country.currency.symbol | default: cart.currency.symbol | default: '$' | json }};
       window.ShopziCurious.strings = {
@@ -100,6 +112,8 @@
     <script src="{{ 'wishlist.js' | asset_url }}" defer="defer"></script>
     <script src="{{ 'helpers.js' | asset_url }}" defer="defer"></script>
     <script src="{{ 'animations.js' | asset_url }}" defer="defer"></script>
+    <script src="{{ 'product.js' | asset_url }}" defer="defer"></script>
+    <script src="{{ 'variant-picker.js' | asset_url }}" defer="defer"></script>
   </head>
 
   <body class="szc-body template-{{ template.name | handle }} template-{{ template | replace: '.', '-' | handle }}">

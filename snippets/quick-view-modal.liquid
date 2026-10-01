@@ -1,7 +1,16 @@
 {% comment %}
   ShopziCurious Luxury Quick View Modal Component
   Pixel-matched to approved 4-column Luxury Quick View UI Design.
+  Dynamic Media (Images & Videos), Title, Vendor, Tag, Prices,
+  Color Swatches, Size Pills, Quantity Stepper, Add to Bag, Wishlist,
+  Buy It Now, and Dynamic Theme-Colored Trust Badges & Active Borders.
 {% endcomment %}
+
+{%- liquid
+  assign dynamic_theme_color = settings.color_secondary | default: '#d4a373'
+  assign dynamic_icon_color = settings.trust_badge_icon_color | default: settings.color_secondary | default: '#d4a373'
+  assign dynamic_border_color = settings.color_secondary | default: '#d4a373'
+-%}
 
 {%- capture trust_badges_html -%}
   <div class="szc-qv-trust">
@@ -15,8 +24,12 @@
         assign trust_subtext_key = 'trust_badge_' | append: i | append: '_subtext'
         assign trust_icon_key = 'trust_badge_' | append: i | append: '_icon'
 
+        assign current_curr_sym = localization.country.currency.symbol | default: cart.currency.symbol | default: '$'
         assign b_title = settings[trust_title_key] | default: settings[badge_title_key]
         assign b_subtext = settings[trust_subtext_key] | default: settings[badge_subtext_key]
+        if current_curr_sym != '$' and b_subtext contains '$'
+          assign b_subtext = b_subtext | replace: '$', current_curr_sym
+        endif
         assign b_icon = settings[trust_icon_key] | default: settings[badge_icon_key]
       -%}
       {%- if b_title != blank or b_subtext != blank -%}
@@ -52,6 +65,7 @@
 <quick-view-modal
   id="QuickViewModal"
   class="szc-modal szc-quick-view-modal"
+  style="--szc-qv-theme-color: {{ dynamic_theme_color }}; --szc-qv-icon-color: {{ dynamic_icon_color }}; --szc-qv-border-color: {{ dynamic_border_color }};"
   aria-hidden="true"
   role="dialog"
   aria-modal="true"
@@ -220,11 +234,13 @@
     display: flex;
     flex-direction: column;
     gap: 10px;
-    max-height: 480px;
+    max-height: 520px;
     overflow-y: auto;
+    scrollbar-width: thin;
   }
 
   .szc-qv-thumb-btn {
+    position: relative;
     width: 70px;
     height: 85px;
     border-radius: 6px;
@@ -239,7 +255,7 @@
 
   .szc-qv-thumb-btn.is-active,
   .szc-qv-thumb-btn:hover {
-    border-color: #b44f4f;
+    border-color: var(--szc-qv-border-color, var(--szc-color-secondary, #d4a373));
   }
 
   .szc-qv-thumb-img {
@@ -248,7 +264,28 @@
     object-fit: cover;
   }
 
-  /* Column 2: Main Image Stage */
+  .szc-qv-thumb-play-badge {
+    position: absolute;
+    bottom: 4px;
+    right: 4px;
+    width: 20px;
+    height: 20px;
+    background: rgba(0, 0, 0, 0.75);
+    color: #ffffff;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    pointer-events: none;
+    z-index: 2;
+    box-shadow: 0 1px 4px rgba(0, 0, 0, 0.3);
+  }
+
+  .szc-qv-thumb-play-badge svg {
+    margin-left: 1px;
+  }
+
+  /* Column 2: Main Image / Video Stage */
   .szc-qv-stage {
     position: relative;
     width: 100%;
@@ -258,11 +295,53 @@
     background-color: #f7f5f0;
   }
 
+  .szc-qv-stage-media-wrap {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
   .szc-qv-stage-img {
     width: 100%;
     height: 100%;
     object-fit: cover;
+    display: block;
     transition: opacity 200ms ease;
+  }
+
+  .szc-qv-stage-video-wrap {
+    width: 100%;
+    height: 100%;
+    position: relative;
+    background: #000000;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+  }
+
+  .szc-qv-stage-video {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+  }
+
+  .szc-qv-stage-video-wrap--external {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    background: #000000;
+  }
+
+  .szc-qv-stage-video-wrap--external iframe {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    border: none;
   }
 
   .szc-qv-stage-nav {
@@ -281,7 +360,7 @@
     color: #111111;
     cursor: pointer;
     transition: transform 150ms ease, background-color 150ms ease;
-    z-index: 2;
+    z-index: 5;
   }
 
   .szc-qv-stage-nav:hover {
@@ -296,19 +375,52 @@
     right: 12px;
   }
 
-  /* Column 3: Info & Form Details */
+  /* Column 3: Clean Luxury Info Details */
   .szc-qv-details {
     display: flex;
     flex-direction: column;
     gap: 16px;
   }
 
+  .szc-qv-tag-row {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    flex-wrap: wrap;
+  }
+
   .szc-qv-tag {
     font-size: 11px;
     font-weight: 700;
     letter-spacing: 0.1em;
-    color: #b44f4f;
+    color: var(--szc-qv-theme-color, var(--szc-color-secondary, #d4a373));
     text-transform: uppercase;
+  }
+
+  .szc-qv-tag--sale {
+    background-color: var(--szc-qv-theme-color, var(--szc-color-secondary, #d4a373));
+    color: #ffffff;
+    padding: 2px 8px;
+    border-radius: 3px;
+    font-size: 10px;
+    letter-spacing: 0.05em;
+  }
+
+  .szc-qv-tag--soldout {
+    background-color: var(--szc-color-text-muted, #757575);
+    color: #ffffff;
+    padding: 2px 8px;
+    border-radius: 3px;
+    font-size: 10px;
+    letter-spacing: 0.05em;
+  }
+
+  .szc-qv-vendor {
+    font-size: 11px;
+    font-weight: 700;
+    color: var(--szc-color-text-muted, #888888);
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
   }
 
   .szc-qv-title {
@@ -316,51 +428,36 @@
     font-family: var(--szc-font-family-heading, Georgia, serif);
     font-size: 24px;
     font-weight: 600;
-    color: #111111;
+    color: var(--szc-color-heading, #111111);
     line-height: 1.25;
+  }
+
+  .szc-qv-title a {
+    color: inherit;
+    text-decoration: none;
+    transition: color 150ms ease;
+  }
+
+  .szc-qv-title a:hover {
+    color: var(--szc-qv-theme-color, var(--szc-color-secondary, #d4a373));
   }
 
   .szc-qv-price-row {
     display: flex;
     align-items: baseline;
-    gap: 10px;
+    gap: 12px;
   }
 
   .szc-qv-price {
     font-size: 22px;
     font-weight: 700;
-    color: #111111;
+    color: var(--szc-color-text-primary, #111111);
   }
 
   .szc-qv-price--compare {
     font-size: 16px;
-    color: #888888;
+    color: var(--szc-color-text-muted, #888888);
     text-decoration: line-through;
-  }
-
-  .szc-qv-installments {
-    font-size: 12px;
-    color: #555555;
-    line-height: 1.4;
-  }
-
-  .szc-qv-shoppay {
-    font-weight: 700;
-    color: #5a31f4;
-  }
-
-  .szc-qv-reviews {
-    display: flex;
-    align-items: center;
-    gap: 6px;
-    font-size: 13px;
-    color: #444444;
-  }
-
-  .szc-qv-stars {
-    color: #f39c12;
-    display: flex;
-    gap: 2px;
   }
 
   /* Swatch Group */
@@ -374,17 +471,22 @@
     font-size: 11px;
     font-weight: 700;
     letter-spacing: 0.06em;
-    color: #111111;
+    color: var(--szc-color-text-primary, #111111);
     text-transform: uppercase;
     display: flex;
     justify-content: space-between;
     align-items: center;
   }
 
+  .szc-qv-opt-value {
+    color: var(--szc-color-text-muted, #666666);
+    font-weight: 600;
+  }
+
   .szc-qv-size-guide-btn {
     font-size: 12px;
     font-weight: 500;
-    color: #666666;
+    color: var(--szc-color-text-muted, #666666);
     text-decoration: underline;
     background: none;
     border: none;
@@ -405,7 +507,7 @@
     width: 32px;
     height: 32px;
     border-radius: 50%;
-    border: 1px solid #dddddd;
+    border: 1px solid var(--szc-color-border, #dddddd);
     padding: 0;
     cursor: pointer;
     position: relative;
@@ -413,7 +515,7 @@
   }
 
   .szc-qv-color-btn.is-active {
-    box-shadow: 0 0 0 2px #ffffff, 0 0 0 3px #b44f4f;
+    box-shadow: 0 0 0 2px #ffffff, 0 0 0 3px var(--szc-qv-border-color, var(--szc-color-secondary, #d4a373));
   }
 
   .szc-qv-size-boxes {
@@ -427,11 +529,11 @@
     height: 40px;
     padding: 0 12px;
     border-radius: 4px;
-    border: 1px solid #e0e0e0;
+    border: 1px solid var(--szc-color-border, #e0e0e0);
     background-color: #ffffff;
     font-size: 13px;
     font-weight: 600;
-    color: #111111;
+    color: var(--szc-color-text-primary, #111111);
     cursor: pointer;
     display: flex;
     align-items: center;
@@ -440,20 +542,20 @@
   }
 
   .szc-qv-size-btn.is-active {
-    background-color: #000000;
+    background-color: var(--szc-color-primary, #000000);
     color: #ffffff;
-    border-color: #000000;
+    border-color: var(--szc-color-primary, #000000);
   }
 
   .szc-qv-size-btn:hover:not(.is-active) {
-    border-color: #111111;
+    border-color: var(--szc-color-primary, #111111);
   }
 
   /* Stepper */
   .szc-qv-stepper {
     display: inline-flex;
     align-items: center;
-    border: 1px solid #e0e0e0;
+    border: 1px solid var(--szc-color-border, #e0e0e0);
     border-radius: 4px;
     height: 40px;
     width: 110px;
@@ -462,7 +564,7 @@
 
   .szc-qv-stepper-btn {
     width: 35px;
-    height: 14px;
+    height: 100%;
     background: transparent;
     border: none;
     font-size: 16px;
@@ -470,7 +572,7 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    color: #333333;
+    color: var(--szc-color-text-primary, #333333);
     padding: 0;
   }
 
@@ -503,7 +605,7 @@
   .szc-qv-add-btn {
     flex: 1;
     height: 48px;
-    background-color: #000000;
+    background-color: var(--szc-color-primary, #000000);
     color: #ffffff;
     border: none;
     border-radius: 4px;
@@ -519,47 +621,52 @@
     transition: background-color 150ms ease;
   }
 
-  .szc-qv-add-btn:hover {
+  .szc-qv-add-btn:hover:not(:disabled) {
     background-color: #222222;
+  }
+
+  .szc-qv-add-btn:disabled {
+    background-color: #cccccc;
+    cursor: not-allowed;
   }
 
   .szc-qv-wishlist-btn {
     width: 48px;
     height: 48px;
-    border: 1px solid #e0e0e0;
+    border: 1px solid var(--szc-color-border, #e0e0e0);
     border-radius: 4px;
     background-color: #ffffff;
     display: flex;
     align-items: center;
     justify-content: center;
-    color: #111111;
+    color: var(--szc-color-text-primary, #111111);
     cursor: pointer;
-    transition: border-color 150ms ease;
+    transition: border-color 150ms ease, color 150ms ease;
   }
 
   .szc-qv-wishlist-btn:hover {
-    border-color: #b44f4f;
-    color: #b44f4f;
+    border-color: var(--szc-qv-theme-color, var(--szc-color-secondary, #d4a373));
+    color: var(--szc-qv-theme-color, var(--szc-color-secondary, #d4a373));
   }
 
   .szc-qv-wishlist-btn.is-active {
-    border-color: #e63946;
-    color: #e63946;
+    border-color: var(--szc-color-error, #e63946);
+    color: var(--szc-color-error, #e63946);
     background-color: #fff5f5;
   }
 
   .szc-qv-wishlist-btn.is-active svg {
-    fill: #e63946;
-    stroke: #e63946;
+    fill: var(--szc-color-error, #e63946);
+    stroke: var(--szc-color-error, #e63946);
   }
 
   .szc-qv-buy-btn {
     width: 100%;
     height: 46px;
-    border: 1px solid #111111;
+    border: 1px solid var(--szc-color-primary, #111111);
     border-radius: 4px;
     background-color: #ffffff;
-    color: #111111;
+    color: var(--szc-color-primary, #111111);
     font-size: 13px;
     font-weight: 700;
     letter-spacing: 0.08em;
@@ -568,18 +675,24 @@
     transition: background-color 150ms ease, color 150ms ease;
   }
 
-  .szc-qv-buy-btn:hover {
-    background-color: #111111;
+  .szc-qv-buy-btn:hover:not(:disabled) {
+    background-color: var(--szc-color-primary, #111111);
     color: #ffffff;
+  }
+
+  .szc-qv-buy-btn:disabled {
+    border-color: var(--szc-color-border, #e0e0e0);
+    color: #aaaaaa;
+    cursor: not-allowed;
   }
 
   .szc-qv-full-btn {
     width: 100%;
     height: 44px;
-    border: 1px solid #e0e0e0;
+    border: 1px solid var(--szc-color-border, #e0e0e0);
     border-radius: 4px;
     background-color: #fcfcfc;
-    color: #555555;
+    color: var(--szc-color-text-muted, #555555);
     font-size: 11px;
     font-weight: 700;
     letter-spacing: 0.08em;
@@ -592,18 +705,25 @@
   }
 
   .szc-qv-full-btn:hover {
-    border-color: #111111;
-    color: #111111;
+    border-color: var(--szc-color-primary, #111111);
+    color: var(--szc-color-primary, #111111);
     background-color: #ffffff;
   }
 
-  /* Column 4: Trust Badges Column */
+  /* Column 4: Dynamic Theme-Colored Trust Badges Column */
   .szc-qv-trust {
     display: flex;
     flex-direction: column;
     gap: 20px;
     padding-left: 20px;
-    border-left: 1px solid #f0f0f0;
+    border-left: 1px solid var(--szc-color-border, #f0f0f0);
+  }
+
+  html[dir="rtl"] .szc-qv-trust {
+    padding-left: 0;
+    padding-right: 20px;
+    border-left: none;
+    border-right: 1px solid var(--szc-color-border, #f0f0f0);
   }
 
   .szc-qv-trust-item {
@@ -615,7 +735,7 @@
   .szc-qv-trust-icon {
     width: 24px;
     height: 24px;
-    color: #b44f4f;
+    color: var(--szc-qv-icon-color, var(--szc-color-secondary, #d4a373));
     flex-shrink: 0;
     margin-top: 2px;
   }
@@ -628,12 +748,12 @@
   .szc-qv-trust-title {
     font-size: 13px;
     font-weight: 700;
-    color: #111111;
+    color: var(--szc-color-heading, #111111);
   }
 
   .szc-qv-trust-desc {
     font-size: 12px;
-    color: #777777;
+    color: var(--szc-color-text-muted, #777777);
     margin-top: 2px;
   }
 
@@ -647,12 +767,24 @@
     .szc-qv-thumbs {
       flex-direction: row;
       max-height: none;
+      order: 2;
+    }
+
+    .szc-qv-stage {
+      order: 1;
+    }
+
+    .szc-qv-details {
+      order: 3;
     }
 
     .szc-qv-trust {
+      order: 4;
       border-left: none;
-      border-top: 1px solid #f0f0f0;
+      border-right: none;
+      border-top: 1px solid var(--szc-color-border, #f0f0f0);
       padding-left: 0;
+      padding-right: 0;
       padding-top: 20px;
     }
   }
@@ -682,7 +814,7 @@
           });
         }
 
-        async open(productHandle) {
+        async open(productHandle, cardMedia) {
           this.classList.add('is-open');
           this.setAttribute('aria-hidden', 'false');
           if (window.ShopziCurious && window.ShopziCurious.trapFocus) {
@@ -703,25 +835,61 @@
             const response = await fetch(`/products/${productHandle}.js`);
             if (!response.ok) throw new Error(`HTTP ${response.status}`);
             const product = await response.json();
-            this.renderProduct(product);
+            this.renderProduct(product, cardMedia);
           } catch (error) {
             console.error('[ShopziCurious QuickView Error]', error);
             this.content.innerHTML = `<p style="padding:40px; text-align:center; color:#e63946;">Failed to load product details.</p>`;
           }
         }
 
-        renderProduct(product) {
+        renderProduct(product, cardMedia) {
           const trustBadgesHtml = {{ trust_badges_html | strip_newlines | json }};
           const enableWishlist = {%- if settings.enable_wishlist == false -%}false{%- else -%}true{%- endif -%};
-          const moneyFormat = (window.ShopziCurious && window.ShopziCurious.moneyFormat) || '$' + '{' + '{amount}}';
+
+          const moneyFormat =
+            (window.ShopziCurious && window.ShopziCurious.moneyFormat) ||
+            (window.Shopify && window.Shopify.money_format) ||
+            (window.ShopziCurious && window.ShopziCurious.currencySymbol
+              ? `${window.ShopziCurious.currencySymbol}{{amount}}`
+              : '${{amount}}');
 
           const formatMoney = (cents) => {
-            const dollars = (cents / 100).toFixed(2);
-            return `$${dollars}`;
+            if (window.ShopziCurious && window.ShopziCurious.helpers && window.ShopziCurious.helpers.formatMoney) {
+              return window.ShopziCurious.helpers.formatMoney(cents, moneyFormat);
+            }
+            const sym = (window.ShopziCurious && window.ShopziCurious.currencySymbol) || '$';
+            return `${sym}${(cents / 100).toFixed(2)}`;
           };
 
-          const images = product.images && product.images.length ? product.images : [product.featured_image];
-          const firstVariant = product.variants[0];
+          // Build unified media list supporting both Images and Videos
+          let mediaList = [];
+          if (cardMedia && Array.isArray(cardMedia) && cardMedia.length > 0) {
+            mediaList = cardMedia;
+          } else if (product.media && Array.isArray(product.media) && product.media.length > 0) {
+            mediaList = product.media.map((m) => {
+              const prev = typeof m.preview_image === 'string' ? m.preview_image : (m.preview_image && m.preview_image.src) || m.src || '';
+              return {
+                id: m.id,
+                media_type: m.media_type || 'image',
+                preview_image: prev,
+                alt: m.alt || product.title,
+                sources: m.sources || [],
+                host: m.host || '',
+                external_id: m.external_id || ''
+              };
+            });
+          } else {
+            const rawImgs = product.images && product.images.length ? product.images : (product.featured_image ? [product.featured_image] : []);
+            mediaList = rawImgs.map((img, idx) => ({
+              id: idx,
+              media_type: 'image',
+              preview_image: typeof img === 'string' ? img : (img && img.src ? img.src : ''),
+              alt: product.title,
+              sources: []
+            }));
+          }
+
+          const firstVariant = product.variants[0] || {};
 
           // Color hex helper map for common colors
           const getColorHex = (name) => {
@@ -740,14 +908,21 @@
               'gray': '#888888',
               'pink': '#ffc0cb',
               'gold': '#ffd700',
-              'olive': '#808000'
+              'olive': '#808000',
+              'yellow': '#e9c46a',
+              'orange': '#f4a261',
+              'purple': '#6a0dad',
+              'charcoal': '#333333'
             };
             return colorMap[name.toLowerCase()] || '#cccccc';
           };
 
           const isNewArrival = product.tags && product.tags.some(t => t.toLowerCase().includes('new'));
+          const hasComparePrice = firstVariant.compare_at_price > firstVariant.price;
+          const savingsDiff = hasComparePrice ? (firstVariant.compare_at_price - firstVariant.price) : 0;
+          const savingsPercent = hasComparePrice ? Math.round((savingsDiff / firstVariant.compare_at_price) * 100) : 0;
 
-          // Render ALL dynamic product options (filtering out Shopify's default dummy "Title: Default Title")
+          // Render dynamic options (excluding dummy single Default Title)
           const validOptions = (product.options || []).filter(opt => {
             const nameLower = opt.name.toLowerCase();
             if (nameLower === 'title' && opt.values.length === 1 && opt.values[0] === 'Default Title') {
@@ -765,7 +940,8 @@
             return `
               <div class="szc-qv-option-group" data-option-index="${optIdx}">
                 <div class="szc-qv-option-label">
-                  <span>${opt.name.toUpperCase()}: <span id="QvSelectedOpt_${optIdx}">${selectedVal}</span></span>
+                  <span>${opt.name.toUpperCase()}: <span class="szc-qv-opt-value" id="QvSelectedOpt_${optIdx}">${selectedVal}</span></span>
+                  ${isSize ? `<button type="button" class="szc-qv-size-guide-btn" onclick="window.location.href='/products/${product.handle}'">Size Guide</button>` : ''}
                 </div>
                 <div class="${isColor ? 'szc-qv-color-swatches' : 'szc-qv-size-boxes'}">
                   ${opt.values.map((val) => {
@@ -779,6 +955,7 @@
                           data-val="${val}"
                           style="background-color: ${getColorHex(val)};"
                           title="${val}"
+                          aria-label="${val}"
                         ></button>
                       `;
                     } else {
@@ -788,6 +965,7 @@
                           class="szc-qv-size-btn ${isActive ? 'is-active' : ''}"
                           data-opt-idx="${optIdx}"
                           data-val="${val}"
+                          aria-label="${val}"
                         >${val}</button>
                       `;
                     }
@@ -797,36 +975,89 @@
             `;
           }).join('');
 
-          const hasComparePrice = firstVariant.compare_at_price > firstVariant.price;
+          // Helper to render initial stage media HTML
+          const getMediaHtml = (mediaItem) => {
+            if (!mediaItem) return '';
+            if (mediaItem.media_type === 'video' && mediaItem.sources && mediaItem.sources.length) {
+              const srcTags = mediaItem.sources.map(s => `<source src="${s.url}" type="${s.mime_type || 'video/mp4'}">`).join('');
+              return `
+                <div class="szc-qv-stage-video-wrap">
+                  <video class="szc-qv-stage-video" controls autoplay loop muted playsinline>
+                    ${srcTags}
+                  </video>
+                </div>
+              `;
+            } else if (mediaItem.media_type === 'external_video') {
+              let embedSrc = '';
+              if (mediaItem.host === 'youtube' || (mediaItem.external_id && !mediaItem.host)) {
+                embedSrc = `https://www.youtube.com/embed/${mediaItem.external_id}?autoplay=1&mute=1&loop=1&playlist=${mediaItem.external_id}&controls=1`;
+              } else if (mediaItem.host === 'vimeo') {
+                embedSrc = `https://player.vimeo.com/video/${mediaItem.external_id}?autoplay=1&muted=1&loop=1`;
+              }
+              if (embedSrc) {
+                return `
+                  <div class="szc-qv-stage-video-wrap szc-qv-stage-video-wrap--external">
+                    <iframe src="${embedSrc}" allow="autoplay; encrypted-media; picture-in-picture" allowfullscreen></iframe>
+                  </div>
+                `;
+              }
+            }
+            const imgSrc = mediaItem.preview_image || '';
+            return `<img src="${imgSrc}" alt="${mediaItem.alt || product.title}" class="szc-qv-stage-img" id="QvStageImg">`;
+          };
 
           this.content.innerHTML = `
             <div class="szc-qv-grid" data-product-id="${product.id}">
               <!-- Column 1: Vertical Thumbnails Strip -->
               <div class="szc-qv-thumbs">
-                ${images.map((img, idx) => `
-                  <button type="button" class="szc-qv-thumb-btn ${idx === 0 ? 'is-active' : ''}" data-index="${idx}" data-img="${img}">
-                    <img src="${img}" alt="${product.title}" class="szc-qv-thumb-img" loading="lazy">
-                  </button>
-                `).join('')}
+                ${mediaList.map((m, idx) => {
+                  const isVid = m.media_type === 'video' || m.media_type === 'external_video';
+                  return `
+                    <button type="button" class="szc-qv-thumb-btn ${idx === 0 ? 'is-active' : ''}" data-index="${idx}" aria-label="Media ${idx + 1}">
+                      <img src="${m.preview_image}" alt="${m.alt || product.title}" class="szc-qv-thumb-img" loading="lazy">
+                      ${isVid ? `
+                        <div class="szc-qv-thumb-play-badge" aria-hidden="true">
+                          <svg width="10" height="10" viewBox="0 0 24 24" fill="currentColor">
+                            <polygon points="6 4 20 12 6 20 6 4"></polygon>
+                          </svg>
+                        </div>
+                      ` : ''}
+                    </button>
+                  `;
+                }).join('')}
               </div>
 
-              <!-- Column 2: Main Stage Image -->
+              <!-- Column 2: Main Stage Media (Video or Image) -->
               <div class="szc-qv-stage">
-                ${images.length > 1 ? `
-                  <button type="button" class="szc-qv-stage-nav szc-qv-stage-nav--prev" aria-label="Previous image">
+                ${mediaList.length > 1 ? `
+                  <button type="button" class="szc-qv-stage-nav szc-qv-stage-nav--prev" aria-label="Previous media">
                     <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="15 18 9 12 15 6"></polyline></svg>
                   </button>
-                  <button type="button" class="szc-qv-stage-nav szc-qv-stage-nav--next" aria-label="Next image">
+                  <button type="button" class="szc-qv-stage-nav szc-qv-stage-nav--next" aria-label="Next media">
                     <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="9 18 15 12 9 6"></polyline></svg>
                   </button>
                 ` : ''}
-                <img src="${images[0]}" alt="${product.title}" class="szc-qv-stage-img" id="QvStageImg">
+                <div class="szc-qv-stage-media-wrap" id="QvStageMediaWrap">
+                  ${getMediaHtml(mediaList[0])}
+                </div>
               </div>
 
               <!-- Column 3: Product Info Details & Form -->
               <div class="szc-qv-details">
-                <span class="szc-qv-tag">${isNewArrival ? 'NEW ARRIVAL' : (product.vendor || 'FEATURED')}</span>
-                <h2 class="szc-qv-title">${product.title}</h2>
+                <div class="szc-qv-tag-row">
+                  ${firstVariant.available === false ? `
+                    <span class="szc-qv-tag--soldout">SOLD OUT</span>
+                  ` : (hasComparePrice ? `
+                    <span class="szc-qv-tag--sale">-${savingsPercent}% OFF</span>
+                  ` : (isNewArrival ? `
+                    <span class="szc-qv-tag">NEW ARRIVAL</span>
+                  ` : ''))}
+                  ${product.vendor ? `<span class="szc-qv-vendor">${product.vendor}</span>` : ''}
+                </div>
+
+                <h2 class="szc-qv-title">
+                  <a href="/products/${product.handle}">${product.title}</a>
+                </h2>
 
                 <div class="szc-qv-price-row">
                   <span class="szc-qv-price" id="QvPrice">${formatMoney(firstVariant.price)}</span>
@@ -835,7 +1066,7 @@
                   </span>
                 </div>
 
-                <!-- Dynamic Options (Color, Size, Fabric, etc.) -->
+                <!-- Dynamic Options (Color, Size, etc.) -->
                 ${optionsHtml}
 
                 <!-- Quantity Stepper Box -->
@@ -873,7 +1104,7 @@
                       data-product-title="${(product.title || '').replace(/"/g, '&quot;')}"
                       data-product-price="${formatMoney(firstVariant.price)}"
                       data-product-compare-price="${firstVariant.compare_at_price ? formatMoney(firstVariant.compare_at_price) : ''}"
-                      data-product-image="${images[0] || ''}"
+                      data-product-image="${mediaList[0] ? mediaList[0].preview_image : ''}"
                       data-product-url="/products/${product.handle}"
                       data-product-vendor="${(product.vendor || '').replace(/"/g, '&quot;')}"
                       data-product-available="${firstVariant.available !== false}"
@@ -886,34 +1117,66 @@
                   ` : ''}
                 </div>
 
-                <button type="button" class="szc-qv-buy-btn" id="QvBuyNowBtn" data-buy-now-btn>
+                <button type="button" class="szc-qv-buy-btn" id="QvBuyNowBtn" data-buy-now-btn ${firstVariant.available === false ? 'disabled' : ''}>
                   <span class="szc-btn-text">BUY IT NOW</span>
                 </button>
 
-                <a href="/products/${product.handle}" class="szc-qv-full-btn">
+                <a href="/products/${product.handle}?variant=${firstVariant.id}" class="szc-qv-full-btn" id="QvFullDetailsBtn">
                   VIEW FULL PRODUCT DETAILS
                 </a>
               </div>
 
-              <!-- Column 4: Dynamic Trust Badges Stack -->
+              <!-- Column 4: Dynamic Theme-Colored Trust Badges Stack -->
               ${trustBadgesHtml}
             </div>
           `;
 
-          this.bindEvents(product);
+          this.bindEvents(product, mediaList, getMediaHtml);
         }
 
-        bindEvents(product) {
-          let currentImgIndex = 0;
-          const images = product.images && product.images.length ? product.images : [product.featured_image];
-          const stageImg = this.querySelector('#QvStageImg');
+        bindEvents(product, mediaList, getMediaHtml) {
+          let currentMediaIndex = 0;
+          const stageWrap = this.querySelector('#QvStageMediaWrap');
           const thumbBtns = this.querySelectorAll('.szc-qv-thumb-btn');
 
-          const updateStageImage = (index) => {
-            currentImgIndex = (index + images.length) % images.length;
-            if (stageImg) stageImg.src = images[currentImgIndex];
+          const moneyFormat =
+            (window.ShopziCurious && window.ShopziCurious.moneyFormat) ||
+            (window.Shopify && window.Shopify.money_format) ||
+            (window.ShopziCurious && window.ShopziCurious.currencySymbol
+              ? `${window.ShopziCurious.currencySymbol}{{amount}}`
+              : '${{amount}}');
+
+          const formatMoney = (cents) => {
+            if (window.ShopziCurious && window.ShopziCurious.helpers && window.ShopziCurious.helpers.formatMoney) {
+              return window.ShopziCurious.helpers.formatMoney(cents, moneyFormat);
+            }
+            const sym = (window.ShopziCurious && window.ShopziCurious.currencySymbol) || '$';
+            return `${sym}${(cents / 100).toFixed(2)}`;
+          };
+
+          const updateStageMedia = (index) => {
+            if (!mediaList || !mediaList.length) return;
+            currentMediaIndex = (index + mediaList.length) % mediaList.length;
+            const currentItem = mediaList[currentMediaIndex];
+
+            // Pause any playing video before replacing
+            if (stageWrap) {
+              const oldVideo = stageWrap.querySelector('video');
+              if (oldVideo) {
+                try { oldVideo.pause(); } catch (e) {}
+              }
+
+              stageWrap.innerHTML = getMediaHtml(currentItem);
+
+              // Play new video if video
+              const newVideo = stageWrap.querySelector('video');
+              if (newVideo) {
+                newVideo.play().catch(() => {});
+              }
+            }
+
             thumbBtns.forEach((btn, idx) => {
-              btn.classList.toggle('is-active', idx === currentImgIndex);
+              btn.classList.toggle('is-active', idx === currentMediaIndex);
             });
           };
 
@@ -921,18 +1184,18 @@
           thumbBtns.forEach((btn) => {
             btn.addEventListener('click', () => {
               const idx = parseInt(btn.dataset.index, 10);
-              updateStageImage(idx);
+              updateStageMedia(idx);
             });
           });
 
           // Prev / Next Nav
           const prevBtn = this.querySelector('.szc-qv-stage-nav--prev');
           const nextBtn = this.querySelector('.szc-qv-stage-nav--next');
-          if (prevBtn) prevBtn.addEventListener('click', () => updateStageImage(currentImgIndex - 1));
-          if (nextBtn) nextBtn.addEventListener('click', () => updateStageImage(currentImgIndex + 1));
+          if (prevBtn) prevBtn.addEventListener('click', () => updateStageMedia(currentMediaIndex - 1));
+          if (nextBtn) nextBtn.addEventListener('click', () => updateStageMedia(currentMediaIndex + 1));
 
           // Option Selection (Dynamic ALL Options)
-          const firstVariant = product.variants[0];
+          const firstVariant = product.variants[0] || {};
           let selectedOptions = firstVariant.options ? [...firstVariant.options] : [];
 
           const updateVariant = () => {
@@ -941,8 +1204,10 @@
             }) || product.variants[0];
 
             const addBtn = this.querySelector('#QvAddToCartBtn');
+            const buyNowBtn = this.querySelector('#QvBuyNowBtn');
             const priceEl = this.querySelector('#QvPrice');
             const comparePriceEl = this.querySelector('#QvComparePrice');
+            const fullDetailsBtn = this.querySelector('#QvFullDetailsBtn');
 
             if (addBtn) {
               addBtn.dataset.variantId = matchedVariant.id;
@@ -955,7 +1220,12 @@
               }
             }
 
+            if (buyNowBtn) {
+              buyNowBtn.disabled = matchedVariant.available === false;
+            }
+
             if (priceEl) priceEl.textContent = formatMoney(matchedVariant.price);
+
             if (comparePriceEl) {
               if (matchedVariant.compare_at_price > matchedVariant.price) {
                 comparePriceEl.textContent = formatMoney(matchedVariant.compare_at_price);
@@ -965,13 +1235,22 @@
               }
             }
 
-            if (matchedVariant.featured_image && matchedVariant.featured_image.src) {
-              const imgIdx = images.indexOf(matchedVariant.featured_image.src);
-              if (imgIdx !== -1) updateStageImage(imgIdx);
+            if (fullDetailsBtn) {
+              fullDetailsBtn.href = `/products/${product.handle}?variant=${matchedVariant.id}`;
+            }
+
+            // Sync media gallery with variant's featured media/image
+            if (matchedVariant.featured_media && matchedVariant.featured_media.id) {
+              const mIdx = mediaList.findIndex(m => m.id === matchedVariant.featured_media.id);
+              if (mIdx !== -1) updateStageMedia(mIdx);
+            } else if (matchedVariant.featured_image && matchedVariant.featured_image.src) {
+              const cleanSrc = matchedVariant.featured_image.src.split('?')[0];
+              const mIdx = mediaList.findIndex(m => m.preview_image && m.preview_image.includes(cleanSrc));
+              if (mIdx !== -1) updateStageMedia(mIdx);
             }
           };
 
-          // Handle clicks on color swatches and size/option pill buttons
+          // Handle clicks on color swatches and size pill buttons
           this.querySelectorAll('.szc-qv-color-btn, .szc-qv-size-btn').forEach((btn) => {
             btn.addEventListener('click', () => {
               const optGroup = btn.closest('.szc-qv-option-group');
@@ -1060,7 +1339,8 @@
               if (!variantId) return;
 
               addBtn.disabled = true;
-              addBtn.querySelector('span').textContent = 'ADDING...';
+              const btnSpan = addBtn.querySelector('span');
+              if (btnSpan) btnSpan.textContent = 'ADDING...';
 
               try {
                 const res = await fetch('/cart/add.js', {
@@ -1081,7 +1361,7 @@
                 const cartRes = await fetch('/cart.js');
                 const cartData = await cartRes.json();
 
-                // Animate Fly to Cart BEFORE closing modal (ensures non-zero width/height)
+                // Animate Fly to Cart BEFORE closing modal
                 if (window.ShopziCurious && window.ShopziCurious.animateFlyToCart) {
                   window.ShopziCurious.animateFlyToCart(this);
                 } else if (window.ShopziCurious && window.ShopziCurious.bounceCartBadge) {
@@ -1090,8 +1370,10 @@
 
                 this.close();
 
-                // Publish CART_UPDATED event with openDrawer: false (do not redirect or open drawer)
-                ShopziCurious.pubsub.publish(ShopziCurious.events.CART_UPDATED, { item: data, item_count: cartData.item_count, openDrawer: false });
+                // Publish CART_UPDATED event with openDrawer: false
+                if (window.ShopziCurious && window.ShopziCurious.pubsub && window.ShopziCurious.events) {
+                  window.ShopziCurious.pubsub.publish(window.ShopziCurious.events.CART_UPDATED, { item: data, item_count: cartData.item_count, openDrawer: false });
+                }
 
                 // Show Toast Notification
                 if (window.ShopziCurious && window.ShopziCurious.showToast) {
@@ -1104,13 +1386,18 @@
                 }
               } finally {
                 addBtn.disabled = false;
-                addBtn.querySelector('span').textContent = 'ADD TO BAG';
+                if (btnSpan) btnSpan.textContent = 'ADD TO BAG';
               }
             });
           }
         }
 
         close() {
+          // Pause any video that is playing before hiding
+          const video = this.querySelector('video');
+          if (video) {
+            try { video.pause(); } catch (e) {}
+          }
           this.classList.remove('is-open');
           this.setAttribute('aria-hidden', 'true');
           if (window.ShopziCurious && window.ShopziCurious.removeTrapFocus) {
@@ -1120,9 +1407,8 @@
       }
     );
 
-    // Global listener for Quick View triggers ONLY across entire theme
+    // Global listener for Quick View triggers across entire theme
     document.addEventListener('click', (e) => {
-      // Must match explicit Quick View trigger element
       const trigger = e.target.closest('.szc-quick-view-btn, [data-quick-view-trigger], [data-quick-view]');
       if (!trigger) return;
 
@@ -1135,11 +1421,27 @@
       if (handle) {
         e.preventDefault();
         e.stopPropagation();
+
+        // Extract media JSON from card if available
+        let cardMedia = null;
+        const card = trigger.closest('product-card, .szc-product-card');
+        if (card) {
+          const mediaScript = card.querySelector('.szc-card-media-json');
+          if (mediaScript) {
+            try {
+              cardMedia = JSON.parse(mediaScript.textContent);
+            } catch (err) {
+              console.warn('[QuickView] Could not parse card media JSON', err);
+            }
+          }
+        }
+
         const modal = document.querySelector('quick-view-modal');
         if (modal && modal.open) {
-          modal.open(handle);
+          modal.open(handle, cardMedia);
         }
       }
     });
   }
 </script>
+

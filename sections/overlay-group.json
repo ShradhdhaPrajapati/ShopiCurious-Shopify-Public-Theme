@@ -41,6 +41,10 @@
         "age_verifier_confirm_text": "",
         "age_verifier_decline_text": "",
         "age_verifier_decline_url": "",
+        "decline_action": "message",
+        "age_verifier_declined_heading": "Access Restricted",
+        "age_verifier_declined_text": "In compliance with legal regulations, you must be at least 18 years of age to enter this store and purchase products.",
+        "age_verifier_return_text": "GO BACK",
         "age_verifier_overlay_opacity": 80
       }
     }

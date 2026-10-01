@@ -103,8 +103,18 @@
     assign loading_attr = 'eager'
   endif
 
-  assign featured_img = product.featured_media.preview_image
-  assign second_img = product.media[1].preview_image
+  assign primary_media = product.featured_media
+  assign secondary_media = product.media[1]
+  assign featured_img = primary_media.preview_image
+  assign second_img = secondary_media.preview_image
+
+  assign has_video = false
+  for m in product.media
+    if m.media_type == 'video' or m.media_type == 'external_video'
+      assign has_video = true
+      break
+    endif
+  endfor
 
   assign default_placeholder_title = 'onboarding.product_title' | t
   assign demo_title = title_override | default: default_placeholder_title
@@ -117,14 +127,47 @@
   <product-card class="szc-product-card {% if is_fixed_aspect %}szc-product-card--fixed-ratio{% endif %} {{ custom_class }}">
     <div class="szc-product-card__media-container" style="aspect-ratio: {{ aspect_ratio }};">
       <a href="{{ product.url }}" class="szc-product-card__media-link" aria-label="{{ product.title | escape }}">
-        {%- if featured_img != blank -%}
+        {%- if primary_media.media_type == 'video' -%}
+          {{
+            primary_media
+            | video_tag:
+              image_size: '800x',
+              autoplay: true,
+              loop: true,
+              muted: true,
+              controls: false,
+              playsinline: true,
+              class: 'szc-product-card__video szc-product-card__video--primary',
+              data-card-video: ''
+          }}
+        {%- elsif featured_img != blank -%}
           {% render 'image',
             image: featured_img,
             aspect_ratio: aspect_ratio,
             loading: loading_attr,
             class: 'szc-product-card__image szc-product-card__image--primary'
           %}
-          {%- if show_secondary and second_img != blank -%}
+        {%- else -%}
+          <div class="szc-product-card__placeholder">
+            {{ 'product-1' | placeholder_svg_tag: 'szc-image-placeholder' }}
+          </div>
+        {%- endif -%}
+
+        {%- if show_secondary -%}
+          {%- if secondary_media.media_type == 'video' -%}
+            {{
+              secondary_media
+              | video_tag:
+                image_size: '800x',
+                autoplay: false,
+                loop: true,
+                muted: true,
+                controls: false,
+                playsinline: true,
+                class: 'szc-product-card__video szc-product-card__video--secondary',
+                data-card-video: ''
+            }}
+          {%- elsif second_img != blank -%}
             {% render 'image',
               image: second_img,
               aspect_ratio: aspect_ratio,
@@ -132,12 +175,16 @@
               class: 'szc-product-card__image szc-product-card__image--secondary'
             %}
           {%- endif -%}
-        {%- else -%}
-          <div class="szc-product-card__placeholder">
-            {{ 'product-1' | placeholder_svg_tag: 'szc-image-placeholder' }}
-          </div>
         {%- endif -%}
       </a>
+
+      {%- if has_video -%}
+        <div class="szc-product-card__video-badge" title="Video available" aria-label="Video available">
+          <svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor">
+            <polygon points="6 4 20 12 6 20 6 4"></polygon>
+          </svg>
+        </div>
+      {%- endif -%}
 
       <!-- Badges Overlay -->
       <div class="szc-product-card__badges">
@@ -326,6 +373,38 @@
         </div>
       {%- endif -%}
     </div>
+
+    {%- if product.media.size > 0 -%}
+      <script type="application/json" class="szc-card-media-json">
+        [
+          {%- for m in product.media -%}
+            {
+              "id": {{ m.id | json }},
+              "media_type": {{ m.media_type | json }},
+              "preview_image": {{ m.preview_image | image_url: width: 1000 | json }},
+              "alt": {{ m.alt | default: product.title | json }},
+              "aspect_ratio": {{ m.aspect_ratio | default: 1.0 | json }}
+              {%- if m.media_type == 'video' -%}
+                ,"sources": [
+                  {%- for src in m.sources -%}
+                    {
+                      "url": {{ src.url | json }},
+                      "mime_type": {{ src.mime_type | json }},
+                      "format": {{ src.format | json }},
+                      "width": {{ src.width | json }},
+                      "height": {{ src.height | json }}
+                    }{%- unless forloop.last -%},{%- endunless -%}
+                  {%- endfor -%}
+                ]
+              {%- elsif m.media_type == 'external_video' -%}
+                ,"host": {{ m.host | json }},
+                "external_id": {{ m.external_id | json }}
+              {%- endif -%}
+            }{%- unless forloop.last -%},{%- endunless -%}
+          {%- endfor -%}
+        ]
+      </script>
+    {%- endif -%}
   </product-card>
 {%- else -%}
   <!-- Demo Placeholder Product Card matching Approved UI Screenshot -->
@@ -463,7 +542,9 @@
     }
 
     .szc-product-card:hover .szc-product-card__image--secondary,
-    .szc-product-card--box-hover:hover .szc-product-card__image--secondary {
+    .szc-product-card--box-hover:hover .szc-product-card__image--secondary,
+    .szc-product-card:hover .szc-product-card__video--secondary,
+    .szc-product-card--box-hover:hover .szc-product-card__video--secondary {
       opacity: 1;
     }
   }
@@ -541,6 +622,49 @@
     left: 0;
     opacity: 0;
     transition: opacity 300ms ease;
+  }
+
+  .szc-product-card__video {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    pointer-events: none;
+    border-radius: inherit;
+    transition: opacity 300ms ease;
+  }
+
+  .szc-product-card__video--primary {
+    opacity: 1;
+    z-index: 1;
+  }
+
+  .szc-product-card__video--secondary {
+    opacity: 0;
+    z-index: 2;
+  }
+
+  .szc-product-card__video-badge {
+    position: absolute;
+    bottom: 8px;
+    left: 8px;
+    width: 22px;
+    height: 22px;
+    background: rgba(0, 0, 0, 0.7);
+    color: #ffffff;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 3;
+    pointer-events: none;
+    box-shadow: 0 1px 4px rgba(0, 0, 0, 0.25);
+  }
+
+  .szc-product-card__video-badge svg {
+    margin-left: 2px;
   }
 
   .szc-product-card__placeholder {

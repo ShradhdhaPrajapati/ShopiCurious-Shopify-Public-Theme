@@ -12,17 +12,233 @@
   assign form_id = prefix | append: 'CountryForm'
   assign list_id = prefix | append: 'CountryList'
 
+  assign active_currency_code = cart.currency.iso_code | default: shop.currency
   assign current_country = localization.country
+
   if current_country != blank and current_country.iso_code != blank
     assign current_country_code = current_country.iso_code
     assign current_country_name = current_country.name
-    assign current_currency_code = current_country.currency.iso_code
-    assign current_currency_symbol = current_country.currency.symbol
+    assign current_currency_code = active_currency_code | default: current_country.currency.iso_code
+    assign current_currency_symbol = current_country.currency.symbol | default: cart.currency.symbol
   else
     assign current_country_code = shop.address.country_code
     assign current_country_name = shop.address.country
-    assign current_currency_code = shop.currency
+    assign current_currency_code = active_currency_code | default: shop.currency
     assign current_currency_symbol = cart.currency.symbol
+  endif
+
+  assign format = display_format | default: 'flag_currency'
+
+  # Primary country and flag for the active currency
+  case active_currency_code
+    when 'GBP'
+      assign currency_flag = 'gb'
+      assign currency_country_name = 'United Kingdom'
+      assign currency_country_code = 'GB'
+    when 'INR'
+      assign currency_flag = 'in'
+      assign currency_country_name = 'India'
+      assign currency_country_code = 'IN'
+    when 'EUR'
+      assign currency_flag = 'eu'
+      assign currency_country_name = 'European Union'
+      assign currency_country_code = 'EU'
+    when 'USD'
+      assign currency_flag = 'us'
+      assign currency_country_name = 'United States'
+      assign currency_country_code = 'US'
+    when 'CAD'
+      assign currency_flag = 'ca'
+      assign currency_country_name = 'Canada'
+      assign currency_country_code = 'CA'
+    when 'AUD'
+      assign currency_flag = 'au'
+      assign currency_country_name = 'Australia'
+      assign currency_country_code = 'AU'
+    when 'AED'
+      assign currency_flag = 'ae'
+      assign currency_country_name = 'United Arab Emirates'
+      assign currency_country_code = 'AE'
+    when 'JPY'
+      assign currency_flag = 'jp'
+      assign currency_country_name = 'Japan'
+      assign currency_country_code = 'JP'
+    when 'CHF'
+      assign currency_flag = 'ch'
+      assign currency_country_name = 'Switzerland'
+      assign currency_country_code = 'CH'
+    when 'SGD'
+      assign currency_flag = 'sg'
+      assign currency_country_name = 'Singapore'
+      assign currency_country_code = 'SG'
+    when 'NZD'
+      assign currency_flag = 'nz'
+      assign currency_country_name = 'New Zealand'
+      assign currency_country_code = 'NZ'
+    when 'CNY'
+      assign currency_flag = 'cn'
+      assign currency_country_name = 'China'
+      assign currency_country_code = 'CN'
+    when 'BRL'
+      assign currency_flag = 'br'
+      assign currency_country_name = 'Brazil'
+      assign currency_country_code = 'BR'
+    when 'MXN'
+      assign currency_flag = 'mx'
+      assign currency_country_name = 'Mexico'
+      assign currency_country_code = 'MX'
+    when 'SAR'
+      assign currency_flag = 'sa'
+      assign currency_country_name = 'Saudi Arabia'
+      assign currency_country_code = 'SA'
+    when 'ZAR'
+      assign currency_flag = 'za'
+      assign currency_country_name = 'South Africa'
+      assign currency_country_code = 'ZA'
+    when 'SEK'
+      assign currency_flag = 'se'
+      assign currency_country_name = 'Sweden'
+      assign currency_country_code = 'SE'
+    when 'NOK'
+      assign currency_flag = 'no'
+      assign currency_country_name = 'Norway'
+      assign currency_country_code = 'NO'
+    when 'DKK'
+      assign currency_flag = 'dk'
+      assign currency_country_name = 'Denmark'
+      assign currency_country_code = 'DK'
+    when 'PLN'
+      assign currency_flag = 'pl'
+      assign currency_country_name = 'Poland'
+      assign currency_country_code = 'PL'
+    when 'TRY'
+      assign currency_flag = 'tr'
+      assign currency_country_name = 'Turkey'
+      assign currency_country_code = 'TR'
+    when 'HKD'
+      assign currency_flag = 'hk'
+      assign currency_country_name = 'Hong Kong'
+      assign currency_country_code = 'HK'
+    when 'KRW'
+      assign currency_flag = 'kr'
+      assign currency_country_name = 'South Korea'
+      assign currency_country_code = 'KR'
+    when 'THB'
+      assign currency_flag = 'th'
+      assign currency_country_name = 'Thailand'
+      assign currency_country_code = 'TH'
+    when 'MYR'
+      assign currency_flag = 'my'
+      assign currency_country_name = 'Malaysia'
+      assign currency_country_code = 'MY'
+    when 'IDR'
+      assign currency_flag = 'id'
+      assign currency_country_name = 'Indonesia'
+      assign currency_country_code = 'ID'
+    when 'PHP'
+      assign currency_flag = 'ph'
+      assign currency_country_name = 'Philippines'
+      assign currency_country_code = 'PH'
+    when 'VND'
+      assign currency_flag = 'vn'
+      assign currency_country_name = 'Vietnam'
+      assign currency_country_code = 'VN'
+    when 'ILS'
+      assign currency_flag = 'il'
+      assign currency_country_name = 'Israel'
+      assign currency_country_code = 'IL'
+    when 'EGP'
+      assign currency_flag = 'eg'
+      assign currency_country_name = 'Egypt'
+      assign currency_country_code = 'EG'
+    when 'PKR'
+      assign currency_flag = 'pk'
+      assign currency_country_name = 'Pakistan'
+      assign currency_country_code = 'PK'
+    when 'BDT'
+      assign currency_flag = 'bd'
+      assign currency_country_name = 'Bangladesh'
+      assign currency_country_code = 'BD'
+    when 'LKR'
+      assign currency_flag = 'lk'
+      assign currency_country_name = 'Sri Lanka'
+      assign currency_country_code = 'LK'
+    when 'NPR'
+      assign currency_flag = 'np'
+      assign currency_country_name = 'Nepal'
+      assign currency_country_code = 'NP'
+    when 'KWD'
+      assign currency_flag = 'kw'
+      assign currency_country_name = 'Kuwait'
+      assign currency_country_code = 'KW'
+    when 'QAR'
+      assign currency_flag = 'qa'
+      assign currency_country_name = 'Qatar'
+      assign currency_country_code = 'QA'
+    when 'OMR'
+      assign currency_flag = 'om'
+      assign currency_country_name = 'Oman'
+      assign currency_country_code = 'OM'
+    when 'BHD'
+      assign currency_flag = 'bh'
+      assign currency_country_name = 'Bahrain'
+      assign currency_country_code = 'BH'
+    when 'JOD'
+      assign currency_flag = 'jo'
+      assign currency_country_name = 'Jordan'
+      assign currency_country_code = 'JO'
+    when 'RUB'
+      assign currency_flag = 'ru'
+      assign currency_country_name = 'Russia'
+      assign currency_country_code = 'RU'
+    else
+      assign currency_flag = current_country_code | downcase
+      assign currency_country_name = current_country_name
+      assign currency_country_code = current_country_code
+  endcase
+
+  # Resolve the flag code:
+  # In 'flag_currency' mode (Header, Mobile Drawer), the label is the currency code.
+  # The flag must ALWAYS correspond to the active currency (e.g. UK flag 'gb' for GBP).
+  if format == 'flag_currency'
+    assign flag_code = currency_flag
+    if current_country_code == 'US' and active_currency_code != 'USD'
+      assign current_country_code = currency_country_code
+      assign current_country_name = currency_country_name
+    endif
+  else
+    # In 'flag_country' or 'country_currency' mode:
+    if localization.available_countries.size > 1
+      assign has_matched_country = false
+      for c in localization.available_countries
+        if c.iso_code == current_country_code and c.currency.iso_code == active_currency_code
+          assign has_matched_country = true
+          assign flag_code = c.iso_code | downcase
+          break
+        endif
+      endfor
+      unless has_matched_country
+        assign flag_code = currency_flag
+        assign current_country_name = currency_country_name
+        assign current_country_code = currency_country_code
+      endunless
+    else
+      if current_country_code == 'US' and active_currency_code != 'USD'
+        assign flag_code = currency_flag
+        assign current_country_name = currency_country_name
+        assign current_country_code = currency_country_code
+      elsif active_currency_code == 'GBP' and current_country_code != 'GB'
+        assign flag_code = 'gb'
+        assign current_country_name = 'United Kingdom'
+        assign current_country_code = 'GB'
+      elsif active_currency_code == 'INR' and current_country_code != 'IN'
+        assign flag_code = 'in'
+        assign current_country_name = 'India'
+        assign current_country_code = 'IN'
+      else
+        assign flag_code = current_country_code | downcase
+      endif
+    endif
   endif
 
   assign format = display_format | default: 'flag_currency'
@@ -43,12 +259,12 @@
           {% if available_countries_count <= 1 %}disabled style="cursor: default;"{% endif %}
         >
           {%- unless format == 'country_currency' -%}
-            {%- if current_country_code != blank -%}
+            {%- if flag_code != blank -%}
               <span class="szc-country-flag" aria-hidden="true">
                 <img
                   class="szc-country-flag-img"
-                  src="https://flagcdn.com/w40/{{ current_country_code | downcase }}.png"
-                  srcset="https://flagcdn.com/w80/{{ current_country_code | downcase }}.png 2x"
+                  src="https://flagcdn.com/w40/{{ flag_code }}.png"
+                  srcset="https://flagcdn.com/w80/{{ flag_code }}.png 2x"
                   width="16"
                   height="11"
                   alt=""
@@ -140,12 +356,12 @@
         style="cursor: default;"
       >
         {%- unless format == 'country_currency' -%}
-          {%- if current_country_code != blank -%}
+          {%- if flag_code != blank -%}
             <span class="szc-country-flag" aria-hidden="true">
               <img
                 class="szc-country-flag-img"
-                src="https://flagcdn.com/w40/{{ current_country_code | downcase }}.png"
-                srcset="https://flagcdn.com/w80/{{ current_country_code | downcase }}.png 2x"
+                src="https://flagcdn.com/w40/{{ flag_code }}.png"
+                srcset="https://flagcdn.com/w80/{{ flag_code }}.png 2x"
                 width="16"
                 height="11"
                 alt=""
